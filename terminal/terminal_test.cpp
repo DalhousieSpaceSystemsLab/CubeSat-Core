@@ -8,7 +8,7 @@ int main() {
 	printf("-----------Starting program!-----------\n");
 
 	TerminalCommandLoader commandLoader;
-	char *path;
+	char path[256];
 	printf("Please enter the absolute path of your commands directory:\n");
 	cin >> path;
 	std::vector<TerminalCommand> commands = commandLoader.readCommands(path);
