@@ -1,3 +1,8 @@
+#ifndef TERMINAL_H
+#define TERMINAL_H
+#endif
+
+
 #include <iostream>
 #include "TerminalCommandLoader.h"
 #include "TerminalCommand.h"

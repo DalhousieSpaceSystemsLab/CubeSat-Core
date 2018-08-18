@@ -7,4 +7,4 @@ class GroundStation {
 	void SendMessageToTerminal(char message[]) {
 
 	}
-}
+};

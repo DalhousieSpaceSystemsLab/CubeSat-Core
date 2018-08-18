@@ -1,3 +1,6 @@
+#ifndef TERMINAL_COMMAND_H
+#define TERMINAL_COMMAND_H
+
 #include <iostream>
 
 using namespace std;
@@ -27,3 +30,4 @@ public:
 	std::string name_;
 	std::string description_;
 };
+#endif
