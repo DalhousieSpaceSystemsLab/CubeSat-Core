@@ -1,6 +1,5 @@
 #ifndef TERMINAL_H
 #define TERMINAL_H
-#endif
 
 
 #include <iostream>
@@ -38,3 +37,4 @@ public:
 	GroundStation ground_station_;
 
 };
+#endif
