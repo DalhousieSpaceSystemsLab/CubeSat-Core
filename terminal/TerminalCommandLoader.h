@@ -1,3 +1,6 @@
+#ifndef TERMINAL_COMMAND_LOADER_H
+#define TERMINAL_COMMAND_LOADER_H
+
 #include <iostream>
 #include <fstream>
 #include "TerminalCommand.h"
@@ -62,3 +65,4 @@ class TerminalCommandLoader {
 		  return TerminalCommand(name, description);
 		}
 };
+#endif
