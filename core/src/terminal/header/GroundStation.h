@@ -8,4 +8,4 @@ class GroundStation: public Messenger {
 	void SendMessageToTerminal(char message[]) {
 
 	}
-}
+};
