@@ -1,23 +1,33 @@
-CC=g++
-CFLAGS= -c -std=c++17
+### Build flags for all targets
+CFLAGS    = -std=c++17
 
-output: terminal_test.o
-	$(CC) obj/terminal_test.o -o output
-	
-terminal_test.o: src/terminal/header/terminal_test.cpp GroundStation.o TerminalCommand.o TerminalCommandLoader.o Terminal.o 
-	$(CC) $(CFLAGS)  src/terminal/header/terminal_test.cpp obj/GroundStation.o obj/TerminalCommand.o obj/TerminalCommandLoader.o obj/Terminal.o -o obj/terminal_test.o
+### Build tools
+CC          = g++
+COMP        = $(CC) $(CFLAGS) -o $@ -c $<
+LINK        = $(CC) $(CFLAGS) -o $@ $^ 
+COMPLINK    = $(CC) $(CFLAGS) -o $@ $< 
 
-GroundStation.o: src/terminal/header/GroundStation.h
-	$(CC) $(CFLAGS) src/terminal/header/GroundStation.h -o obj/GroundStation.o
+### Standard parts
+program		:= output
+extra_clean	:=
 
-TerminalCommand.o: src/terminal/header/TerminalCommand.h 
-	$(CC) $(CFLAGS) src/terminal/header/TerminalCommand.h -o obj/TerminalCommand.o
+### Include files
+all:
 
-TerminalCommandLoader.o: src/terminal/header/TerminalCommandLoader.h 
-	$(CC) $(CFLAGS) src/terminal/header/TerminalCommandLoader.h -o obj/TerminalCommandLoader.o
+include src/terminal/header/module.mk
 
-Terminal.o: src/terminal/header/Terminal.h
-	$(CC) $(CFLAGS) src/terminal/header/Terminal.h -o obj/Terminal.o
+### General rules
+%.o:	%.cpp
+	$(COMP)
 
+### Rules
+.PHONY: all
+all:	$(program)
+
+.PHONY: clean
 clean:
-	rm *.o output
+	rm $(extra_clean)
+
+### Desired program output
+output: obj/terminal_test.o
+	$(LINK)

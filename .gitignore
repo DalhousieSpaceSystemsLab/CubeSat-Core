@@ -2,3 +2,5 @@
 /core/dist/
 /core/nbproject/
 /core/output
+/core/obj
+*.o
