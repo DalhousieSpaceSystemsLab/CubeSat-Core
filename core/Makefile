@@ -26,7 +26,7 @@ all:	$(program)
 
 .PHONY: clean
 clean:
-	rm $(extra_clean)
+	rm $(program) $(extra_clean)
 
 ### Desired program output
 output: obj/terminal_test.o
