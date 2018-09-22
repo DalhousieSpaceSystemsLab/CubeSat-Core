@@ -1,6 +1,12 @@
 #include "BatteryManager.h"
 
-// Battery constructor
+// Null constructor for BatteryManager class
+//
 BatteryManager::BatteryManager() {
     // Null 
+}
+
+// Constructor for BatteryManager class
+BatteryManager::BatteryManager(std::vector<Battery> batteries) {
+    this->batteries_=batteries;
 }

@@ -1,6 +1,6 @@
 #include "Battery.h"
 
-// Battery constructor
+// Null constructor for Battery class
 Battery::Battery() {
     // Null 
 }
