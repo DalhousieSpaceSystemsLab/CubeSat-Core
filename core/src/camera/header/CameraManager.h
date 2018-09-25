@@ -2,20 +2,26 @@
 #define LORIS_CAMERA_CAMERAMANAGER_H
 
 #include <iostream>
+#include <vector>
+#include "Camera.h"
 
 using namespace std;
 
-class Camera {
+class CameraManager {
 public:
     CameraManager() {
 
     }
 
-    std::vector<Camera> cameras() {
+    vector<Camera> cameras() {
         return this->cameras_;
     }
 
-    std::vector<Camera> cameras_;
+    void addCamera(Camera camera) {
+        this->cameras_.push_back(camera);
+    }
+
+    vector<Camera> cameras_;
 };
 
 #endif
