@@ -9,18 +9,13 @@ using namespace std;
 
 class CameraManager {
 public:
-    CameraManager() {
+    CameraManager();
 
-    }
+    vector<Camera> cameras();
 
-    vector<Camera> cameras() {
-        return this->cameras_;
-    }
+    void addCamera(Camera camera);
 
-    void addCamera(Camera camera) {
-        this->cameras_.push_back(camera);
-    }
-
+private:
     vector<Camera> cameras_;
 };
 
