@@ -13,11 +13,14 @@ class BatteryManager {
     public:
         BatteryManager();
         BatteryManager(std::vector<Battery> batteries);
+        void CalcAvgBatteryLevel();
 
-        std::vector<Battery> getBatteries() { return this->batteries_; }
+        std::vector<Battery*> batteries() { return this->batteries_; }
+        float avg_battery_level() { return this->avg_battery_level_; }
 
     private:
-        std::vector<Battery> batteries_;
+        std::vector<Battery*> batteries_;
+        float avg_battery_level_;
 
 };
 
