@@ -9,7 +9,9 @@ class Battery {
     public:
         Battery();
 
-        float getPowerLevel() { return this->power_level_; }
+        float power_level() { return this->power_level_; }
+
+        void set_power_level( float power_level ) { this->power_level_ = power_level ; }
 
     private:
         float power_level_;
