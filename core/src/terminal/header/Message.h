@@ -14,25 +14,19 @@ class Message {
         /**
         * @brief : Null constructor
         */
-        Message() {       
-
-        }
+        Message();
 
         /**
          * @brief   : Message constructor
          * @params  : contents - contents to be stored in message
          */
-        Message(std::string contents) {
-            this->contents_=contents;
-        }
+        Message(std::string contents);
 
         /**
          *  @brief  : Getter for message contents
          *  @return : String containing message contents
          */
-        std::string getContents() {
-            return this->contents_;
-        }
+        std::string getContents();
         
         std::string contents_;
 };

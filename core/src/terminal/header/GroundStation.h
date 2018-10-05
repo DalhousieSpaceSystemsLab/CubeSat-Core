@@ -5,7 +5,5 @@ using namespace std;
 
 class GroundStation: public Messenger {
 	
-	void SendMessageToTerminal(char message[]) {
-
-	}
+	void SendMessageToTerminal(char message[]);
 };

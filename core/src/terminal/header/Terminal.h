@@ -11,25 +11,15 @@ using namespace std;
 class Terminal {
 public:
 
-	void chat() {
+	void chat();
 
-	}
+	void sendCommand(char command[]);
 
-	void sendCommand(char command[]){
+	void listCommands();
 
-	}
+	void displayMessage(char message[]);
 
-	void listCommands() {
-
-	}
-
-	void displayMessage(char message[]) {
-
-	}
-
-	void loadCommands() {
-
-	}
+	void loadCommands();
 
 	std::vector<TerminalCommand> commands_;
 	char command_directory_[];
