@@ -14,12 +14,11 @@ class CubeSat: public Messenger {
 
         CubeSat();
 
-        void SendMessage(std::string message);
-        // void AddTaskToQueue(Task task);  // Commented until Task is defined
-        // Task CreateTask(std::string task);
+        void SendMessageToGroundStation(Message message);
+        void ProcessMessage(Message message);
 
     private:
-        // std::vector<Task*> tasks_;
+        
 };
 
 #endif

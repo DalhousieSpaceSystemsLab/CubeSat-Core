@@ -6,14 +6,10 @@ CubeSat::CubeSat() {
     // Null
 }
 
-// void CubeSat::AddTaskToQueue(Task task) {
-//     // Commented until Task is defined
-// }
-
-void CubeSat::SendMessage(std::string message) {
+void CubeSat::SendMessageToGroundStation(Message message) {
     // Null
 }
 
-// Task CreateTask(std::string task) {
-//     //Commented until Task is defined
-// }
+void CubeSat::ProcessMessage(Message message) {
+    // Null
+}
