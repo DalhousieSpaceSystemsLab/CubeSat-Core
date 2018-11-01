@@ -13,3 +13,7 @@ void CubeSat::SendMessageToGroundStation(Message message) {
 void CubeSat::ProcessMessage(Message message) {
     // Null
 }
+
+void CubeSat::set_ground_station(GroundStation ground_station) {
+    this->ground_station_ = ground_station;
+}

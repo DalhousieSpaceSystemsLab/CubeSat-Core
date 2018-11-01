@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "../../terminal/header/Messenger.h"
+#include "../../terminal/header/GroundStation.h"
 
 class CubeSat: public Messenger {
     public:
@@ -16,9 +17,10 @@ class CubeSat: public Messenger {
 
         void SendMessageToGroundStation(Message message);
         void ProcessMessage(Message message);
+        void set_ground_station(GroundStation ground_station);
 
     private:
-        
+        GroundStation ground_station_;
 };
 
 #endif
