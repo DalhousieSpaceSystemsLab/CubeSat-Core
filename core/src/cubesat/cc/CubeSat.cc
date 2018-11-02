@@ -6,12 +6,19 @@ CubeSat::CubeSat() {
     // Null
 }
 
-void CubeSat::SendMessageToGroundStation(Message message) {
-    // Null
+void CubeSat::SendMessageToGroundStation(const std::string &contents) {
+    Message* message = new Message(contents);
+
+    //Send to GroundStation
 }
 
-void CubeSat::ProcessMessage(Message message) {
-    // Null
+void CubeSat::ProcessMessage(const Message &message) {
+    std::string contents = message.getContents();
+
+    if(contents=="GET_BATTERY"){
+        std::string str=to_string(battery_manager_.avg_battery_level());
+        this->SendMessageToGroundStation(str);
+    }
 }
 
 void CubeSat::set_ground_station(GroundStation ground_station) {

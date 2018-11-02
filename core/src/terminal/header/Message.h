@@ -26,7 +26,7 @@ class Message {
          *  @brief  : Getter for message contents
          *  @return : String containing message contents
          */
-        std::string getContents();
+        std::string getContents() const;
         
         std::string contents_;
 };

@@ -8,6 +8,6 @@ Message::Message(std::string contents) {
     this->contents_=contents;
 }
 
-std::string Message::getContents() {
+std::string Message::getContents() const {
     return this->contents_;
 }
