@@ -1,6 +1,6 @@
 #include <iostream>
 #include "Messenger.h"
-#include "../cc/Terminal.cc";
+#include "Terminal.h";
 
 using namespace std;
 
