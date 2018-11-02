@@ -7,20 +7,22 @@
 
 #include <vector>
 
-#include "../../terminal/header/Messenger.h"
-#include "../../terminal/header/GroundStation.h"
+#include "Messenger.h"
+#include "GroundStation.h"
+#include "BatteryManager.h"
 
 class CubeSat: public Messenger {
     public:
 
         CubeSat();
 
-        void SendMessageToGroundStation(Message message);
-        void ProcessMessage(Message message);
+        void SendMessageToGroundStation(const std::string &contents);
+        void ProcessMessage(const Message &message);
         void set_ground_station(GroundStation ground_station);
 
     private:
         GroundStation ground_station_;
+        BatteryManager battery_manager_;
 };
 
 #endif
