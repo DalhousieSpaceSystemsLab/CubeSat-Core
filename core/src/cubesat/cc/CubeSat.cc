@@ -9,9 +9,7 @@ CubeSat::CubeSat() {
 void CubeSat::SendMessageToGroundStation(const std::string &contents) {
     Message* message = new Message(contents);
 
-    //Send to GroundStation
-    //TODO Call GroundStation's Process Message Function.
-    //TODO Pass the message as argument
+    this->ground_station_.ProcessMessage(*message);
 }
 
 void CubeSat::ProcessMessage(const Message &message) {
