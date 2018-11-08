@@ -12,9 +12,9 @@ class GroundStation: public Messenger {
 		GroundStation();
 		GroundStation(Terminal terminal);
 
-		void SendMessageToTerminal(char message[]) { this->terminal_.displayMessage(message); }
-		void SendMessageToCubesat(char message[]) { this->cubesat_.ProcessMessage(Message(message)); }
-		void ProcessMessage();
+		void SendMessageToTerminal(std::string message) { this->terminal_.displayMessage(message); }
+		void SendMessageToCubesat(Message &message) { this->cubesat_.ProcessMessage(Message(message)); }
+		void ProcessMessage(const Message &message);
 
 		void SetCubeSat(CubeSat cubesat) { this->cubesat_=cubesat; }
 

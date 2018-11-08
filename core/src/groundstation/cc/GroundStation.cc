@@ -12,6 +12,8 @@ GroundStation::GroundStation(Terminal terminal) {
     this->terminal_=terminal;
 }
 
-//TODO Implement ProcessMessage(Message). 
-//TODO Extract contents of the message 
-//TODO Call terminal_.DisplayMessage and pass the message contents as the argument
+void GroundStation::ProcessMessage(const Message &message) {
+    std::string contents = message.getContents();
+
+    this->SendMessageToTerminal(contents);
+}
