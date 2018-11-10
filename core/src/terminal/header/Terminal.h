@@ -6,6 +6,7 @@
 #include "TerminalCommandLoader.h"
 #include "TerminalCommand.h"
 #include "GroundStation.h"
+#include "Message.h"
 using namespace std;
 
 class Terminal {
@@ -13,11 +14,11 @@ public:
 
 	void chat();
 
-	void sendCommand(char command[]);
+	void sendCommand(string command);
 
 	void listCommands();
 
-	void displayMessage(char message[]);
+	void displayMessage(string message);
 
 	void loadCommands();
 

@@ -1,28 +1,52 @@
 #include "../header/Terminal.h";
 
 void Terminal::chat() {
-    //TODO Create a while loop
-    //TODO In the while loop, display a list of options: 1. List Commands 2. Send command 3. Exit
-    //TODO Have if statements to handle user input and call the appropriate functions
-    
+    int option;
+    while (true) {
+        cout << "What would you like to do?" << endl;
+        cout << "(1) List commands" << endl;
+        cout << "(2) Send command" << endl;
+        cout << "(3) Exit" << endl;
+        cin >> option;
+
+        if (option == 1) {
+            this->listCommands();
+        } else if (option == 2) {
+            string command;
+            cout << "Enter desired command" << endl;
+            cin >> command;
+            this->sendCommand(command);
+        } else if (option == 3) {
+            break;
+        } else {
+            cout << "Please enter a valid option" << endl;
+        }
+    }
 }
 
-void Terminal::sendCommand(char *command) {
-    //TODO Call this terminal's groundstation's "SendMessageToCubeSat" function. Pass the command argument to that function.
+void Terminal::sendCommand(string command) {
+    Message* message = new Message(command);
+    ground_station_->SendMessageToCubesat(command);
 }
 
 void Terminal::listCommands() {
-    //TODO Get the commands loaded in _commands and print them
+    if (commands_.size()) {
+        for(int i=0; i < commands_.size(); i++) {
+            cout << "Command #" << i << endl;
+            cout << commands_[i].getName() << endl;
+            cout << commands_[i].getDescription() << endl;
+        }
+    } else {
+        cout << "No commands found" << endl;
+    }
 }
 
-void Terminal::displayMessage(char *message) {
-    //TODO Print message
+void Terminal::displayMessage(Message &message) {
+    cout << message.getContents() << endl;
 }
 
-void Terminal::loadCommands() {
-    //TODO Call TerminalCommandLoader::readCommands
-    
-    //TODO Set commands_ to the returned array 
+void Terminal::loadCommands(char *commandPath) {
+    commands_ = command_loader_.readCommands(commandPath);
 }
 
 void Terminal::set_ground_station(GroundStation ground_station) {
