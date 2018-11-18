@@ -24,11 +24,13 @@ void Terminal::chat() {
     }
 }
 
+//TODO refactor. Capitalize first letter
 void Terminal::sendCommand(string command) {
     Message* message = new Message(command);
     ground_station_->SendMessageToCubesat(command);
 }
 
+//TODO refactor. Capitalize first letter
 void Terminal::listCommands() {
     if (commands_.size()) {
         for(int i=0; i < commands_.size(); i++) {
@@ -40,11 +42,12 @@ void Terminal::listCommands() {
         cout << "No commands found" << endl;
     }
 }
-
+//TODO refactor. Capitalize first letter
 void Terminal::displayMessage(Message &message) {
     cout << message.getContents() << endl;
 }
-
+//TODO refactor. Capitalize first letter
+//TODO Change argument to string 
 void Terminal::loadCommands(char *commandPath) {
     commands_ = command_loader_.readCommands(commandPath);
 }
