@@ -1,5 +1,7 @@
 #include "../header/TerminalCommandLoader.h"
 
+//TODO refactor. Capitalize first letter. 
+//TODO change argument to string
 std::vector<TerminalCommand> TerminalCommandLoader::readCommands(char commandPath[]) {
     std::vector<TerminalCommand> commandObjects;
     DIR* directory = opendir(commandPath);
