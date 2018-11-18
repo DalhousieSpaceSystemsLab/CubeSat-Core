@@ -6,6 +6,7 @@ CubeSat::CubeSat() {
     // Null
 }
 
+//TODO change argument to type message
 void CubeSat::SendMessageToGroundStation(const std::string &contents) {
     Message* message = new Message(contents);
 
@@ -17,6 +18,7 @@ void CubeSat::ProcessMessage(const Message &message) {
 
     if(contents=="GET_BATTERY"){
         std::string str=to_string(battery_manager_.avg_battery_level());
+        //TODO create a message object and send that to groundstation
         this->SendMessageToGroundStation(str);
     }
 }
