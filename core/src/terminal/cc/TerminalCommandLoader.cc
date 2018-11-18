@@ -38,6 +38,7 @@ std::vector<TerminalCommand> TerminalCommandLoader::readCommands(char commandPat
     return commandObjects;
 }
 
+//TODO refactor. Change createCommand to CreateCommand.
 TerminalCommand TerminalCommandLoader::createCommand(const std::string& commandText) {
     std::stringstream lineStream(commandText);
     std::string seg;
