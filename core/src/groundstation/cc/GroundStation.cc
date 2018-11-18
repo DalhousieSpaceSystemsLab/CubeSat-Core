@@ -14,6 +14,6 @@ GroundStation::GroundStation(Terminal terminal) {
 
 void GroundStation::ProcessMessage(const Message &message) {
     std::string contents = message.getContents();
-
+    //TODO Just pass message object
     this->SendMessageToTerminal(contents);
 }
