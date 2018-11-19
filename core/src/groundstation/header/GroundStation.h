@@ -12,13 +12,11 @@ class GroundStation: public Messenger {
 		GroundStation();
 		GroundStation(Terminal terminal);
 
-		//TODO change argument to type message
-		void SendMessageToTerminal(std::string message) { this->terminal_.displayMessage(message); }
-		//TODO change Message() constructor call. Just pass message argument.
-		void SendMessageToCubesat(Message &message) { this->cubesat_.ProcessMessage(Message(message)); }
+		void SendMessageToTerminal(const Message message) { this->terminal_.displayMessage(message); }
+		void SendMessageToCubesat(const Message &message) { this->cubesat_.ProcessMessage(message); }
 		void ProcessMessage(const Message &message);
 
-		void SetCubeSat(CubeSat cubesat) { this->cubesat_=cubesat; }
+		void SetCubeSat(const CubeSat cubesat) { this->cubesat_=cubesat; }
 
 	private:
 		Terminal terminal_;
