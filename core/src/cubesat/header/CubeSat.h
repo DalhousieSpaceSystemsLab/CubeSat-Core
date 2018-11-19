@@ -16,9 +16,9 @@ class CubeSat: public Messenger {
 
         CubeSat();
 
-        void SendMessageToGroundStation(const std::string &contents);
+        void SendMessageToGroundStation(const Message &message);
         void ProcessMessage(const Message &message);
-        void set_ground_station(GroundStation ground_station);
+        void SetGroundStation(const GroundStation ground_station) { this->ground_station_ = ground_station; };
 
     private:
         GroundStation ground_station_;
