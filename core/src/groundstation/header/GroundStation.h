@@ -12,7 +12,7 @@ class GroundStation: public Messenger {
 		GroundStation();
 		GroundStation(Terminal terminal);
 
-		void SendMessageToTerminal(const Message message) { this->terminal_.displayMessage(message); }
+		void SendMessageToTerminal(const Message message) { this->terminal_.DisplayMessage(message); }
 		void SendMessageToCubesat(const Message &message) { this->cubesat_.ProcessMessage(message); }
 		void ProcessMessage(const Message &message);
 

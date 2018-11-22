@@ -1,10 +1,10 @@
 #include "../header/TerminalCommandLoader.h"
 
-//TODO refactor. Capitalize first letter. 
-//TODO change argument to string
-std::vector<TerminalCommand> TerminalCommandLoader::readCommands(char commandPath[]) {
+std::vector<TerminalCommand> TerminalCommandLoader::ReadCommands(std::string commandPath) {
+    char* commandPathCstr = new char[commandPath.size()+1];
+    std::strcpy (commandPathCstr, commandPath.c_str());
     std::vector<TerminalCommand> commandObjects;
-    DIR* directory = opendir(commandPath);
+    DIR* directory = opendir(commandPathCstr);
     if (directory != NULL) {
         struct dirent *file;
         int index = 0;
@@ -14,16 +14,16 @@ std::vector<TerminalCommand> TerminalCommandLoader::readCommands(char commandPat
             if(match) {
                 ifstream commandFile;
                 char absoluteFile[256] = "";
-                strcat(absoluteFile, commandPath);
+                strcat(absoluteFile, commandPathCstr);
                 strcat(absoluteFile, "/");
                 strcat(absoluteFile, file->d_name);
                 commandFile.open(absoluteFile);
                 if (commandFile.is_open()) {
                     std::string line;
                     while (getline(commandFile, line)) {
-                        TerminalCommand command = createCommand(line);
-                        cout << "Command " << index << " name: " << command.getName() << endl;
-                        cout << "Command " << index << " description: " << command.getDescription() << endl;
+                        TerminalCommand command = CreateCommand(line);
+                        cout << "Command " << index << " name: " << command.name() << endl;
+                        cout << "Command " << index << " description: " << command.description() << endl;
                         commandObjects.push_back(command);
                         index++;
                     }
@@ -37,11 +37,11 @@ std::vector<TerminalCommand> TerminalCommandLoader::readCommands(char commandPat
         cout << "Could not open directory." << endl;
     }
     closedir(directory);
+    delete[] commandPathCstr;
     return commandObjects;
 }
 
-//TODO refactor. Change createCommand to CreateCommand.
-TerminalCommand TerminalCommandLoader::createCommand(const std::string& commandText) {
+TerminalCommand TerminalCommandLoader::CreateCommand(const std::string& commandText) {
     std::stringstream lineStream(commandText);
     std::string seg;
 

@@ -6,7 +6,7 @@
 int main() {
     Terminal terminal_;
 
-    terminal_.loadCommands();
+    terminal_.LoadCommands();
 
     GroundStation ground_station_;
 

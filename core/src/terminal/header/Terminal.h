@@ -14,13 +14,13 @@ public:
 
 	void chat();
 
-	void sendCommand(string command);
+	void SendCommand(string command);
 
-	void listCommands();
+	void ListCommands();
 
-	void displayMessage(string message);
+	void DisplayMessage(string message);
 
-	void loadCommands();
+	void LoadCommands();
 
 	void set_ground_station(GroundStation ground_station);
 

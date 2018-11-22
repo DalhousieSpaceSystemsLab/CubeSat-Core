@@ -10,12 +10,12 @@ void Terminal::chat() {
         cin >> option;
 
         if (option == 1) {
-            this->listCommands();
+            this->ListCommands();
         } else if (option == 2) {
             string command;
             cout << "Enter desired command" << endl;
             cin >> command;
-            this->sendCommand(command);
+            this->SendCommand(command);
         } else if (option == 3) {
             break;
         } else {
@@ -24,32 +24,27 @@ void Terminal::chat() {
     }
 }
 
-//TODO refactor. Capitalize first letter
-void Terminal::sendCommand(string command) {
+void Terminal::SendCommand(string command) {
     Message* message = new Message(command);
     ground_station_->SendMessageToCubesat(command);
 }
 
-//TODO refactor. Capitalize first letter
-void Terminal::listCommands() {
+void Terminal::ListCommands() {
     if (commands_.size()) {
         for(int i=0; i < commands_.size(); i++) {
             cout << "Command #" << i << endl;
-            cout << commands_[i].getName() << endl;
-            cout << commands_[i].getDescription() << endl;
+            cout << commands_[i].name() << endl;
+            cout << commands_[i].description() << endl;
         }
     } else {
         cout << "No commands found" << endl;
     }
 }
-//TODO refactor. Capitalize first letter
-void Terminal::displayMessage(Message &message) {
+void Terminal::DisplayMessage(Message &message) {
     cout << message.getContents() << endl;
 }
-//TODO refactor. Capitalize first letter
-//TODO Change argument to string 
-void Terminal::loadCommands(char *commandPath) {
-    commands_ = command_loader_.readCommands(commandPath);
+void Terminal::LoadCommands(string commandPath) {
+    commands_ = command_loader_.ReadCommands(commandPath);
 }
 
 void Terminal::set_ground_station(GroundStation ground_station) {

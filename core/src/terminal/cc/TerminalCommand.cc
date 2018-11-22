@@ -9,17 +9,14 @@ TerminalCommand::TerminalCommand(std::string name, std::string description) {
     this->description_ = description;
 }
 
-//TODO refactor. Change getName to name
-std::string TerminalCommand::getName() {
+std::string TerminalCommand::name() {
     return this->name_;
 }
 
-//TODO refactor. Change getDescription to description
-std::string TerminalCommand::getDescription() {
+std::string TerminalCommand::description() {
     return this->description_;
 }
 
-//TODO refactor. Change toString to ToString
-std::string TerminalCommand::toString() {
+std::string TerminalCommand::ToString() {
     return name_ + "," + description_;
 }

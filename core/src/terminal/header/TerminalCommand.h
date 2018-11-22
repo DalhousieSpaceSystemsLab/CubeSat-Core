@@ -11,11 +11,11 @@ public:
 
 	TerminalCommand(std::string name, std::string description);
 
-	std::string getName();
+	std::string name();
 
-	std::string getDescription();
+	std::string description();
 
-	std::string toString();
+	std::string ToString();
 	
 	std::string name_;
 	std::string description_;
