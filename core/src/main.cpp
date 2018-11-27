@@ -1,6 +1,6 @@
-#include "terminal/header/Terminal.h";
-#include "terminal/header/GroundStation.h";
-#include "cubesat/header/CubeSat.h";
+#include "terminal/header/Terminal.h"
+#include "groundstation/header/GroundStation.h"
+#include "cubesat/header/CubeSat.h"
 
 
 int main() {
