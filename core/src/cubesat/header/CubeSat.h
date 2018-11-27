@@ -11,6 +11,7 @@
 #include "GroundStation.h"
 #include "BatteryManager.h"
 
+
 class CubeSat: public Messenger {
     public:
 

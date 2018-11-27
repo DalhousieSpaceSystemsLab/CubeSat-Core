@@ -28,11 +28,10 @@ TERMINAL_H_DIR = $(SRC_PATH)/terminal/header/
 CUBESAT_H_DIR = $(SRC_PATH)/cubesat/header/
 BATTERIES_H_DIR = $(SRC_PATH)/batteries/header/
 
-INCLUDE_DIRS = $(GROUND_STATION_H_DIR) $(TERMINAL_H_DIR) $(CUBESAT_H_DIR) $(BATTERIES_H_DIR)
+INCLUDES = -I $(GROUNDSTATION_H_DIR) -I $(TERMINAL_H_DIR) -I $(CUBESAT_H_DIR) -I $(BATTERIES_H_DIR)
 
 ### Build flags for all targets
-CFLAGS    = -std=c++14 -I$(INCLUDE_DIRS)
-
+CFLAGS    = -std=c++14
 
 # Space separated pkg-config libraries used by this project
 LIBS = 

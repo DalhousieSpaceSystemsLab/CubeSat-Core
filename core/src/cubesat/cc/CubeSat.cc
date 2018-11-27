@@ -1,5 +1,5 @@
 #include "CubeSat.h"
-
+#include "GroundStation.h"
 // Null constructor for CubeSat class
 //
 CubeSat::CubeSat() {
