@@ -19,7 +19,7 @@ class CubeSat: public Messenger {
 
         void SendMessageToGroundStation(const Message &message);
         void ProcessMessage(const Message &message);
-        void SetGroundStation(const GroundStation ground_station) { this->ground_station_ = ground_station; };
+        void set_ground_station(const GroundStation ground_station) { this->ground_station_ = ground_station; };
 
     private:
         GroundStation ground_station_;
