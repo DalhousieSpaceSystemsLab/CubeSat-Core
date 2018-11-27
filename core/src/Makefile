@@ -1,5 +1,5 @@
 ### Build flags for all targets
-CFLAGS    = -std=c++17
+CFLAGS    = -std=c++14
 
 ### Build tools
 CC          = g++
