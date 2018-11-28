@@ -11,7 +11,7 @@
 #include "GroundStation.h"
 #include "BatteryManager.h"
 
-
+class GroundStation;
 class CubeSat: public Messenger {
     public:
 
@@ -19,10 +19,10 @@ class CubeSat: public Messenger {
 
         void SendMessageToGroundStation(const Message &message);
         void ProcessMessage(const Message &message);
-        void set_ground_station(const GroundStation &ground_station) { this->ground_station_ = ground_station; };
+        void set_ground_station(const GroundStation &ground_station) { this->ground_station_ = &ground_station; };
 
     private:
-        GroundStation ground_station_;
+        const GroundStation *ground_station_;
         BatteryManager battery_manager_;
 };
 

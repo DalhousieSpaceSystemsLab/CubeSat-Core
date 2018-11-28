@@ -9,6 +9,7 @@
 #include "Message.h"
 using namespace std;
 
+//class GroundStation;
 class Terminal {
 public:
 
