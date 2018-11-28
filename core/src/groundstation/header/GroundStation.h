@@ -17,7 +17,7 @@ class GroundStation: public Messenger {
 		//GroundStation(Terminal &terminal);
 		
 		void set_terminal(Terminal &terminal){ this->terminal_=&terminal;}
-		void SendMessageToTerminal(const Message &message) { this->terminal_.DisplayMessage(message); }
+		void SendMessageToTerminal(const Message &message) { this->terminal_->DisplayMessage(message); }
 		void SendMessageToCubesat(const Message &message) { this->cubesat_.ProcessMessage(message); }
 		void ProcessMessage(const Message &message);
 

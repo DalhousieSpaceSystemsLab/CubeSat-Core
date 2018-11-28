@@ -12,6 +12,8 @@ using namespace std;
 //class GroundStation;
 class Terminal {
 public:
+	
+	Terminal();	
 
 	void chat();
 
