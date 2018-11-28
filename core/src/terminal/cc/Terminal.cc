@@ -1,5 +1,9 @@
 #include "../header/Terminal.h";
 
+Terminal(){
+// null
+}
+
 void Terminal::chat() {
     int option;
     while (true) {

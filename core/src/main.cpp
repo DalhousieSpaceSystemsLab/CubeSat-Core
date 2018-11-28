@@ -1,6 +1,6 @@
-#include "terminal/header/Terminal.h"
-#include "groundstation/header/GroundStation.h"
-#include "cubesat/header/CubeSat.h"
+#include "Terminal.h"
+#include "GroundStation.h"
+#include "CubeSat.h"
 
 
 int main() {
@@ -10,9 +10,9 @@ int main() {
 
     GroundStation ground_station_;
 
-    terminal_.set_ground_station(ground_station_);
-
     ground_station_.set_terminal(terminal_);
+
+    terminal_.set_ground_station(ground_station_);
 
     CubeSat cubesat_;
 
