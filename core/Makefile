@@ -9,7 +9,7 @@ BIN_PATH = bin
 BIN_NAME = main
 
 ### Extensions
-SRC_EXT = cpp
+SRC_EXT = cc
 
 ### Code Lists
 # Find all source files in the source directory, sorted by
