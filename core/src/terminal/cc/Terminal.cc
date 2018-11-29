@@ -1,6 +1,6 @@
-#include "../header/Terminal.h";
+#include "Terminal.h"
 
-Terminal(){
+Terminal::Terminal(){
 // null
 }
 
@@ -30,7 +30,7 @@ void Terminal::chat() {
 
 void Terminal::SendCommand(string command) {
     Message* message = new Message(command);
-    ground_station_->SendMessageToCubesat(command);
+    ground_station_->SendMessageToCubeSat(command);
 }
 
 void Terminal::ListCommands() {
@@ -44,13 +44,13 @@ void Terminal::ListCommands() {
         cout << "No commands found" << endl;
     }
 }
-void Terminal::DisplayMessage(Message &message) {
+void Terminal::DisplayMessage(Message message) {
     cout << message.getContents() << endl;
 }
 void Terminal::LoadCommands(string commandPath) {
     commands_ = command_loader_.ReadCommands(commandPath);
 }
 
-void Terminal::set_ground_station(GroundStation ground_station) {
-    this->ground_station_ = ground_station;
+void Terminal::set_ground_station(GroundStation &ground_station) {
+    this->ground_station_ = &ground_station;
 }
