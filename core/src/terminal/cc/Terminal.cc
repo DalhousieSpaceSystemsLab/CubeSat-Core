@@ -6,7 +6,7 @@ Terminal::Terminal(){
 
 void Terminal::chat() {
     int option;
-    while (true) {
+//    while (true) {
         cout << "What would you like to do?" << endl;
         cout << "(1) List commands" << endl;
         cout << "(2) Send command" << endl;
@@ -21,11 +21,11 @@ void Terminal::chat() {
             cin >> command;
             this->SendCommand(command);
         } else if (option == 3) {
-            break;
+//            break;
         } else {
             cout << "Please enter a valid option" << endl;
         }
-    }
+//    }
 }
 
 void Terminal::SendCommand(string command) {
