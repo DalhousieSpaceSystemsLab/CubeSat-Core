@@ -72,7 +72,7 @@ class TCPServer
             error("ERROR on binding");
         }
 
-        cout << "Listening for connection..." << endl;
+        cout << "Listening for connection on port "<< portno<< "..." << endl;
         //Indicate that the socket is for listening
         listen(sockfd, 5);
 
