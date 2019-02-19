@@ -8,12 +8,14 @@ GroundStation::GroundStation() {
 
 // Constructor for GroundStation class
 //
-GroundStation::GroundStation(Terminal terminal) {
-    this->terminal_=terminal;
-}
+//GroundStation::GroundStation(Terminal terminal) {
+//    this->terminal_=terminal;
+//}
 
 void GroundStation::ProcessMessage(const Message &message) {
-    std::string contents = message.getContents();
-
-    this->SendMessageToTerminal(contents);
+    //this->
+	SendMessageToTerminal(message);
 }
+
+void GroundStation::SendMessageToTerminal(const Message message){ this->terminal_->DisplayMessage(message); }
+void GroundStation::SendMessageToCubeSat(const Message message) { this->cubesat_->ProcessMessage(message); }

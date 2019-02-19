@@ -1,8 +1,12 @@
-#include "../header/Terminal.h";
+#include "Terminal.h"
+
+Terminal::Terminal(){
+// null
+}
 
 void Terminal::chat() {
     int option;
-    while (true) {
+//    while (true) {
         cout << "What would you like to do?" << endl;
         cout << "(1) List commands" << endl;
         cout << "(2) Send command" << endl;
@@ -10,45 +14,43 @@ void Terminal::chat() {
         cin >> option;
 
         if (option == 1) {
-            this->listCommands();
+            this->ListCommands();
         } else if (option == 2) {
             string command;
             cout << "Enter desired command" << endl;
             cin >> command;
-            this->sendCommand(command);
+            this->SendCommand(command);
         } else if (option == 3) {
-            break;
+//            break;
         } else {
             cout << "Please enter a valid option" << endl;
         }
-    }
+//    }
 }
 
-void Terminal::sendCommand(string command) {
+void Terminal::SendCommand(string command) {
     Message* message = new Message(command);
-    ground_station_->SendMessageToCubesat(command);
+    ground_station_->SendMessageToCubeSat(command);
 }
 
-void Terminal::listCommands() {
+void Terminal::ListCommands() {
     if (commands_.size()) {
         for(int i=0; i < commands_.size(); i++) {
             cout << "Command #" << i << endl;
-            cout << commands_[i].getName() << endl;
-            cout << commands_[i].getDescription() << endl;
+            cout << commands_[i].name() << endl;
+            cout << commands_[i].description() << endl;
         }
     } else {
         cout << "No commands found" << endl;
     }
 }
-
-void Terminal::displayMessage(Message &message) {
+void Terminal::DisplayMessage(Message message) {
     cout << message.getContents() << endl;
 }
-
-void Terminal::loadCommands(char *commandPath) {
-    commands_ = command_loader_.readCommands(commandPath);
+void Terminal::LoadCommands(string commandPath) {
+    commands_ = command_loader_.ReadCommands(commandPath);
 }
 
-void Terminal::set_ground_station(GroundStation ground_station) {
-    this->ground_station_ = ground_station;
+void Terminal::set_ground_station(GroundStation &ground_station) {
+    this->ground_station_ = &ground_station;
 }

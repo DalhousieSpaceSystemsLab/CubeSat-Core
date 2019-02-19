@@ -12,10 +12,10 @@ public:
 
     void takePicture();
 
-    vector<vector<vector<int>>>  picture();
+    vector<vector<vector<int> > >  picture();
 
 private:
-    vector<vector<vector<int>>>  picture_;
+    vector<vector<vector<int> > >  picture_;
 };
 
 #endif

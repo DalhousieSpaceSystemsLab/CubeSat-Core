@@ -11,17 +11,18 @@
 #include "GroundStation.h"
 #include "BatteryManager.h"
 
+class GroundStation;
 class CubeSat: public Messenger {
     public:
 
         CubeSat();
 
-        void SendMessageToGroundStation(const std::string &contents);
+        void SendMessageToGroundStation(const Message &message);
         void ProcessMessage(const Message &message);
-        void set_ground_station(GroundStation ground_station);
+        void set_ground_station(GroundStation &ground_station) { this->ground_station_ = &ground_station; };
 
     private:
-        GroundStation ground_station_;
+        GroundStation *ground_station_;
         BatteryManager battery_manager_;
 };
 

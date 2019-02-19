@@ -8,14 +8,15 @@
 #include <vector>
 #include "string.h"
 #include <string>
+#include <cstring>
 #include <sstream>
 
 using namespace std;
 
 class TerminalCommandLoader {
 	public:
-		std::vector<TerminalCommand> readCommands(char commandPath[]);
+		std::vector<TerminalCommand> ReadCommands(std::string commandPath);
 
-		TerminalCommand createCommand(const std::string& commandText);
+		TerminalCommand CreateCommand(const std::string& commandText);
 };
 #endif

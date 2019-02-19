@@ -9,25 +9,28 @@
 #include "Message.h"
 using namespace std;
 
+class GroundStation;
 class Terminal {
 public:
+	
+	Terminal();	
 
 	void chat();
 
-	void sendCommand(string command);
+	void SendCommand(string command);
 
-	void listCommands();
+	void ListCommands();
 
-	void displayMessage(string message);
+	void DisplayMessage(Message message);
 
-	void loadCommands();
+	void LoadCommands(string commandPath);
 
-	void set_ground_station(GroundStation ground_station);
+	void set_ground_station(GroundStation &ground_station);
 
 	std::vector<TerminalCommand> commands_;
 	char command_directory_[];
 	TerminalCommandLoader command_loader_;
-	GroundStation ground_station_;
+	GroundStation *ground_station_;
 
 };
 

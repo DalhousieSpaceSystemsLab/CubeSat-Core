@@ -5,9 +5,9 @@ Camera::Camera() {
 }
 
 void Camera::takePicture() {
-    this->picture_ = vector<vector<vector<int>>>(1,vector<vector<int>>(1,vector <int>(3)));
+    this->picture_ = vector<vector<vector<int> > >(1,vector<vector<int> >(1,vector <int>(3)));
 }
 
-vector<vector<vector<int>>> Camera::picture() {
+vector<vector<vector<int> > > Camera::picture() {
     return this->picture_;
 }
