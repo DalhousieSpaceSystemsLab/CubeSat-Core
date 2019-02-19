@@ -20,6 +20,7 @@ class BatteryManager {
 
     private:
         std::vector<Battery*> batteries_;
+        
         float avg_battery_level_;
 
 };
