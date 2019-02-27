@@ -3,3 +3,4 @@
 /core/nbproject/
 /core/output
 *.o
+*.gch
