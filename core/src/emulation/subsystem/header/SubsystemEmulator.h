@@ -1,12 +1,12 @@
 //  SubsystemEmulator.h
 //      Basic implementation for the abstract SubsystemEmulator class
 //
-#ifndef LORIS_EMULATION_POWER_RELAY_H_
-#define LORIS_EMULATION_POWER_RELAY_H_
+#ifndef LORIS_EMULATION_POWER_SUBSYSTEM_H_
+#define LORIS_EMULATION_POWER_SUBSYSTEM_H_
 
 class SubsystemEmulator {
 public:
-    Relay();
+    SubsystemEmulator();
 
     void Update(long time);
 

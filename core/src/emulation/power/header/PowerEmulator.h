@@ -1,14 +1,14 @@
 //  PowerEmulator.h/cc
 //      Basic implementation for the Battery class
 //
-//#include "SubsystemEmulator.h"
+#include "SubsystemEmulator.h"
 #include "Battery.h"
 #include "Relay.h"
 
 #ifndef LORIS_EMULATION_POWER_POWEREMULATOR_H_
 #define LORIS_EMULATION_POWER_POWEREMULATOR_H_
 
-class PowerEmulator {
+class PowerEmulator : public SubsystemEmulator{
 public:
     PowerEmulator();
 
@@ -18,8 +18,11 @@ public:
 
     bool ToggleOBCRelay();
 
+    bool ToggleRelay(Relay relay);
+
     float GetMainPower();
 
+    float GetBatteryPower(Battery battery);
 private:
     Battery main_battery_;
     Relay obc_relay_;

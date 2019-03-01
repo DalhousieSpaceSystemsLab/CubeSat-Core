@@ -1,9 +1,7 @@
 #include "Relay.h"
-//#include "../header/Relay.h"
 
-// Null constructor for Battery class
 Relay::Relay() {
-    // Null
+    this->toggled_ = false;
 }
 
 bool Relay::toggle() {
