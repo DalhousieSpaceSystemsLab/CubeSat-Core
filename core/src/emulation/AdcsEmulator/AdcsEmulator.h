@@ -5,7 +5,7 @@
 #include <iostream>
 using namespace std;
 
-class AdcsEmulator
+class AdcsEmulator : public SubsystemEmulator
 {
     private:
 
