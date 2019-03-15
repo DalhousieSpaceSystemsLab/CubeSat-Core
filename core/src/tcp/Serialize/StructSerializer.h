@@ -1,7 +1,7 @@
 #ifndef STRUCT_SERIALIZER
 #define STRUCT_SERIALIZER
 #include <iostream>
-#include "Struct.h"
+#include "Message.h"
 #include <string>
 
 using namespace std;

@@ -1,5 +1,5 @@
-#ifndef STRUCT
-#define STRUCT
+#ifndef MESSAGE
+#define MESSAGE
 #include <iostream>
 #include <string>
 
