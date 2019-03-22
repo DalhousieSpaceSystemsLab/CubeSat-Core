@@ -31,8 +31,11 @@ TCP_H_DIR = $(SRC_PATH)/tcp/header/
 BATTERIES_H_DIR = $(SRC_PATH)/emulation/batteries/header/
 POWER_H_DIR = $(SRC_PATH)/emulation/power/header/
 SUBSYSTEM_H_DIR = $(SRC_PATH)/emulation/subsystem/header/
+ACDS_H_DIR = $(SRC_PATH)/emulation/AdcsEmulator/header/
+ATTITUDE_H_DIR = $(SRC_PATH)/emulation/AttitudeSensor/header/
+SUB_STRUCTS_H_DIR = $(SRC_PATH)/emulation/SubsystemStateStructs/header/
 
-INCLUDES = -I $(GROUNDSTATION_H_DIR) -I $(TERMINAL_H_DIR) -I $(CUBESAT_H_DIR) -I $(BATTERIES_H_DIR) -I $(POWER_H_DIR) -I $(TCP_H_DIR) -I $(SUBSYSTEM_H_DIR)
+INCLUDES = -I $(GROUNDSTATION_H_DIR) -I $(TERMINAL_H_DIR) -I $(CUBESAT_H_DIR) -I $(BATTERIES_H_DIR) -I $(POWER_H_DIR) -I $(TCP_H_DIR) -I $(SUBSYSTEM_H_DIR) -I $(ACDS_H_DIR) -I $(ATTITUDE_H_DIR) -I $(SUB_STRUCTS_H_DIR)
 
 ### Build flags for all targets
 CFLAGS    = -std=c++14
