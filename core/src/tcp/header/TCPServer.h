@@ -82,6 +82,9 @@ class TCPServer
 
     }
 
+    //TODO Add a virtual function that allows the server to perform some operation in between waiting
+    //TODO Find a way to continue looping IF there are no waiting clients. RIght now it just pauses. 
+    //TODO Checkout "fcntl". May potentially allow non-blocking mode
     void WaitForConnection(){
         while (true)
         {
@@ -90,6 +93,7 @@ class TCPServer
             client_address_size = sizeof(client_address_);
             new_socket_file_descriptor_ = accept(socket_file_descriptor_,
                                                  (struct sockaddr *)&client_address_, &client_address_size);
+            //TODO Avoid blocking? We need to keep looping sometimes when there is no client waiting. 
             //accept() blocks until connection is made
             if (new_socket_file_descriptor_ < 0)
                 error("ERROR on accept");
