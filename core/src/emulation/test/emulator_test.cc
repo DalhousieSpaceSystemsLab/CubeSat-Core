@@ -1,7 +1,9 @@
 #include "PowerEmulator.h"
 #include "AdcsEmulator.h"
+#include "HardwareEmulationServer.h"
 #include "Relay.h"
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -79,6 +81,16 @@ int main() {
     cout << "New Adcs Orientation: (" << adcsEmulator.GetAzimuthalAngle() << "," << adcsEmulator.GetZenithAngle() << ")" << endl << endl;
 
     cout << "----- Finished Adcs Emulator testing -----" << endl << endl;
+
+    cout << "----- Begin Hardware Emulation Server testing -----" << endl << endl;
+
+    std::vector<SubsystemEmulator> emulatorVector;
+    emulatorVector.push_back(emulator1);
+    emulatorVector.push_back(emulator3);
+    emulatorVector.push_back(adcsEmulator);
+    HardwareEmulationServer emulationServer1;
+    HardwareEmulationServer emulationServer2(emulatorVector);
+    emulationServer2.Run();
 
 
     cout << "done" << endl;
