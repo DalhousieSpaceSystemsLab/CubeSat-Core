@@ -7,6 +7,8 @@
 #include <netinet/in.h>
 #include <netdb.h> 
 
+#include <iostream>
+
 class TCPClient {
     public:
         TCPClient(int portno_){
@@ -35,10 +37,11 @@ class TCPClient {
                 (char *)&serv_addr_.sin_addr.s_addr,
                 server_->h_length);
             
-            serv_addr_.sin_port = htons(portno_);
+            serv_addr_.sin_port = this->portno_;
 
             void bcopy(char *s1, char *s2, int length);
-    
+
+            std::cout << "Attempting connection to socket " << this->sockfd_ <<std::endl;
             if (connect(sockfd_, (struct sockaddr *) &serv_addr_,sizeof(serv_addr_)) < 0)
                 error("ERROR connecting");
         }

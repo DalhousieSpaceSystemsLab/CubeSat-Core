@@ -49,7 +49,7 @@ class TCPServer
         cout << "Constructor: Port Number: "<< port_number << endl;
         //TODO(andrewway) Clean up constructor. Break up into functions
         this->port_number_ = port_number;
-        
+
         //Initialize the server_address_ struct
         ResetBuffer();
         
