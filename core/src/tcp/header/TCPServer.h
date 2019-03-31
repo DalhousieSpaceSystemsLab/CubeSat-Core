@@ -133,11 +133,16 @@ class TCPServer
             error("ERROR reading from socket");
         printf("Here is the message: %s", buffer);
 
-        socket_io_status = write(new_socket_file_descriptor, "I got your message", 18);
-        if (socket_io_status < 0)
-            error("ERROR writing to socket");
+        //TODO handle request by reading contents of buffer
+        WriteToClient("Message received. Disconnecting you now.",new_socket_file_descriptor);
 
         return 0;
+    }
+
+    void WriteToClient(const char * msg,int new_socket_file_descriptor){
+        int socket_io_status = write(new_socket_file_descriptor, msg, 18);
+        if (socket_io_status < 0)
+            error("ERROR writing to socket");
     }
 
     void error(const char *msg)
