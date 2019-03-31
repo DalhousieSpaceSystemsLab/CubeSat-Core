@@ -103,7 +103,7 @@ class TCPServer
 
             //Code only proceeds beyond this point if connection was made
             cout << "Handling new request" << endl;
-            HandleRequest(buffer_, new_socket_file_descriptor_);
+            ReceiveRequest(buffer_, new_socket_file_descriptor_);
         }
     }
 
@@ -124,7 +124,9 @@ class TCPServer
         cout << "server_address_ size: " << sizeof(server_address_) << endl;
         cout << std::to_string(port_number_) << endl;
     }
-    int HandleRequest(char *buffer, int new_socket_file_descriptor)
+
+    
+    int ReceiveRequest(char *buffer, int new_socket_file_descriptor)
     {
         bzero(buffer, 256);
 
@@ -133,13 +135,20 @@ class TCPServer
             error("ERROR reading from socket");
         printf("Here is the message: %s", buffer);
 
-        //TODO handle request by reading contents of buffer
-        WriteToClient("Message received. Disconnecting you now.",new_socket_file_descriptor);
+        int request_status = HandleRequest(buffer);
+
+        WriteToClient("Message received! Disconnecting you now.",new_socket_file_descriptor);
 
         return 0;
     }
 
+    virtual int HandleRequest(char *buffer){
+      //TODO handle request by reading contents of buffer
+      return 1;
+    }
+
     void WriteToClient(const char * msg,int new_socket_file_descriptor){
+        //TODO Make sure buffer is large enough to hold the entire message!
         int socket_io_status = write(new_socket_file_descriptor, msg, 18);
         if (socket_io_status < 0)
             error("ERROR writing to socket");

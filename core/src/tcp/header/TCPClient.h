@@ -9,6 +9,10 @@
 
 #include <iostream>
 
+/* 
+	A simple client in the internet domain using TCP
+*/
+//REF: http://www.linuxhowtos.org/C_C++/socket.htm
 class TCPClient {
     public:
         TCPClient(int portno_){
