@@ -46,12 +46,15 @@ class TCPServer
   public:
     TCPServer(int port_number)
     {
+        cout << "Constructor: Port Number: "<< port_number << endl;
         //TODO(andrewway) Clean up constructor. Break up into functions
-        port_number_ = port_number;
-
+        this->port_number_ = port_number;
+        
         //Initialize the server_address_ struct
+        ResetBuffer();
+        
         server_address_.sin_family = AF_INET;
-        server_address_.sin_port = htons(port_number_);
+        server_address_.sin_port = port_number;
         server_address_.sin_addr.s_addr = INADDR_ANY;
 
         //AF_UNIX is to be used for communication between sockets on the same host system
@@ -68,7 +71,7 @@ class TCPServer
             error("setsockopt(SO_REUSEADDR) failed");
         }
 
-        ResetBuffer();
+
 
         ToString();
 
