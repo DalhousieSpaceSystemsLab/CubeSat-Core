@@ -135,17 +135,16 @@ class TCPServer
             error("ERROR reading from socket");
         printf("Here is the message: %s", buffer);
 
-        int request_status = HandleRequest(buffer);
+        int request_status = HandleRequest(buffer,new_socket_file_descriptor);
 
         WriteToClient("Message received! Disconnecting you now.",new_socket_file_descriptor);
 
         return 0;
     }
-
-    virtual int HandleRequest(char *buffer){
-      //TODO handle request by reading contents of buffer
-      return 1;
-    }
+    
+    //Return 0 if request handled successfully
+    //Return 1 if request handling failed
+    virtual int HandleRequest(char *buffer,int new_socket_file_descriptor);
 
     void WriteToClient(const char * msg,int new_socket_file_descriptor){
         //TODO Make sure buffer is large enough to hold the entire message!
