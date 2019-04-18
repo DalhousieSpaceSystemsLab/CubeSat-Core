@@ -2,6 +2,9 @@
 //      Basic implementation for the HardwareEmulationServer class
 //
 #include "SubsystemEmulator.h"
+#include "../PowerServer/header/PowerServer.h"
+#include "../tcp/Serialize/Message.h"
+#include "../tcp/Serialize/StructSerializer.h"
 #include <unistd.h>
 #include <vector>
 
@@ -17,6 +20,8 @@ public:
     void Run();
 
     void UpdateEmulators();
+    
+    void SendDataToServer(SubsystemStruct *data, int port_number, int new_socket_file_descriptor)
 
 private:
     std::vector<SubsystemEmulator> emulators_;
