@@ -115,3 +115,7 @@ void TCPServer::error(const char *msg) {
     perror(msg);
     exit(1);
 }/**/
+
+int TCPServer::HandleRequest(char *buffer,int new_socket_file_descriptor) {
+    return 0;
+}

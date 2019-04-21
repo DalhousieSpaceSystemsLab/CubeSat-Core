@@ -52,7 +52,7 @@ class TCPServer
 
     //Return 0 if request handled successfully
     //Return 1 if request handling failed
-    virtual int HandleRequest(char *buffer,int new_socket_file_descriptor)=0; // Should this be pure virtual?
+    virtual int HandleRequest(char *buffer,int new_socket_file_descriptor);
 
     void WriteToClient(const char * msg,int new_socket_file_descriptor);
 

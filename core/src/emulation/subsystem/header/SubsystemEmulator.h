@@ -10,7 +10,7 @@ class SubsystemEmulator {
 public:
     SubsystemEmulator();
 
-    void Update(long time);
+    virtual void Update(long time);
 
     SubsystemState GetState();
 
