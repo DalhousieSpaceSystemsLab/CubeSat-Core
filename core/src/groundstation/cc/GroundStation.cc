@@ -2,7 +2,9 @@
 
 // Null constructor for GroundStation class
 //
-GroundStation::GroundStation() {
+GroundStation::GroundStation():
+	client_(this->comms_port_number_)
+{
     // Null
 }
 

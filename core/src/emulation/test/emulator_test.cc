@@ -2,6 +2,8 @@
 #include "AdcsEmulator.h"
 #include "HardwareEmulationServer.h"
 #include "Relay.h"
+#include "CommsEmulator.h"
+#include "GroundStation.h"
 #include <iostream>
 #include <vector>
 
@@ -51,15 +53,18 @@ int main() {
         cout << "error: emulator1 relay toggle" << endl;
     }
 
+    long interval_1 = 15;
+    long interval_2 = 40;
+    long interval_3 = 100;
     PowerEmulator emulator3(battery1);
     cout << "Current emulator3 battery power: " << emulator3.GetMainPower() << endl;
-    emulator3.Update(15);
+    emulator3.Update(interval_1);
     cout << "New emulator3 battery power: " << emulator3.GetMainPower() << endl;
-    emulator3.Update(40);
+    emulator3.Update(interval_2);
     cout << "New emulator3 battery power: " << emulator3.GetMainPower() << endl;
-    emulator3.Update(100);
+    emulator3.Update(interval_3);
     cout << "New emulator3 battery power: " << emulator3.GetMainPower() << endl;
-    emulator3.Update(100);
+    emulator3.Update(interval_3);
     cout << "New emulator3 battery power: " << emulator3.GetMainPower() << endl << endl;
 
     cout << "----- Finished Power Emulator testing -----" << endl << endl;
@@ -69,18 +74,24 @@ int main() {
     AdcsEmulator adcsEmulator;
     adcsEmulator.set_orientation(10, 20);
     cout << "Current Adcs Orientation: (" << adcsEmulator.GetAzimuthalAngle() << "," << adcsEmulator.GetZenithAngle() << ")" << endl;
-    adcsEmulator.Update(10);
+    adcsEmulator.Update(interval_1);
     cout << "New Adcs Orientation: (" << adcsEmulator.GetAzimuthalAngle() << "," << adcsEmulator.GetZenithAngle() << ")" << endl;
-    adcsEmulator.Update(30);
+    adcsEmulator.Update(interval_2);
     cout << "New Adcs Orientation: (" << adcsEmulator.GetAzimuthalAngle() << "," << adcsEmulator.GetZenithAngle() << ")" << endl;
-    adcsEmulator.Update(50);
+    adcsEmulator.Update(interval_2);
     cout << "New Adcs Orientation: (" << adcsEmulator.GetAzimuthalAngle() << "," << adcsEmulator.GetZenithAngle() << ")" << endl;
-    adcsEmulator.Update(70);
+    adcsEmulator.Update(interval_3);
     cout << "New Adcs Orientation: (" << adcsEmulator.GetAzimuthalAngle() << "," << adcsEmulator.GetZenithAngle() << ")" << endl;
-    adcsEmulator.Update(100);
+    adcsEmulator.Update(interval_3);
     cout << "New Adcs Orientation: (" << adcsEmulator.GetAzimuthalAngle() << "," << adcsEmulator.GetZenithAngle() << ")" << endl << endl;
 
     cout << "----- Finished Adcs Emulator testing -----" << endl << endl;
+
+    cout << "----- Begin Comms Emulator testing -----" << endl << endl;
+
+//    CommsEmulator commsEmulator;
+    GroundStation groundStation;
+
 
     cout << "----- Begin Hardware Emulation Server testing -----" << endl << endl;
 
@@ -90,9 +101,10 @@ int main() {
     emulatorVector.push_back(adcsEmulator);
     HardwareEmulationServer emulationServer1;
     HardwareEmulationServer emulationServer2(emulatorVector);
-    emulationServer2.Run();
+//    emulationServer2.Run();
 
 
     cout << "done" << endl;
+    return 0;
 
 }

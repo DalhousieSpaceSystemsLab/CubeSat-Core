@@ -7,6 +7,7 @@
 #include "Messenger.h"
 #include "Terminal.h"
 #include "CubeSat.h"
+#include "TCPClient.h"
 
 class CubeSat;
 class Terminal;
@@ -25,7 +26,9 @@ class GroundStation { //: public Messenger {
 	private:
 		Terminal *terminal_;
 		CubeSat *cubesat_;
-		
+		const static int comms_port_number_ = 3001;
+		TCPClient client_;
+
 };
 
 #endif

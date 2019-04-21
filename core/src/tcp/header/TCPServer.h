@@ -3,6 +3,7 @@
 
 #include <string>
 #include <stdio.h>
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -144,7 +145,9 @@ class TCPServer
 
     //Return 0 if request handled successfully
     //Return 1 if request handling failed
-    virtual int HandleRequest(char *buffer,int new_socket_file_descriptor)=0;
+    virtual int HandleRequest(char *buffer,int new_socket_file_descriptor) {
+        return 0;
+    }
 
     void WriteToClient(const char * msg,int new_socket_file_descriptor){
         //TODO Make sure buffer is large enough to hold the entire message!
