@@ -12,16 +12,18 @@
 #include <iostream>
 #include <sys/un.h>
 
+#include "InterProcessCommunicationInterface.h"
+
 
 using std::cout;
 using std::endl;
 using std::string;
 
 /* 
-	A simple server in the internet domain using TCP
+	A simple server in the internet domain using Unix Domain Socket
 */
 //REF: http://www.linuxhowtos.org/C_C++/socket.htm
-class UnixDomainServer
+class UnixDomainServer : public InterProcessCommunicationInterface
 {
 
   private:
@@ -36,11 +38,8 @@ class UnixDomainServer
 
     void BindSocketToSockAddress(int socket_file_descriptor, struct sockaddr_un sock_address);
 
-  public:
-    UnixDomainServer(char sun_path[]);
-
     //TODO Add a virtual function that allows the server to perform some operation in between waiting
-    //TODO Find a way to continue looping IF there are no waiting clients. RIght now it just pauses. 
+    //TODO Find a way to continue looping IF there are no waiting clients. RIght now it just pauses.
     //TODO Checkout "fcntl". May potentially allow non-blocking mode
     void WaitForConnection();
 
@@ -48,16 +47,19 @@ class UnixDomainServer
 
     void ToString();
 
-    
     int ReceiveRequest(char *buffer, int new_socket_file_descriptor);
-
-    //Return 0 if request handled successfully
-    //Return 1 if request handling failed
-    virtual int HandleRequest(char *buffer,int new_socket_file_descriptor) {return 0;};
 
     void WriteToClient(const char * msg,int new_socket_file_descriptor);
 
     void error(const char *msg);
+
+  public:
+    UnixDomainServer(char sun_path[]);
+
+    //Return 0 if request handled successfully
+    //Return 1 if request handling failed
+    virtual int HandleRequest(char *buffer,int new_socket_file_descriptor) = 0;
+
 };
 
 #endif // LORIS_UNIXDOMAIN_UNIXDOMAIN_SERVER_H_

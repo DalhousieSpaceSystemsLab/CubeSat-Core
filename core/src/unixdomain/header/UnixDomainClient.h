@@ -8,12 +8,13 @@
 #include <netdb.h>
 
 #include <iostream>
+#include "InterProcessCommunicationInterface.h"
 
-/* 
-	A simple client in the internet domain using TCP
+/*
+	A simple client in the internet domain using Unix Domain Socket
 */
 //REF: http://www.linuxhowtos.org/C_C++/socket.htm
-class UnixDomainClient {
+class UnixDomainClient : InterProcessCommunicationInterface {
     public:
         UnixDomainClient(char sun_path[]);
 
