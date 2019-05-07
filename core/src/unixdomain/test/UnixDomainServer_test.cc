@@ -1,8 +1,9 @@
 
-#include "../cc/UnixDomainServer.cc"
+#include "../example/UDServerExample.cc"
 int main(int argc, char *argv[])
 {
-    UnixDomainServer power_server_("/tmp/test.sock");
+    UDServerExample power_server_("/tmp/woahtest.sock");
+    power_server_.WaitForConnection();
 
     return 0;
 }
