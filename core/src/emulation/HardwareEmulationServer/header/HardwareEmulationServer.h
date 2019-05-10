@@ -21,7 +21,7 @@ public:
 
     void UpdateEmulators();
     
-    void SendDataToServer(SubsystemStruct *data, int port_number, int new_socket_file_descriptor)
+    void SendDataToServer(SubsystemStruct *data, int port_number, int new_socket_file_descriptor);
 
 private:
     std::vector<SubsystemEmulator> emulators_;
