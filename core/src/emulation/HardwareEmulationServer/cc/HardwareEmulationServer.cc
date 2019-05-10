@@ -1,8 +1,8 @@
 #include "HardwareEmulationServer.h"
 #include "SubsystemEmulator.h"
-#include "../header/PowerSerializer.h"
-#include "../header/PowerState.h"
-#include "../PowerServer/header/PowerServer.h"
+#include "../HardwareEmulationServer/header/PowerSerializer.h"
+#include "../HardwareEmulationServer/header/PowerState.h"
+#include "../emulation/PowerServer/header/PowerServer.h"
 
 HardwareEmulationServer::HardwareEmulationServer() {
     // null constructor

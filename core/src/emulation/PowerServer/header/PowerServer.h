@@ -2,9 +2,9 @@
 #define POWER_SERVER
 
 #include <iostream>
-#include "../tcp/header/TCPServer.h"
-#include "../HardwareEmulationServer/header/PowerSerializer.h"
-#include "../HardwareEmulationServer/header/PowerState.h"
+#include "../src/tcp/header/TCPServer.h"
+#include "../emulation/HardwareEmulationServer/header/PowerSerializer.h"
+#include "../emulation/HardwareEmulationServer/header/PowerState.h"
 
 class PowerServer: public TCPServer {
 	public:

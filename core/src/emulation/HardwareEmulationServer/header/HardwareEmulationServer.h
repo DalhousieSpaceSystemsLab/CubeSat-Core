@@ -2,9 +2,9 @@
 //      Basic implementation for the HardwareEmulationServer class
 //
 #include "SubsystemEmulator.h"
-#include "../PowerServer/header/PowerServer.h"
-#include "../tcp/Serialize/Message.h"
-#include "../tcp/Serialize/StructSerializer.h"
+#include "../emulation/PowerServer/header/PowerServer.h"
+#include "../src/tcp/Serialize/Message.h"
+#include "../src/tcp/Serialize/StructSerializer.h"
 #include <unistd.h>
 #include <vector>
 
