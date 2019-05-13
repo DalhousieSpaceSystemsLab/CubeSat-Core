@@ -6,6 +6,7 @@
 class MessageHeader {
 public:
     MessageHeader(unsigned int recipient, unsigned int sender, long time_created);
+    friend message_serialize (Message *message, float *data);
 
 private:
     unsigned int sender_;
