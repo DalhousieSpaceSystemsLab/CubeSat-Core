@@ -18,7 +18,7 @@ void message_serialize(Message* message, float *data)
     std::vector<int> keys = message->contents_.GetKeys();
     
     //this loop checks type of data in keys in order to seperate float key pairs and int key pairs
-    while (typeid(keys[i]).name() != 'i') {
+    while (message->contents_.GetFloat(i) != NULL {
     	*q = (float)keys[i];                          q++;
     	*q = message->contents_.GetFloat(i);          q++;
     	i++;
