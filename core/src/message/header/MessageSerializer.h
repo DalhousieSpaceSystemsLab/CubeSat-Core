@@ -7,7 +7,7 @@
 #include <typeinfo>
 #include <iostream>
 
-void message_serialize(Message* message, float *data)
+void SerializeMessage(Message* message, float *data)
 {
     float *q = data;
     int i = 0;
@@ -34,7 +34,7 @@ void message_serialize(Message* message, float *data)
 	*q = NULL; q++;
 }
 
-Message message_deserialize(float *data)
+Message DeserializeMessage(float *data)
 {
     float *q = data;
     unsigned int sender_ = (unsigned int) *q;   q++;
