@@ -4,7 +4,7 @@
 
 #include "UDServerExample.h"
 
-UDServerExample::UDServerExample(char *sun_path)
+UDServerExample::UDServerExample(std::string sun_path)
 : UnixDomainStreamSocketServer(sun_path) {}
 
 int UDServerExample::HandleMessage(char *buffer,int new_socket_file_descriptor){

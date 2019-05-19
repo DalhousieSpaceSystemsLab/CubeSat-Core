@@ -7,7 +7,28 @@
 //REF: http://www.linuxhowtos.org/C_C++/socket.htm
 
 
-UnixDomainStreamSocketServer::UnixDomainStreamSocketServer(char socket_path[]) {
+//UnixDomainStreamSocketServer::UnixDomainStreamSocketServer(char socket_path[]) {
+//
+//    cout << "Constructor: socket path: " << socket_path << endl;
+//    if (InitializeSocket(socket_path) != 0) {
+//        error("Error Initializing Socket");
+//    }
+//
+//    ToString();
+//    BindSocketToAddress(socket_file_descriptor_, socket_address_);
+//
+//}
+
+UnixDomainStreamSocketServer::UnixDomainStreamSocketServer(string sock_path) {
+
+    int n = sock_path.length();
+
+    // declaring character array
+    char socket_path[n + 1];
+
+    // copying the contents of the
+    // string to char array
+    strcpy(socket_path, sock_path.c_str());
 
     cout << "Constructor: socket path: " << socket_path << endl;
     if (InitializeSocket(socket_path) != 0) {
