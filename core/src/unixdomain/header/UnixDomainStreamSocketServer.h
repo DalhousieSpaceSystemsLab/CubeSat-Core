@@ -37,7 +37,9 @@ private:
     void ToString();
 
 public:
-    UnixDomainStreamSocketServer(char sun_path[]);
+//    UnixDomainStreamSocketServer(char socket_path[]);
+    UnixDomainStreamSocketServer(string sock_path);
+
 
     //TODO Add a virtual function that allows the server to perform some operation in between waiting
     //TODO Find a way to continue looping IF there are no waiting clients. RIght now it just pauses.

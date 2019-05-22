@@ -6,7 +6,7 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <netdb.h>
-
+#include <string>
 #include <iostream>
 #include "UnixDomainStreamSocket.h"
 
@@ -16,14 +16,15 @@
 //REF: http://www.linuxhowtos.org/C_C++/socket.htm
 class UnixDomainStreamSocketClient : protected UnixDomainStreamSocket {
 public:
-    UnixDomainStreamSocketClient(char sun_path[]);
+    UnixDomainStreamSocketClient(std::string sock_path);
 
-    virtual int Send(char message[]) = 0;
+    int Send(char message[]);
 
-    virtual int SendMessageAwaitReply(char message[]) = 0;
-
+    int SendMessageAwaitReply(char message[]);
 
 private:
 
     int ConnectToSocket(char sun_path[]);
+
+    virtual int HandleMessage(char *buffer,int new_socket_file_descriptor);
 };
