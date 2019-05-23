@@ -4,21 +4,20 @@
 #include "MessageHeader.h"
 #include "Message.h"
 #include "KeyValuePairContainer.h"
-#include <typeinfo>
 #include <iostream>
 
-void SerializeMessage(Message* message, float *data)
+void SerializeMessage(Message* message, char *data)
 {
-    float *q = data;
+    float *q = (float*)data;
     int i = 0;
-    *q = (float) message->header_.sender;        q++;
+    
+    *q = (float) message->header_.sender_;        q++;
     *q = (float) message->header_.recipient_;    q++;
     *q = (float) message->header_.time_created_; q++;
     
     std::vector<int> keys = message->contents_.GetKeys();
     
-    //this loop checks type of data in keys in order to seperate float key pairs and int key pairs
-    while (message->contents_.GetFloat(i) != NULL {
+    while (message->contents_.GetFloat(i) != NULL) {
     	*q = (float)keys[i];                          q++;
     	*q = message->contents_.GetFloat(i);          q++;
     	i++;
@@ -29,19 +28,21 @@ void SerializeMessage(Message* message, float *data)
 	while (keys[i] != NULL) {
 		*q = (float)keys[i];                          q++;
 		*q = (float) message->contents_.GetInt(i);    q++;
+		i++;
 	}
 	
 	*q = NULL; q++;
 }
 
-Message DeserializeMessage(float *data)
+Message DeserializeMessage(char *data)
 {
-    float *q = data;
+    float *q = (float*)data;
+    
     unsigned int sender_ = (unsigned int) *q;   q++;
     unsigned int reciever_ = (unsigned int) *q; q++;
     long time_sent_ = (long) *q;                q++;
     
-    MessageHeader h(reciever_,sender,time_sent);
+    MessageHeader header(reciever_,sender_,time_sent_);
      
     KeyValuePairContainer container;
     
@@ -49,13 +50,15 @@ Message DeserializeMessage(float *data)
     	container.AddKeyValuePair((unsigned int)*q, *(q+1));
     	q = q+2;
 	}
+	
 	q++;
+	
 	while (*q != NULL) {
 		container.AddKeyValuePair((unsigned int)*q, (int)*(q+1));
 		q = q+2;
 	}
     
-    Message de_message(h, container);
+    Message de_message(header, container);
     
     return de_message;
 }
