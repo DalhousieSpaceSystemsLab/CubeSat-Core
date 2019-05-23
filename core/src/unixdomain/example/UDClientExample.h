@@ -14,7 +14,7 @@ public:
 
     //Return 0 if request handled successfully
     //Return 1 if request handling failed
-    int HandleMessage(char *buffer,int new_socket_file_descriptor);
+    int HandleMessage(char *buffer);
 };
 
 #endif //DALCUBESAT_UXCLIENTEXAMPLE_H

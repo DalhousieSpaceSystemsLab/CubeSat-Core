@@ -58,7 +58,7 @@ int UnixDomainStreamSocket::ReadFromSocket(int new_socket_file_descriptor) {
         return 1;
     }
     printf("Here is the message: %s \n", buffer_);
-    return HandleMessage(buffer_, new_socket_file_descriptor);
+    return HandleMessage(buffer_);
 }
 
 //Prints error messages

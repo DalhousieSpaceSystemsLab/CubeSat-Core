@@ -26,5 +26,5 @@ private:
 
     int ConnectToSocket(char sun_path[]);
 
-    virtual int HandleMessage(char *buffer,int new_socket_file_descriptor);
+    virtual int HandleMessage(char *buffer);
 };

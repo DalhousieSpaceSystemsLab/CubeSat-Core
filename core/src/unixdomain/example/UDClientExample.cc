@@ -7,7 +7,7 @@
 UDClientExample::UDClientExample(char *sun_path)
         : UnixDomainStreamSocketClient(sun_path) {}
 
-int UDClientExample::HandleMessage(char *buffer,int new_socket_file_descriptor){
+int UDClientExample::HandleMessage(char *buffer){
     cout << "Handling message " << buffer << endl;
     return 0;
 }
