@@ -13,7 +13,7 @@
 class PowerRepository : public Repository {
 public:
     PowerRepository(std::string filePaths);
-    int HandleMessage(char *buffer, int new_socket_file_descriptor);
+    int ProcessMessage(Message message);
 
 };
 

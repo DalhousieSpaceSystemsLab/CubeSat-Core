@@ -7,7 +7,7 @@
 PowerRepository::PowerRepository(std::string filePaths)
         : Repository(filePaths) {}
 
-int PowerRepository::HandleMessage(char *buffer, int new_socket_file_descriptor){
-    cout << "Handling message " << buffer << endl;
-    return 0;
+int PowerRepository::ProcessMessage(Message message){
+        cout << "Processing Message Object in PowerRepository";
+        return 0;
 }
