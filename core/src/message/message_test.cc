@@ -2,6 +2,7 @@
 #include "Message.h"
 #include "MessageHeader.h"
 #include "MessageBuilder.h"
+#include "MessageSerializer"
 
 using namespace std;
 
@@ -43,5 +44,17 @@ int main() {
     messageBuilder.SetSender(2);
 
     Message message = messageBuilder.CompleteMessage();
+    
+    char data[10000];
+    SerializeMessage(&message, data);
+
+    Message De_message = DeserializeMessage(data);
+
+	MessageHeader h = De_message.GetHeader();
+    KeyValuePairContainer c = De_message.GetMessageContents();
+
+	cout << h.GetRecipient() << " : " << h.GetSender() << " : " << h.GetTimeCreated() << endl;
+    cout << c.GetFloat(0) << " : " << c.GetInt(0) << endl; 
+
     return 0;
 }

@@ -9,6 +9,8 @@ class Message {
 public:
     Message(MessageHeader header, KeyValuePairContainer contents);
 
+	MessageHeader GetHeader() const;
+    KeyValuePairContainer GetMessageContents() const;
 private:
     MessageHeader header_;
     KeyValuePairContainer contents_;

@@ -5,3 +5,13 @@ Message::Message(MessageHeader header, KeyValuePairContainer contents):
 {
     // Null
 }
+
+MessageHeader Message::GetHeader() const
+{
+	return this->header_;
+}
+
+KeyValuePairContainer Message::GetMessageContents() const
+{
+	return this->contents_;
+}
