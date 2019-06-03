@@ -4,10 +4,9 @@
 
 #include <iostream>
 
-#include "TCPServer.h"
 #include "SubsystemEmulator.h"
 
-class CommsEmulator: public SubsystemEmulator, public TCPServer {
+class CommsEmulator: public SubsystemEmulator {
 public:
     CommsEmulator();
 
