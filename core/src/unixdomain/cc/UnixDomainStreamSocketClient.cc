@@ -1,5 +1,5 @@
-#include "../header/UnixDomainStreamSocketClient.h"
-#include "../cc/UnixDomainStreamSocket.cc"
+#include "UnixDomainStreamSocketClient.h"
+#include "UnixDomainStreamSocket.cc"
 
 /*
 	A simple client in the internet domain using TCP

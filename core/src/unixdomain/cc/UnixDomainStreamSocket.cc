@@ -2,7 +2,7 @@
 // Created by Spencer Axford on 2019-05-06.
 //
 
-#include "../header/UnixDomainStreamSocket.h"
+#include "UnixDomainStreamSocket.h"
 
 //Sets up connection to socket file
 int UnixDomainStreamSocket::InitializeSocket(char sun_path[]) {
@@ -34,6 +34,18 @@ int UnixDomainStreamSocket::InitializeSocket(char sun_path[]) {
 
 //Write msg to the socket specified by the sfd
 int UnixDomainStreamSocket::WriteToSocket(const char *msg, int new_socket_file_descriptor) {
+
+    std::cout << "THE MESSAGE SHOULD BE" << msg << std::endl;
+    float *q = (float*)msg;
+	std::cout << q <<  " || " << *msg << std::endl;
+    unsigned int sender_ = (unsigned int) *q;   q++;
+	std::cout << sender_ << std::endl;
+    unsigned int reciever_ = (unsigned int) *q; q++;
+	std::cout << reciever_ << std::endl;
+    long time_sent_ = (long) *q;                q++;
+	std::cout << time_sent_ << std::endl;
+
+    char mess[255] = {static_cast<char>(sender_), static_cast<char>(reciever_), static_cast<char>(time_sent_), 'F'};
 
     strcpy(this->buffer_, msg);
     n_ = write(new_socket_file_descriptor, this->buffer_, strlen(this->buffer_));

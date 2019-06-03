@@ -1,11 +1,56 @@
 //
 // Created by Spencer Axford on 2019-05-16.
 //
+#include <iostream>
+#include "Message.cc"
+#include "MessageBuilder.cc"
+#include "MessageSenderInterface.cc"
+#include "MessageSerializer.h"
+#include "KeyValuePairContainer.cc"
 
-#include "../cc/MessageSenderInterface.cc"
 int main(int argc, char *argv[])
 {
-    MessageSenderInterface ms(3025893);
-    ms.SendMessage("Hello");
+    cout << "Starting program" << endl;
+
+    MessageBuilder messageBuilder;
+    messageBuilder.StartMessage();
+
+    KeyValuePairContainer container;
+
+    unsigned int floatKey = 1;
+    unsigned int intKey = 2;
+    float floatValue = 300.508;
+    int intValue = 500;
+
+    container.AddKeyValuePair(floatKey, floatValue);
+    container.AddKeyValuePair(intKey, intValue);
+
+    float containerFloatValue = container.GetFloat(0);
+    int containerIntValue = container.GetInt(0);
+
+    cout << "floatValue: " << floatValue << endl << "containerFloatValue: " << containerFloatValue << endl;
+    if (containerFloatValue == floatValue) {
+        cout << "Container float value successfully added and retrieved" << endl;
+    } else {
+        cout << "ERROR: Container float value NOT successfully added and retrieved" << endl;
+    }
+
+    cout << "intValue: " << intValue << endl << "containerIntValue: " << containerIntValue << endl;
+    if (containerIntValue == intValue) {
+        cout << "Container int value successfully added and retrieved" << endl;
+    } else {
+        cout << "ERROR: Container int value NOT successfully added and retrieved" << endl;
+    }
+
+    messageBuilder.SetMessageContents(container);
+    messageBuilder.SetRecipient(1);
+    messageBuilder.SetSender(2);
+
+    Message message = messageBuilder.CompleteMessage();
+    
+    char data[10000];
+    SerializeMessage(&message, data);
+    MessageSenderInterface ms(message.GetHeader().GetRecipient());
+    ms.SendMessage(data);
     return 0;
 }

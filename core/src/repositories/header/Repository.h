@@ -5,8 +5,8 @@
 #ifndef DALCUBESAT_REPOSITORY_H
 #define DALCUBESAT_REPOSITORY_H
 
-#include "../../message/header/MessageHeader.h"
-#include "../../unixdomain/header/UnixDomainStreamSocketServer.h"
+#include "Message.h"
+#include "UnixDomainStreamSocketServer.h"
 #include <string>
 
 class Repository : public UnixDomainStreamSocketServer {

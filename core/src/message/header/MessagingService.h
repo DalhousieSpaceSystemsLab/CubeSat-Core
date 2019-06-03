@@ -5,7 +5,7 @@
 #ifndef DALCUBESAT_MESSAGINGSERVICE_H
 #define DALCUBESAT_MESSAGINGSERVICE_H
 
-#include "../identifiers/Identifiers.h"
+#include "Identifiers.h"
 #include "../../unixdomain/cc/UnixDomainStreamSocketClient.cc"
 
 #include <string>

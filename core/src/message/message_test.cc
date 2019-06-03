@@ -2,7 +2,8 @@
 #include "Message.h"
 #include "MessageHeader.h"
 #include "MessageBuilder.h"
-#include "MessageSerializer"
+#include "MessageSerializer.h"
+#include "cc/MessageSenderInterface.cc"
 
 using namespace std;
 
@@ -40,13 +41,17 @@ int main() {
     }
 
     messageBuilder.SetMessageContents(container);
-    messageBuilder.SetRecipient(1);
+    messageBuilder.SetRecipient(3025893);
     messageBuilder.SetSender(2);
 
     Message message = messageBuilder.CompleteMessage();
-    
+
     char data[10000];
     SerializeMessage(&message, data);
+
+    cout << "sending message: " << data << endl;
+    MessageSenderInterface ms(message.GetHeader().GetRecipient());
+    ms.SendMessage(data);
 
     Message De_message = DeserializeMessage(data);
 

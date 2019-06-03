@@ -2,7 +2,7 @@
 // Created by Spencer Axford on 2019-05-15.
 //
 
-#include "../header/MessageSenderInterface.h"
+#include "MessageSenderInterface.h"
 #include "MessagingService.cc"
 
 MessageSenderInterface::MessageSenderInterface(unsigned int recipient):
