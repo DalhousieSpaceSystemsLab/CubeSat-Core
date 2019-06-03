@@ -6,7 +6,7 @@
 #include "TerminalCommandLoader.h"
 #include "TerminalCommand.h"
 #include "GroundStation.h"
-#include "Message.h"
+#include "RFMessage.h"
 using namespace std;
 
 class GroundStation;
@@ -21,7 +21,7 @@ public:
 
 	void ListCommands();
 
-	void DisplayMessage(Message message);
+	void DisplayMessage(RFMessage message);
 
 	void LoadCommands(string commandPath);
 

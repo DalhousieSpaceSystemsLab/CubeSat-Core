@@ -29,8 +29,7 @@ void Terminal::chat() {
 }
 
 void Terminal::SendCommand(string command) {
-    Message* message = new Message(command);
-    ground_station_->SendMessageToCubeSat(command);
+    RFMessage* message = new RFMessage(command);
 }
 
 void Terminal::ListCommands() {
@@ -44,7 +43,7 @@ void Terminal::ListCommands() {
         cout << "No commands found" << endl;
     }
 }
-void Terminal::DisplayMessage(Message message) {
+void Terminal::DisplayMessage(RFMessage message) {
     cout << message.getContents() << endl;
 }
 void Terminal::LoadCommands(string commandPath) {

@@ -4,7 +4,7 @@
 #include <iostream>
 #include "Receiver.h"
 #include "Transmitter.h"
-#include "Message.h"
+#include "RFMessage.h"
 
 using namespace std;
 
@@ -26,7 +26,7 @@ class Messenger {
          * @brief   : Blank ProcessMessage method
          * @params  : message - An instance of a Message object
          */
-        void* ProcessMessage(Message message) {
+        void* ProcessMessage(RFMessage message) {
             
         }
         
@@ -34,7 +34,7 @@ class Messenger {
          * @brief   : Blank Transmit method
          * @params  : message - An instance of a Message object
          */
-        void Transmit(Message message) {
+        void Transmit(RFMessage message) {
 
         }
 
@@ -42,7 +42,7 @@ class Messenger {
          * @brief   : Blank Buildmessage method
          * @params  : message - A string to be constructed into a message
          */
-        Message BuildMessage(std::string message) {
+        RFMessage BuildMessage(std::string message) {
             
         }
 

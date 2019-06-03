@@ -12,14 +12,14 @@ POSTCOMPILE = @mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d && touch $@########
 
 EXC := main
 
-SRC := $(shell find $(SRCDIR) -name '*.cc' -not -path "*test/*")
+SRC := $(shell find $(SRCDIR) -name '*.cc' -not -path "*test/*" -not -path "*emulation/*" -not -path "*unixdomain/Serialize/*")
 DEP := $(shell find $(SRCDIR) -name '*.h')
 vpath %.cc $(sort $(dir $(SRC)))
 SRC := $(notdir $(SRC))
 OBJ := $(addprefix $(OBJDIR)/, $(SRC:.cc=.o))
 
 CXX ?= g++
-CXXFLAGS ?= -std=c++14 $(DEPFLAGS) -I $(INCDIR)
+CXXFLAGS ?= -std=c++14 $(DEPFLAGS) -I $(INCDIR) -I src/unixdomain/cc/
 
 ###################
 .PHONY: test

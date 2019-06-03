@@ -2,8 +2,7 @@
 
 // Null constructor for GroundStation class
 //
-GroundStation::GroundStation():
-	client_(this->comms_port_number_)
+GroundStation::GroundStation()
 {
     // Null
 }
@@ -14,10 +13,9 @@ GroundStation::GroundStation():
 //    this->terminal_=terminal;
 //}
 
-void GroundStation::ProcessMessage(const Message &message) {
+void GroundStation::ProcessMessage(const RFMessage &message) {
     //this->
 	SendMessageToTerminal(message);
 }
 
-void GroundStation::SendMessageToTerminal(const Message message){ this->terminal_->DisplayMessage(message); }
-void GroundStation::SendMessageToCubeSat(const Message message) { this->cubesat_->ProcessMessage(message); }
+void GroundStation::SendMessageToTerminal(const RFMessage message){ this->terminal_->DisplayMessage(message); }

@@ -6,10 +6,7 @@
 
 #include "Messenger.h"
 #include "Terminal.h"
-#include "CubeSat.h"
-#include "TCPClient.h"
 
-class CubeSat;
 class Terminal;
 class GroundStation { //: public Messenger {
 	public:
@@ -17,17 +14,13 @@ class GroundStation { //: public Messenger {
 		//GroundStation(Terminal &terminal);
 		
 		void set_terminal(Terminal &terminal){ this->terminal_=&terminal;}
-		void SendMessageToTerminal(const Message message);
-		void SendMessageToCubeSat(const Message message);
-		void ProcessMessage(const Message &message);
-
-		void set_cubesat(CubeSat &cubesat) { this->cubesat_=&cubesat; }
+		void SendMessageToTerminal(const RFMessage message);
+		void SendMessageToCubeSat(const RFMessage message);
+		void ProcessMessage(const RFMessage &message);
 
 	private:
 		Terminal *terminal_;
-		CubeSat *cubesat_;
 		const static int comms_port_number_ = 3001;
-		TCPClient client_;
 
 };
 
