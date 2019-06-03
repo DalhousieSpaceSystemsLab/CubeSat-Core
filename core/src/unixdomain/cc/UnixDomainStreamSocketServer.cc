@@ -1,5 +1,5 @@
-#include "../header/UnixDomainStreamSocketServer.h"
-#include "../cc/UnixDomainStreamSocket.cc"
+#include "UnixDomainStreamSocketServer.h"
+#include "UnixDomainStreamSocket.cc"
 
 /*
 	A simple server in the unix domain using unix domain socket
@@ -42,7 +42,9 @@ UnixDomainStreamSocketServer::UnixDomainStreamSocketServer(string sock_path) {
 
 void UnixDomainStreamSocketServer::BindSocketToAddress(int socket_file_descriptor, struct sockaddr_un socket_address) {
     //Bind the socket to an IP address and port
+    cout << "unlinking" << endl;
     unlink(socket_address.sun_path);
+    cout << "binding" << endl;
     if (bind(socket_file_descriptor, (struct sockaddr *) (&socket_address), sizeof(socket_address)) < 0) {
         cout << "socket_address_ size: " << sizeof(socket_address) << endl;
         cout << "Error code: " << errno << endl;

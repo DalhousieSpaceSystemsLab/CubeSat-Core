@@ -6,8 +6,8 @@
 #define DALCUBESAT_POWERREPOSITORY_H
 
 #include "Repository.h"
-#include "../cc/Repository.cc"
-#include "../../message/identifiers/ProcessFilePaths.h"
+// #include "../cc/Repository.cc"
+// #include "../../message/identifiers/ProcessFilePaths.h"
 #include <string>
 
 class PowerRepository : public Repository {

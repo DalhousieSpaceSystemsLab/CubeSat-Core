@@ -1,4 +1,3 @@
-
 #ifndef LORIS_MESSAGE_MESSAGE_H_
 #define LORIS_MESSAGE_MESSAGE_H_
 

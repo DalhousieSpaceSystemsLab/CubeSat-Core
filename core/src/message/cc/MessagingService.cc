@@ -2,8 +2,8 @@
 // Created by Spencer Axford on 2019-05-15.
 //
 
-#include "../header/MessagingService.h"
-#include "../identifiers/ProcessFilePaths.h"
+#include "MessagingService.h"
+#include "ProcessFilePaths.h"
 
 #include <string>
 
