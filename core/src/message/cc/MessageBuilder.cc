@@ -15,8 +15,7 @@ void MessageBuilder::StartMessage()
 Message MessageBuilder::CompleteMessage()
 {
     long current_time = (long)time(NULL);
-    MessageHeader header(this->current_recipient_, this->current_sender_, current_time);
-    return Message(header, this->message_contents_);
+    return Message(this->current_sender_, this->current_recipient_, current_time, this->message_contents_);
 }
 
 void MessageBuilder::SetRecipient(unsigned int recipient)

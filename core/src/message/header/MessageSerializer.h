@@ -1,23 +1,21 @@
 #ifndef MESSAGE_SERIALIZER
 #define MESSAGE_SERIALIZER
 
-#include "MessageHeader.h"
 #include "Message.h"
 #include "KeyValuePairContainer.h"
 #include <iostream>
 
 void SerializeMessage(Message* message, char *data)
 {
-	MessageHeader header_ = message->GetHeader();
 	KeyValuePairContainer container_ = message->GetMessageContents();
 	
     float *q = (float*)data;
     int i = 0;
     int n = 0;
 
-	*q = (float)header_.GetSender();		q++;
-    *q = (float)header_.GetRecipient();		q++;
-    *q = (float)header_.GetTimeCreated();	q++;
+	*q = (float)message->GetSender();		q++;
+    *q = (float)message->GetRecipient();		q++;
+    *q = (float)message->GetTimeCreated();	q++;
     
     std::vector<int> keys = container_.GetKeys();
     
@@ -35,19 +33,22 @@ void SerializeMessage(Message* message, char *data)
         i++;
         n++;
 	}
-	
 	*q = NULL; q++;
 }
 
 Message DeserializeMessage(char *data)
 {
+	std::cout << "deserializing " << data[0] << std::endl;
+
     float *q = (float*)data;
+	std::cout << q << std::endl;
     unsigned int sender_ = (unsigned int) *q;   q++;
+	std::cout << sender_ << std::endl;
     unsigned int reciever_ = (unsigned int) *q; q++;
+	std::cout << reciever_ << std::endl;
     long time_sent_ = (long) *q;                q++;
-    
-    MessageHeader header_(reciever_,sender_,time_sent_);
-     
+	std::cout << time_sent_ << std::endl;
+         
     KeyValuePairContainer container_;
     
     while (*q != NULL) {
@@ -62,7 +63,7 @@ Message DeserializeMessage(char *data)
 		q = q+2;
 	}
     
-    Message de_message(header_, container_);
+    Message de_message(sender_, reciever_,time_sent_, container_);
     
     return de_message;
 }

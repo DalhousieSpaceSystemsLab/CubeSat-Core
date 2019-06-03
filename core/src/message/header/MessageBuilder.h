@@ -3,7 +3,6 @@
 #define LORIS_MESSAGE_MESSAGEBUILDER_H_
 
 #include "KeyValuePairContainer.h"
-#include "MessageHeader.h"
 #include "Message.h"
 #include <ctime>
 
