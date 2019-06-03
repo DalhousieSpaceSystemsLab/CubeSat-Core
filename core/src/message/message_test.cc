@@ -1,6 +1,5 @@
 #include <iostream>
 #include "Message.h"
-#include "MessageHeader.h"
 #include "MessageBuilder.h"
 #include "MessageSerializer.h"
 #include "cc/MessageSenderInterface.cc"
@@ -50,15 +49,14 @@ int main() {
     SerializeMessage(&message, data);
 
     cout << "sending message: " << data << endl;
-    MessageSenderInterface ms(message.GetHeader().GetRecipient());
+    MessageSenderInterface ms(message.GetRecipient());
     ms.SendMessage(data);
 
     Message De_message = DeserializeMessage(data);
 
-	MessageHeader h = De_message.GetHeader();
     KeyValuePairContainer c = De_message.GetMessageContents();
 
-	cout << h.GetRecipient() << " : " << h.GetSender() << " : " << h.GetTimeCreated() << endl;
+	cout << De_message.GetRecipient() << " : " << De_message.GetSender() << " : " << De_message.GetTimeCreated() << endl;
     cout << c.GetFloat(0) << " : " << c.GetInt(0) << endl; 
 
     return 0;
