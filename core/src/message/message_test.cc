@@ -59,14 +59,12 @@ int main() {
     char msg[255] = "";
     message.flatten(msg);
     // SerializeMessage(&message, msg);
-    cout << "sending message: " << msg << endl;
     MessageSenderInterface ms(message.GetRecipient());
     ms.SendMessage(msg);
 
     Message De_message = Message(msg);
 
     KeyValuePairContainer c = De_message.GetMessageContents();
-
 	cout << De_message.GetRecipient() << " : " << De_message.GetSender() << " : " << De_message.GetTimeCreated() << endl;
     cout << c.GetFloat(0) << " : " << c.GetInt(0) << " : " << c.GetFloat(1) << endl; 
 

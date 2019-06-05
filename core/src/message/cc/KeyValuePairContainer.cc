@@ -38,3 +38,7 @@ float KeyValuePairContainer::GetFloat(int index) {
 int KeyValuePairContainer::GetInt(int index) {
     return this->key_int_pairs_[index].value();
 }
+
+int KeyValuePairContainer::GetAmountofFloatPairs(){
+    return this->key_float_pairs_.size();
+}

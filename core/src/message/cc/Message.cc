@@ -39,7 +39,6 @@ Message::Message(char* flat)
     }
     try {
         this->recipient_ = std::stoi(hex_string,nullptr,16);
-
     } catch (std::exception const &e) {}
 
     i++;
@@ -58,7 +57,37 @@ Message::Message(char* flat)
     memset(long_string, 0, 64);
     memset(hex_string, 0, 32);
 
-    std::vector<int> keys;
+    int key;
+    while(flat[i] != '\3'){
+        while(flat[i] != '-'){
+            sprintf(integer_string, "%c", flat[i]);
+            strcat(hex_string, integer_string); 
+            i++;
+        }
+        try {
+            key = std::stoi(hex_string,nullptr,16);
+        } catch (std::exception const &e) {}
+        memset(long_string, 0, 64);
+        memset(hex_string, 0, 32);
+        while(flat[i] != '|'){
+            sprintf(integer_string, "%c", flat[i]);
+            strcat(hex_string, integer_string); 
+            i++;
+        }
+        try {
+            if(strchr(hex_string, 46)){ //if hex_string contains a '.'
+                float value = std::stof(hex_string);
+                contents_.AddKeyValuePair(key, value);
+            }
+            else{
+                int value = std::stoi(hex_string,nullptr,16);
+                contents_.AddKeyValuePair(key, value);
+            }
+        } catch (std::exception const &e) {}
+        memset(long_string, 0, 64);
+        memset(hex_string, 0, 32);
+        i++;
+    }
 }
 
 void Message::flatten(char* msg){
@@ -81,9 +110,10 @@ void Message::flatten(char* msg){
 
     //Add Key Value Pairs
     std::vector<int> keys = contents_.GetKeys();
+    int floats = contents_.GetAmountofFloatPairs();
     int i = 0;
     int n = 0;
-    while(i < keys.size()/2){
+    while(i < floats){
         sprintf(integer_string, "%x", keys[i]);
         strcat(msg, integer_string); 
         strcat(msg, "-");
@@ -102,9 +132,8 @@ void Message::flatten(char* msg){
         i++;
         n++;
     }
-
     //add end char
-    strcat(msg, "\0");
+    strcat(msg, "\3");
 }
 
 KeyValuePairContainer Message::GetMessageContents() const
