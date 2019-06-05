@@ -6,20 +6,24 @@
 class Message {
 public:
     Message(unsigned int sender, unsigned int recipient, long time,  KeyValuePairContainer contents);
-    
-    KeyValuePairContainer GetMessageContents() const;
+    Message(char* flat);
+
+    void flatten(char* msg);
     unsigned int GetSender() const;
 	unsigned int GetRecipient() const;
 	long GetTimeCreated() const;
+    KeyValuePairContainer GetMessageContents() const;
+
 
 	void SetSender(unsigned int sender_);
 	void SetRecipient(unsigned int recipient_);
     void SetTimeCreated(long time_created_);
 private:
-    KeyValuePairContainer contents_;
     unsigned int sender_;
     unsigned int recipient_;
     long time_created_;
+    KeyValuePairContainer contents_;
+
 };
 
 #endif

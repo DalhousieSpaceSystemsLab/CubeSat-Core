@@ -13,7 +13,6 @@ MessagingService::MessagingService(unsigned int recipient) :
 std::string MessagingService::IdentifierToProcessFilePath(unsigned int identifier){
     identifier_ = static_cast<Identifier>(identifier);
     ProcessFilePaths filePaths;
-    int n;
     std::string filepath;
     switch(identifier_){
         case power_subsystem :

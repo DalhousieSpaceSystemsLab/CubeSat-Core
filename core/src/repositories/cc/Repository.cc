@@ -13,7 +13,7 @@ Repository::Repository(std::string socket_path)
 
 int Repository::HandleMessage(char *buffer){
     cout << "Handling message: " << buffer << endl;
-    Message msg = DeserializeMessage(buffer);
+    Message msg = Message(buffer);
     ProcessMessage(msg);
     return 0;
 }
