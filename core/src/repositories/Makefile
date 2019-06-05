@@ -24,14 +24,16 @@ DEPS = $(OBJECTS:.o=.d)
 
 
 H_DIR = $(SRC_PATH)/header/
+M_DIR = $(SRC_PATH)/../message/header/
+I_DIR = $(SRC_PATH)/../message/identifiers/
 UH_DIR = $(SRC_PATH)/../unixdomain/header/
 INCLUDES = -I $(H_DIR)
 
 
 ### Build flags for all targets
 CFLAGS    = -std=c++14
-CXXFLAGS    = -std=c++14 -Wall -Iheader
-CXXUNIXFLAGS = -std=c++14 -Wall -I$(UH_DIR) -Iheader -Iidentifiers
+CXXFLAGS    = -std=c++14 -Wall -Iheader -I$(M_DIR) -Iheader -I$(I_DIR) -I$(UH_DIR)
+CXXUNIXFLAGS = -std=c++14 -Wall -I$(M_DIR) -Iheader -I$(I_DIR) -I$(UH_DIR)
 
 # Space separated pkg-config libraries used by this project
 LIBS =
@@ -42,54 +44,50 @@ CC          = g++
 #LINK        = $(CC) $(CFLAGS) -o $@ $^
 #COMPLINK    = $(CC) $(CFLAGS) -o $@ $<
 
-spencer: messagebuilderinterface.o messagebuilder.o keyvaluepaircontainerinterface.o keyvaluepaircontainer.o keyintpair.o keyfloatpair.o key.o message_test.o message.o
-	$(CC) message_test.o messagebuilderinterface.o messagebuilder.o keyvaluepaircontainerinterface.o keyvaluepaircontainer.o keyintpair.o keyfloatpair.o key.o message.o -o mt
+spencer: messagebuilderinterface.o messagebuilder.o keyvaluepaircontainerinterface.o keyvaluepaircontainer.o keyintpair.o keyfloatpair.o key.o repo_test.o message.o
+	$(CC) repo_test.o messagebuilderinterface.o messagebuilder.o keyvaluepaircontainerinterface.o keyvaluepaircontainer.o keyintpair.o keyfloatpair.o key.o message.o -o rt
 
-# unixsever.o: ../unixdomain/cc/UnixDomainStreamSocketServer.cc
-# 	$(CC) $(CXXFLAGS) -c ../unixdomain/cc/UnixDomainStreamSocketServer.cc
+unixserver.o: $(SRC_PATH)/../unixdomain/cc/UnixDomainStreamSocketServer.cc unixsocket.o
+	$(CC) $(CXXUNIXFLAGS) -c $(SRC_PATH)/../unixdomain/cc/UnixDomainStreamSocketServer.cc unixsocket.o -o unixserver.o
 
 unixsocket.o: $(SRC_PATH)/../unixdomain/cc/UnixDomainStreamSocket.cc
-	$(CC) $(CXXUNIXFLAGS) -c ../unixdomain/cc/UnixDomainStreamSocket.cc -o unixsocket.o
+	$(CC) $(CXXUNIXFLAGS) -c $(SRC_PATH)/../unixdomain/cc/UnixDomainStreamSocket.cc -o unixsocket.o
 
-unixclient.o: $(SRC_PATH)/../unixdomain/cc/UnixDomainStreamSocketClient.cc unixsocket.o
-	$(CC) $(CXXUNIXFLAGS) -c ../unixdomain/cc/UnixDomainStreamSocketClient.cc unixsocket.o -o unixclient.o
+repository.o: cc/Repository.cc unixserver.o
+	$(CC) $(CXXUNIXFLAGS) -c $(SRC_PATH)/cc/Repository.cc unixserver.o -o repository.o
 
-messagingservice.o: cc/MessagingService.cc unixclient.o
-	$(CC) $(CXXUNIXFLAGS) -c cc/MessagingService.cc unixclient.o -o messagingservice.o
+powerrepository.o: cc/PowerRepository.cc repository.o
+	$(CC) $(CXXUNIXFLAGS) -c $(SRC_PATH)/cc/PowerRepository.cc repository.o -o powerrepository.o
 
-messagesenderinterface.o: cc/MessageSenderInterface.cc messagingservice.o
-	$(CC) $(CXXUNIXFLAGS) -c cc/MessageSenderInterface.cc messagingservice.o -o messagesenderinterface.o
+messagebuilderinterface.o: $(SRC_PATH)/../message/cc/MessageBuilderInterface.cc
+	$(CC) $(CXXFLAGS) -c $(SRC_PATH)/../message/cc/MessageBuilderInterface.cc
 
-messagebuilderinterface.o: cc/MessageBuilderInterface.cc
-	$(CC) $(CXXFLAGS) -c cc/MessageBuilderInterface.cc
+messagebuilder.o: $(SRC_PATH)/../message/cc/MessageBuilder.cc
+	$(CC) $(CXXFLAGS) -c $(SRC_PATH)/../message/cc/MessageBuilder.cc
 
-messagebuilder.o: cc/MessageBuilder.cc
-	$(CC) $(CXXFLAGS) -c cc/MessageBuilder.cc
+keyvaluepaircontainerinterface.o: $(SRC_PATH)/../message/cc/keyvaluepaircontainerinterface.cc
+	$(CC) $(CXXFLAGS) -c $(SRC_PATH)/../message/cc/keyvaluepaircontainerinterface.cc
 
-keyvaluepaircontainerinterface.o: cc/keyvaluepaircontainerinterface.cc
-	$(CC) $(CXXFLAGS) -c cc/keyvaluepaircontainerinterface.cc
+keyvaluepaircontainer.o: $(SRC_PATH)/../message/cc/KeyValuePairContainer.cc
+	$(CC) $(CXXFLAGS) -c $(SRC_PATH)/../message/cc/KeyValuePairContainer.cc
 
+keyintpair.o: $(SRC_PATH)/../message/cc/KeyIntPair.cc
+	$(CC) $(CXXFLAGS) -c $(SRC_PATH)/../message/cc/KeyIntPair.cc
 
-keyvaluepaircontainer.o: cc/KeyValuePairContainer.cc
-	$(CC) $(CXXFLAGS) -c cc/KeyValuePairContainer.cc
+keyfloatpair.o: $(SRC_PATH)/../message/cc/keyFloatPair.cc
+	$(CC) $(CXXFLAGS) -c $(SRC_PATH)/../message/cc/keyFloatPair.cc
 
-keyintpair.o: cc/KeyIntPair.cc
-	$(CC) $(CXXFLAGS) -c cc/KeyIntPair.cc
+key.o: $(SRC_PATH)/../message/cc/Key.cc
+	$(CC) $(CXXFLAGS) -c $(SRC_PATH)/../message/cc/Key.cc
 
-keyfloatpair.o: cc/keyFloatPair.cc
-	$(CC) $(CXXFLAGS) -c cc/keyFloatPair.cc
+repo_test.o: repo_test.cc powerrepository.o 
+	$(CC) $(CXXUNIXFLAGS) -c repo_test.cc powerrepository.o -o repo_test.o
 
-key.o: cc/Key.cc
-	$(CC) $(CXXFLAGS) -c cc/Key.cc
-
-message_test.o: message_test.cc messagesenderinterface.o 
-	$(CC) $(CXXUNIXFLAGS) -c message_test.cc messagesenderinterface.o -o message_test.o
-
-message.o: cc/Message.cc
-	$(CC) $(CXXFLAGS) -c cc/Message.cc
+message.o: $(SRC_PATH)/../message/cc/Message.cc
+	$(CC) $(CXXFLAGS) -c $(SRC_PATH)/../message/cc/Message.cc
 
 clean:
-	rm -rf *o mt
+	rm -rf *o rt
 
 .PHONY: default_target
 default_target: release
