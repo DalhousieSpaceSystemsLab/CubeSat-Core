@@ -17,6 +17,7 @@ public:
     std::vector<int> GetKeys() override;
     float GetFloat(int index) override;
     int GetInt(int index) override;
+    int GetAmountofFloatPairs();
 private:
     std::vector<KeyIntPair> key_int_pairs_;
     std::vector<KeyFloatPair> key_float_pairs_;
