@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 #include "Message.h"
 
 Message::Message(unsigned int sender, unsigned int recipient, long time, KeyValuePairContainer contents):
