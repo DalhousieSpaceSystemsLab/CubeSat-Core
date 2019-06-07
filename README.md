@@ -19,3 +19,39 @@ The Emulation code is used to emulate the hardware subsystems during development
 The Ground Station code is used to create an interface that operators can use to interact with the CubeSat, whether its being simulated in a nearby computer or in orbit. From here, operators can request data, issue commands, test/debug, and start simulations. 
 
 
+### Code Conventions
+
+Using Google C++ conventions. Reference here:
+
+https://google.github.io/styleguide/cppguide.html
+
+### Committing Code
+
+Using the following Git model for development, testing, hot-fixes, and merging:
+https://nvie.com/posts/a-successful-git-branching-model/?
+
+
+### Project Directories
+
+bin – Output executables (“targets”). The suffix “_d” indicates debug version.
+data – Files used by the main executable.
+doc – Project’s documentation, possibly auto-generated.
+deps – Subdirectories with external dependencies like libraries.
+obj – Binary objects created during compilation.
+src – Source files of the project with subdirectories if needed.
+test – Source files of tests.
+.gitignore – Prevents adding binary and temporary files to the git repository.
+LICENSE – Describes how this project can be used and distributed.
+README.md – General information about the project in Markdown format.
+project.sln – Visual Studio solution. (IGNORE)
+project.vcxproj – Visual Studio project. (IGNORE)
+
+## Building the Project
+
+(Not yet implemented)
+Execute build.sh and then run.sh
+build.sh changes into each main directory and runs make. Once everything is compiled, run.sh will initialize all the necessary processes so a full real-time simulation is running on your machine. 
+
+(Do this until the build and run scripts are finished)
+Just manually execute each make file and start the corresponding processes in different console tabs/windows.
+
