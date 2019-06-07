@@ -17,7 +17,7 @@ int main() {
     unsigned int floatKey = 1;
     unsigned int floatKey2 = 23;
     unsigned int intKey = 2;
-    float floatValue = 300.508;
+    float floatValue = -300.508;
     float floatValue2 = 4063.3534;
     int intValue = 500;
 
@@ -64,9 +64,11 @@ int main() {
 
     Message De_message = Message(msg);
 
+    std::vector<int> keys = message.GetMessageContents().GetKeys();
+
     KeyValuePairContainer c = De_message.GetMessageContents();
 	cout << De_message.GetRecipient() << " : " << De_message.GetSender() << " : " << De_message.GetTimeCreated() << endl;
-    cout << c.GetFloat(0) << " : " << c.GetInt(0) << " : " << c.GetFloat(1) << endl; 
+    cout << keys[0] << "-" << c.GetFloat(0) << " : " << keys[1] << "-" << c.GetFloat(1) << " : " << keys[2] << "-" << c.GetInt(0) << endl; 
 
     return 0;
 }

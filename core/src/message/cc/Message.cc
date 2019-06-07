@@ -58,13 +58,15 @@ Message::Message(char* flat)
     memset(long_string, 0, 64);
     memset(hex_string, 0, 32);
 
+    i++;
     int key;
     while(flat[i] != '\3'){
-        while(flat[i] != '-'){
+        while(flat[i] != '~'){
             sprintf(integer_string, "%c", flat[i]);
             strcat(hex_string, integer_string); 
             i++;
         }
+        i++;
         try {
             key = std::stoi(hex_string,nullptr,16);
         } catch (std::exception const &e) {}
@@ -81,7 +83,7 @@ Message::Message(char* flat)
                 contents_.AddKeyValuePair(key, value);
             }
             else{
-                int value = std::stoi(hex_string,nullptr,16);
+                int value = std::stoul(hex_string,nullptr,16);
                 contents_.AddKeyValuePair(key, value);
             }
         } catch (std::exception const &e) {}
@@ -117,7 +119,7 @@ void Message::flatten(char* msg){
     while(i < floats){
         sprintf(integer_string, "%x", keys[i]);
         strcat(msg, integer_string); 
-        strcat(msg, "-");
+        strcat(msg, "~");
         sprintf(integer_string, "%f", contents_.GetFloat(i));
         strcat(msg, integer_string); 
         strcat(msg, "|");
@@ -126,7 +128,7 @@ void Message::flatten(char* msg){
     while(i < keys.size()){
         sprintf(integer_string, "%x", keys[i]);
         strcat(msg, integer_string); 
-        strcat(msg, "-");
+        strcat(msg, "~");
         sprintf(integer_string, "%x", contents_.GetInt(n));
         strcat(msg, integer_string); 
         strcat(msg, "|");
