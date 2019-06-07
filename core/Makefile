@@ -12,7 +12,7 @@ POSTCOMPILE = @mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d && touch $@########
 
 EXC := main
 
-SRC := $(shell find $(SRCDIR) -name '*.cc' -not -path "*test/*" -not -path "*emulation/*" -not -path "*unixdomain/Serialize/*")
+SRC := $(shell find $(SRCDIR) -name '*.cc' -not -path "*test/*" -not -path "*emulation/*" -not -path "*unixdomain/Serialize/*" -not -path "*test/")
 DEP := $(shell find $(SRCDIR) -name '*.h')
 vpath %.cc $(sort $(dir $(SRC)))
 SRC := $(notdir $(SRC))
