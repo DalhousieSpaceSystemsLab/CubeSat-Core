@@ -1,3 +1,7 @@
+/core/main
+/core/.d/
+/core/inc
+/core/bin
 /core/build/
 /core/dist/
 /core/nbproject/
