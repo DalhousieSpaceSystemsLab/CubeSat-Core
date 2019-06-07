@@ -7,6 +7,7 @@
 #include "TerminalCommand.h"
 #include "GroundStation.h"
 #include "RFMessage.h"
+//TODO remove this using statement
 using namespace std;
 
 class GroundStation;

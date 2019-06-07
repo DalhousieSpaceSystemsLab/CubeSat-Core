@@ -5,7 +5,7 @@
 #ifndef DALCUBESAT_UXCLIENTEXAMPLE_H
 #define DALCUBESAT_UXCLIENTEXAMPLE_H
 
-#include "../cc/UnixDomainStreamSocketClient.cc"
+#include "../header/UnixDomainStreamSocketClient.h"
 
 
 class UDClientExample : public UnixDomainStreamSocketClient {

@@ -3,7 +3,6 @@
 //
 
 #include "PowerRepository.h"
-#include "Repository.cc"
 
 PowerRepository::PowerRepository(std::string filePaths)
         : Repository(filePaths) {}

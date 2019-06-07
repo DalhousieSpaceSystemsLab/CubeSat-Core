@@ -2,11 +2,12 @@
 // Created by Spencer Axford on 2019-05-16.
 //
 #include <iostream>
-#include "Message.cc"
-#include "MessageBuilder.cc"
-#include "MessageSenderInterface.cc"
+//#include "MessageSerializer.h"
+#include "Message.h"
+#include "MessageBuilder.h"
+#include "MessageSenderInterface.h"
 #include "MessageSerializer.h"
-#include "KeyValuePairContainer.cc"
+#include "KeyValuePairContainer.h"
 
 int main(int argc, char *argv[])
 {

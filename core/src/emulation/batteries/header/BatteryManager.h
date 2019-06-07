@@ -1,4 +1,4 @@
-//  BatteryManager.h/cc 
+//  BatteryManager.h
 //      Basic implementation for the BatteryManager class
 //
 

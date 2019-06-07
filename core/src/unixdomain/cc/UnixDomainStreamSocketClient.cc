@@ -1,9 +1,8 @@
 #include "UnixDomainStreamSocketClient.h"
-#include "UnixDomainStreamSocket.cc"
 
-/*
-	A simple client in the internet domain using TCP
-*/
+//
+//	A simple client in the internet domain using TCP
+//
 //REF: http://www.linuxhowtos.org/C_C++/socket.htm
 UnixDomainStreamSocketClient::UnixDomainStreamSocketClient(std::string sock_path) {
     

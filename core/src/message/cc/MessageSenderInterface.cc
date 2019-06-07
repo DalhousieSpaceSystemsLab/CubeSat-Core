@@ -3,7 +3,7 @@
 //
 
 #include "MessageSenderInterface.h"
-#include "MessagingService.cc"
+//#include "MessagingService.h"
 
 MessageSenderInterface::MessageSenderInterface(unsigned int recipient):
     MessagingService(recipient) {}

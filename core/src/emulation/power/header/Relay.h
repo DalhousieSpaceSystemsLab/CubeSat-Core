@@ -1,4 +1,4 @@
-//  Relay.h/cc
+//  Relay.h
 //      Basic implementation for the Relay class
 //
 #ifndef LORIS_EMULATION_POWER_RELAY_H_

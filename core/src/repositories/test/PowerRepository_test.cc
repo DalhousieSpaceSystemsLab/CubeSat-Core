@@ -2,7 +2,7 @@
 // Created by Spencer Axford on 2019-05-16.
 //
 
-#include "../cc/PowerRepository.cc"
+#include "../header/PowerRepository.h"
 #include "../../message/identifiers/ProcessFilePaths.h"
 int main(int argc, char *argv[])
 {

@@ -2,7 +2,7 @@
 #include "Message.h"
 #include "MessageBuilder.h"
 #include "MessageSerializer.h"
-#include "cc/MessageSenderInterface.cc"
+#include "MessageSenderInterface.h"
 
 using namespace std;
 

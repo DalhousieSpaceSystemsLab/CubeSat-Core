@@ -1,4 +1,4 @@
-//  HardwareEmulationServer.h/cc
+//  HardwareEmulationServer.h
 //      Basic implementation for the HardwareEmulationServer class
 //
 #include "SubsystemEmulator.h"
