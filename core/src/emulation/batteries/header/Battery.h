@@ -1,4 +1,4 @@
-//  Battery.h/cc 
+//  Battery.h
 //      Basic implementation for the Battery class
 //
 

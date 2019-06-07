@@ -1,5 +1,4 @@
 #include "UnixDomainStreamSocketServer.h"
-#include "UnixDomainStreamSocket.cc"
 
 /*
 	A simple server in the unix domain using unix domain socket

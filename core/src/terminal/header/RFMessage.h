@@ -1,5 +1,5 @@
-#ifndef MESSAGE_H
-#define MESSAGE_H
+#ifndef RF_MESSAGE_H
+#define RF_MESSAGE_H
 
 #include <iostream>
 

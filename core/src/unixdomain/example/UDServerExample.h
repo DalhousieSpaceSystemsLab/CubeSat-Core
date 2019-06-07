@@ -6,7 +6,6 @@
 #define DALCUBESAT_UDSERVEREXAMPLE_H
 
 #include "../header/UnixDomainStreamSocketServer.h"
-#include "../cc/UnixDomainStreamSocketServer.cc"
 #include <string>
 
 class UDServerExample : public UnixDomainStreamSocketServer {

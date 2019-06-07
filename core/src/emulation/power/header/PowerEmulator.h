@@ -1,4 +1,4 @@
-//  PowerEmulator.h/cc
+//  PowerEmulator.h
 //      Basic implementation for the Battery class
 //
 #include "SubsystemEmulator.h"

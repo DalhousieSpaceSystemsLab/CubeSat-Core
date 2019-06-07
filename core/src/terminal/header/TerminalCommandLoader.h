@@ -11,6 +11,7 @@
 #include <cstring>
 #include <sstream>
 
+//TODO remove using statement
 using namespace std;
 
 class TerminalCommandLoader {

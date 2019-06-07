@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+//TODO remove using statement
 using namespace std;
 
 class TerminalCommand {
