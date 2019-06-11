@@ -56,12 +56,12 @@ int main() {
 
     Message message = messageBuilder.CompleteMessage();
 
-    char msg[255] = "";
-    message.flatten(msg);
     // SerializeMessage(&message, msg);
     MessageSenderInterface ms(message.GetRecipient());
-    ms.SendMessage(msg);
+    ms.SendMessage(message);
 
+    char msg[255] = "";
+    message.flatten(msg);
     Message De_message = Message(msg);
 
     std::vector<int> keys = message.GetMessageContents().GetKeys();

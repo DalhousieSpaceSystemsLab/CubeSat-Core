@@ -42,11 +42,8 @@ CC          = g++
 #LINK        = $(CC) $(CFLAGS) -o $@ $^
 #COMPLINK    = $(CC) $(CFLAGS) -o $@ $<
 
-spencer: messagebuilderinterface.o messagebuilder.o keyvaluepaircontainerinterface.o keyvaluepaircontainer.o keyintpair.o keyfloatpair.o key.o message_test.o message.o
-	$(CC) message_test.o messagebuilderinterface.o messagebuilder.o keyvaluepaircontainerinterface.o keyvaluepaircontainer.o keyintpair.o keyfloatpair.o key.o message.o -o mt
-
-# unixsever.o: ../unixdomain/cc/UnixDomainStreamSocketServer.cc
-# 	$(CC) $(CXXFLAGS) -c ../unixdomain/cc/UnixDomainStreamSocketServer.cc
+spencer: messagebuilderinterface.o messagebuilder.o keyvaluepaircontainerinterface.o keyvaluepaircontainer.o keyintpair.o keyfloatpair.o key.o message_test.o 
+	$(CC) message_test.o messagebuilderinterface.o messagebuilder.o keyvaluepaircontainerinterface.o keyvaluepaircontainer.o keyintpair.o keyfloatpair.o key.o -o mt
 
 unixsocket.o: $(SRC_PATH)/../unixdomain/cc/UnixDomainStreamSocket.cc
 	$(CC) $(CXXUNIXFLAGS) -c ../unixdomain/cc/UnixDomainStreamSocket.cc -o unixsocket.o
@@ -57,18 +54,20 @@ unixclient.o: $(SRC_PATH)/../unixdomain/cc/UnixDomainStreamSocketClient.cc unixs
 messagingservice.o: cc/MessagingService.cc unixclient.o
 	$(CC) $(CXXUNIXFLAGS) -c cc/MessagingService.cc unixclient.o -o messagingservice.o
 
-messagesenderinterface.o: cc/MessageSenderInterface.cc messagingservice.o
-	$(CC) $(CXXUNIXFLAGS) -c cc/MessageSenderInterface.cc messagingservice.o -o messagesenderinterface.o
+message.o: cc/Message.cc
+	$(CC) $(CXXUNIXFLAGS) -c cc/Message.cc -o message.o
+
+messagesenderinterface.o: cc/MessageSenderInterface.cc messagingservice.o message.o
+	$(CC) $(CXXUNIXFLAGS) -c cc/MessageSenderInterface.cc messagingservice.o message.o -o messagesenderinterface.o
 
 messagebuilderinterface.o: cc/MessageBuilderInterface.cc
-	$(CC) $(CXXFLAGS) -c cc/MessageBuilderInterface.cc
+	$(CC) $(CXXUNIXFLAGS) -c cc/MessageBuilderInterface.cc
 
 messagebuilder.o: cc/MessageBuilder.cc
 	$(CC) $(CXXFLAGS) -c cc/MessageBuilder.cc
 
 keyvaluepaircontainerinterface.o: cc/keyvaluepaircontainerinterface.cc
 	$(CC) $(CXXFLAGS) -c cc/keyvaluepaircontainerinterface.cc
-
 
 keyvaluepaircontainer.o: cc/KeyValuePairContainer.cc
 	$(CC) $(CXXFLAGS) -c cc/KeyValuePairContainer.cc
@@ -85,78 +84,6 @@ key.o: cc/Key.cc
 message_test.o: message_test.cc messagesenderinterface.o 
 	$(CC) $(CXXUNIXFLAGS) -c message_test.cc messagesenderinterface.o -o message_test.o
 
-message.o: cc/Message.cc
-	$(CC) $(CXXFLAGS) -c cc/Message.cc
-
 clean:
 	rm -rf *o mt
 
-.PHONY: default_target
-default_target: release
-
-.PHONY: release
-release: export CXXFLAGS := $(CXXFLAGS) $(COMPILE_FLAGS)
-release: dirs
-	@$(MAKE) all
-
-.PHONY: dirs
-dirs:
-	@echo "Creating directories"
-	@mkdir -p $(dir $(OBJECTS))
-	@mkdir -p $(BIN_PATH)
-
-# .PHONY: clean
-# clean:
-# 	@echo "Deleting $(BIN_NAME) symlink"
-# 	@$(RM) $(BIN_NAME)
-# 	@echo "Deleting directories"
-# 	@$(RM) -r $(BUILD_PATH)
-# 	@$(RM) -r $(BIN_PATH)
-
-
-.PHONY: all
-all: $(BIN_PATH)/$(BIN_NAME)
-	@echo "Making symlink: $(BIN_NAME) -> $<"
-	@$(RM) $(BIN_NAME)
-	@ln -s $(BIN_PATH)/$(BIN_NAME) $(BIN_NAME)
-
-# Creation of the executable
-$(BIN_PATH)/$(BIN_NAME): $(OBJECTS)
-	@echo "Linking: $@"
-	$(CXX) $(OBJECTS) -o $@
-
-# Add dependency files, if they exist
--include $(DEPS)
-
-# Source file rules
-# After the first compilation they will be joined with the rules from the
-# dependency files to provide header dependencies
-$(BUILD_PATH)/%.o: $(SRC_PATH)/%.$(SRC_EXT)
-	@echo "Compiling: $< -> $@"
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -MP -MMD -c $< -o $@
-
-
-### Standard parts
-#program		:= output
-#extra_clean	:=
-
-### Include files
-#all:
-
-#include src/terminal/header/module.mk
-
-### General rules
-#%.o:	%.cpp
-#	$(COMP)
-
-### Rules
-#.PHONY: all
-#all:	$(program)
-
-#.PHONY: clean
-#clean:
-#	rm $(program) $(extra_clean)
-
-### Desired program output
-#output: obj/terminal_test.o
-#	$(LINK)
