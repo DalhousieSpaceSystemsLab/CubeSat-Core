@@ -95,19 +95,32 @@ Message::Message(char* flat)
 
 void Message::flatten(char* msg){
     //TODO ensure no buffer overflow
+    int message_size = 0;
     char integer_string[32];
     char long_string[64];
 
     //Add Sender, Recipient, and Time
     sprintf(integer_string, "%x", this->sender_);
+    message_size += sizeof(integer_string)/sizeof(*integer_string) + 1;
+    if(message_size > 255){
+        throw std::invalid_argument( "Message to large" );
+    }
     strcat(msg, integer_string); 
     strcat(msg, "|");
 
     sprintf(integer_string, "%x", this->recipient_);
+    message_size += sizeof(integer_string)/sizeof(*integer_string) + 1;
+    if(message_size > 255){
+        throw std::invalid_argument( "Message to large" );
+    }
     strcat(msg, integer_string);
     strcat(msg, "|");
     
     sprintf(long_string, "%lx", this->time_created_);
+    message_size += sizeof(long_string)/sizeof(*long_string) + 1;
+    if(message_size > 255){
+        throw std::invalid_argument( "Message to large" );
+    }
     strcat(msg, long_string);
     strcat(msg, "|");
 
@@ -118,9 +131,17 @@ void Message::flatten(char* msg){
     int n = 0;
     while(i < floats){
         sprintf(integer_string, "%x", keys[i]);
+        message_size += sizeof(integer_string)/sizeof(*integer_string) + 1;
+        if(message_size > 255){
+            throw std::invalid_argument( "Message to large" );
+        }
         strcat(msg, integer_string); 
         strcat(msg, "~");
         sprintf(integer_string, "%f", contents_.GetFloat(i));
+        message_size += sizeof(integer_string)/sizeof(*integer_string) + 1;
+        if(message_size > 255){
+            throw std::invalid_argument( "Message to large" );
+        }
         strcat(msg, integer_string); 
         strcat(msg, "|");
         i++;
@@ -128,12 +149,24 @@ void Message::flatten(char* msg){
     while(i < keys.size()){
         sprintf(integer_string, "%x", keys[i]);
         strcat(msg, integer_string); 
+        message_size += sizeof(integer_string)/sizeof(*integer_string) + 1;
+        if(message_size > 255){
+            throw std::invalid_argument( "Message to large" );
+        }
         strcat(msg, "~");
         sprintf(integer_string, "%x", contents_.GetInt(n));
+        message_size += sizeof(integer_string)/sizeof(*integer_string) + 1;
+        if(message_size > 255){
+            throw std::invalid_argument( "Message to large" );
+        }
         strcat(msg, integer_string); 
         strcat(msg, "|");
         i++;
         n++;
+    }
+    message_size += 1;
+    if(message_size > 255){
+            throw std::invalid_argument( "Message to large" );
     }
     //add end char
     strcat(msg, "\3");
