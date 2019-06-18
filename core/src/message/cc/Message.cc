@@ -197,6 +197,7 @@ void Message::SetSender(unsigned int sender_)
 	this->sender_ = sender_;
 }
 
+
 void Message::SetRecipient(unsigned int recipient_)
 {
 	this->recipient_ = recipient_;
@@ -205,4 +206,12 @@ void Message::SetRecipient(unsigned int recipient_)
 void Message::SetTimeCreated(long time_created_)
 {
 	this->time_created_ = time_created_;
+}
+
+void Message::Add(unsigned int key, int value){
+    this->contents_.AddKeyValuePair(key,value);
+}
+
+void Message::Add(unsigned int key, float value){
+    this->contents_.AddKeyValuePair(key,value);
 }
