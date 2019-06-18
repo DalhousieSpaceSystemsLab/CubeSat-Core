@@ -5,6 +5,7 @@
 #define LORIS_EMULATION_POWER_SUBSYSTEM_H_
 
 #include "SubsystemState.h"
+#include "Message.h"
 
 class SubsystemEmulator {
 public:

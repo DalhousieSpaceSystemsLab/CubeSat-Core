@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := release
 
-SRCDIR := src
+SRCDIR := src ../core/src
 OBJDIR := build
 DEPDIR := .d
 BINDIR := bin
@@ -19,7 +19,7 @@ SRC := $(notdir $(SRC))
 OBJ := $(addprefix $(OBJDIR)/, $(SRC:.cc=.o))
 
 CXX ?= g++
-CXXFLAGS ?= -std=c++14 $(DEPFLAGS) -I $(INCDIR) -I ../core/src/unixdomain/header -I ../core/src/message/header
+CXXFLAGS ?= -std=c++14 $(DEPFLAGS) -I $(INCDIR) #-I ../core/src/unixdomain/header -I ../core/src/message/header -I ../core/src/message/identifiers
 
 ###################
 .PHONY: test

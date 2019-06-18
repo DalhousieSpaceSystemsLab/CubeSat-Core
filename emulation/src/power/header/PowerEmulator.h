@@ -1,14 +1,14 @@
 //  PowerEmulator.h
 //      Basic implementation for the Battery class
 //
+#ifndef LORIS_EMULATION_POWER_POWEREMULATOR_H_
+#define LORIS_EMULATION_POWER_POWEREMULATOR_H_
+
 #include "SubsystemEmulator.h"
 #include "Battery.h"
 #include "Relay.h"
 #include "Message.h"
 #include <math.h>
-
-#ifndef LORIS_EMULATION_POWER_POWEREMULATOR_H_
-#define LORIS_EMULATION_POWER_POWEREMULATOR_H_
 
 class PowerEmulator : public SubsystemEmulator {
 public:

@@ -1,6 +1,6 @@
 #include "PowerEmulator.h"
 #include "AdcsEmulator.h"
-#include "HardwareEmulationServer.h"
+#include "HardwareEmulationManager.h"
 #include "Relay.h"
 #include "CommsEmulator.h"
 #include "GroundStation.h"
