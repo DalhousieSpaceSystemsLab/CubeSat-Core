@@ -1,17 +1,13 @@
 #include "HardwareEmulationManager.h"
-#include "SubsystemEmulator.h"
+
 #include "PowerEmulator.h"
 #include "AdcsEmulator.h"
-
-#include "Message.h"
 #include "UnixDomainStreamSocketClient.h"
 #include "MessageSerializer.h"
 #include "MessageBuilder.h"
 
 #include <iostream>
 #include <sys/time.h>
-
-
 
 /*
 * Creates default emulator setup with pre-defined hardware states. 
@@ -47,6 +43,9 @@ HardwareEmulationManager::HardwareEmulationManager() {
     this->emulators_ = emulatorVector;
 }
 
+/*
+* Creates emulation manager with custom emulators
+*/
 HardwareEmulationManager::HardwareEmulationManager(std::vector<SubsystemEmulator> emulators) {
     this->emulators_ = emulators;
 }

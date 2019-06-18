@@ -4,7 +4,7 @@
 #include "SubsystemEmulator.h"
 #include "Battery.h"
 #include "Relay.h"
-#include "PowerState.h"
+#include "Message.h"
 #include <math.h>
 
 #ifndef LORIS_EMULATION_POWER_POWEREMULATOR_H_
@@ -26,14 +26,13 @@ public:
 
     float GetBatteryPower(Battery battery);
 
-    PowerState GetState();
+    void GetState(Message * message);
 
     void Update(long time);
 
 private:
     Battery main_battery_;
     Relay obc_relay_;
-    PowerState state_;
 
 };
 

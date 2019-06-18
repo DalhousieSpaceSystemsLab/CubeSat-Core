@@ -12,7 +12,7 @@ public:
 
     virtual void Update(long time);
 
-    virtual SubsystemState GetState();
+    virtual void GetState(Message* message);
 
 private:
     SubsystemState state_;

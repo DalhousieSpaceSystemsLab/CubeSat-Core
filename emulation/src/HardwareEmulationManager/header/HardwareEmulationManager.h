@@ -1,12 +1,17 @@
 //  HardwareEmulationManager.h
 //      Basic implementation for the HardwareEmulationManager class
 //
-#include "SubsystemEmulator.h"
-#include <unistd.h>
-#include <vector>
+
 
 #ifndef CUBESAT_HARDWAREEMULATIONSERVER_H
 #define CUBESAT_HARDWAREEMULATIONSERVER_H
+
+
+
+#include <unistd.h>
+#include "SubsystemEmulator.h"
+#include "Message.h"
+#include <vector>
 
 class HardwareEmulationManager {
 public:

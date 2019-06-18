@@ -1,5 +1,5 @@
 #include "PowerEmulator.h"
-
+#include "Message.h"
 // Null constructor for PowerEmulator class
 PowerEmulator::PowerEmulator() {
     // Null
@@ -25,8 +25,8 @@ float PowerEmulator::GetBatteryPower(Battery battery) {
     return battery.power_level();
 }
 
-PowerState PowerEmulator::GetState() {
-    return this->state_;
+void PowerEmulator::GetState(Message *message) {
+   
 }
 
 void PowerEmulator::Update(long time) {
