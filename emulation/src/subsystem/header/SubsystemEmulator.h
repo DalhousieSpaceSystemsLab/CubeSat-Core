@@ -4,7 +4,6 @@
 #ifndef LORIS_EMULATION_POWER_SUBSYSTEM_H_
 #define LORIS_EMULATION_POWER_SUBSYSTEM_H_
 
-#include "SubsystemState.h"
 #include "Message.h"
 
 class SubsystemEmulator {
@@ -16,7 +15,7 @@ public:
     virtual void GetState(Message* message);
 
 private:
-    SubsystemState state_;
+
 };
 
 #endif

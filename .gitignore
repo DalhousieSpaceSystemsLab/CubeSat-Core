@@ -9,3 +9,4 @@
 /core/output
 *.o
 *.gch
+*.vscode
