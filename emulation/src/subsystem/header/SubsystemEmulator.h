@@ -12,7 +12,7 @@ public:
 
     virtual void Update(long time) = 0;
 
-    virtual void GetState(Message* message) = 0;
+    virtual void GetState(Message & message) = 0;
 
 private:
 

@@ -29,9 +29,8 @@ float PowerEmulator::GetMainPower() {
 float PowerEmulator::GetBatteryPower(Battery battery) {
     return battery.power_level();
 }
-
-void PowerEmulator::GetState(Message * message) {
-   Message msg = * message;
+void PowerEmulator::GetState(Message & message) {
+   Message msg = message;
    unsigned int battery_level_key = PowerKeys::battery_level;
    msg.Add(battery_level_key,GetMainPower());
 }

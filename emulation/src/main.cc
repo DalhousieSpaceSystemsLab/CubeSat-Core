@@ -1,8 +1,10 @@
 #include <iostream>
 #include "PowerEmulator.h"
+#include "Message.h"
 
+using std::cout;
+using std::endl;
 
-using namespace std;
 void TestPowerEmulator();
 void MainTest();
 
@@ -11,7 +13,10 @@ int main() {
 }
 
 void TestPowerEmulator(){
+  cout << "Creating PowerEmulator" << endl;
   PowerEmulator emulator;
+  Message & message();
+
 }
 
 void MainTest(){

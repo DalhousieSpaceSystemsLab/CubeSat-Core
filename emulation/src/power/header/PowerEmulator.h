@@ -26,7 +26,7 @@ public:
 
     float GetBatteryPower(Battery battery);
 
-    void GetState(Message * message);
+    void GetState(Message & message);
 
     void Update(long time);
 
