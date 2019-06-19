@@ -17,9 +17,10 @@ float AdcsEmulator::GetZenithAngle (void) const
     return attitude_sensor_.zenith_angle();
 }
 
-AdcsState AdcsEmulator::GetState()
+void AdcsEmulator::GetState(Message * message)
 {
-    return this->state_;
+    //TODO put the appropriate key value pairs into the message
+   
 }
 
 void AdcsEmulator::Update(long time)

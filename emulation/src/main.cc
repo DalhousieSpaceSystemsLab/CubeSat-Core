@@ -1,4 +1,3 @@
-#include "HardwareEmulationManager.h"
 #include <iostream>
 #include "PowerEmulator.h"
 
@@ -16,6 +15,6 @@ void TestPowerEmulator(){
 }
 
 void MainTest(){
-  HardwareEmulationManager emulation_manager;
-  emulation_manager.Run(); 
+  //HardwareEmulationManager emulation_manager;
+  //emulation_manager.Run(); 
 }

@@ -18,7 +18,8 @@ vpath %.cc $(sort $(dir $(SRC)))
 SRC := $(notdir $(SRC))
 OBJ := $(addprefix $(OBJDIR)/, $(SRC:.cc=.o))
 
-OTHER_INC := -I ../core/src/unixdomain/header -I ../core/src/message/header -I ../core/src/message/identifiers
+OTHER_INC := -I ../core/src/unixdomain/header -I ../core/src/message/header -I ../core/src/message/identifiers -I ../core/src/message/cc/
+
 CXX ?= g++
 CXXFLAGS ?= -std=c++14 $(DEPFLAGS) -I $(INCDIR) $(OTHER_INC)
 

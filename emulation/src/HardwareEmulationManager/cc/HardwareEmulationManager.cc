@@ -17,16 +17,12 @@ HardwareEmulationManager::HardwareEmulationManager() {
     
     this->current_time_ = ms;
     
-    // Container for emulators
-    std::vector<SubsystemEmulator> emulatorVector;
-
     //Initialize batteries
     Battery battery;
 
     //Set initial power levels of batteries
     battery.set_power_level(40.5);
 
-    
     PowerEmulator eps_emulator(battery);
 
     //Initialize ADCS Emulator
@@ -34,18 +30,18 @@ HardwareEmulationManager::HardwareEmulationManager() {
     adcs_emulator.set_orientation(10, 20);
 
 
-    emulatorVector.push_back(eps_emulator);
-    emulatorVector.push_back(adcs_emulator);
-
-    this->emulators_ = emulatorVector;
+    //this->emulators_.push_back(eps_emulator);
+    //this->emulators_.push_back(adcs_emulator);
+    this->emulators_.push_back(new PowerEmulator);  
 }
 
 /*
 * Creates emulation manager with custom emulators
 */
-HardwareEmulationManager::HardwareEmulationManager(std::vector<SubsystemEmulator> emulators) {
-    this->emulators_ = emulators;
-}
+//HardwareEmulationManager::HardwareEmulationManager(std::vector<SubsystemEmulator *> emulators) {
+   //TODO complete this
+   // this->emulators_ = emulators;
+//}
 
 void HardwareEmulationManager::Run() {
     while (true) {
@@ -57,7 +53,7 @@ void HardwareEmulationManager::Run() {
 
 void HardwareEmulationManager::UpdateEmulators() {
     for (int i=0; i < this->emulators_.size(); i++) {
-        this->emulators_[i].Update(this->current_time_);
+        this->emulators_[i]->Update(this->current_time_);
     }
 }
 
