@@ -1,11 +1,11 @@
 #include "HardwareEmulationManager.h"
 #include <iostream>
+#include "PowerEmulator.h"
 
-
-using namespace std;
 
 int main() {
-  HardwareEmulationManager emulation_manager;
-  emulation_manager.Run(); 
-
+  //HardwareEmulationManager emulation_manager;
+  //emulation_manager.Run(); 
+  PowerEmulator emulator;
+  
 }

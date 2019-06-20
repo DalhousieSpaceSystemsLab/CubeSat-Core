@@ -25,7 +25,7 @@ float PowerEmulator::GetBatteryPower(Battery battery) {
     return battery.power_level();
 }
 
-void PowerEmulator::GetState(Message *message) {
+void PowerEmulator::GetState(Message & message) {
    
 }
 

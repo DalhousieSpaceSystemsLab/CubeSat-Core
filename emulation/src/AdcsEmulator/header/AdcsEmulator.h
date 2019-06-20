@@ -2,10 +2,10 @@
 #define ADCS_EMULATOR_H
 
 #include "AttitudeSensor.h"
-#include "AdcsState.h"
 #include "SubsystemEmulator.h"
 #include <iostream>
 #include <math.h>
+#include "Message.h"
 using namespace std;
 
 class AdcsEmulator : public SubsystemEmulator
@@ -13,7 +13,6 @@ class AdcsEmulator : public SubsystemEmulator
     private:
 
         AttitudeSensor attitude_sensor_;
-        AdcsState state_;
         
     public:
 
@@ -25,7 +24,7 @@ class AdcsEmulator : public SubsystemEmulator
 
         void Update(long time);
 
-        AdcsState GetState();
+        void GetState(Message & message);
 };
 
 #endif

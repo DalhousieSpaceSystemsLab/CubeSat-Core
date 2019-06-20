@@ -2,9 +2,9 @@
 
 #include "PowerEmulator.h"
 #include "AdcsEmulator.h"
-#include "UnixDomainStreamSocketClient.h"
-#include "MessageSerializer.h"
-#include "MessageBuilder.h"
+//#include "UnixDomainStreamSocketClient.h"
+//#include "MessageSerializer.h"
+//#include "MessageBuilder.h"
 
 #include <iostream>
 #include <sys/time.h>
