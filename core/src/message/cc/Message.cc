@@ -228,23 +228,38 @@ void Message::ToString(char * string, int capacity){
     std::vector<int> float_keys = this->contents_.GetFloatKeys();
     std::vector<int> int_keys = this->contents_.GetIntKeys();
     
-    
+    printf("Printing key int pairs\n");
     //Append int key value pairs
     for(int i=0;i<int_keys.size();i++){
         char integer_string[32];
         int key = int_keys[i];
         int value = this->contents_.GetInt(key);
         sprintf(integer_string, "%d %d",key,value);
+        printf("Pair %d: %d %d\n",i,key,value);
+        
         strcat(long_string, integer_string);
+        strcat(long_string,"\n");
     }
 
+    if(int_keys.size()==0){
+        printf("No integer key value pairs\n");
+    }
+
+    printf("Printing key float pairs\n");
     //Append float key value pairs
     for(int i=0;i<float_keys.size();i++){
         char float_string[32];
-        int key = int_keys[i];
+        int key = float_keys[i];
         float value = this->contents_.GetFloat(key);
         sprintf(float_string, "%d %f",key,value);
+        printf("Pair %d: %d %f\n",i,key,value);
+
         strcat(long_string, float_string);
+        strcat(long_string,"\n");
+    }
+
+    if(float_keys.size()==0){
+        printf("No float key value pairs\n");
     }
 
     for(int i=0; i < capacity; ++i){

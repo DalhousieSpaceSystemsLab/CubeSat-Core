@@ -1,4 +1,6 @@
 #include "KeyValuePairContainer.h"
+//TODO this is just temporary. Need to have some way to indicate a function failed. 
+const int FAIL_CODE = -1000;
 
 KeyValuePairContainer::KeyValuePairContainer()
 {
@@ -48,12 +50,23 @@ std::vector<int> KeyValuePairContainer::GetFloatKeys() {
     return keys;
 }
 
-float KeyValuePairContainer::GetFloat(int index) {
-    return this->key_float_pairs_[index].value();
+//TODO keys must be unsigned integers.
+float KeyValuePairContainer::GetFloat(int key) {
+    for(int i=0;i<key_float_pairs_.size();i++){
+        if(this->key_float_pairs_[i].key()==key){
+            return this->key_float_pairs_[i].value();
+        }
+    }   
+    return (float)FAIL_CODE;
 }
 
-int KeyValuePairContainer::GetInt(int index) {
-    return this->key_int_pairs_[index].value();
+int KeyValuePairContainer::GetInt(int key) {
+    for(int i=0;i<key_int_pairs_.size();i++){
+        if(this->key_int_pairs_[i].key()==key){
+            return this->key_int_pairs_[i].value();
+        }
+    }   
+    return FAIL_CODE;
 }
 
 int KeyValuePairContainer::GetAmountofFloatPairs(){
