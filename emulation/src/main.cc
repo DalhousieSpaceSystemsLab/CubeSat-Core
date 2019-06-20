@@ -7,5 +7,5 @@ int main() {
   //HardwareEmulationManager emulation_manager;
   //emulation_manager.Run(); 
   PowerEmulator emulator;
-  
+
 }

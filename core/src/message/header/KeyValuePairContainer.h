@@ -15,7 +15,7 @@ public:
     void AddKeyValuePair(unsigned int key, int value) override;
 
     std::vector<int> GetKeys() override;
-    std::vector<float> GetFloatKeys();
+    std::vector<int> GetFloatKeys();
     std::vector<int> GetIntKeys();
     
     float GetFloat(int index) override;

@@ -221,3 +221,31 @@ void Message::Add(unsigned int key, int value){
 void Message::Add(unsigned int key, float value){
     this->contents_.AddKeyValuePair(key,value);
 }
+
+
+char* Message::ToString(){
+    char long_string[128];
+    std::vector<int> float_keys = this->contents_.GetFloatKeys();
+    std::vector<int> int_keys = this->contents_.GetIntKeys();
+    
+    
+    //Append int key value pairs
+    for(int i=0;i<int_keys.size();i++){
+        char integer_string[32];
+        int key = int_keys[i];
+        int value = this->contents_.GetInt(key);
+        sprintf(integer_string, "%d %d",key,value);
+        strcat(long_string, integer_string);
+    }
+
+    //Append float key value pairs
+    for(int i=0;i<float_keys.size();i++){
+        char float_string[32];
+        int key = int_keys[i];
+        float value = this->contents_.GetFloat(key);
+        sprintf(float_string, "%d %f",key,value);
+        strcat(long_string, float_string);
+    }
+
+    return long_string;
+}

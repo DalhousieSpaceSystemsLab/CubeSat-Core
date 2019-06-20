@@ -39,8 +39,8 @@ std::vector<int> KeyValuePairContainer::GetIntKeys() {
     return keys;
 }
 
-std::vector<float> KeyValuePairContainer::GetFloatKeys() {
-    std::vector<float> keys;
+std::vector<int> KeyValuePairContainer::GetFloatKeys() {
+    std::vector<int> keys;
 
     for (std::size_t i = 0; i < this->key_float_pairs_.size(); ++i) {
         keys.push_back(this->key_float_pairs_[i].key());

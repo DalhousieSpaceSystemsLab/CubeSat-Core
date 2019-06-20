@@ -25,7 +25,8 @@ public:
     void Add(unsigned int, int);
     void Add(unsigned int, float);
 
-    
+    char* ToString();
+
 private:
     unsigned int sender_;
     unsigned int recipient_;
