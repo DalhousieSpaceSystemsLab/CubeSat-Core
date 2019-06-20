@@ -223,8 +223,8 @@ void Message::Add(unsigned int key, float value){
 }
 
 
-char* Message::ToString(){
-    char long_string[128];
+void Message::ToString(char * string, int capacity){
+    char long_string[capacity];
     std::vector<int> float_keys = this->contents_.GetFloatKeys();
     std::vector<int> int_keys = this->contents_.GetIntKeys();
     
@@ -247,5 +247,8 @@ char* Message::ToString(){
         strcat(long_string, float_string);
     }
 
-    return long_string;
+    for(int i=0; i < capacity; ++i){
+        string[i] = long_string[i];
+    }
+
 }

@@ -25,7 +25,7 @@ public:
     void Add(unsigned int, int);
     void Add(unsigned int, float);
 
-    char* ToString();
+    void ToString(char* string,int capacity);
 
 private:
     unsigned int sender_;

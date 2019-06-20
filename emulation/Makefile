@@ -19,7 +19,7 @@ SRC := $(notdir $(SRC))
 OBJ := $(addprefix $(OBJDIR)/, $(SRC:.cc=.o))
 
 CXX ?= g++
-CXXFLAGS ?= -std=c++14 $(DEPFLAGS) -I $(INCDIR) -I ../core/src/unixdomain/header -I ../core/src/message/header -I ../core/src/message/cc
+CXXFLAGS ?= -std=c++14 $(DEPFLAGS) -I $(INCDIR) -I ../core/src/unixdomain/header -L ../core/lib/ -lliblorismessage
 
 ###################
 .PHONY: test
@@ -61,7 +61,7 @@ clean:
 $(BINDIR)/$(EXC): $(OBJ)
 	@echo "Linking: $@"
 	
-	$(CXX) $(OBJ) -o $@
+	$(CXX) $(OBJ) -o $@ ../core/lib/liblorismessage
 
 # Source file rules
 # After the first compilation they will be joined with the rules from the
