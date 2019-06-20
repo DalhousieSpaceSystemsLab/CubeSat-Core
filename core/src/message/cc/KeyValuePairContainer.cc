@@ -19,6 +19,7 @@ void KeyValuePairContainer::AddKeyValuePair(unsigned int key, int value) {
     this->key_int_pairs_.push_back(KeyIntPair(key, value));
 }
 
+//TODO delete this function. Only use GetKeys and GetFloat
 std::vector<int> KeyValuePairContainer::GetKeys() {
     std::vector<int> keys;
     for (std::size_t i = 0; i < this->key_float_pairs_.size(); ++i) {
@@ -27,6 +28,22 @@ std::vector<int> KeyValuePairContainer::GetKeys() {
 
     for (std::size_t i = 0; i < this->key_int_pairs_.size(); ++i) {
         keys.push_back(this->key_int_pairs_[i].key());
+    }
+    return keys;
+}
+std::vector<int> KeyValuePairContainer::GetIntKeys() {
+    std::vector<int> keys;
+    for (std::size_t i = 0; i < this->key_int_pairs_.size(); ++i) {
+        keys.push_back(this->key_int_pairs_[i].key());
+    }
+    return keys;
+}
+
+std::vector<float> KeyValuePairContainer::GetFloatKeys() {
+    std::vector<float> keys;
+
+    for (std::size_t i = 0; i < this->key_float_pairs_.size(); ++i) {
+        keys.push_back(this->key_float_pairs_[i].key());
     }
     return keys;
 }
