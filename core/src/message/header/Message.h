@@ -5,6 +5,7 @@
 
 class Message {
 public:
+    Message(unsigned int sender, unsigned int recipient);
     Message(unsigned int sender, unsigned int recipient, long time,  KeyValuePairContainer contents);
     Message(char* flat);
 

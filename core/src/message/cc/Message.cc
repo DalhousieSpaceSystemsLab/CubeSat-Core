@@ -3,6 +3,11 @@
 #include "Message.h"
 #include <stdexcept>
 
+
+Message::Message(unsigned int sender, unsigned int recipient): sender_(sender), recipient_(recipient)
+{  
+
+}
 Message::Message(unsigned int sender, unsigned int recipient, long time, KeyValuePairContainer contents):
         sender_(sender), recipient_(recipient), time_created_(time), contents_(contents)
 {
