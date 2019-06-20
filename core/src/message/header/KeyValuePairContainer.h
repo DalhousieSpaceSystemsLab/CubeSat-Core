@@ -11,15 +11,15 @@ class KeyValuePairContainer : public KeyValuePairContainerInterface {
 public:
     KeyValuePairContainer();
     ~KeyValuePairContainer();
-    void AddKeyValuePair(unsigned int key, float value) override ;
-    void AddKeyValuePair(unsigned int key, int value) override;
+    void AddKeyValuePair(unsigned int key, float value);
+    void AddKeyValuePair(unsigned int key, int value);
 
-    std::vector<int> GetKeys() override;
+    std::vector<int> GetKeys();
     std::vector<int> GetFloatKeys();
     std::vector<int> GetIntKeys();
     
-    float GetFloat(int index) override;
-    int GetInt(int index) override;
+    float GetFloat(int index);
+    int GetInt(int index);
     int GetAmountofFloatPairs();
 private:
     std::vector<KeyIntPair> key_int_pairs_;
