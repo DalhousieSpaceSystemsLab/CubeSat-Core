@@ -1,4 +1,6 @@
 /emulation/inc
+/emulation/.d/
+/emulation/.vscode/
 /core/main
 /core/.d/
 /core/inc
@@ -9,3 +11,5 @@
 /core/output
 *.o
 *.gch
+*/lib
+*.vscode

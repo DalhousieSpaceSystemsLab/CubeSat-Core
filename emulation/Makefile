@@ -19,7 +19,7 @@ SRC := $(notdir $(SRC))
 OBJ := $(addprefix $(OBJDIR)/, $(SRC:.cc=.o))
 
 CXX ?= g++
-CXXFLAGS ?= -std=c++14 $(DEPFLAGS) -I $(INCDIR) -I ../core/src/unixdomain/header -I ../core/src/message/header
+CXXFLAGS ?= -std=c++14 $(DEPFLAGS) -I $(INCDIR) -I ../core/src/unixdomain/header -I ../core/src/message/header -I ../core/src/message/cc
 
 ###################
 .PHONY: test
