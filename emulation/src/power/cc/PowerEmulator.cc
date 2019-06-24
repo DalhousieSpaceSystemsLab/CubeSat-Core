@@ -6,7 +6,7 @@
 PowerEmulator::PowerEmulator() {
     Battery battery1;
 
-    battery1.set_power_level(50);
+    battery1.set_power_level(this->max_power_);
     set_main_battery(battery1);
 }
 
@@ -38,5 +38,6 @@ void PowerEmulator::GetState(Message & message) {
 
 void PowerEmulator::Update(long time) {
     float current_battery_level = this->main_battery_.power_level();
-    main_battery_.set_power_level(time*sin(current_battery_level));
+    current_battery_level+=sin(time)*this->max_power_;
+    main_battery_.set_power_level(current_battery_level);
 }

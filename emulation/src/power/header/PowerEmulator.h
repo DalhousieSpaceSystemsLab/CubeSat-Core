@@ -33,6 +33,7 @@ public:
 private:
     Battery main_battery_;
     Relay obc_relay_;
+    const float max_power_=1;
 
 };
 
