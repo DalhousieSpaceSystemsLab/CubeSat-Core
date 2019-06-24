@@ -1,4 +1,4 @@
-//Set State and Get State test
+/*//Set State and Get State test
 #include "PowerEmulator.h"
 
 int main() {
@@ -6,3 +6,4 @@ PowerEmulator emulator;
 
 
 }
+*/
