@@ -11,5 +11,9 @@
 /core/output
 *.o
 *.gch
+<<<<<<< HEAD
 */lib
 *.vscode
+=======
+*.vscode
+>>>>>>> emulation-refinement

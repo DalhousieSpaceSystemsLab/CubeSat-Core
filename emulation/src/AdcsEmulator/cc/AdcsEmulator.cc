@@ -19,7 +19,7 @@ float AdcsEmulator::GetZenithAngle (void) const
 
 void AdcsEmulator::GetState(Message & message)
 {
-//TODO
+	//TODO put the appropriate key value pairs into the message
 }
 
 void AdcsEmulator::Update(long time)

@@ -22,9 +22,9 @@ class AdcsEmulator : public SubsystemEmulator
         
         float GetZenithAngle (void) const;
 
-        void Update(long time);
-
         void GetState(Message & message);
+
+        void Update(long time);
 };
 
 #endif

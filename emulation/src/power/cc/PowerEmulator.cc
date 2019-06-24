@@ -1,8 +1,13 @@
 #include "PowerEmulator.h"
 #include "Message.h"
-// Null constructor for PowerEmulator class
+//#include "PowerKeys.h"
+
+// Constructor with default hardware setup
 PowerEmulator::PowerEmulator() {
-    // Null
+    Battery battery1;
+
+    battery1.set_power_level(50);
+    set_main_battery(battery1);
 }
 
 PowerEmulator::PowerEmulator(Battery battery) {
@@ -26,7 +31,9 @@ float PowerEmulator::GetBatteryPower(Battery battery) {
 }
 
 void PowerEmulator::GetState(Message & message) {
-   
+   Message msg = message;
+  // unsigned int battery_level_key = PowerKeys::battery_level;
+  // msg.Add(battery_level_key,GetMainPower());
 }
 
 void PowerEmulator::Update(long time) {

@@ -6,8 +6,6 @@
 #ifndef CUBESAT_HARDWAREEMULATIONSERVER_H
 #define CUBESAT_HARDWAREEMULATIONSERVER_H
 
-
-
 #include <unistd.h>
 #include "SubsystemEmulator.h"
 #include "Message.h"
@@ -17,6 +15,7 @@ class HardwareEmulationManager {
 public:
     HardwareEmulationManager();
 //TODO implement this constructor
+
  //   HardwareEmulationManager(std::vector<SubsystemEmulator *> emulators);
 
     void Run();

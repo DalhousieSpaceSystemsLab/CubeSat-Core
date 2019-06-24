@@ -40,10 +40,11 @@ HardwareEmulationManager::HardwareEmulationManager() {
 /*
 * Creates emulation manager with custom emulators
 */
-//TODO complete this.
-/*HardwareEmulationManager::HardwareEmulationManager(std::vector<SubsystemEmulator> emulators) {
-    this->emulators_ = emulators;
-}*/
+
+//HardwareEmulationManager::HardwareEmulationManager(std::vector<SubsystemEmulator *> emulators) {
+   //TODO complete this
+   // this->emulators_ = emulators;
+//}
 
 void HardwareEmulationManager::Run() {
     while (true) {

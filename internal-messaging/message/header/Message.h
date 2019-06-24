@@ -20,6 +20,8 @@ public:
 	void SetRecipient(unsigned int recipient_);
     void SetTimeCreated(long time_created_);
 
+    void poop();
+
     void Add(unsigned int, int);
     void Add(unsigned int, float);
 

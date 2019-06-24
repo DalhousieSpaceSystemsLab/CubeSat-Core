@@ -18,8 +18,14 @@ vpath %.cc $(sort $(dir $(SRC)))
 SRC := $(notdir $(SRC))
 OBJ := $(addprefix $(OBJDIR)/, $(SRC:.cc=.o))
 
+OTHER_INC := -I ../core/src/unixdomain/header -I ../core/src/message/header -I ../core/src/message/identifiers
+
 CXX ?= g++
+<<<<<<< HEAD
 CXXFLAGS ?= -std=c++14 $(DEPFLAGS) -I $(INCDIR) -I ../core/src/unixdomain/header -L ../core/lib/ -lliblorismessage
+=======
+CXXFLAGS ?= -std=c++14 $(DEPFLAGS) -I $(INCDIR) $(OTHER_INC)
+>>>>>>> emulation-refinement
 
 ###################
 .PHONY: test
