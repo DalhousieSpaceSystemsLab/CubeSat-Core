@@ -13,8 +13,14 @@ class AdcsEmulator : public SubsystemEmulator
     private:
 
         AttitudeSensor attitude_sensor_;
-        
+        float initial_azimuth;
+        float initial_zenith;
+
     public:
+
+        AdcsEmulator();
+
+        AdcsEmulator(float azimuthal_angle,float zenith_angle);
 
         void set_orientation (float azimuthal_angle, float zenith_angle);
 

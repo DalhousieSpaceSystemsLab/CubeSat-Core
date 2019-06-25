@@ -27,7 +27,8 @@ public:
 
 private:
     std::vector<SubsystemEmulator *> emulators_;
-    long time_between_updates_;
+    long true_time_between_updates_;
+    long const emulation_time_increment_= 10000;//10s
     long current_time_;
 };
 
