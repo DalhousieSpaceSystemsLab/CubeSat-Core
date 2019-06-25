@@ -30,7 +30,7 @@ void Emulate(){
 	HardwareEmulationManager manager;
 
 	cout << "Running and calling all emulators updates." << endl;
-	printf("Time\t Battery Level\t Zenith\t Azmituh\t\n");
+	printf("Time\t Battery Level\t Zenith\t 	Azimuth\t\n");
 	for(int i=0;i<10;i++){
 		Message msg(0,0);
 		manager.GetCurrentState(msg);
