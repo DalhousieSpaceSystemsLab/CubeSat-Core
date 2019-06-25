@@ -20,10 +20,8 @@ public:
 	void SetRecipient(unsigned int recipient_);
     void SetTimeCreated(long time_created_);
 
-    void poop();
-
-    void Add(unsigned int, int);
-    void Add(unsigned int, float);
+    void Add(const unsigned int, int);
+    void Add(const unsigned int, float);
 
     void ToString(char* string,int capacity);
 

@@ -1,4 +1,5 @@
 #include "AdcsEmulator.h"
+#include "AdcsKeys.h"
 
 AdcsEmulator::AdcsEmulator(){
 	set_orientation(0,0);
@@ -30,7 +31,10 @@ float AdcsEmulator::GetZenithAngle (void) const
 
 void AdcsEmulator::GetState(Message & message)
 {
+	AdcsKeys keys;
 	//TODO put the appropriate key value pairs into the message
+	message.Add(keys.azimuth,GetAzimuthalAngle());
+	message.Add(keys.zenith,GetZenithAngle());
 }
 
 //Time is in milliseconds

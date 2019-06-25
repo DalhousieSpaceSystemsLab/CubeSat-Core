@@ -11,19 +11,31 @@ using std::endl;
 void TestPowerEmulator();
 void TestAdcsEmulator();
 void TestHardwareEmulationManager();
-void Execute();
+void TestGetStateString();
 void MainTest();
+void Emulate();
 
 //TODO Choose function based on command line argument
 int main() {
 	//TestPowerEmulator();
 	//TestAdcsEmulator();
-	TestHardwareEmulationManager();
-	//Execute();
+	//TestHardwareEmulationManager();
+	TestGetStateString();
+	//Emulate();
 }
 
-void Execute(){
+void Emulate(){
+	cout << "Creating HardwareEmulationManager..." << endl;
+	HardwareEmulationManager manager;
 
+	cout << "Running and calling all emulators updates." << endl;
+	for(int i=0;i<10;i++){
+		Message msg;
+		manager.GetCurrentState(msg);
+		manager.Run();
+		cout << "sleeping..." << endl;
+		usleep(10*1000000);
+	}
 }
 
 void TestHardwareEmulationManager(){
@@ -77,6 +89,21 @@ void TestAdcsEmulator(){
 
 void TestGpsEmulator(){
 
+}
+
+void TestGetStateString(){
+	cout << "Creating HardwareEmulationManager..." << endl;
+	HardwareEmulationManager manager;
+
+	cout << "Calling GetState on all emulators..." << endl;
+	int capacity=256;
+	char hugeString[capacity];
+	manager.GetCurrentStateString(hugeString,capacity);
+	for(int i=0;i<capacity;i++){
+		cout << hugeString[i];
+	}
+
+	cout << "Completed." << endl;
 }
 
 void MainTest(){

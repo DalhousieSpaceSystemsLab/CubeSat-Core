@@ -4,9 +4,7 @@
 #include "AdcsEmulator.h"
 //#include "UnixDomainStreamSocketClient.h"
 //#include "MessageSerializer.h"
-//#include "MessageBuilder.h"
-
-#include <iostream>
+#include "Message.h"
 #include <sys/time.h>
 
 /*
@@ -21,11 +19,8 @@ HardwareEmulationManager::HardwareEmulationManager() {
     this->current_time_ = ms;
 
 
-    PowerEmulator eps_emulator;
-    AdcsEmulator adcs_emulator;
-
-    this->emulators_.push_back(&eps_emulator);
-    this->emulators_.push_back(&adcs_emulator);
+    this->emulators_.push_back(new PowerEmulator);
+    this->emulators_.push_back(new AdcsEmulator);
 
 }
 
@@ -45,16 +40,26 @@ void HardwareEmulationManager::Run() {
 }
 
 void HardwareEmulationManager::UpdateEmulators() {
-	cout << "Hello1" << endl;
-	cout << "size: "<< this->emulators_.size() << endl;
-	cout << "Time: "<<this->current_time_<<endl;
-    for (unsigned int i=0; i < this->emulators_.size(); i++) {
+    for (unsigned int i=0; i < this->emulators_.size(); i++){
     	cout << i << endl;
     	this->emulators_[i]->Update(this->current_time_);
     }
-    cout << "Hello" << endl;
 }
 
 void HardwareEmulationManager::SendDataToCore(Message data) {
 
 }
+
+void HardwareEmulationManager::GetCurrentStateString(char * string, int capacity){
+	Message msg(0,0);
+	GetCurrentState(msg);
+	msg.ToString(string,capacity);
+}
+
+void HardwareEmulationManager::GetCurrentState(Message & message){
+	for (unsigned int i=0; i < this->emulators_.size(); i++){
+    	this->emulators_[i]->GetState(message);
+    }
+}
+
+

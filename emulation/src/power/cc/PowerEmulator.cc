@@ -1,6 +1,7 @@
 #include "PowerEmulator.h"
 #include "Message.h"
-//#include "PowerKeys.h"
+#include "PowerKeys.h"
+#include <iostream>
 
 // Constructor with default hardware setup
 PowerEmulator::PowerEmulator() {
@@ -31,9 +32,10 @@ float PowerEmulator::GetBatteryPower(Battery battery) {
 }
 
 void PowerEmulator::GetState(Message & message) {
-   Message msg = message;
-  // unsigned int battery_level_key = PowerKeys::battery_level;
-  // msg.Add(battery_level_key,GetMainPower());
+   PowerKeys keys;
+   const unsigned int battery_level_key=keys.battery_level;
+   float battery_level = GetMainPower();
+   message.Add(battery_level_key,battery_level);
 }
 
 void PowerEmulator::Update(long time) {

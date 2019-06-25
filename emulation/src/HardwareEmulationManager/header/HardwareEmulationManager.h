@@ -24,6 +24,10 @@ public:
     
     void SendDataToCore(Message data);
 
+    void GetCurrentStateString(char * string, int capacity);
+
+    void GetCurrentState(Message & message);
+
 
 private:
     std::vector<SubsystemEmulator *> emulators_;
