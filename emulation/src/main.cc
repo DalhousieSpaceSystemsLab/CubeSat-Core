@@ -15,13 +15,14 @@ void TestGetStateString();
 void MainTest();
 void Emulate();
 
+const int emulation_sleep_time_=3;//seconds
 //TODO Choose function based on command line argument
 int main() {
 	//TestPowerEmulator();
 	//TestAdcsEmulator();
 	//TestHardwareEmulationManager();
-	TestGetStateString();
-	//Emulate();
+	//TestGetStateString();
+	Emulate();
 }
 
 void Emulate(){
@@ -29,13 +30,49 @@ void Emulate(){
 	HardwareEmulationManager manager;
 
 	cout << "Running and calling all emulators updates." << endl;
+	printf("Time\t Battery Level\t Zenith\t Azmituh\t\n");
 	for(int i=0;i<10;i++){
 		Message msg(0,0);
 		manager.GetCurrentState(msg);
+		std::vector<int> int_keys = msg.GetIntKeys();
+		std::vector<int> float_keys = msg.GetFloatKeys();
+/*
+		//printf("%d int_keys and %d float_keys\n",int_keys.size(),float_keys.size());
+		//printf("Printing keys...\n");
+		for(int i=0;i<int_keys.size();i++){
+			int key = int_keys[i];
+			printf("%d ",key);
+		}
 
-		manager.Run();
-		cout << "sleeping..." << endl;
-		usleep(10*1000000);
+		for(int i=0;i<float_keys.size();i++){
+			int key = float_keys[i];
+			printf("%d ",key);
+		}
+
+		printf("\n");
+*/
+		long fictional_time = manager.Run();
+		//printf("Printing data for time %d\n",fictional_time);
+		printf("%dms\t ",fictional_time);
+		for(int i=0;i<int_keys.size();i++){
+			int value = msg.GetInt(int_keys[i]);
+			printf("%d\t",value);
+		}
+
+		for(int i=0;i<float_keys.size();i++){
+			int key = float_keys[i];
+			float value = msg.GetFloat(key);
+			printf("%f\t",value);
+		}
+
+		printf("\n");
+
+
+		//cout << "sleeping..." << endl;
+		usleep(emulation_sleep_time_*1000000);
+
+		//TODO Make a connection with a repository and send this data
+		//TODO make a function in HardwareEmulationManager called "Send(Message & message)"
 	}
 }
 

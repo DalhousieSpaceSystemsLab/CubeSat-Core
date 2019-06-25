@@ -18,7 +18,7 @@ public:
 
  //   HardwareEmulationManager(std::vector<SubsystemEmulator *> emulators);
 
-    void Run();
+    long Run();
 
     void UpdateEmulators();
     

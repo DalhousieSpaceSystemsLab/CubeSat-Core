@@ -16,7 +16,7 @@ HardwareEmulationManager::HardwareEmulationManager() {
     gettimeofday(&tp, NULL);
     long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
     
-    this->current_time_ = ms;
+    this->current_time_ = 0;//ms;
 
 
     this->emulators_.push_back(new PowerEmulator);
@@ -33,15 +33,15 @@ HardwareEmulationManager::HardwareEmulationManager() {
    // this->emulators_ = emulators;
 //}
 
-void HardwareEmulationManager::Run() {
-    cout << "Updating emulators..." << endl;
+long HardwareEmulationManager::Run() {
+    //cout << "Updating emulators..." << endl;
     this->UpdateEmulators();
     this->current_time_+=this->emulation_time_increment_;
+    return this->current_time_;
 }
 
 void HardwareEmulationManager::UpdateEmulators() {
     for (unsigned int i=0; i < this->emulators_.size(); i++){
-    	cout << i << endl;
     	this->emulators_[i]->Update(this->current_time_);
     }
 }
