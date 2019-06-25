@@ -23,6 +23,14 @@ public:
     void Add(const unsigned int, int);
     void Add(const unsigned int, float);
 
+    int GetInt(const unsigned int);
+    float GetFloat(const unsigned int);
+
+    std::vector<int> GetFloatKeys();
+    std::vector<int> GetIntKeys();
+
+
+
     void ToString(char* string,int capacity);
 
 private:

@@ -30,8 +30,9 @@ void Emulate(){
 
 	cout << "Running and calling all emulators updates." << endl;
 	for(int i=0;i<10;i++){
-		Message msg;
+		Message msg(0,0);
 		manager.GetCurrentState(msg);
+
 		manager.Run();
 		cout << "sleeping..." << endl;
 		usleep(10*1000000);

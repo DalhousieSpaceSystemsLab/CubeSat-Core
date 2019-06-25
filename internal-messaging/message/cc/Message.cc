@@ -222,6 +222,22 @@ void Message::Add(const unsigned int key, float value){
     this->contents_.AddKeyValuePair(key,value);
 }
 
+float Message::GetFloat(const unsigned int key){
+	return contents_.GetFloat(key);
+}
+
+int Message::GetInt(const unsigned int key){
+	return contents_.GetInt(key);
+}
+
+std::vector<int> Message::GetFloatKeys(){
+	return contents_.GetFloatKeys();
+}
+std::vector<int> Message::GetIntKeys(){
+	return contents_.GetIntKeys();
+}
+
+
 
 void Message::ToString(char * string, int capacity){
     char long_string[capacity];
