@@ -12,7 +12,7 @@ class MessageSenderInterface : protected MessagingService {
 public:
     MessageSenderInterface(unsigned int recipient);
     void SetRecipient( unsigned int recipient);
-    void SendMessage(char message[]);
+    int SendMessage(char message[]);
 };
 
 

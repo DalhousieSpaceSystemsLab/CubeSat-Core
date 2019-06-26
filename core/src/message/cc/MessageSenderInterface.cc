@@ -14,7 +14,7 @@ void MessageSenderInterface::SetRecipient(unsigned int recipient){
 }
 
 
-void MessageSenderInterface::SendMessage(char message[]) {
-    client_socket_.Send(message);
+int MessageSenderInterface::SendMessage(char message[]) {
+    return client_socket_.Send(message);
 }
 
