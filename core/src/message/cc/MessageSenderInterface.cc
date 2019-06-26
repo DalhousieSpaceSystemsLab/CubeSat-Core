@@ -3,7 +3,6 @@
 //
 
 #include "MessageSenderInterface.h"
-//#include "MessagingService.h"
 
 MessageSenderInterface::MessageSenderInterface(unsigned int recipient):
     MessagingService(recipient) {}
@@ -13,8 +12,13 @@ void MessageSenderInterface::SetRecipient(unsigned int recipient){
     client_socket_ = UnixDomainStreamSocketClient(path);
 }
 
-
 int MessageSenderInterface::SendMessage(char message[]) {
     return client_socket_.Send(message);
+}
+
+int MessageSenderInterface::SendMessage(Message message) {
+    char msg[255] = "";
+    message.flatten(msg);
+    return SendFlattenedMessage(msg);
 }
 

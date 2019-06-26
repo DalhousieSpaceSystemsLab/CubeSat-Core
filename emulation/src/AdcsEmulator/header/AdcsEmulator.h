@@ -2,10 +2,10 @@
 #define ADCS_EMULATOR_H
 
 #include "AttitudeSensor.h"
-#include "AdcsState.h"
 #include "SubsystemEmulator.h"
 #include <iostream>
 #include <math.h>
+#include "Message.h"
 using namespace std;
 
 class AdcsEmulator : public SubsystemEmulator
@@ -13,9 +13,14 @@ class AdcsEmulator : public SubsystemEmulator
     private:
 
         AttitudeSensor attitude_sensor_;
-        AdcsState state_;
-        
+        float initial_azimuth;
+        float initial_zenith;
+
     public:
+
+        AdcsEmulator();
+
+        AdcsEmulator(float azimuthal_angle,float zenith_angle);
 
         void set_orientation (float azimuthal_angle, float zenith_angle);
 
@@ -23,9 +28,9 @@ class AdcsEmulator : public SubsystemEmulator
         
         float GetZenithAngle (void) const;
 
-        void Update(long time);
+        void GetState(Message & message);
 
-        AdcsState GetState();
+        void Update(long time);
 };
 
 #endif

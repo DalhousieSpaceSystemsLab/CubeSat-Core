@@ -1,7 +1,13 @@
 #include <iostream>
 #include <cstring>
 #include "Message.h"
+#include <stdexcept>
 
+
+Message::Message(unsigned int sender, unsigned int recipient): sender_(sender), recipient_(recipient)
+{  
+
+}
 Message::Message(unsigned int sender, unsigned int recipient, long time, KeyValuePairContainer contents):
         sender_(sender), recipient_(recipient), time_created_(time), contents_(contents)
 {
@@ -95,19 +101,32 @@ Message::Message(char* flat)
 
 void Message::flatten(char* msg){
     //TODO ensure no buffer overflow
+    int message_size = 0;
     char integer_string[32];
     char long_string[64];
 
     //Add Sender, Recipient, and Time
     sprintf(integer_string, "%x", this->sender_);
+    message_size += strlen(integer_string) + 1;
+    if(message_size > 255){
+        throw std::invalid_argument( "Message to large" );
+    }
     strcat(msg, integer_string); 
     strcat(msg, "|");
 
     sprintf(integer_string, "%x", this->recipient_);
+    message_size += strlen(integer_string) + 1;
+    if(message_size > 255){
+        throw std::invalid_argument( "Message to large" );
+    }
     strcat(msg, integer_string);
     strcat(msg, "|");
     
     sprintf(long_string, "%lx", this->time_created_);
+    message_size += strlen(long_string) + 1;
+    if(message_size > 255){
+        throw std::invalid_argument( "Message to large" );
+    }
     strcat(msg, long_string);
     strcat(msg, "|");
 
@@ -118,9 +137,17 @@ void Message::flatten(char* msg){
     int n = 0;
     while(i < floats){
         sprintf(integer_string, "%x", keys[i]);
+        message_size += strlen(integer_string) + 1;
+        if(message_size > 255){
+            throw std::invalid_argument( "Message to large" );
+        }
         strcat(msg, integer_string); 
         strcat(msg, "~");
         sprintf(integer_string, "%f", contents_.GetFloat(i));
+        message_size += strlen(integer_string) + 1;
+        if(message_size > 255){
+            throw std::invalid_argument( "Message to large" );
+        }
         strcat(msg, integer_string); 
         strcat(msg, "|");
         i++;
@@ -128,12 +155,24 @@ void Message::flatten(char* msg){
     while(i < keys.size()){
         sprintf(integer_string, "%x", keys[i]);
         strcat(msg, integer_string); 
+        message_size += strlen(integer_string) + 1;
+        if(message_size > 255){
+            throw std::invalid_argument( "Message to large" );
+        }
         strcat(msg, "~");
         sprintf(integer_string, "%x", contents_.GetInt(n));
+        message_size += strlen(integer_string) + 1;
+        if(message_size > 255){
+            throw std::invalid_argument( "Message to large" );
+        }
         strcat(msg, integer_string); 
         strcat(msg, "|");
         i++;
         n++;
+    }
+    message_size += 1;
+    if(message_size > 255){
+            throw std::invalid_argument( "Message to large" );
     }
     //add end char
     strcat(msg, "\3");
@@ -164,6 +203,7 @@ void Message::SetSender(unsigned int sender_)
 	this->sender_ = sender_;
 }
 
+
 void Message::SetRecipient(unsigned int recipient_)
 {
 	this->recipient_ = recipient_;
@@ -172,4 +212,58 @@ void Message::SetRecipient(unsigned int recipient_)
 void Message::SetTimeCreated(long time_created_)
 {
 	this->time_created_ = time_created_;
+}
+
+void Message::Add(unsigned int key, int value){
+    this->contents_.AddKeyValuePair(key,value);
+}
+
+void Message::Add(unsigned int key, float value){
+    this->contents_.AddKeyValuePair(key,value);
+}
+
+
+void Message::ToString(char * string, int capacity){
+    char long_string[capacity];
+    std::vector<int> float_keys = this->contents_.GetFloatKeys();
+    std::vector<int> int_keys = this->contents_.GetIntKeys();
+    
+    printf("Printing key int pairs\n");
+    //Append int key value pairs
+    for(int i=0;i<int_keys.size();i++){
+        char integer_string[32];
+        int key = int_keys[i];
+        int value = this->contents_.GetInt(key);
+        sprintf(integer_string, "%d %d",key,value);
+        printf("Pair %d: %d %d\n",i,key,value);
+        
+        strcat(long_string, integer_string);
+        strcat(long_string,"\n");
+    }
+
+    if(int_keys.size()==0){
+        printf("No integer key value pairs\n");
+    }
+
+    printf("Printing key float pairs\n");
+    //Append float key value pairs
+    for(int i=0;i<float_keys.size();i++){
+        char float_string[32];
+        int key = float_keys[i];
+        float value = this->contents_.GetFloat(key);
+        sprintf(float_string, "%d %f",key,value);
+        printf("Pair %d: %d %f\n",i,key,value);
+
+        strcat(long_string, float_string);
+        strcat(long_string,"\n");
+    }
+
+    if(float_keys.size()==0){
+        printf("No float key value pairs\n");
+    }
+
+    for(int i=0; i < capacity; ++i){
+        string[i] = long_string[i];
+    }
+
 }

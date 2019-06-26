@@ -4,18 +4,19 @@
 #ifndef LORIS_EMULATION_POWER_SUBSYSTEM_H_
 #define LORIS_EMULATION_POWER_SUBSYSTEM_H_
 
-#include "SubsystemState.h"
+#include "Message.h"
 
 class SubsystemEmulator {
 public:
     SubsystemEmulator();
 
-    virtual void Update(long time);
 
-    SubsystemState GetState();
+    virtual void Update(long time) = 0;
+
+    virtual void GetState(Message & message) = 0;
 
 private:
-    SubsystemState state_;
+
 };
 
 #endif

@@ -5,6 +5,7 @@
 
 class Message {
 public:
+    Message(unsigned int sender, unsigned int recipient);
     Message(unsigned int sender, unsigned int recipient, long time,  KeyValuePairContainer contents);
     Message(char* flat);
 
@@ -18,6 +19,12 @@ public:
 	void SetSender(unsigned int sender_);
 	void SetRecipient(unsigned int recipient_);
     void SetTimeCreated(long time_created_);
+
+    void Add(unsigned int, int);
+    void Add(unsigned int, float);
+
+    void ToString(char* string,int capacity);
+
 private:
     unsigned int sender_;
     unsigned int recipient_;

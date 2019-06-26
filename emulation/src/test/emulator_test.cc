@@ -1,11 +1,13 @@
-#include "PowerEmulator.h"
+/*#include "PowerEmulator.h"
 #include "AdcsEmulator.h"
-#include "HardwareEmulationServer.h"
+#include "HardwareEmulationManager.h"
 #include "Relay.h"
 #include "CommsEmulator.h"
-#include "GroundStation.h"
+//#include "GroundStation.h"
 #include <iostream>
 #include <vector>
+
+//TODO delete this
 
 using namespace std;
 
@@ -90,17 +92,17 @@ int main() {
     cout << "----- Begin Comms Emulator testing -----" << endl << endl;
 
 //    CommsEmulator commsEmulator;
-    GroundStation groundStation;
+   // GroundStation groundStation;
 
 
     cout << "----- Begin Hardware Emulation Server testing -----" << endl << endl;
 
-    std::vector<SubsystemEmulator> emulatorVector;
+/*    std::vector<SubsystemEmulator> emulatorVector;
     emulatorVector.push_back(emulator1);
     emulatorVector.push_back(emulator3);
     emulatorVector.push_back(adcsEmulator);
-    HardwareEmulationServer emulationServer1;
-    HardwareEmulationServer emulationServer2(emulatorVector);
+//    HardwareEmulationServer emulationServer1;
+ //   HardwareEmulationServer emulationServer2(emulatorVector);
 //    emulationServer2.Run();
 
 
@@ -108,3 +110,5 @@ int main() {
     return 0;
 
 }
+*/
+
