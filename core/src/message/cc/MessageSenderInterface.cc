@@ -12,7 +12,7 @@ void MessageSenderInterface::SetRecipient(unsigned int recipient){
     client_socket_ = UnixDomainStreamSocketClient(path);
 }
 
-int MessageSenderInterface::SendMessage(char message[]) {
+int MessageSenderInterface::SendFlattenedMessage(char message[]) {
     return client_socket_.Send(message);
 }
 
