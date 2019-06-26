@@ -23,29 +23,29 @@ int UnixDomainStreamSocketClient::ConnectToSocket(char sun_path[]) {
     std::cout << "Attempting connection to socket " << this->socket_file_descriptor_ << std::endl;
     if (connect(socket_file_descriptor_, (struct sockaddr *) &socket_address_, sizeof(socket_address_)) < 0) {
         error("ERROR connecting");
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int UnixDomainStreamSocketClient::Send(char message[]) {
     if (WriteToSocket(message, socket_file_descriptor_) != 0) {
         error("ERROR SENDING MESSAGE");
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int UnixDomainStreamSocketClient::SendMessageAwaitReply(char message[]) {
     if (WriteToSocket(message, socket_file_descriptor_) != 0) {
         error("ERROR SENDING MESSAGE");
-        return 1;
+        return 0;
     }
     if (ReadFromSocket(socket_file_descriptor_) != 0) {
         error("ERROR READING FROM SOCKET");
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 //default implementation
