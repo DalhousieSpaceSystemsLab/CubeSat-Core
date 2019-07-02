@@ -5,8 +5,8 @@
 #include "MessageSenderInterface.h"
 
 #include "LorisMessenger.h"
-#include "Identifiers.h"
-
+#include "PowerKeys.h"
+#include "RecipientIdentifiers.h"
 using namespace std;
 
 int main() {
@@ -14,10 +14,17 @@ int main() {
 	LorisMessenger tester;
 
 	//Add your data (arguments are: identifier for data, data value)
-	tester.Add(0,1000);
-	tester.Add(1,124.45f);
-	tester.Add(757,-90.2f);
-	//Look up the
+	PowerKeys power_keys;//Identifier for data generated from EPS
+
+	tester.Add(power_keys.current_sensor1,0.2f);//reading from a current sensor
+	tester.Add(power_keys.battery_level,1);//battery level
+
+
+	//Look up the identifier for the recipient (in this case, its a process known as the "power repository")
+	RecipientIdentifiers recipients;
+
+	//The second argument here is the ID of whoever initiated sending the message.
+	tester.Send(recipients.power_repository,0);
 
 
 }

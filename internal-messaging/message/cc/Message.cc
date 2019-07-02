@@ -3,6 +3,9 @@
 #include "Message.h"
 #include <stdexcept>
 
+Message::Message(){
+	this->time_created_=0;
+}
 
 Message::Message(unsigned int sender, unsigned int recipient): sender_(sender), recipient_(recipient)
 {  

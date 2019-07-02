@@ -2,7 +2,10 @@
 #include "PowerEmulator.h"
 #include "AdcsEmulator.h"
 #include "HardwareEmulationManager.h"
+#include "LorisMessenger.h"
 #include "Message.h"
+#include "PowerKeys.h"
+#include "RecipientIdentifiers.h"
 #include <cstdio>
 using std::cout;
 using std::endl;
@@ -14,6 +17,7 @@ void TestHardwareEmulationManager();
 void TestGetStateString();
 void MainTest();
 void Emulate();
+void TestLorisMessenger();
 
 const int emulation_sleep_time_=3;//seconds
 //TODO Choose function based on command line argument
@@ -22,7 +26,8 @@ int main() {
 	//TestAdcsEmulator();
 	//TestHardwareEmulationManager();
 	//TestGetStateString();
-	Emulate();
+	//Emulate();
+	TestLorisMessenger();
 }
 
 void Emulate(){
@@ -71,9 +76,27 @@ void Emulate(){
 		//cout << "sleeping..." << endl;
 		usleep(emulation_sleep_time_*1000000);
 
-		//TODO Make a connection with a repository and send this data
 		//TODO make a function in HardwareEmulationManager called "Send(Message & message)"
+
+
 	}
+}
+
+void TestLorisMessenger(){
+	//Initialize the messenger
+	LorisMessenger tester;
+
+	//Add your data (arguments are: identifier for data, data value)
+	PowerKeys power_keys;//Identifier for data generated from EPS
+
+	tester.Add(power_keys.current_sensor1,0.2f);//reading from a current sensor
+	tester.Add(power_keys.battery_level,1);//battery level
+
+	//Look up the identifier for the recipient (in this case, its a process known as the "power repository")
+	RecipientIdentifiers recipients;
+
+	//The second argument here is the ID of whoever initiated sending the message.
+	tester.Send(recipients.power_repository,0);
 }
 
 void TestHardwareEmulationManager(){

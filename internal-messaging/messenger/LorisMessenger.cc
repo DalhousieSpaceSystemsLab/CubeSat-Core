@@ -12,15 +12,18 @@ LorisMessenger::LorisMessenger(){
 }
 
 int LorisMessenger::Add(unsigned int key, int value){
-	return this->current_message_.Add(key,value);
+	this->current_message_.Add(key,value);
+	return 0;
 }
 
 int LorisMessenger::Add(unsigned int key, float value){
-	return this->current_message_.Add(key,value);
+	this->current_message_.Add(key,value);
+	return 0;
 }
 
 int LorisMessenger::ClearMessage(){
-	this->current_message_= new Message;
+	//TODO potential memory leak...
+	this->current_message_=Message();
 	return 0;
 }
 

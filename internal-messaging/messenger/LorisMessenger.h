@@ -12,6 +12,7 @@
 #define MESSENGER_LORISMESSENGER_H_
 class LorisMessenger{
 public:
+	LorisMessenger();
 	int Add(unsigned int key, int value);
 	int Add(unsigned int key, float value);
 	int Send(unsigned int recipient, unsigned int sender);
