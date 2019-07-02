@@ -72,3 +72,67 @@ int KeyValuePairContainer::GetInt(int key) {
 int KeyValuePairContainer::GetAmountofFloatPairs(){
     return this->key_float_pairs_.size();
 }
+
+int KeyValuePairContainer::GetAmountofIntPairs(){
+    return this->key_int_pairs_.size();
+}
+
+int KeyValuePairContainer::flatten(char* msg, int msg_size){
+    msg_size = flattenIntPairs(msg, msg_size);
+    msg_size = flattenFloatPairs(msg, msg_size);
+    return msg_size;
+}
+    
+int KeyValuePairContainer::flattenIntPairs(char* msg, int msg_size){
+    char integer_string[32];
+    std::vector<int> keys = this->GetIntKeys();
+    int i = 0;
+    int n = 0;
+    while(i < keys.size()){
+        sprintf(integer_string, "%x", keys[i]);
+        strcat(msg, integer_string); 
+        msg_size += strlen(integer_string) + 1;
+        if(msg_size > 255){
+            throw std::invalid_argument( "Message to large" );
+        }
+        strcat(msg, "~");
+        sprintf(integer_string, "%x", this->GetInt(n));
+        msg_size += strlen(integer_string) + 1;
+        if(msg_size > 255){
+            throw std::invalid_argument( "Message to large" );
+        }
+        strcat(msg, integer_string); 
+        strcat(msg, "|");
+        i++;
+        n++;
+    }
+    msg_size += 1;
+    if(msg_size > 255){
+        throw std::invalid_argument( "Message to large" );
+    }
+    return msg_size;
+}
+
+int KeyValuePairContainer::flattenFloatPairs(char* msg, int msg_size){
+    char integer_string[32];
+    std::vector<int> keys = this->GetFloatKeys();
+    int i = 0;
+    while(i < keys.size()){
+        sprintf(integer_string, "%x", keys[i]);
+        msg_size += strlen(integer_string) + 1;
+        if(msg_size > 255){
+            throw std::invalid_argument( "Message to large" );
+        }
+        strcat(msg, integer_string); 
+        strcat(msg, "~");
+        sprintf(integer_string, "%f", this->GetFloat(i));
+        msg_size += strlen(integer_string) + 1;
+        if(msg_size > 255){
+            throw std::invalid_argument( "Message to large" );
+        }
+        strcat(msg, integer_string); 
+        strcat(msg, "|");
+        i++;
+    }
+    return msg_size;
+}

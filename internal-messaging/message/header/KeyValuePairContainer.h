@@ -21,6 +21,12 @@ public:
     float GetFloat(int index);
     int GetInt(int index);
     int GetAmountofFloatPairs();
+    int GetAmountofIntPairs();
+
+    //flattens for message sending - returns new msg_size (CANNOT EXCEED 255)
+    int flatten(char* msg, int msg_size);
+    int flattenIntPairs(char* msg, int msg_size);
+    int flattenFloatPairs(char* msg, int msg_size);
 private:
     std::vector<KeyIntPair> key_int_pairs_;
     std::vector<KeyFloatPair> key_float_pairs_;
