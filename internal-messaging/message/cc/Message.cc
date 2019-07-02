@@ -6,7 +6,7 @@
 
 Message::Message(unsigned int sender, unsigned int recipient): sender_(sender), recipient_(recipient)
 {  
-
+    //NULL
 }
 Message::Message(unsigned int sender, unsigned int recipient, long time, KeyValuePairContainer contents):
         sender_(sender), recipient_(recipient), time_created_(time), contents_(contents)
@@ -100,7 +100,6 @@ Message::Message(char* flat)
 }
 
 void Message::flatten(char* msg){
-    //TODO ensure no buffer overflow
     int message_size = 0;
     char integer_string[32];
     char long_string[64];
@@ -131,45 +130,7 @@ void Message::flatten(char* msg){
     strcat(msg, "|");
 
     //Add Key Value Pairs
-    std::vector<int> keys = contents_.GetKeys();
-    int floats = contents_.GetAmountofFloatPairs();
-    int i = 0;
-    int n = 0;
-    while(i < floats){
-        sprintf(integer_string, "%x", keys[i]);
-        message_size += strlen(integer_string) + 1;
-        if(message_size > 255){
-            throw std::invalid_argument( "Message to large" );
-        }
-        strcat(msg, integer_string); 
-        strcat(msg, "~");
-        sprintf(integer_string, "%f", contents_.GetFloat(i));
-        message_size += strlen(integer_string) + 1;
-        if(message_size > 255){
-            throw std::invalid_argument( "Message to large" );
-        }
-        strcat(msg, integer_string); 
-        strcat(msg, "|");
-        i++;
-    }
-    while(i < keys.size()){
-        sprintf(integer_string, "%x", keys[i]);
-        strcat(msg, integer_string); 
-        message_size += strlen(integer_string) + 1;
-        if(message_size > 255){
-            throw std::invalid_argument( "Message to large" );
-        }
-        strcat(msg, "~");
-        sprintf(integer_string, "%x", contents_.GetInt(n));
-        message_size += strlen(integer_string) + 1;
-        if(message_size > 255){
-            throw std::invalid_argument( "Message to large" );
-        }
-        strcat(msg, integer_string); 
-        strcat(msg, "|");
-        i++;
-        n++;
-    }
+    this->contents_.flatten(msg, message_size);
     message_size += 1;
     if(message_size > 255){
             throw std::invalid_argument( "Message to large" );
