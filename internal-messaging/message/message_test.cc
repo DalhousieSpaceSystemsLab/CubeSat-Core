@@ -4,9 +4,26 @@
 #include "MessageSerializer.h"
 #include "MessageSenderInterface.h"
 
+#include "LorisMessenger.h"
+#include "Identifiers.h"
+
 using namespace std;
 
 int main() {
+	//Initialize the messenger
+	LorisMessenger tester;
+
+	//Add your data (arguments are: identifier for data, data value)
+	tester.Add(0,1000);
+	tester.Add(1,124.45f);
+	tester.Add(757,-90.2f);
+	//Look up the
+
+
+}
+
+
+int old_test(){
     cout << "Starting program" << endl;
 
     MessageBuilder messageBuilder;
