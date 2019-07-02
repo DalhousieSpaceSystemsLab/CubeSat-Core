@@ -21,6 +21,8 @@ HardwareEmulationManager::HardwareEmulationManager() {
 
     this->emulators_.push_back(new PowerEmulator);
     this->emulators_.push_back(new AdcsEmulator);
+    //TODO Add emulator for GPS
+
 
 }
 
