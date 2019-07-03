@@ -27,7 +27,7 @@ int LorisMessenger::ClearMessage(){
 	return 0;
 }
 
-int LorisMessenger::Send(unsigned int sender, unsigned int recipient){
+int LorisMessenger::Send(unsigned int recipient, unsigned int sender){
     MessageSenderInterface ms(recipient);//TODO This should just be an interface...
     this->current_message_.SetRecipient(recipient);
     this->current_message_.SetSender(sender);
