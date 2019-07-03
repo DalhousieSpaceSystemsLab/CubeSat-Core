@@ -1,4 +1,4 @@
-#include <iostream>
+/*#include <iostream>
 #include "ProcessFilePaths.h"
 #include "PowerRepository.h"
 
@@ -13,3 +13,4 @@ int main() {
     power_server_.WaitForConnection();
     return 0;
 }
+*/

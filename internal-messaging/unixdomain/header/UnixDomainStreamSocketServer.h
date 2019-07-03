@@ -45,6 +45,7 @@ public:
     //TODO Find a way to continue looping IF there are no waiting clients. RIght now it just pauses.
     //TODO Checkout "fcntl". May potentially allow non-blocking mode
     virtual void WaitForConnection();
+    //virtual void HandleMessage()=0;
 };
 
 #endif // LORIS_UNIXDOMAIN_UNIXDOMAIN_SERVER_H_
