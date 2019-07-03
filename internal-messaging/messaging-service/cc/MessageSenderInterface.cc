@@ -3,7 +3,7 @@
 //
 
 #include "MessageSenderInterface.h"
-
+//TODO this should not have implementation. Implementation should go in classes that implement this interface.
 MessageSenderInterface::MessageSenderInterface(unsigned int recipient):
     MessagingService(recipient) {}
 

@@ -15,6 +15,7 @@ public:
     int HandleMessage(char *buffer);
 
 private:
+   void HandleConnection(int file_descriptor);
    virtual int ProcessMessage(Message message) = 0;
 };
 

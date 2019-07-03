@@ -5,19 +5,6 @@
 */
 //REF: http://www.linuxhowtos.org/C_C++/socket.htm
 
-
-//UnixDomainStreamSocketServer::UnixDomainStreamSocketServer(char socket_path[]) {
-//
-//    cout << "Constructor: socket path: " << socket_path << endl;
-//    if (InitializeSocket(socket_path) != 0) {
-//        error("Error Initializing Socket");
-//    }
-//
-//    ToString();
-//    BindSocketToAddress(socket_file_descriptor_, socket_address_);
-//
-//}
-
 UnixDomainStreamSocketServer::UnixDomainStreamSocketServer(string sock_path) {
 
     int n = sock_path.length();
@@ -39,11 +26,13 @@ UnixDomainStreamSocketServer::UnixDomainStreamSocketServer(string sock_path) {
 
 }
 
+//TODO change return type to int to indicate success/failure and abort socket setup (if failed)
 void UnixDomainStreamSocketServer::BindSocketToAddress(int socket_file_descriptor, struct sockaddr_un socket_address) {
     //Bind the socket to an IP address and port
     cout << "unlinking" << endl;
     unlink(socket_address.sun_path);
     cout << "binding" << endl;
+    cout << "socket fd: "<< socket_file_descriptor << endl;
     if (bind(socket_file_descriptor, (struct sockaddr *) (&socket_address), sizeof(socket_address)) < 0) {
         cout << "socket_address_ size: " << sizeof(socket_address) << endl;
         cout << "Error code: " << errno << endl;
@@ -59,7 +48,7 @@ void UnixDomainStreamSocketServer::WaitForConnection() {
     //Indicate that the socket is for listening
     listen(socket_file_descriptor_, 5);
 
-    while (true) {
+   // while (true) {
         cout << "Waiting for connection..." << endl;
         //Wait for connection
         client_address_size = sizeof(client_address_);
@@ -69,12 +58,12 @@ void UnixDomainStreamSocketServer::WaitForConnection() {
         //accept() blocks until connection is made
         if (new_socket_file_descriptor_ < 0)
             error("ERROR on accept");
-
-        //Code only proceeds beyond this point if connection was made
-        cout << "Handling new request" << endl;
-        ReadFromSocket(new_socket_file_descriptor_);
-        WriteToSocket("Message Received", new_socket_file_descriptor_);
-    }
+        else{
+        	//Code only proceeds beyond this point if connection was made. Is this true?
+        	cout << "Handling new request" << endl;
+        	this->HandleConnection(new_socket_file_descriptor_);
+        }
+   // }
 }
 
 // Clean way to print server info

@@ -10,12 +10,11 @@ int UnixDomainStreamSocket::InitializeSocket(char sun_path[]) {
     ClearAddress();
 
     this->path_ = sun_path;
+    //AF_UNIX is to be used for communication between sockets on the same host system
     socket_address_.sun_family = AF_UNIX;
     strcpy(socket_address_.sun_path, sun_path);
 
     cout << "Initialize socket path: " << socket_address_.sun_path << endl;
-
-    //AF_UNIX is to be used for communication between sockets on the same host system
     socket_file_descriptor_ = socket(socket_address_.sun_family, SOCK_STREAM, 0);
     if (socket_file_descriptor_ < 0) {
         error("ERROR opening socket");

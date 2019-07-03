@@ -84,8 +84,10 @@ void Emulate(){
 
 void TestLorisMessenger(){
 	//Initialize the messenger
+	cout << "Initializing Messenger" << endl;
 	LorisMessenger tester;
 
+	cout << "Generating data to send" << endl;
 	//Add your data (arguments are: identifier for data, data value)
 	PowerKeys power_keys;//Identifier for data generated from EPS
 
@@ -96,6 +98,7 @@ void TestLorisMessenger(){
 	RecipientIdentifiers recipients;
 
 	//The second argument here is the ID of whoever initiated sending the message.
+	cout << "Sending data to recipient " << recipients.power_repository << endl;
 	tester.Send(recipients.power_repository,0);
 }
 
