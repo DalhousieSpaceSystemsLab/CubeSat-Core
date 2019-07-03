@@ -1,4 +1,8 @@
 #include "KeyValuePairContainer.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdexcept>
+
 //TODO this is just temporary. Need to have some way to indicate a function failed. 
 const int FAIL_CODE = -1000;
 
@@ -90,7 +94,7 @@ int KeyValuePairContainer::flattenIntPairs(char* msg, int msg_size){
     int n = 0;
     while(i < keys.size()){
         sprintf(integer_string, "%x", keys[i]);
-        strcat(msg, integer_string); 
+        strcat(msg, integer_string);
         msg_size += strlen(integer_string) + 1;
         if(msg_size > 255){
             throw std::invalid_argument( "Message to large" );
