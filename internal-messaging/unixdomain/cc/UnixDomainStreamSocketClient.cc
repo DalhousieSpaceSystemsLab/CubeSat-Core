@@ -41,7 +41,9 @@ int UnixDomainStreamSocketClient::SendMessageAwaitReply(char message[]) {
         error("ERROR SENDING MESSAGE");
         return 1;
     }
-    if (ReadFromSocket(socket_file_descriptor_) != 0) {
+    int capacity=256;
+    char reply[capacity];
+    if (ReadFromSocket(socket_file_descriptor_,reply,capacity) != 0) {
         error("ERROR READING FROM SOCKET");
         return 1;
     }

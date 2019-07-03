@@ -36,7 +36,7 @@ protected:
 
     int WriteToSocket(const char *msg, int new_socket_file_descriptor);
 
-    int ReadFromSocket(int new_socket_file_descriptor);
+    int ReadFromSocket(int new_socket_file_descriptor,char* buffer, int buffer_capacity);
 
     int InitializeSocket(char sun_path[]);
 
