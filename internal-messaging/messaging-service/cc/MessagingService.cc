@@ -11,37 +11,38 @@ MessagingService::MessagingService(unsigned int recipient) :
     client_socket_(IdentifierToProcessFilePath(recipient)){}
 
 std::string MessagingService::IdentifierToProcessFilePath(unsigned int identifier){
-    identifier_ = static_cast<Identifier>(identifier);
-    ProcessFilePaths filePaths;
+   // identifier_ = static_cast<Identifier>(identifier);
+    RecipientIdentifiers ids;
+	ProcessFilePaths filePaths;
     std::string filepath;
-    switch(identifier_){
-        case power_subsystem :
+    switch(identifier){
+        case ids.power_subsystem :
             //ipc/i2c
             break;
-        case comms_subsystem :
+        case ids.comms_subsystem :
             //ipc/i2c
             break;
-        case adcs_subsystem :
+        case ids.adcs_subsystem :
             //ipc/i2c
             break;
-        case payload_subsystem :
+        case ids.payload_subsystem :
             //ipc/i2c
             break;
-        case gps_subsystem :
+        case ids.gps_subsystem :
             //ipc/i2c
             break;
-        case power_repository :
+        case ids.power_repository :
             return filePaths.power_repository;
-        case comms_repository :
+        case ids.comms_repository :
             return filePaths.comms_repository;
-        case adcs_repository :
+        case ids.adcs_repository :
             return filePaths.adcs_repository;
-        case payload_repository :
+        case ids.payload_repository :
          return filePaths.payload_repository;
-        case gps_repository :
+        case ids.gps_repository :
             return filePaths.gps_repository;
         default:
-            std::cout << "ERROR Identifier does not exist";
+            std::cout << "ERROR: Identifier" << identifier << " does not exist" << std::endl;
             break;
     }
     return "";

@@ -5,16 +5,15 @@
 #ifndef DALCUBESAT_MESSAGINGSERVICE_H
 #define DALCUBESAT_MESSAGINGSERVICE_H
 
-#include "Identifiers.h"
 #include "UnixDomainStreamSocketClient.h"
-
+#include "RecipientIdentifiers.h"
 #include <string>
 
 class MessagingService {
 public: 
     MessagingService(unsigned int recipient);
 private:
-    Identifier identifier_;
+
 protected:
     std::string IdentifierToProcessFilePath(unsigned int identifier);
     UnixDomainStreamSocketClient client_socket_;
