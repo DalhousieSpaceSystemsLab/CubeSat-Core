@@ -1,6 +1,5 @@
-
-
-
+#include "ProcessFilePaths.h"
+#include "PowerRepository.h"
 
 int main(){
     ProcessFilePaths file_paths;
