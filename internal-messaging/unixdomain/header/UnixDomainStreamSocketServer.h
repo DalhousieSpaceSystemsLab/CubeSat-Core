@@ -32,19 +32,29 @@ private:
     socklen_t client_address_size;
     struct sockaddr_un client_address_;
 
+    //Initial set up binding server to socket 
+    //socket_file_descriptor - current file descripter of socket
+    //sock_address - local file system location of socket
     void BindSocketToAddress(int socket_file_descriptor, struct sockaddr_un sock_address);
 
+    //Cleanly prints server information
     void ToString();
 
 public:
-//    UnixDomainStreamSocketServer(char socket_path[]);
+    //Constructor
+    //sock_path - local file system path to unix domain socket as string
     UnixDomainStreamSocketServer(string sock_path);
 
 
     //TODO Add a virtual function that allows the server to perform some operation in between waiting
     //TODO Find a way to continue looping IF there are no waiting clients. RIght now it just pauses.
     //TODO Checkout "fcntl". May potentially allow non-blocking mode
+    //Method to poll socket for new connections from UnixDomainStreamSocketClients
+    //Calls ReadFromSocket once a connection is found
     virtual void WaitForConnection();
+
+    //Should be implimented by repository
+    //TODO delete?
     virtual void HandleConnection(int file_descriptor)=0;
 };
 

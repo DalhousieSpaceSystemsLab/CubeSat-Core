@@ -7,6 +7,7 @@
 
 #include <string>
 
+//File paths to Unix Domain Sockets used for information transfer between processes
 struct ProcessFilePaths {
     const std::string power_repository = "/tmp/ipc/repositories/power.sock";
     const std::string comms_repository = "/tmp/ipc/repositories/comms.sock";

@@ -33,19 +33,28 @@ protected:
     int socket_file_descriptor_; //Socket file descriptor
     struct sockaddr_un socket_address_;
 
-
+    //Writes message out to socket
+    //new_socket_file_descripter - sets socket file descripter for the send action
     int WriteToSocket(const char *msg, int new_socket_file_descriptor);
 
+    //Reads message from socket with connection
+    //new_socket_file_descripter - file descripter for socket file with waiting connection 
     int ReadFromSocket(int new_socket_file_descriptor,char* buffer, int buffer_capacity);
 
+    //Sets up initial connection to socket when first created using socket path
+    //sun_path - path to unix domain socket
     int InitializeSocket(char sun_path[]);
 
+    //called when error is found
     void error(const char *msg);
 
+    //clears buffer
     void ResetBuffer();
 
+    //clears current socket address struct
     void ClearAddress();
-
+    
+    //Gets called once a message has arrived to the socket, this should be implimented by any repository in order to process and create Message object
     //Return 0 if request handled successfully
     //Return 1 if request handling failed
     virtual int HandleMessage(char *buffer) = 0;
