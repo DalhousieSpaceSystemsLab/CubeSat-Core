@@ -2,8 +2,8 @@
 // Created by Spencer Axford on 2019-05-15.
 //
 
-#ifndef DALCUBESAT_PROCESSFILEPATHS_H
-#define DALCUBESAT_PROCESSFILEPATHS_H
+#ifndef LORIS_PROCESSFILEPATHS_H
+#define LORIS_PROCESSFILEPATHS_H
 
 #include <string>
 
@@ -15,4 +15,4 @@ struct ProcessFilePaths {
     const std::string adcs_repository = "/tmp/ipc/repositories/gps.sock";
 };
 
-#endif //DALCUBESAT_PROCESSFILEPATHS_H
+#endif //LORIS_PROCESSFILEPATHS_H

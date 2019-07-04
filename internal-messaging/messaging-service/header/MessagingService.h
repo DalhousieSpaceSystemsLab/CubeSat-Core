@@ -2,8 +2,8 @@
 // Created by Spencer Axford on 2019-05-15.
 //
 
-#ifndef DALCUBESAT_MESSAGINGSERVICE_H
-#define DALCUBESAT_MESSAGINGSERVICE_H
+#ifndef LORIS_MESSAGINGSERVICE_H
+#define LORIS_MESSAGINGSERVICE_H
 
 #include "UnixDomainStreamSocketClient.h"
 #include "RecipientIdentifiers.h"
@@ -20,4 +20,4 @@ protected:
 };
 
 
-#endif //DALCUBESAT_MESSAGINGSERVICE_H
+#endif //LORIS_MESSAGINGSERVICE_H
