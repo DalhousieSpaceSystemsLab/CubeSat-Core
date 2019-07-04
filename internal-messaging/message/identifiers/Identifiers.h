@@ -2,6 +2,7 @@
 // Created by Spencer Axford on 2019-05-15.
 //
 
+//List of Identifiers for each subsystem used to indicate senders and receipts in message sending
 enum Identifier {
     power_subsystem = 8578128,
     comms_subsystem = 2038403,

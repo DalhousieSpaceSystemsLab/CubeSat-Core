@@ -2,11 +2,12 @@
 // Created by Spencer Axford on 2019-05-15.
 //
 
-#ifndef DALCUBESAT_PROCESSFILEPATHS_H
-#define DALCUBESAT_PROCESSFILEPATHS_H
+#ifndef LORIS_PROCESSFILEPATHS_H
+#define LORIS_PROCESSFILEPATHS_H
 
 #include <string>
 
+//File paths to Unix Domain Sockets used for information transfer between processes
 struct ProcessFilePaths {
     const std::string power_repository = "/tmp/ipc/repositories/power.sock";
     const std::string comms_repository = "/tmp/ipc/repositories/comms.sock";
@@ -15,4 +16,4 @@ struct ProcessFilePaths {
     const std::string adcs_repository = "/tmp/ipc/repositories/gps.sock";
 };
 
-#endif //DALCUBESAT_PROCESSFILEPATHS_H
+#endif //LORIS_PROCESSFILEPATHS_H
