@@ -6,7 +6,7 @@
 #define LORIS_MESSAGINGSERVICE_H
 
 #include "UnixDomainStreamSocketClient.h"
-#include "RecipientIdentifiers.h"
+#include "Identifiers.h"
 #include <string>
 
 //Used by MessageSenderInterface as a method to interact with a UnixDomainStreamSocketClient without providing direct read write access

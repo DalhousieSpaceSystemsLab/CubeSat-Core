@@ -61,7 +61,8 @@ void UnixDomainStreamSocketServer::WaitForConnection() {
         else{
         	//Code only proceeds beyond this point if connection was made. Is this true?
         	cout << "Handling new request" << endl;
-        	this->HandleConnection(new_socket_file_descriptor_);
+            ReadFromSocket(new_socket_file_descriptor_, 255);
+        	// this->HandleConnection(new_socket_file_descriptor_);
         }
    // }
 }

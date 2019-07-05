@@ -9,17 +9,25 @@
 
 class KeyValuePairContainer : public KeyValuePairContainerInterface {
 public:
+
+    //Constructor && Destructor
     KeyValuePairContainer();
     ~KeyValuePairContainer();
+
+    //Add various Key Value pair types
     void AddKeyValuePair(unsigned int key, float value);
     void AddKeyValuePair(unsigned int key, int value);
 
+    //Gets lists of Keys, or pair type specific keys as vectors
     std::vector<int> GetKeys();
     std::vector<int> GetFloatKeys();
     std::vector<int> GetIntKeys();
     
-    float GetFloat(int index);
-    int GetInt(int index);
+    //Gets a particular value based on the key
+    float GetFloat(int key);
+    int GetInt(int key);
+
+    //Gets total amount of various types of pairs
     int GetAmountofFloatPairs();
     int GetAmountofIntPairs();
 

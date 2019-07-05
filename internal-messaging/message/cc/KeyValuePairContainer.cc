@@ -91,7 +91,6 @@ int KeyValuePairContainer::flattenIntPairs(char* msg, int msg_size){
     char integer_string[32];
     std::vector<int> keys = this->GetIntKeys();
     int i = 0;
-    int n = 0;
     while(i < keys.size()){
         sprintf(integer_string, "%x", keys[i]);
         strcat(msg, integer_string);
@@ -100,7 +99,7 @@ int KeyValuePairContainer::flattenIntPairs(char* msg, int msg_size){
             throw std::invalid_argument( "Message to large" );
         }
         strcat(msg, "~");
-        sprintf(integer_string, "%x", this->GetInt(n));
+        sprintf(integer_string, "%x", this->GetInt(keys[i]));
         msg_size += strlen(integer_string) + 1;
         if(msg_size > 255){
             throw std::invalid_argument( "Message to large" );
@@ -108,7 +107,6 @@ int KeyValuePairContainer::flattenIntPairs(char* msg, int msg_size){
         strcat(msg, integer_string); 
         strcat(msg, "|");
         i++;
-        n++;
     }
     msg_size += 1;
     if(msg_size > 255){
@@ -129,7 +127,7 @@ int KeyValuePairContainer::flattenFloatPairs(char* msg, int msg_size){
         }
         strcat(msg, integer_string); 
         strcat(msg, "~");
-        sprintf(integer_string, "%f", this->GetFloat(i));
+        sprintf(integer_string, "%f", this->GetFloat(keys[i]));
         msg_size += strlen(integer_string) + 1;
         if(msg_size > 255){
             throw std::invalid_argument( "Message to large" );

@@ -48,16 +48,16 @@ int UnixDomainStreamSocket::WriteToSocket(const char *msg, int new_socket_file_d
 
 //TODO pass a buffer as an argument into this function rather than using some class/"global" one
 //Read from the socket specified by the sfd
-int UnixDomainStreamSocket::ReadFromSocket(int new_socket_file_descriptor, char* buffer, int buffer_capacity) {
+int UnixDomainStreamSocket::ReadFromSocket(int new_socket_file_descriptor, int buffer_capacity) {
     ResetBuffer();
 
-    n_ = read(new_socket_file_descriptor, buffer,buffer_capacity);
+    n_ = read(new_socket_file_descriptor, buffer_, buffer_capacity);
 
     if (n_ < 0) {
         error("ERROR reading from socket");
         return 0;
     }
-    return 1;
+    return HandleMessage(buffer_);
 }
 
 //Prints error messages
