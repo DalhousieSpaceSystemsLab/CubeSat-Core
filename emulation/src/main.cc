@@ -5,7 +5,7 @@
 #include "LorisMessenger.h"
 #include "Message.h"
 #include "PowerKeys.h"
-#include "RecipientIdentifiers.h"
+#include "Identifiers.h"
 #include <cstdio>
 using std::cout;
 using std::endl;
@@ -95,7 +95,7 @@ void TestLorisMessenger(){
 	tester.Add(power_keys.battery_level,1);//battery level
 
 	//Look up the identifier for the recipient (in this case, its a process known as the "power repository")
-	RecipientIdentifiers recipients;
+	Identifiers recipients;
 
 	//The second argument here is the ID of whoever initiated sending the message.
 	cout << "Sending data to recipient " << recipients.power_repository << endl;

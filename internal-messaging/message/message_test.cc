@@ -6,7 +6,7 @@
 
 #include "LorisMessenger.h"
 #include "PowerKeys.h"
-#include "RecipientIdentifiers.h"
+#include "Identifiers.h"
 using namespace std;
 
 int main() {
@@ -21,7 +21,7 @@ int main() {
 
 
 	//Look up the identifier for the recipient (in this case, its a process known as the "power repository")
-	RecipientIdentifiers recipients;
+	Identifiers recipients;
 
 	//The second argument here is the ID of whoever initiated sending the message.
 	tester.Send(recipients.power_repository,0);

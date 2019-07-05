@@ -11,7 +11,16 @@ int PowerRepository::ProcessMessage(Message message){
         cout << "Processing Message Object in PowerRepository" << endl;
         KeyValuePairContainer c = message.GetMessageContents();
 
+        cout << "Recipient : Sender : Time Created" << endl;
 	cout << message.GetRecipient() << " : " << message.GetSender() << " : " << message.GetTimeCreated() << endl;
-        cout << c.GetFloat(0) << " : " << c.GetInt(0) << endl; 
+        std::vector<int> floatKeys = c.GetFloatKeys();
+        std::vector<int> intKeys = c.GetIntKeys();
+        cout << "key value pairs:" << endl;
+        for(int i = 0; i < intKeys.size(); i++){
+                cout << intKeys.at(i) << " : " << c.GetInt(intKeys.at(i)) << endl; 
+        }
+        for(int i = 0; i < floatKeys.size(); i++){
+                cout << floatKeys.at(i) << " : " << c.GetFloat(floatKeys.at(i)) << endl; 
+        }
         return 0;
 }

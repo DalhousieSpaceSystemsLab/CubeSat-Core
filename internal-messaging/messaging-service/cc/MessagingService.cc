@@ -4,15 +4,14 @@
 
 #include "MessagingService.h"
 #include "ProcessFilePaths.h"
-
+#include "Identifiers.h"
 #include <string>
 
 MessagingService::MessagingService(unsigned int recipient) : 
     client_socket_(IdentifierToProcessFilePath(recipient)){}
 
 std::string MessagingService::IdentifierToProcessFilePath(unsigned int identifier){
-   // identifier_ = static_cast<Identifier>(identifier);
-    RecipientIdentifiers ids;
+    Identifiers ids;
 	ProcessFilePaths filePaths;
     std::string filepath;
     switch(identifier){
