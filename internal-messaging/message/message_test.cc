@@ -1,7 +1,6 @@
 #include <iostream>
 #include "Message.h"
 #include "MessageBuilder.h"
-#include "MessageSerializer.h"
 #include "MessageSenderInterface.h"
 
 #include "LorisMessenger.h"

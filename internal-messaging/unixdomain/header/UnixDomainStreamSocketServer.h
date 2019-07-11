@@ -52,10 +52,6 @@ public:
     //Method to poll socket for new connections from UnixDomainStreamSocketClients
     //Calls ReadFromSocket once a connection is found
     virtual void WaitForConnection();
-
-    //Should be implimented by repository
-    //TODO delete?
-    virtual void HandleConnection(int file_descriptor)=0;
 };
 
 #endif // LORIS_UNIXDOMAIN_UNIXDOMAIN_SERVER_H_
