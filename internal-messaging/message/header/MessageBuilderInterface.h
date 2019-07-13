@@ -5,6 +5,7 @@
 #include "Message.h"
 #include "KeyValuePairContainer.h"
 
+//Interface for Message Builder 
 class MessageBuilderInterface {
 public:
     virtual void StartMessage() = 0;

@@ -4,6 +4,7 @@
 
 #include <vector>
 
+//Interface for Key Value Pair Container
 class KeyValuePairContainerInterface {
 public:
     virtual void AddKeyValuePair(unsigned int, float) = 0;

@@ -6,13 +6,18 @@
 #include "Message.h"
 #include <ctime>
 
+//Class used to build Message Objects
 class MessageBuilder {
 public:
+    //Constructor
     MessageBuilder();
 
+    //Initializes message
     void StartMessage();
+    //Returns message object created
     Message CompleteMessage();
 
+    //Setters for message contents
     void SetRecipient(unsigned int recipient);
     void SetSender(unsigned int sender);
     void SetMessageContents(KeyValuePairContainer container);
