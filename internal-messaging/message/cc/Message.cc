@@ -3,6 +3,21 @@
 #include "Message.h"
 #include <stdexcept>
 
+bool number_value(const char* string) {
+    bool decimal_occurred = false;
+    const int string_len = strlen(string);
+    for(int i = 0; i < string_len; ++i) {
+        if(string[i] == '.' && !decimal_occurred){ //first decimal occurrance
+            decimal_occurred = true;
+        } else if(decimal_occurred && string[i] == '.') { //any other decimal occurance
+            return false;
+        } else if(!isdigit(string[i])) { //not a number
+            return false;
+        }
+    }  
+    return true; //string is a number
+}
+
 Message::Message(){
 	this->time_created_=0;
 }
@@ -19,6 +34,7 @@ Message::Message(unsigned int sender, unsigned int recipient, long time, KeyValu
 
 Message::Message(char* flat)
 {
+    std::cout << "Creating Message" << std::endl;
     char integer_string[32];
     char hex_string[32];
     char long_string[64];
@@ -67,9 +83,11 @@ Message::Message(char* flat)
     memset(long_string, 0, 64);
     memset(hex_string, 0, 32);
 
+    //Find key value pairs
     i++;
     int key;
     while(flat[i] != '\3'){
+        //Get key
         while(flat[i] != '~'){
             sprintf(integer_string, "%c", flat[i]);
             strcat(hex_string, integer_string); 
@@ -81,13 +99,18 @@ Message::Message(char* flat)
         } catch (std::exception const &e) {}
         memset(long_string, 0, 64);
         memset(hex_string, 0, 32);
+        //Get value
         while(flat[i] != '|'){
             sprintf(integer_string, "%c", flat[i]);
             strcat(hex_string, integer_string); 
             i++;
         }
         try {
-            if(strchr(hex_string, 46)){ //if hex_string contains a '.'
+            if(!number_value(hex_string)){
+                std::string value = hex_string;
+                contents_.AddKeyValuePair(key, value);
+            }
+            else if(strchr(hex_string, 46)){ //if hex_string contains a '.'
                 float value = std::stof(hex_string);
                 contents_.AddKeyValuePair(key, value);
             }
@@ -186,6 +209,10 @@ void Message::Add(const unsigned int key, float value){
     this->contents_.AddKeyValuePair(key,value);
 }
 
+void Message::Add(const unsigned int key, std::string value){
+    this->contents_.AddKeyValuePair(key,value);
+}
+
 float Message::GetFloat(const unsigned int key){
 	return contents_.GetFloat(key);
 }
@@ -194,19 +221,28 @@ int Message::GetInt(const unsigned int key){
 	return contents_.GetInt(key);
 }
 
+std::string Message::GetString(const unsigned int key){
+	return contents_.GetString(key);
+}
+
 std::vector<int> Message::GetFloatKeys(){
 	return contents_.GetFloatKeys();
 }
+
 std::vector<int> Message::GetIntKeys(){
 	return contents_.GetIntKeys();
 }
 
-
+std::vector<int> Message::GetStringKeys(){
+	return contents_.GetStringKeys();
+}
 
 void Message::ToString(char * string, int capacity){
     char long_string[capacity];
     std::vector<int> float_keys = this->contents_.GetFloatKeys();
     std::vector<int> int_keys = this->contents_.GetIntKeys();
+    std::vector<int> string_keys = this->contents_.GetStringKeys();
+
     
     //printf("Printing key int pairs\n");
     //Append int key value pairs
@@ -236,6 +272,23 @@ void Message::ToString(char * string, int capacity){
 
         strcat(long_string, float_string);
         strcat(long_string,"\n");
+    }
+
+    if(float_keys.size()==0){
+        //printf("No float key value pairs\n");
+    }
+
+    //printf("Printing key float pairs\n");
+    //Append float key value pairs
+    for(int i=0;i<string_keys.size();i++){
+        char strings_string[32];
+        int key = string_keys[i];
+        std::string value = this->contents_.GetString(key);
+        sprintf(strings_string, "%d %s",key,value.c_str());
+        //printf("Pair %d: %d %f\n",i,key,value);
+
+        strcat(long_string, strings_string);
+        strcat(strings_string,"\n");
     }
 
     if(float_keys.size()==0){
