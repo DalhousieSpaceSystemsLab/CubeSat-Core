@@ -17,6 +17,7 @@ KeyValuePairContainer::~KeyValuePairContainer()
     this->key_int_pairs_.clear();
 }
 
+
 void KeyValuePairContainer::AddKeyValuePair(unsigned int key, float value) {
     this->key_float_pairs_.push_back(KeyFloatPair(key, value));
 }
@@ -25,7 +26,7 @@ void KeyValuePairContainer::AddKeyValuePair(unsigned int key, int value) {
     this->key_int_pairs_.push_back(KeyIntPair(key, value));
 }
 
-//TODO delete this function. Only use GetKeys and GetFloat
+//TODO delete this function? Only use GetKeys and GetFloat
 std::vector<int> KeyValuePairContainer::GetKeys() {
     std::vector<int> keys;
     for (std::size_t i = 0; i < this->key_float_pairs_.size(); ++i) {
@@ -37,6 +38,7 @@ std::vector<int> KeyValuePairContainer::GetKeys() {
     }
     return keys;
 }
+
 std::vector<int> KeyValuePairContainer::GetIntKeys() {
     std::vector<int> keys;
     for (std::size_t i = 0; i < this->key_int_pairs_.size(); ++i) {
@@ -91,13 +93,17 @@ int KeyValuePairContainer::flattenIntPairs(char* msg, int msg_size){
     char integer_string[32];
     std::vector<int> keys = this->GetIntKeys();
     int i = 0;
+    //For each int key 
     while(i < keys.size()){
+        //Get value in hexidecimal
         sprintf(integer_string, "%x", keys[i]);
         strcat(msg, integer_string);
+        //Increase msg_size proportionally
         msg_size += strlen(integer_string) + 1;
         if(msg_size > 255){
             throw std::invalid_argument( "Message to large" );
         }
+        //Add key value pair to msg
         strcat(msg, "~");
         sprintf(integer_string, "%x", this->GetInt(keys[i]));
         msg_size += strlen(integer_string) + 1;
@@ -119,12 +125,16 @@ int KeyValuePairContainer::flattenFloatPairs(char* msg, int msg_size){
     char integer_string[32];
     std::vector<int> keys = this->GetFloatKeys();
     int i = 0;
+    //For all float keys
     while(i < keys.size()){
+        //read in float value
         sprintf(integer_string, "%x", keys[i]);
+       //Increase message size
         msg_size += strlen(integer_string) + 1;
         if(msg_size > 255){
             throw std::invalid_argument( "Message to large" );
         }
+        //Add key value pair to msg
         strcat(msg, integer_string); 
         strcat(msg, "~");
         sprintf(integer_string, "%f", this->GetFloat(keys[i]));

@@ -1,13 +1,15 @@
 //
 // Created by Spencer Axford on 2019-05-07.
 //
-
-#ifndef DALCUBESAT_UDSERVEREXAMPLE_H
-#define DALCUBESAT_UDSERVEREXAMPLE_H
+//DEPRECIATED
+#ifndef LORIS_UDSERVEREXAMPLE_H
+#define LORIS_UDSERVEREXAMPLE_H
 
 #include "../header/UnixDomainStreamSocketServer.h"
 #include <string>
 
+//This is an example of implimenting a Unix Domain Stream Socket Server
+//This was a primitive example of making what is now called a repository in /core
 class UDServerExample : public UnixDomainStreamSocketServer {
 
 
@@ -20,4 +22,4 @@ public:
 };
 
 
-#endif //DALCUBESAT_UDSERVEREXAMPLE_H
+#endif //LORIS_UDSERVEREXAMPLE_H
