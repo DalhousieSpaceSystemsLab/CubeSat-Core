@@ -91,8 +91,11 @@ void TestLorisMessenger(){
 	//Add your data (arguments are: identifier for data, data value)
 	PowerKeys power_keys;//Identifier for data generated from EPS
 
+	std::string string = "This is a String";
+
 	tester.Add(power_keys.current_sensor1,0.2f);//reading from a current sensor
 	tester.Add(power_keys.battery_level,1);//battery level
+	tester.Add(power_keys.battery_level,string);//string test
 
 	//Look up the identifier for the recipient (in this case, its a process known as the "power repository")
 	Identifiers recipients;

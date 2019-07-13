@@ -9,6 +9,7 @@
 
 #include "Message.h"
 #include "MessageSenderInterface.h"//TODO LorisMessenger include MessagingService. Make MessagingService implement the interface, not inherit from it.
+#include <string>
 
 class LorisMessenger{
 public:
@@ -18,6 +19,7 @@ public:
 	//Methods to add key Value Pairs to message
 	int Add(unsigned int key, int value);
 	int Add(unsigned int key, float value);
+	int Add(unsigned int key, std::string value);
 	
 	//Method to send stored message to recipient from sender (Using Identifer int - see Identifier.h for correct values)
 	int Send(unsigned int recipient, unsigned int sender);

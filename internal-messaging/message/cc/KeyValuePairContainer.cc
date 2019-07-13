@@ -1,6 +1,6 @@
 #include "KeyValuePairContainer.h"
 #include <stdio.h>
-#include <string.h>
+#include <string>
 #include <stdexcept>
 
 //TODO this is just temporary. Need to have some way to indicate a function failed. 
@@ -15,6 +15,7 @@ KeyValuePairContainer::~KeyValuePairContainer()
 {
     this->key_float_pairs_.clear();
     this->key_int_pairs_.clear();
+    this->key_string_pairs_.clear();
 }
 
 
@@ -26,6 +27,10 @@ void KeyValuePairContainer::AddKeyValuePair(unsigned int key, int value) {
     this->key_int_pairs_.push_back(KeyIntPair(key, value));
 }
 
+void KeyValuePairContainer::AddKeyValuePair(unsigned int key, std::string value) {
+    this->key_string_pairs_.push_back(KeyStringPair(key, value));
+}
+
 //TODO delete this function? Only use GetKeys and GetFloat
 std::vector<int> KeyValuePairContainer::GetKeys() {
     std::vector<int> keys;
@@ -35,6 +40,10 @@ std::vector<int> KeyValuePairContainer::GetKeys() {
 
     for (std::size_t i = 0; i < this->key_int_pairs_.size(); ++i) {
         keys.push_back(this->key_int_pairs_[i].key());
+    }
+
+    for (std::size_t i = 0; i < this->key_string_pairs_.size(); ++i) {
+        keys.push_back(this->key_string_pairs_[i].key());
     }
     return keys;
 }
@@ -52,6 +61,14 @@ std::vector<int> KeyValuePairContainer::GetFloatKeys() {
 
     for (std::size_t i = 0; i < this->key_float_pairs_.size(); ++i) {
         keys.push_back(this->key_float_pairs_[i].key());
+    }
+    return keys;
+}
+
+std::vector<int> KeyValuePairContainer::GetStringKeys() {
+    std::vector<int> keys;
+    for (std::size_t i = 0; i < this->key_string_pairs_.size(); ++i) {
+        keys.push_back(this->key_string_pairs_[i].key());
     }
     return keys;
 }
@@ -75,6 +92,15 @@ int KeyValuePairContainer::GetInt(int key) {
     return FAIL_CODE;
 }
 
+std::string KeyValuePairContainer::GetString(int key) {
+    for(int i=0;i<key_string_pairs_.size();i++){
+        if(this->key_string_pairs_[i].key()==key){
+            return this->key_string_pairs_[i].value();
+        }
+    }   
+    return "FAIL_CODE";
+}
+
 int KeyValuePairContainer::GetAmountofFloatPairs(){
     return this->key_float_pairs_.size();
 }
@@ -83,9 +109,14 @@ int KeyValuePairContainer::GetAmountofIntPairs(){
     return this->key_int_pairs_.size();
 }
 
+int KeyValuePairContainer::GetAmountofStringPairs(){
+    return this->key_string_pairs_.size();
+}
+
 int KeyValuePairContainer::flatten(char* msg, int msg_size){
-    msg_size = flattenIntPairs(msg, msg_size);
-    msg_size = flattenFloatPairs(msg, msg_size);
+    msg_size += flattenIntPairs(msg, msg_size);
+    msg_size += flattenFloatPairs(msg, msg_size);
+    msg_size += flattenStringPairs(msg, msg_size);
     return msg_size;
 }
     
@@ -143,6 +174,35 @@ int KeyValuePairContainer::flattenFloatPairs(char* msg, int msg_size){
             throw std::invalid_argument( "Message to large" );
         }
         strcat(msg, integer_string); 
+        strcat(msg, "|");
+        i++;
+    }
+    return msg_size;
+}
+
+int KeyValuePairContainer::flattenStringPairs(char* msg, int msg_size){
+    char integer_string[32];
+    std::vector<int> keys = this->GetStringKeys();
+    int i = 0;
+    //For all float keys
+    while(i < keys.size()){
+        //read in float value
+        sprintf(integer_string, "%x", keys[i]);
+       //Increase message size
+        msg_size += strlen(integer_string) + 1;
+        if(msg_size > 255){
+            throw std::invalid_argument( "Message to large" );
+        }
+        //Add key value pair to msg
+        strcat(msg, integer_string); 
+        strcat(msg, "~");
+        char *string = (char*)std::malloc(std::strlen(this->GetString(keys[i]).c_str()) + 1);
+        sprintf(string, "%s", this->GetString(keys[i]).c_str());
+        msg_size += strlen(string) + 1;
+        if(msg_size > 255){
+            throw std::invalid_argument( "Message to large" );
+        }
+        strcat(msg, string); 
         strcat(msg, "|");
         i++;
     }

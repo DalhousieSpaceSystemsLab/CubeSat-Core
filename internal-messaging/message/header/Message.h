@@ -2,6 +2,7 @@
 #define LORIS_MESSAGE_MESSAGE_H_
 
 #include "KeyValuePairContainer.h"
+#include <string>
 
 //Used to represent a message that can be sent over via Messager
 //Contains Key Value pairs as data, sender and recipient for routing, and Time Created for logging
@@ -34,14 +35,17 @@ public:
     //Methods to add various key value pairs
     void Add(const unsigned int key, int value);
     void Add(const unsigned int key, float value);
+    void Add(const unsigned int key, std::string value);
 
     //Getters for relevant values of a given key
     int GetInt(const unsigned int key);
     float GetFloat(const unsigned int key);
+    std::string GetString(const unsigned int key);
 
     //Getters for vector of various types of key value pair key's
     std::vector<int> GetFloatKeys();
     std::vector<int> GetIntKeys();
+    std::vector<int> GetStringKeys();
 
     //Cleanly serializes message into nicely printable format
     void ToString(char* string,int capacity);
