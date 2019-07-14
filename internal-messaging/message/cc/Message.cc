@@ -12,7 +12,9 @@ bool number_value(const char* string) {
         } else if(decimal_occurred && string[i] == '.') { //any other decimal occurance
             return false;
         } else if(!isdigit(string[i])) { //not a number
-            return false;
+            if(i != 0 || string[i] != '-'){ //if the char is not setting the number as a negative
+                return false;
+            }
         }
     }  
     return true; //string is a number
