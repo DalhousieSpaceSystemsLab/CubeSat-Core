@@ -51,6 +51,15 @@ public:
     virtual void ToString(char* string,int capacity);
 
 protected:
+
+    // Flatten method that may be used by the child class - returns new msg_size (CANNOT EXCEED 255)
+    int FlattenHeader(char* msg, int msg_size);
+
+    // Constructor helpers that allow common contents to be created in this clsss rather then childs
+    // Returns new index
+    int BuildHeader(char* flat, int index); //Stops running when sender, reciepient, and time are all parsed
+    int BuildContents(char* flat, int index); //Stops running once end character is found
+
     unsigned int sender_;
     unsigned int recipient_;
     long time_created_;
