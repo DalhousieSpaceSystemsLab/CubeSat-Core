@@ -3,7 +3,7 @@
 #define LORIS_MESSAGE_MESSAGEBUILDER_H_
 
 #include "KeyValuePairContainer.h"
-#include "Message.h"
+#include "DataMessage.h"
 #include <ctime>
 
 //Class used to build Message Objects
@@ -15,7 +15,7 @@ public:
     //Initializes message
     void StartMessage();
     //Returns message object created
-    Message CompleteMessage();
+    DataMessage CompleteMessage();
 
     //Setters for message contents
     void SetRecipient(unsigned int recipient);

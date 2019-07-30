@@ -7,7 +7,7 @@
 PowerRepository::PowerRepository(std::string filePaths)
         : Repository(filePaths) {}
 
-int PowerRepository::ProcessMessage(Message message){
+int PowerRepository::ProcessMessage(DataMessage message){
         cout << "Processing Message Object in PowerRepository" << endl;
         KeyValuePairContainer c = message.GetMessageContents();
 

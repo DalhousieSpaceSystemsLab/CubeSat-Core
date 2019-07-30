@@ -2,10 +2,10 @@
 // Created by Spencer Axford on 2019-05-16.
 //
 
-#ifndef DALCUBESAT_REPOSITORY_H
-#define DALCUBESAT_REPOSITORY_H
+#ifndef LORIS_REPOSITORY_H
+#define LORIS_REPOSITORY_H
 
-#include "Message.h"
+#include "DataMessage.h"
 #include "UnixDomainStreamSocketServer.h"
 #include <string>
 
@@ -16,8 +16,8 @@ public:
 
 private:
    void HandleConnection(int file_descriptor);
-   virtual int ProcessMessage(Message message) = 0;
+   virtual int ProcessMessage(DataMessage message) = 0;
 };
 
 
-#endif //DALCUBESAT_REPOSITORY_H
+#endif //LORIS_REPOSITORY_H

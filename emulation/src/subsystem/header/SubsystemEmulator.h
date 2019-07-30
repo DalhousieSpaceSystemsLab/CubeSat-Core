@@ -4,7 +4,7 @@
 #ifndef LORIS_EMULATION_POWER_SUBSYSTEM_H_
 #define LORIS_EMULATION_POWER_SUBSYSTEM_H_
 
-#include "Message.h"
+#include "DataMessage.h"
 
 class SubsystemEmulator {
 public:
@@ -13,7 +13,7 @@ public:
 
     virtual void Update(long time) = 0;
 
-    virtual void GetState(Message & message) = 0;
+    virtual void GetState(DataMessage & message) = 0;
 
 private:
 

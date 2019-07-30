@@ -3,7 +3,7 @@
 #include "AdcsEmulator.h"
 #include "HardwareEmulationManager.h"
 #include "LorisMessenger.h"
-#include "Message.h"
+#include "DataMessage.h"
 #include "PowerKeys.h"
 #include "Identifiers.h"
 #include <cstdio>
@@ -37,7 +37,7 @@ void Emulate(){
 	cout << "Running and calling all emulators updates." << endl;
 	printf("Time\t Battery Level\t Zenith\t 	Azimuth\t\n");
 	for(int i=0;i<10;i++){
-		Message msg(0,0);
+		DataMessage msg(0,0);
 		manager.GetCurrentState(msg);
 		std::vector<int> int_keys = msg.GetIntKeys();
 		std::vector<int> float_keys = msg.GetFloatKeys();

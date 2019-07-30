@@ -2,9 +2,7 @@
 
 #include "PowerEmulator.h"
 #include "AdcsEmulator.h"
-//#include "UnixDomainStreamSocketClient.h"
-//#include "MessageSerializer.h"
-#include "Message.h"
+#include "DataMessage.h"
 #include <sys/time.h>
 
 /*
@@ -48,17 +46,17 @@ void HardwareEmulationManager::UpdateEmulators() {
     }
 }
 
-void HardwareEmulationManager::SendDataToCore(Message data) {
+void HardwareEmulationManager::SendDataToCore(DataMessage data) {
 
 }
 
 void HardwareEmulationManager::GetCurrentStateString(char * string, int capacity){
-	Message msg(0,0);
+	DataMessage msg(0,0);
 	GetCurrentState(msg);
 	msg.ToString(string,capacity);
 }
 
-void HardwareEmulationManager::GetCurrentState(Message & message){
+void HardwareEmulationManager::GetCurrentState(DataMessage & message){
 	for (unsigned int i=0; i < this->emulators_.size(); i++){
     	this->emulators_[i]->GetState(message);
     }

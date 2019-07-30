@@ -12,10 +12,10 @@ void MessageBuilder::StartMessage()
     this->message_contents_.~KeyValuePairContainer();
 }
 
-Message MessageBuilder::CompleteMessage()
+DataMessage MessageBuilder::CompleteMessage()
 {
     long current_time = (long)time(NULL);
-    return Message(this->current_sender_, this->current_recipient_, current_time, this->message_contents_);
+    return DataMessage(this->current_sender_, this->current_recipient_, current_time, this->message_contents_);
 }
 
 void MessageBuilder::SetRecipient(unsigned int recipient)

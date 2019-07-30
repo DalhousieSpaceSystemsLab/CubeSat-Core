@@ -77,15 +77,15 @@ int old_test(){
     messageBuilder.SetRecipient(3025893);
     messageBuilder.SetSender(4589013);
 
-    Message message = messageBuilder.CompleteMessage();
+    DataMessage message = messageBuilder.CompleteMessage();
 
     // SerializeMessage(&message, msg);
     MessageSenderInterface ms(message.GetRecipient());
-    ms.SendMessage(message);
+    ms.SendDataMessage(message);
 
     char msg[255] = "";
     message.flatten(msg);
-    Message De_message = Message(msg);
+    DataMessage De_message = DataMessage(msg);
 
     std::vector<int> keys = message.GetMessageContents().GetKeys();
 
