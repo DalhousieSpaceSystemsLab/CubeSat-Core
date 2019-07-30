@@ -176,7 +176,7 @@ void Message::ToString(char * string, int capacity){
 }
 
 int Message::FlattenHeader(char* msg, int msg_size){
-    int message_size = 0;
+    int message_size = msg_size;
     char integer_string[32];
     char long_string[64];
 
@@ -196,7 +196,7 @@ int Message::FlattenHeader(char* msg, int msg_size){
     }
     strcat(msg, integer_string);
     strcat(msg, "|");
-    
+
     sprintf(long_string, "%lx", this->time_created_);
     message_size += strlen(long_string) + 1;
     if(message_size > 255){
@@ -204,7 +204,16 @@ int Message::FlattenHeader(char* msg, int msg_size){
     }
     strcat(msg, long_string);
     strcat(msg, "|");
-    return msg_size;
+
+    sprintf(integer_string, "%x", this->flag);
+    message_size += strlen(integer_string) + 1;
+    if(message_size > 255){
+        throw std::invalid_argument( "Message to large" );
+    }
+    strcat(msg, integer_string); 
+    strcat(msg, "|");
+
+    return message_size;
 }
 
 int Message::BuildHeader(char* flat, int index){
@@ -251,6 +260,7 @@ int Message::BuildHeader(char* flat, int index){
     try {
         this->time_created_ = std::stoi(hex_string,nullptr,16);
     } catch (std::exception const &e) {}
+    memset(integer_string, 0, 32);
     memset(hex_string, 0, 32);
     return i;
 }
@@ -302,4 +312,8 @@ int Message::BuildContents(char* flat, int index){
         i++;
     }
     return i;
+}
+
+int Message::GetFlag(){
+    return this->flag;
 }

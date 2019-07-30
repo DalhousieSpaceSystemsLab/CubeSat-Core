@@ -6,24 +6,25 @@
 DataMessage::DataMessage()
 :Message()
 {
-    // NULL
+    flag = 0;
 }
 
 DataMessage::DataMessage(unsigned int sender, unsigned int recipient)
 :Message(sender, recipient)
 {  
-    //NULL
+    flag = 0;
 }
 
 DataMessage::DataMessage(unsigned int sender, unsigned int recipient, long time, KeyValuePairContainer contents)
 :Message(sender, recipient, time, contents)
 {
-    // NULL
+   flag = 0;
 }
 
 DataMessage::DataMessage(char* flat)
 {
     std::cout << "Creating Data Message" << std::endl;
+    flag = 0;
     char integer_string[32];
     char hex_string[32];
     memset(integer_string, 0, 32);
@@ -31,13 +32,16 @@ DataMessage::DataMessage(char* flat)
 
     // Find sneder, recipient, and time
     int i = BuildHeader(flat, 0);
-
-
-    // Find Requests
     i++;
+    // Skip over flag
+    while(flat[i] != '|'){
+        i++;
+    }
+    i++;
+    // Find Requests
     while(flat[i] != '|'){
         // Get next request
-        while(flat[i] != '~' && flat[i] != '|'){
+        while(flat[i] != '-' && flat[i] != '|'){
             sprintf(integer_string, "%c", flat[i]);
             strcat(hex_string, integer_string); 
             i++;
@@ -62,7 +66,7 @@ void DataMessage::Flatten(char* msg) {
     int message_size = 0;
     char integer_string[32];
 
-    // Add sender, recipient, and time
+    // Add sender, recipient, time, and flag
     FlattenHeader(msg, message_size);
     
     // If there are no requests, only a | will be added
@@ -84,7 +88,7 @@ void DataMessage::Flatten(char* msg) {
             strcat(msg, integer_string);
         } else {
             strcat(msg, integer_string);
-            strcat(msg, "~");
+            strcat(msg, "-");
         }
     }
     strcat(msg, "|");

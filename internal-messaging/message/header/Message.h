@@ -47,6 +47,9 @@ public:
     std::vector<int> GetIntKeys();
     std::vector<int> GetStringKeys();
 
+    //Getter for flag
+    int GetFlag();
+
     //Cleanly serializes message into nicely printable format
     virtual void ToString(char* string,int capacity);
 
@@ -64,7 +67,7 @@ protected:
     unsigned int recipient_;
     long time_created_;
     KeyValuePairContainer contents_;
-
+    int flag; // Indicates what type of message the object is
 };
 
 #endif

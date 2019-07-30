@@ -6,38 +6,42 @@
 CommandMessage::CommandMessage()
 :Message()
 {
-    // NULL
+    flag = 1;
 }
 
 CommandMessage::CommandMessage(unsigned int sender, unsigned int recipient)
 :Message(sender, recipient)
 {  
-    //NULL
+    flag = 1;
 }
 
 CommandMessage::CommandMessage(unsigned int sender, unsigned int recipient, long time, KeyValuePairContainer contents)
 :Message(sender, recipient, time, contents)
 {
-    // NULL
+    flag = 1;
 }
 
 CommandMessage::CommandMessage(char* flat)
 {
     std::cout << "Creating Command Message" << std::endl;
+    flag = 1;
 
-    // Find sneder, recipient, and time
+    // Find sender, recipient, and time
     int i = BuildHeader(flat, 0);
-
-    // Find key value pairs
     i++;
+    // Skip over flag
+    while(flat[i] != '|'){
+        i++;
+    }
+    i++;
+    // Find key value pairs
     i = BuildContents(flat, i);
 }
 
 void CommandMessage::Flatten(char* msg) {
     int message_size = 0;
-    char integer_string[32];
-
-    // Add sender, recipient, and time
+    
+    // Add sender, recipient, time, and flag
     FlattenHeader(msg, message_size);
 
     // Add Key Value Pairs
