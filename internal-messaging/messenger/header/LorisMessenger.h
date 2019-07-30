@@ -21,6 +21,9 @@ public:
 	int Add(unsigned int key, float value);
 	int Add(unsigned int key, std::string value);
 	
+	//Method to add a request for information to the message
+	int AddRequest(int request);
+
 	//Method to send stored message to recipient from sender (Using Identifer int - see Identifier.h for correct values)
 	int Send(unsigned int recipient, unsigned int sender);
 	

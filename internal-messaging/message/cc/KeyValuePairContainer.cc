@@ -113,14 +113,14 @@ int KeyValuePairContainer::GetAmountofStringPairs(){
     return this->key_string_pairs_.size();
 }
 
-int KeyValuePairContainer::flatten(char* msg, int msg_size){
-    msg_size += flattenIntPairs(msg, msg_size);
-    msg_size += flattenFloatPairs(msg, msg_size);
-    msg_size += flattenStringPairs(msg, msg_size);
+int KeyValuePairContainer::Flatten(char* msg, int msg_size){
+    msg_size += FlattenIntPairs(msg, msg_size);
+    msg_size += FlattenFloatPairs(msg, msg_size);
+    msg_size += FlattenStringPairs(msg, msg_size);
     return msg_size;
 }
     
-int KeyValuePairContainer::flattenIntPairs(char* msg, int msg_size){
+int KeyValuePairContainer::FlattenIntPairs(char* msg, int msg_size){
     char integer_string[32];
     std::vector<int> keys = this->GetIntKeys();
     int i = 0;
@@ -152,7 +152,7 @@ int KeyValuePairContainer::flattenIntPairs(char* msg, int msg_size){
     return msg_size;
 }
 
-int KeyValuePairContainer::flattenFloatPairs(char* msg, int msg_size){
+int KeyValuePairContainer::FlattenFloatPairs(char* msg, int msg_size){
     char integer_string[32];
     std::vector<int> keys = this->GetFloatKeys();
     int i = 0;
@@ -180,7 +180,7 @@ int KeyValuePairContainer::flattenFloatPairs(char* msg, int msg_size){
     return msg_size;
 }
 
-int KeyValuePairContainer::flattenStringPairs(char* msg, int msg_size){
+int KeyValuePairContainer::FlattenStringPairs(char* msg, int msg_size){
     char integer_string[32];
     std::vector<int> keys = this->GetStringKeys();
     int i = 0;

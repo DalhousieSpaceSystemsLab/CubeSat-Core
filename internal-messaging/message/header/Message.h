@@ -19,7 +19,7 @@ public:
 
     // Flattens message into a compressed character array that can be parsed by the Message(char* flat) constructor
     // msg - pointer to char array with a minimum size of 256 bytes.
-    virtual void flatten(char* msg) = 0;
+    virtual void Flatten(char* msg) = 0;
 
     //Getters for private members
     unsigned int GetSender() const;
@@ -48,7 +48,7 @@ public:
     std::vector<int> GetStringKeys();
 
     //Cleanly serializes message into nicely printable format
-    void ToString(char* string,int capacity);
+    virtual void ToString(char* string,int capacity);
 
 protected:
     unsigned int sender_;

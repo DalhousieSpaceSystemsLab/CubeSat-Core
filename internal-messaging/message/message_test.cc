@@ -84,7 +84,7 @@ int old_test(){
     ms.SendDataMessage(message);
 
     char msg[255] = "";
-    message.flatten(msg);
+    message.Flatten(msg);
     DataMessage De_message = DataMessage(msg);
 
     std::vector<int> keys = message.GetMessageContents().GetKeys();
