@@ -48,7 +48,7 @@ DataMessage::DataMessage(char* flat)
     memset(hex_string, 0, 32);
     int i = 0;
 
-    //find sender
+    // Find sender
     while(flat[i] != '|'){
         sprintf(integer_string, "%c", flat[i]);
         strcat(hex_string, integer_string); 
@@ -62,7 +62,7 @@ DataMessage::DataMessage(char* flat)
     memset(integer_string, 0, 32);
     memset(hex_string, 0, 32);
 
-    //find recipient
+    // Find recipient
     while(flat[i] != '|'){
         sprintf(integer_string, "%c", flat[i]);
         strcat(hex_string, integer_string);
@@ -76,7 +76,7 @@ DataMessage::DataMessage(char* flat)
     memset(integer_string, 0, 32);
     memset(hex_string, 0, 32);
     
-    //find time sent
+    // Find time sent
     while(flat[i] != '|'){
         sprintf(integer_string, "%c", flat[i]);
         strcat(hex_string, integer_string); 
@@ -88,7 +88,27 @@ DataMessage::DataMessage(char* flat)
     memset(long_string, 0, 64);
     memset(hex_string, 0, 32);
 
-    //Find key value pairs
+    // Find Requests
+    i++;
+    while(flat[i] != '|'){
+        // Get next request
+        while(flat[i] != '~' && flat[i] != '|'){
+            sprintf(integer_string, "%c", flat[i]);
+            strcat(hex_string, integer_string); 
+            i++;
+        }
+        try {
+            int request = std::stoi(hex_string,nullptr,16);
+            requests.push_back(request);
+        } catch (std::exception const &e) {}
+        memset(integer_string, 0, 32);
+        memset(hex_string, 0, 32);
+        if(flat[i] != '|'){
+            i++;
+        };
+    }
+
+    // Find key value pairs
     i++;
     int key;
     while(flat[i] != '\3'){
@@ -104,7 +124,7 @@ DataMessage::DataMessage(char* flat)
         } catch (std::exception const &e) {}
         memset(long_string, 0, 64);
         memset(hex_string, 0, 32);
-        //Get value
+        // Get value
         while(flat[i] != '|'){
             sprintf(integer_string, "%c", flat[i]);
             strcat(hex_string, integer_string); 
@@ -115,7 +135,7 @@ DataMessage::DataMessage(char* flat)
                 std::string value = hex_string;
                 contents_.AddKeyValuePair(key, value);
             }
-            else if(strchr(hex_string, 46)){ //if hex_string contains a '.'
+            else if(strchr(hex_string, 46)){ // If hex_string contains a '.'
                 float value = std::stof(hex_string);
                 contents_.AddKeyValuePair(key, value);
             }
@@ -130,12 +150,12 @@ DataMessage::DataMessage(char* flat)
     }
 }
 
-void DataMessage::flatten(char* msg) {
+void DataMessage::Flatten(char* msg) {
     int message_size = 0;
     char integer_string[32];
     char long_string[64];
 
-    //Add Sender, Recipient, and Time
+    // Add Sender, Recipient, and Time
     sprintf(integer_string, "%x", this->sender_);
     message_size += strlen(integer_string) + 1;
     if(message_size > 255){
@@ -159,19 +179,45 @@ void DataMessage::flatten(char* msg) {
     }
     strcat(msg, long_string);
     strcat(msg, "|");
+    
+    // If there are no requests, only a | will be added
+    if(requests.size() == 0){
+        message_size++;
+        if(message_size > 255){
+            throw std::invalid_argument( "Message to large" );
+        }
+    }
 
-    //Add Key Value Pairs
-    this->contents_.flatten(msg, message_size);
+    // Add requests
+    for(int i = 0; i < requests.size(); i++){
+        sprintf(integer_string, "%x", requests.at(i));
+        message_size += strlen(integer_string) + 1;
+        if(message_size > 255){
+            throw std::invalid_argument( "Message to large" );
+        }
+        if(i == requests.size() - 1){
+            strcat(msg, integer_string);
+        } else {
+            strcat(msg, integer_string);
+            strcat(msg, "~");
+        }
+    }
+    strcat(msg, "|");
+
+    // Add Key Value Pairs
+    this->contents_.Flatten(msg, message_size);
     message_size += 1;
     if(message_size > 255){
             throw std::invalid_argument( "Message to large" );
     }
-    //add end char
+    // Add end char
     strcat(msg, "\3");
 }
 
-std::vector<int> DataMessage::GetRequestKeys(){
-	return requests;
+void DataMessage::AddRequest(int request){
+    requests.push_back(request);
 }
 
-
+std::vector<int> DataMessage::GetRequests(){
+	return requests;
+}

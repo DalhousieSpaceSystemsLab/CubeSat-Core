@@ -18,7 +18,7 @@ void MessageSenderInterface::SendFlattenedMessage(char message[]) {
 
 void MessageSenderInterface::SendDataMessage(DataMessage message) {
     char msg[255] = "";
-    message.flatten(msg);
+    message.Flatten(msg);
     SendFlattenedMessage(msg);
 }
 

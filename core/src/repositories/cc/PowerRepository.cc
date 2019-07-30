@@ -13,6 +13,13 @@ int PowerRepository::ProcessMessage(DataMessage message){
 
         cout << "Recipient : Sender : Time Created" << endl;
 	cout << message.GetRecipient() << " : " << message.GetSender() << " : " << message.GetTimeCreated() << endl;
+        
+        cout << "requests:" << endl;
+        std::vector<int> requests = message.GetRequests();
+        for(int i = 0; i < requests.size(); i++){
+                cout << requests.at(i) << endl;
+        }
+       
         std::vector<int> floatKeys = c.GetFloatKeys();
         std::vector<int> intKeys = c.GetIntKeys();
         std::vector<int> stringKeys = c.GetStringKeys();

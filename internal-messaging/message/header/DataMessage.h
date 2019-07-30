@@ -15,9 +15,11 @@ class DataMessage : public Message{
 
         // Flattens message into a compressed character array that can be parsed by the Message(char* flat) constructor
         // msg - pointer to char array with a minimum size of 256 bytes.
-        void flatten(char* msg) override;
+        void Flatten(char* msg) override;
 
-        std::vector<int> GetRequestKeys();
+        // Methods for adding and collecting requests
+        void AddRequest(int request);
+        std::vector<int> GetRequests();
 
     private:
         std::vector<int> requests;

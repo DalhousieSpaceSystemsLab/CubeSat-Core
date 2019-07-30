@@ -38,11 +38,11 @@ public:
     int GetAmountofIntPairs();
     int GetAmountofStringPairs();
 
-    //flattens for message sending - returns new msg_size (CANNOT EXCEED 255)
-    int flatten(char* msg, int msg_size);
-    int flattenIntPairs(char* msg, int msg_size);
-    int flattenFloatPairs(char* msg, int msg_size);
-    int flattenStringPairs(char* msg, int msg_size);
+    //Flattens for message sending - returns new msg_size (CANNOT EXCEED 255)
+    int Flatten(char* msg, int msg_size);
+    int FlattenIntPairs(char* msg, int msg_size);
+    int FlattenFloatPairs(char* msg, int msg_size);
+    int FlattenStringPairs(char* msg, int msg_size);
 private:
     std::vector<KeyIntPair> key_int_pairs_;
     std::vector<KeyFloatPair> key_float_pairs_;

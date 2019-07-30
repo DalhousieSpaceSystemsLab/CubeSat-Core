@@ -26,6 +26,11 @@ int LorisMessenger::Add(unsigned int key, std::string value){
 	return 0;
 }
 
+int LorisMessenger::AddRequest(int request){
+	this->current_message_.AddRequest(request);
+	return 0;
+}
+
 int LorisMessenger::ClearMessage(){
 	//TODO potential memory leak...
 	this->current_message_=DataMessage();
