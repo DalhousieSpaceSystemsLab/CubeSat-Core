@@ -1,5 +1,5 @@
 #include "PowerEmulator.h"
-#include "Message.h"
+#include "DataMessage.h"
 #include "PowerKeys.h"
 #include <iostream>
 
@@ -31,7 +31,7 @@ float PowerEmulator::GetBatteryPower(Battery battery) {
     return battery.power_level();
 }
 
-void PowerEmulator::GetState(Message & message) {
+void PowerEmulator::GetState(DataMessage & message) {
    PowerKeys keys;
    const unsigned int battery_level_key=keys.battery_level;
    float battery_level = GetMainPower();

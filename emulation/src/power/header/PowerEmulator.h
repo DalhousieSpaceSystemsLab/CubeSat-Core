@@ -7,7 +7,7 @@
 #include "SubsystemEmulator.h"
 #include "Battery.h"
 #include "Relay.h"
-#include "Message.h"
+#include "DataMessage.h"
 #include <math.h>
 
 class PowerEmulator : public SubsystemEmulator {
@@ -26,7 +26,7 @@ public:
 
     float GetBatteryPower(Battery battery);
 
-    void GetState(Message & message);
+    void GetState(DataMessage & message);
 
     void Update(long time);
 

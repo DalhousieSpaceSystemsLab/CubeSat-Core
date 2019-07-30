@@ -5,7 +5,7 @@
 #include "SubsystemEmulator.h"
 #include <iostream>
 #include <math.h>
-#include "Message.h"
+#include "DataMessage.h"
 using namespace std;
 
 class AdcsEmulator : public SubsystemEmulator
@@ -28,7 +28,7 @@ class AdcsEmulator : public SubsystemEmulator
         
         float GetZenithAngle (void) const;
 
-        void GetState(Message & message);
+        void GetState(DataMessage & message);
 
         void Update(long time);
 };

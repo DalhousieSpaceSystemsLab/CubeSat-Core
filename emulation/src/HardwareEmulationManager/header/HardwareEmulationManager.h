@@ -8,7 +8,7 @@
 
 #include <unistd.h>
 #include "SubsystemEmulator.h"
-#include "Message.h"
+#include "DataMessage.h"
 #include <vector>
 
 class HardwareEmulationManager {
@@ -22,11 +22,11 @@ public:
 
     void UpdateEmulators();
     
-    void SendDataToCore(Message data);
+    void SendDataToCore(DataMessage data);
 
     void GetCurrentStateString(char * string, int capacity);
 
-    void GetCurrentState(Message & message);
+    void GetCurrentState(DataMessage & message);
 
 
 private:
