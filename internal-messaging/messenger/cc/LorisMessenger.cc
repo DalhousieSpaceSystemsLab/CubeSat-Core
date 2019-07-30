@@ -28,7 +28,7 @@ int LorisMessenger::Add(unsigned int key, std::string value){
 
 int LorisMessenger::ClearMessage(){
 	//TODO potential memory leak...
-	this->current_message_=Message();
+	this->current_message_=DataMessage();
 	return 0;
 }
 
@@ -37,7 +37,7 @@ int LorisMessenger::Send(unsigned int recipient, unsigned int sender){
     this->current_message_.SetRecipient(recipient);
     this->current_message_.SetSender(sender);
 
-    ms.SendMessage(this->current_message_);
+    ms.SendDataMessage(this->current_message_);
     ClearMessage();
     return 0;
 }

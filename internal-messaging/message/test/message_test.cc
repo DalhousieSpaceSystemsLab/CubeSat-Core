@@ -2,12 +2,12 @@
 using std::cout;
 using std::endl;
 #include <string.h>
-#include <Message.h>
+#include "DataMessage.h"
 
 int main(){
 cout << "HEllo! This is a message creation test!" << endl;
 //Empty message test
-Message message(0,0);
+DataMessage message(0,0);
 int capacity=128;
 char str[capacity];
 message.ToString(str,capacity);

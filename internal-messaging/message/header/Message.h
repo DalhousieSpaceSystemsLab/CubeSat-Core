@@ -19,7 +19,7 @@ public:
 
     // Flattens message into a compressed character array that can be parsed by the Message(char* flat) constructor
     // msg - pointer to char array with a minimum size of 256 bytes.
-    void flatten(char* msg);
+    virtual void flatten(char* msg) = 0;
 
     //Getters for private members
     unsigned int GetSender() const;
@@ -50,7 +50,7 @@ public:
     //Cleanly serializes message into nicely printable format
     void ToString(char* string,int capacity);
 
-private:
+protected:
     unsigned int sender_;
     unsigned int recipient_;
     long time_created_;

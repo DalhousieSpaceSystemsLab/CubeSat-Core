@@ -6,7 +6,7 @@
 #define LORIS_MESSAGESENDERINTERFACE_H
 
 #include "MessagingService.h"
-#include "Message.h"
+#include "DataMessage.h"
 
 //A Messaging Service that allows for sending messages to a desiginated recipient 
 class MessageSenderInterface : protected MessagingService {
@@ -19,7 +19,7 @@ public:
     void SetRecipient( unsigned int recipient);
     
     //Methods to send Message objects
-    void SendMessage(Message message);
+    void SendDataMessage(DataMessage message);
     
 private:
     //Method to send flattened message as char array 

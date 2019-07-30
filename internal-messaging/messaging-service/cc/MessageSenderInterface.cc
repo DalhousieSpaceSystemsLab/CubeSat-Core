@@ -16,7 +16,7 @@ void MessageSenderInterface::SendFlattenedMessage(char message[]) {
     client_socket_.Send(message);
 }
 
-void MessageSenderInterface::SendMessage(Message message) {
+void MessageSenderInterface::SendDataMessage(DataMessage message) {
     char msg[255] = "";
     message.flatten(msg);
     SendFlattenedMessage(msg);

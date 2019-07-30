@@ -2,8 +2,8 @@
 // Created by Spencer Axford on 2019-05-16.
 //
 
-#ifndef DALCUBESAT_POWERREPOSITORY_H
-#define DALCUBESAT_POWERREPOSITORY_H
+#ifndef LORIS_POWERREPOSITORY_H
+#define LORIS_POWERREPOSITORY_H
 
 #include "Repository.h"
 // #include "../../message/identifiers/ProcessFilePaths.h"
@@ -12,9 +12,9 @@
 class PowerRepository : public Repository {
 public:
     PowerRepository(std::string filePaths);
-    int ProcessMessage(Message message);
+    int ProcessMessage(DataMessage message);
 
 };
 
 
-#endif //DALCUBESAT_POWERREPOSITORY_H
+#endif //LORIS_POWERREPOSITORY_H

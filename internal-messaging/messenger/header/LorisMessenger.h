@@ -7,7 +7,7 @@
 #ifndef MESSENGER_LORISMESSENGER_H_
 #define MESSENGER_LORISMESSENGER_H_
 
-#include "Message.h"
+#include "DataMessage.h"
 #include "MessageSenderInterface.h"//TODO LorisMessenger include MessagingService. Make MessagingService implement the interface, not inherit from it.
 #include <string>
 
@@ -28,7 +28,7 @@ public:
 	int ClearMessage();
 
 private:
-	Message current_message_;
+	DataMessage current_message_;
 
 };
 #endif /* MESSENGER_LORISMESSENGER_H_ */
