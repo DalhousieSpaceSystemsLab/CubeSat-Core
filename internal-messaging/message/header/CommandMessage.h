@@ -2,6 +2,11 @@
 #ifndef LORIS_COMMANDMESSAGE_H
 #define LORIS_COMMANDMESSAGE_H
 #include "Message.h"
+
+// Message used to send commands to a subsystem
+// CommandMessage format:
+// sender|recipient|time_created|flag|commandkey~value|commandkey~value|\0
+// flag = 1
 class CommandMessage : public Message{
     public:
         //Constructors
