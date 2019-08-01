@@ -105,6 +105,18 @@ void TestLorisMessenger(){
 	//The second argument here is the ID of whoever initiated sending the message.
 	cout << "Sending data to recipient " << recipients.power_repository << endl;
 	tester.Send(recipients.power_repository,0);
+
+//	cout << "Sending data to recipient " << recipients.comms_repository << endl;
+//	tester.Send(recipients.comms_repository,0);
+//
+//	cout << "Sending data to recipient " << recipients.adcs_repository << endl;
+//	tester.Send(recipients.adcs_repository,0);
+//
+//	cout << "Sending data to recipient " << recipients.payload_repository << endl;
+//	tester.Send(recipients.payload_repository,0);
+//
+//	cout << "Sending data to recipient " << recipients.gps_repository << endl;
+//	tester.Send(recipients.gps_repository,0);
 }
 
 void TestHardwareEmulationManager(){
