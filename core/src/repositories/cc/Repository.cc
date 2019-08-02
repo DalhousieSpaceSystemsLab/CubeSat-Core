@@ -35,7 +35,9 @@ int Repository::AddData(DataMessage message){
 
 	for(int i=0;i<float_keys.size();i++){
 		unsigned int current_key = float_keys[i];
+		cout << "Current Key: " << current_key << endl;
 		if(WatchListContainsKey(current_key)){
+			cout << "Updating value for: "<<current_key << endl;
 			repository_data_.AddKeyValuePair(current_key,message.
 					GetFloat(current_key));
 		}
@@ -43,11 +45,13 @@ int Repository::AddData(DataMessage message){
 
 	for(int i=0;i<int_keys.size();i++){
 		unsigned int current_key = int_keys[i];
+		cout << "Current Key: " << current_key << endl;
 		if(WatchListContainsKey(current_key)){
+			cout << "Updating value for: "<<current_key << endl;
 			repository_data_.AddKeyValuePair(current_key,message.
 					GetInt(current_key));
 		}
 	}
 
-
+	return 0;
 }

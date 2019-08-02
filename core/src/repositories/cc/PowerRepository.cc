@@ -6,7 +6,9 @@
 #include "PowerKeys.h"
 
 PowerRepository::PowerRepository(std::string filePaths)
-        : Repository(filePaths) {}
+        : Repository(filePaths) {
+	AddKeysToWatchList();
+}
 
 //Adds all keys, to watch_list, for storing/returning future data
 int PowerRepository::AddKeysToWatchList(){
@@ -14,6 +16,11 @@ int PowerRepository::AddKeysToWatchList(){
 	PowerKeys keys;
 	this->watch_list_.push_back(keys.current_sensor1);
 	this->watch_list_.push_back(keys.battery_level);
+
+	cout << "Printing watch list..." << endl;
+	for(int i=0;i<watch_list_.size();i++){
+		cout << i << watch_list_[i].key() << endl;
+	}
 
 	return 0;
 }
@@ -45,5 +52,9 @@ int PowerRepository::ProcessMessage(DataMessage message){
         for(int i = 0; i < stringKeys.size(); i++){
                 cout << stringKeys.at(i) << " : " << c.GetString(stringKeys.at(i)) << endl; 
         }
+
+        cout << "Adding data" << endl;
+        AddData(message);
+
         return 0;
 }

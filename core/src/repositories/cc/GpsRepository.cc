@@ -33,5 +33,7 @@ int GpsRepository::ProcessMessage(DataMessage message){
     for(int i = 0; i < stringKeys.size(); i++){
         cout << stringKeys.at(i) << " : " << c.GetString(stringKeys.at(i)) << endl;
     }
+
+
     return 0;
 }
