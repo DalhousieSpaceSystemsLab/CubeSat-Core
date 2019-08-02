@@ -261,8 +261,23 @@ int Message::BuildHeader(char* flat, int index){
     try {
         this->time_created_ = std::stoi(hex_string,nullptr,16);
     } catch (std::exception const &e) {}
+
+    i++;
     memset(integer_string, 0, 32);
     memset(hex_string, 0, 32);
+    
+    // Find flag
+    while(flat[i] != '|'){
+        sprintf(integer_string, "%c", flat[i]);
+        strcat(hex_string, integer_string); 
+        i++;
+    }
+    try {
+        this->flag = std::stoi(hex_string,nullptr,16);
+    } catch (std::exception const &e) {}
+    memset(integer_string, 0, 32);
+    memset(hex_string, 0, 32);
+
     return i;
 }
 
