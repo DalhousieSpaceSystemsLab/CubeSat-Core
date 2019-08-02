@@ -66,9 +66,15 @@ int Repository::ReturnData(DataMessage request_message,DataMessage& return_messa
 			unsigned int requested_key = requests[i];
 			if(WatchListContainsKey(requested_key)){
 				//Check if the repository contains the requested key
-				if(repository_data_.ContainsKey(requested_key)){
-
+				if(repository_data_.ContainsIntKey(requested_key)){
+					return_message.Add(requested_key,
+						repository_data_.GetInt(requested_key));
 				}
+				if(repository_data_.ContainsFloatKey(requested_key)){
+					return_message.Add(requested_key,
+						repository_data_.GetFloat(requested_key));
+				}
+
 			}
 		}
 	}

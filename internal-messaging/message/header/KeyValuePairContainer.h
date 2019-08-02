@@ -38,7 +38,9 @@ public:
     int GetAmountofIntPairs();
     int GetAmountofStringPairs();
 
-    bool KeyValuePairContainer::ContainsKey(unsigned int key)
+    bool ContainsFloatKey(unsigned int key);
+    bool ContainsIntKey(unsigned int key);
+
 
     //Flattens for message sending - returns new msg_size (CANNOT EXCEED 255)
     int Flatten(char* msg, int msg_size);
@@ -49,6 +51,7 @@ private:
     std::vector<KeyIntPair> key_int_pairs_;
     std::vector<KeyFloatPair> key_float_pairs_;
     std::vector<KeyStringPair> key_string_pairs_;
+    bool ContainsKey(unsigned int key, std::vector<int> keys);
 };
 
 #endif
