@@ -6,19 +6,19 @@
 DataMessage::DataMessage()
 :Message()
 {
-    flag = 0;
+    flag = 100;
 }
 
 DataMessage::DataMessage(unsigned int sender, unsigned int recipient)
 :Message(sender, recipient)
 {  
-    flag = 0;
+    flag = 100;
 }
 
 DataMessage::DataMessage(unsigned int sender, unsigned int recipient, long time, KeyValuePairContainer contents)
 :Message(sender, recipient, time, contents)
 {
-   flag = 0;
+   flag = 100;
 }
 
 DataMessage::DataMessage(char* flat)

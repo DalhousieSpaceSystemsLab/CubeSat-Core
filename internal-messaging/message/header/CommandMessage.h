@@ -6,7 +6,7 @@
 // Message used to send commands to a subsystem
 // CommandMessage format:
 // sender|recipient|time_created|flag|commandkey~value|commandkey~value|\0
-// flag = 1
+// flag = 200
 class CommandMessage : public Message{
     public:
         //Constructors

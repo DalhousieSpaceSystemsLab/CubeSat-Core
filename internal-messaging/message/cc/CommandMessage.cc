@@ -6,25 +6,25 @@
 CommandMessage::CommandMessage()
 :Message()
 {
-    flag = 1;
+    flag = 200;
 }
 
 CommandMessage::CommandMessage(unsigned int sender, unsigned int recipient)
 :Message(sender, recipient)
 {  
-    flag = 1;
+    flag = 200;
 }
 
 CommandMessage::CommandMessage(unsigned int sender, unsigned int recipient, long time, KeyValuePairContainer contents)
 :Message(sender, recipient, time, contents)
 {
-    flag = 1;
+    flag = 200;
 }
 
 CommandMessage::CommandMessage(char* flat)
 {
     std::cout << "Creating Command Message" << std::endl;
-    flag = 1;
+    flag = 200;
 
     // Find sender, recipient, and time
     int i = BuildHeader(flat, 0);

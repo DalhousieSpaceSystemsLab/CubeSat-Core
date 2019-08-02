@@ -3,6 +3,7 @@
 #include "Message.h"
 #include <stdexcept>
 
+// Return true if string is a number, false if string is not a numver
 bool number_value(const char* string) {
     bool decimal_occurred = false;
     const int string_len = strlen(string);

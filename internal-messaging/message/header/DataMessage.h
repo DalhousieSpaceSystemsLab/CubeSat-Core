@@ -6,7 +6,7 @@
 // Message used to collect and/or request information from a subsystem
 // DataMessage format:
 // sender|recipient|time_created|flag|request-request-request|key~value|key~value|\0
-// flag = 0
+// flag = 100
 class DataMessage : public Message{
     public:
         //Constructors
