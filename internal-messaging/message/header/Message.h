@@ -13,7 +13,7 @@ public:
     //Build message with sender and reciepient, time created will be set to the current date and time
     Message(unsigned int sender, unsigned int recipient);
     //Total constructor building message with all private members 
-    Message(unsigned int sender, unsigned int recipient, long time,  KeyValuePairContainer contents);
+    Message(unsigned int sender, unsigned int recipient, long time, int childs_flag, KeyValuePairContainer contents);
     //Builds message from character array output of flatten method
     Message(char* flat);
 
@@ -47,15 +47,27 @@ public:
     std::vector<int> GetIntKeys();
     std::vector<int> GetStringKeys();
 
+    //Getter for flag
+    int GetFlag();
+
     //Cleanly serializes message into nicely printable format
     virtual void ToString(char* string,int capacity);
 
 protected:
+
+    // Flatten method that may be used by the child class - returns new msg_size (CANNOT EXCEED 255)
+    int FlattenHeader(char* msg, int msg_size);
+
+    // Constructor helpers that allow common contents to be created in this clsss rather then childs
+    // Returns new index
+    int BuildHeader(char* flat, int index); //Stops running when sender, reciepient, and time are all parsed
+    int BuildContents(char* flat, int index); //Stops running once end character is found
+
     unsigned int sender_;
     unsigned int recipient_;
     long time_created_;
     KeyValuePairContainer contents_;
-
+    int flag; // Indicates what type of message the object is
 };
 
 #endif
