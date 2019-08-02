@@ -55,3 +55,21 @@ int Repository::AddData(DataMessage message){
 
 	return 0;
 }
+
+int Repository::ReturnData(DataMessage request_message,DataMessage& return_message){
+	std::vector<int> requests = request_message.GetRequests();
+	int number_of_reqs=requests.size();
+	if(number_of_reqs>0){
+		//Iterate through all requested keys
+		for(int i=0;i<number_of_reqs;i++){
+			//Check if the requested key is watched by this repository
+			unsigned int requested_key = requests[i];
+			if(WatchListContainsKey(requested_key)){
+				//Check if the repository contains the requested key
+				if(repository_data_.ContainsKey(requested_key)){
+
+				}
+			}
+		}
+	}
+}

@@ -47,6 +47,19 @@ std::vector<int> KeyValuePairContainer::GetKeys() {
     return keys;
 }
 
+//TODO optimize search by having key list being sorted and use search algorithm
+bool KeyValuePairContainer::ContainsKey(unsigned int key){
+	std::vector<int> keys = GetKeys();
+	for(int i=0;i<keys.size();i++){
+		if(keys[i]==key){
+			return true;
+		}
+	}
+	return false;
+
+	return false;
+}
+
 std::vector<int> KeyValuePairContainer::GetIntKeys() {
     std::vector<int> keys;
     for (std::size_t i = 0; i < this->key_int_pairs_.size(); ++i) {

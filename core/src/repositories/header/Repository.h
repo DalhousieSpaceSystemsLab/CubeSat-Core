@@ -18,6 +18,7 @@ protected:
     //Keys which indicates what data the repository will contain
     std::vector<Key> watch_list_;
 
+    int ReturnData(DataMessage request_message,DataMessage& return_message);
     int AddData(DataMessage message);
 private:
     //Keys will be added to the watch_list_ in this function. Must be implemented or else

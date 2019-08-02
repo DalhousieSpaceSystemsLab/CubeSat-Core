@@ -38,6 +38,8 @@ public:
     int GetAmountofIntPairs();
     int GetAmountofStringPairs();
 
+    bool KeyValuePairContainer::ContainsKey(unsigned int key)
+
     //Flattens for message sending - returns new msg_size (CANNOT EXCEED 255)
     int Flatten(char* msg, int msg_size);
     int FlattenIntPairs(char* msg, int msg_size);
