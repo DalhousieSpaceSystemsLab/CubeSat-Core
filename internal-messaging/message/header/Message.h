@@ -13,7 +13,7 @@ public:
     //Build message with sender and reciepient, time created will be set to the current date and time
     Message(unsigned int sender, unsigned int recipient);
     //Total constructor building message with all private members 
-    Message(unsigned int sender, unsigned int recipient, long time,  KeyValuePairContainer contents);
+    Message(unsigned int sender, unsigned int recipient, long time, int childs_flag, KeyValuePairContainer contents);
     //Builds message from character array output of flatten method
     Message(char* flat);
 

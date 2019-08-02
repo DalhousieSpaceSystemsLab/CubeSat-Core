@@ -4,28 +4,20 @@
 #include <stdexcept>
 
 CommandMessage::CommandMessage()
-:Message()
-{
-    flag = 200;
-}
+:CommandMessage(0,0,0,KeyValuePairContainer())
+{}
 
 CommandMessage::CommandMessage(unsigned int sender, unsigned int recipient)
-:Message(sender, recipient)
-{  
-    flag = 200;
-}
+:CommandMessage(sender, recipient, 0, KeyValuePairContainer())
+{}
 
 CommandMessage::CommandMessage(unsigned int sender, unsigned int recipient, long time, KeyValuePairContainer contents)
-:Message(sender, recipient, time, contents)
-{
-    flag = 200;
-}
+:Message(sender, recipient, time, 200, contents)
+{}
 
 CommandMessage::CommandMessage(char* flat)
 {
     std::cout << "Creating Command Message" << std::endl;
-    flag = 200;
-
     // Find sender, recipient, and time
     int i = BuildHeader(flat, 0);
     i++;

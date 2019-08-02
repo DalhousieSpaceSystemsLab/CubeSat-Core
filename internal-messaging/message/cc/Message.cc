@@ -21,16 +21,15 @@ bool number_value(const char* string) {
     return true; //string is a number
 }
 
-Message::Message(){
-	this->time_created_=0;
-}
+Message::Message(){}
 
-Message::Message(unsigned int sender, unsigned int recipient): sender_(sender), recipient_(recipient)
+Message::Message(unsigned int sender, unsigned int recipient)
+:sender_(sender), recipient_(recipient)
 {  
     //NULL
 }
-Message::Message(unsigned int sender, unsigned int recipient, long time, KeyValuePairContainer contents):
-        sender_(sender), recipient_(recipient), time_created_(time), contents_(contents)
+Message::Message(unsigned int sender, unsigned int recipient, long time, int childs_flag, KeyValuePairContainer contents)
+:sender_(sender), recipient_(recipient), time_created_(time), contents_(contents), flag(childs_flag)
 {
     // NULL
 }

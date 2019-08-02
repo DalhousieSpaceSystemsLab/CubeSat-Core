@@ -32,8 +32,9 @@ int LorisMessenger::AddRequest(int request){
 }
 
 int LorisMessenger::ClearMessage(){
-	//TODO potential memory leak...
-	this->current_message_=DataMessage();
+	this->current_message_.SetRecipient(0);
+    this->current_message_.SetSender(0);
+	this->current_message_.SetTimeCreated(0);
 	return 0;
 }
 

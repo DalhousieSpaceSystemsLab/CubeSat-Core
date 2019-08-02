@@ -4,33 +4,26 @@
 #include <stdexcept>
 
 DataMessage::DataMessage()
-:Message()
-{
-    flag = 100;
-}
+:DataMessage(0,0,0,KeyValuePairContainer())
+{}
 
 DataMessage::DataMessage(unsigned int sender, unsigned int recipient)
-:Message(sender, recipient)
-{  
-    flag = 100;
-}
+:DataMessage(sender, recipient, 0, KeyValuePairContainer())
+{}
 
 DataMessage::DataMessage(unsigned int sender, unsigned int recipient, long time, KeyValuePairContainer contents)
-:Message(sender, recipient, time, contents)
-{
-   flag = 100;
-}
+:Message(sender, recipient, time, 100, contents)
+{}
 
 DataMessage::DataMessage(char* flat)
 {
     std::cout << "Creating Data Message" << std::endl;
-    flag = 0;
     char integer_string[32];
     char hex_string[32];
     memset(integer_string, 0, 32);
     memset(hex_string, 0, 32);
 
-    // Find sneder, recipient, and time
+    // Find sneder, recipient, time and flag
     int i = BuildHeader(flat, 0);
     i++;
     // Skip over flag
