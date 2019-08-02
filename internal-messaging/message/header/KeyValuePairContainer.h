@@ -7,7 +7,7 @@
 #include "KeyStringPair.h"
 #include "KeyValuePairContainerInterface.h"
 #include <vector>
-#include <string>
+#include <string.h>
 
 //Key Value Pair
 class KeyValuePairContainer : public KeyValuePairContainerInterface {

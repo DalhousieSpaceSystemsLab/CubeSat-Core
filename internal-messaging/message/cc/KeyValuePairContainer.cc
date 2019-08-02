@@ -1,6 +1,5 @@
 #include "KeyValuePairContainer.h"
 #include <stdio.h>
-#include <string>
 #include <stdexcept>
 
 //TODO this is just temporary. Need to have some way to indicate a function failed. 
@@ -196,7 +195,7 @@ int KeyValuePairContainer::FlattenStringPairs(char* msg, int msg_size){
         //Add key value pair to msg
         strcat(msg, integer_string); 
         strcat(msg, "~");
-        char *string = (char*)std::malloc(std::strlen(this->GetString(keys[i]).c_str()) + 1);
+        char *string = (char*)std::malloc(strlen(this->GetString(keys[i]).c_str()) + 1);
         sprintf(string, "%s", this->GetString(keys[i]).c_str());
         msg_size += strlen(string) + 1;
         if(msg_size > 255){

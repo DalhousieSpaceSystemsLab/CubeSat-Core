@@ -3,11 +3,23 @@
 //
 
 #include "PowerRepository.h"
+#include "PowerKeys.h"
 
 PowerRepository::PowerRepository(std::string filePaths)
         : Repository(filePaths) {}
 
+//Adds all keys, to watch_list, for storing/returning future data
+int PowerRepository::AddKeysToWatchList(){
+
+	PowerKeys keys;
+	this->watch_list_.push_back(keys.current_sensor1);
+	this->watch_list_.push_back(keys.battery_level);
+
+	return 0;
+}
+
 int PowerRepository::ProcessMessage(DataMessage message){
+	//TODO add in checks to determine if there are requests.
         cout << "Processing Message Object in PowerRepository" << endl;
         KeyValuePairContainer c = message.GetMessageContents();
 

@@ -14,3 +14,33 @@ int Repository::HandleMessage(char *buffer){
     ProcessMessage(msg);
     return 0;
 }
+
+bool Repository::WatchListContainsKey(unsigned int key){
+
+	//TODO there is the potential for optimizing this search by
+	//sorting the array and using a search algorithm
+	for(int i=0;i<this->watch_list_.size();i++){
+		if(watch_list_.at(i)==key){
+			return true;
+		}
+	}
+	return false;
+}
+
+//Checks for key value pairs in message which have a key in the watch list
+int Repository::AddData(DataMessage message){
+	std::vector<int> float_keys = message.GetFloatKeys();
+	std::vector<int> int_keys = message.GetIntKeys();
+
+	for(int i=0;i<float_keys.size();i++){
+		if(WatchListContainsKey(float_keys[i])){
+
+		}
+	}
+
+	for(int i=0;i<int_keys.size();i++){
+
+	}
+
+
+}
