@@ -4,7 +4,7 @@
 #include <stdexcept>
 
 CommandMessage::CommandMessage()
-:CommandMessage(0,0,0,KeyValuePairContainer())
+:CommandMessage(0,0)
 {}
 
 CommandMessage::CommandMessage(unsigned int sender, unsigned int recipient)
@@ -35,6 +35,9 @@ void CommandMessage::Flatten(char* msg) {
     
     // Add sender, recipient, time, and flag
     FlattenHeader(msg, message_size);
+    if(flag != 200){
+        throw std::invalid_argument("Flattened message had incorrect flag for a DataMessage");
+    }
 
     // Add Key Value Pairs
     this->contents_.Flatten(msg, message_size);

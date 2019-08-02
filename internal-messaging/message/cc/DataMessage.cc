@@ -4,7 +4,7 @@
 #include <stdexcept>
 
 DataMessage::DataMessage()
-:DataMessage(0,0,0,KeyValuePairContainer())
+:DataMessage(0,0)
 {}
 
 DataMessage::DataMessage(unsigned int sender, unsigned int recipient)
@@ -61,6 +61,9 @@ void DataMessage::Flatten(char* msg) {
 
     // Add sender, recipient, time, and flag
     FlattenHeader(msg, message_size);
+    if(flag != 100){
+        throw std::invalid_argument("Flattened message had incorrect flag for a DataMessage");
+    }
     
     // If there are no requests, only a | will be added
     if(requests.size() == 0){
