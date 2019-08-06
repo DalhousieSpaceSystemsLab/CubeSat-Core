@@ -7,6 +7,22 @@
 AdcsRepository::AdcsRepository(std::string filePaths)
         : Repository(filePaths) {}
 
+//Adds all keys, to watch_list, for storing/returning future data
+int AdcsRepository::AddKeysToWatchList(){
+
+
+	/* * Add keys here * */
+
+
+	cout << "Printing watch list..." << endl;
+	for(int i=0;i<watch_list_.size();i++){
+		cout << i << watch_list_[i].key() << endl;
+	}
+
+	return 0;
+}
+
+
 int AdcsRepository::ProcessMessage(DataMessage message){
     cout << "Processing Message Object in AdcsRepository" << endl;
     KeyValuePairContainer c = message.GetMessageContents();

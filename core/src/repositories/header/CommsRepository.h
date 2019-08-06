@@ -14,6 +14,8 @@ public:
     CommsRepository(std::string filePaths);
     int ProcessMessage(DataMessage message);
 
+    int AddKeysToWatchList();
+
 };
 
 

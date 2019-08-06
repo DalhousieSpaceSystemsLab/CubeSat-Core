@@ -13,7 +13,7 @@ class GpsRepository : public Repository {
 public:
     GpsRepository(std::string filePaths);
     int ProcessMessage(DataMessage message);
-
+    int AddKeysToWatchList();
 };
 
 

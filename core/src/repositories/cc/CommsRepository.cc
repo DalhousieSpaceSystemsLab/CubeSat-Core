@@ -7,6 +7,21 @@
 CommsRepository::CommsRepository(std::string filePaths)
         : Repository(filePaths) {}
 
+//Adds all keys, to watch_list, for storing/returning future data
+int CommsRepository::AddKeysToWatchList(){
+
+
+	/* * Add keys here * */
+
+
+	cout << "Printing watch list..." << endl;
+	for(int i=0;i<watch_list_.size();i++){
+		cout << i << watch_list_[i].key() << endl;
+	}
+
+	return 0;
+}
+
 int CommsRepository::ProcessMessage(DataMessage message){
     cout << "Processing Message Object in CommsRepository" << endl;
     KeyValuePairContainer c = message.GetMessageContents();
