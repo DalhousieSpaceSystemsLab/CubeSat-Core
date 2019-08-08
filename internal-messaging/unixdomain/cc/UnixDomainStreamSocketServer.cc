@@ -48,7 +48,7 @@ void UnixDomainStreamSocketServer::WaitForConnection() {
     //Indicate that the socket is for listening
     listen(socket_file_descriptor_, 5);
 
-   // while (true) {
+    while (true) {
         cout << "Waiting for connection..." << endl;
         //Wait for connection
         client_address_size = sizeof(client_address_);
@@ -64,7 +64,7 @@ void UnixDomainStreamSocketServer::WaitForConnection() {
             ReadFromSocket(new_socket_file_descriptor_, 255);
         	// this->HandleConnection(new_socket_file_descriptor_);
         }
-   // }
+    }
 }
 
 // Clean way to print server info
