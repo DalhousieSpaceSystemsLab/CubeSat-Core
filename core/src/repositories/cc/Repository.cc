@@ -71,11 +71,14 @@ int Repository::ReturnData(DataMessage request_message,DataMessage& return_messa
 	std::vector<int> requests = request_message.GetRequests();
 	int number_of_reqs=requests.size();
 	if(number_of_reqs>0){
+		cout << "Iterating through request keys" << endl;
+		bool no_keys_watched_and_requested=true;
 		//Iterate through all requested keys
 		for(int i=0;i<number_of_reqs;i++){
 			//Check if the requested key is watched by this repository
 			unsigned int requested_key = requests[i];
 			if(WatchListContainsKey(requested_key)){
+				no_keys_watched_and_requested=false;
 				//Check if the repository contains the requested key
 				if(repository_data_.ContainsIntKey(requested_key)){
 					return_message.Add(requested_key,
@@ -88,5 +91,11 @@ int Repository::ReturnData(DataMessage request_message,DataMessage& return_messa
 
 			}
 		}
+		if(no_keys_watched_and_requested){
+			cout << "The message contained requests which the repository does not contain data for." << endl;
+		}
+	}
+	else{
+		cout << "The data message contained no requests." << endl;
 	}
 }

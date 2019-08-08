@@ -48,6 +48,7 @@ void UnixDomainStreamSocketServer::WaitForConnection() {
     //Indicate that the socket is for listening
     listen(socket_file_descriptor_, 5);
 
+    //TODO maybe add some other check to determine whether looping can continue...
     while (true) {
         cout << "Waiting for connection..." << endl;
         //Wait for connection
