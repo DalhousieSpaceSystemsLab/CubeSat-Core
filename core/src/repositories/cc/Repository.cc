@@ -32,6 +32,7 @@ bool Repository::WatchListContainsKey(unsigned int key){
 int Repository::AddData(DataMessage message){
 	std::vector<int> float_keys = message.GetFloatKeys();
 	std::vector<int> int_keys = message.GetIntKeys();
+	std::vector<int> string_keys = message.GetStringKeys();
 
 	for(int i=0;i<float_keys.size();i++){
 		unsigned int current_key = float_keys[i];
@@ -50,6 +51,16 @@ int Repository::AddData(DataMessage message){
 			cout << "Updating value for: "<<current_key << endl;
 			repository_data_.AddKeyValuePair(current_key,message.
 					GetInt(current_key));
+		}
+	}
+
+	for(int i=0;i<string_keys.size();i++){
+		unsigned int current_key = string_keys[i];
+		cout << "Current Key: " << current_key << endl;
+		if(WatchListContainsKey(current_key)){
+			cout << "Updating value for: "<<current_key << endl;
+			repository_data_.AddKeyValuePair(current_key,message.
+					GetString(current_key));
 		}
 	}
 
