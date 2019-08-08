@@ -5,9 +5,10 @@
 #include "PowerRepository.h"
 
 #include "PowerKeys.h"
+#include "Identifiers.h"
 
 PowerRepository::PowerRepository(std::string filePaths)
-        : Repository(filePaths) {
+        : Repository(filePaths,identifiers_.power_repository) {
 	AddKeysToWatchList();
 }
 
@@ -60,6 +61,10 @@ int PowerRepository::ProcessMessage(DataMessage message){
 
         cout << "Adding data" << endl;
         AddData(message);
-
+        if(requests.size()>0){
+        	DataMessage return_message(GetIdentifier(),message.GetRecipient());
+        	BuildReturnDataMessage(message,return_message);
+        	ReplyToClient(return_message);
+        }
         return 0;
 }
