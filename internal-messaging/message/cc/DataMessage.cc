@@ -103,6 +103,7 @@ void DataMessage::AddRequest(int request){
     requests.push_back(request);
 }
 
-std::vector<int> DataMessage::GetRequests(){
-	return requests;
+std::vector<int>& DataMessage::GetRequests(){
+	std::vector<int>& request_copy = requests;
+	return request_copy;
 }

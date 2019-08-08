@@ -42,6 +42,8 @@ int PowerRepository::ProcessMessage(DataMessage message){
                 cout << requests.at(i) << endl;
         }
        
+        cout << "Getting message key value pairs" << endl;
+
         std::vector<int> floatKeys = c.GetFloatKeys();
         std::vector<int> intKeys = c.GetIntKeys();
         std::vector<int> stringKeys = c.GetStringKeys();

@@ -24,7 +24,7 @@ class DataMessage : public Message{
 
         // Methods for adding and collecting requests
         void AddRequest(int request);
-        std::vector<int> GetRequests();
+        std::vector<int>& GetRequests();
 
     private:
         std::vector<int> requests;
