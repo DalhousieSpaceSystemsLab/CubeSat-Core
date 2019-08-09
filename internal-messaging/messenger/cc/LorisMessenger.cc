@@ -47,12 +47,12 @@ int LorisMessenger::Send(unsigned int recipient, unsigned int sender){
     return 0;
 }
 
-int LorisMessenger::SendAndAwaitReply(unsigned int recipient, unsigned int sender,string reply){
+string LorisMessenger::SendAndAwaitReply(unsigned int recipient, unsigned int sender){
     MessageSenderInterface ms(recipient);//TODO This should just be an interface...
     this->current_message_.SetRecipient(recipient);
     this->current_message_.SetSender(sender);
 
-    ms.SendDataMessage(this->current_message_,reply);
+    return ms.SendDataMessageAwaitReply(this->current_message_);
     ClearMessage();
 
     return 0;

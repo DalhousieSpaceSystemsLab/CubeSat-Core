@@ -26,7 +26,7 @@ public:
 
     //Sends message awaiting reply from repository
     //message - what data will be sent (should be below 256 bytes)
-    int SendMessageAwaitReply(char message[],string reply);
+    string SendMessageAwaitReply(char message[]);
 
     string GetReply();
 
