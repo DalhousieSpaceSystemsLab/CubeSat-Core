@@ -7,6 +7,7 @@
 
 #include "UnixDomainStreamSocketClient.h"
 #include "Identifiers.h"
+#include "DataMessage.h"
 #include <string>
 
 //Used by MessageSenderInterface as a method to interact with a UnixDomainStreamSocketClient without providing direct read write access

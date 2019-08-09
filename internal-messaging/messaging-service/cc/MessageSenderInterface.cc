@@ -16,16 +16,25 @@ void MessageSenderInterface::SendFlattenedMessage(char message[]) {
     client_socket_.Send(message);
 }
 
+void MessageSenderInterface::SendFlattenedMessageAndAwaitReply(char message[],string reply) {
+    client_socket_.SendMessageAwaitReply(message);
+    reply=client_socket_.GetBufferContents();
+}
+
+
 void MessageSenderInterface::SendDataMessage(DataMessage message) {
     char msg[255] = "";
     message.Flatten(msg);
     SendFlattenedMessage(msg);
 }
 
-void MessageSenderInterface::SendAndAwaitReply(DataMessage message,char*reply) {
+void MessageSenderInterface::SendDataMessage(DataMessage message, string reply) {
     char msg[255] = "";
+
     message.Flatten(msg);
-    SendFlattenedMessage(msg);
+
+    SendFlattenedMessageAndAwaitReply(msg,reply);
+
 }
 
 

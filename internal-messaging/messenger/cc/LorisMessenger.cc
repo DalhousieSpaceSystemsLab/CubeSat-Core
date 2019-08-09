@@ -54,5 +54,6 @@ int LorisMessenger::SendAndAwaitReply(unsigned int recipient, unsigned int sende
 
     ms.SendDataMessage(this->current_message_);
     ClearMessage();
+
     return 0;
 }

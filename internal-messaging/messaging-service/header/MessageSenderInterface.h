@@ -20,11 +20,17 @@ public:
     
     //Methods to send Message objects
     void SendDataMessage(DataMessage message);
+    void SendDataMessage(DataMessage message, string reply);
     
 private:
     //Method to send flattened message as char array 
     //message - Char array representing a Message object no larger then 256 bytes (Must be output of flatten method of Message object)
     void SendFlattenedMessage(char message[]);
+
+    //Method to send flattened message as char array and await reply from recipient
+    //message - Char array representing a Message object no larger then 256 bytes (Must be output of flatten method of Message object)
+    void SendFlattenedMessageAndAwaitReply(char message[],string reply);
+
 };
 
 #endif //LORIS_MESSAGESENDERINTERFACE_H

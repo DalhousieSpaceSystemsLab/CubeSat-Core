@@ -104,7 +104,11 @@ void TestLorisMessenger(){
 
 	//The second argument here is the ID of whoever initiated sending the message.
 	cout << "Sending data to recipient " << recipients.power_repository << endl;
-	tester.Send(recipients.power_repository,0);
+
+	char reply[255]="";
+
+
+	tester.SendAndAwaitReply(recipients.power_repository,recipients.power_subsystem,reply);
 
 //	cout << "Sending data to recipient " << recipients.comms_repository << endl;
 //	tester.Send(recipients.comms_repository,0);
