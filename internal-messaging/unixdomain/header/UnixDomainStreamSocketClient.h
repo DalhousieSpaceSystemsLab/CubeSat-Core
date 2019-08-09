@@ -14,7 +14,7 @@
 	A simple client in the internet domain using Unix Domain Socket
 */
 //REF: http://www.linuxhowtos.org/C_C++/socket.htm
-class UnixDomainStreamSocketClient : protected UnixDomainStreamSocket {
+class UnixDomainStreamSocketClient : public UnixDomainStreamSocket {
 public:
     //Constructor 
     //sock_path - local file system path to unix domain socket as string
