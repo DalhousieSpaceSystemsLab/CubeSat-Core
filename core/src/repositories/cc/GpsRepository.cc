@@ -23,7 +23,7 @@ int GpsRepository::AddKeysToWatchList(){
 }
 
 
-int GpsRepository::ProcessMessage(DataMessage message){
+int GpsRepository::ProcessMessage(DataMessage message,int client_file_descriptor){
     cout << "Processing Message Object in GpsRepository" << endl;
     KeyValuePairContainer c = message.GetMessageContents();
 

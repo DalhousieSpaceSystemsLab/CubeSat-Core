@@ -23,7 +23,7 @@ int AdcsRepository::AddKeysToWatchList(){
 }
 
 
-int AdcsRepository::ProcessMessage(DataMessage message){
+int AdcsRepository::ProcessMessage(DataMessage message,int client_file_descriptor){
     cout << "Processing Message Object in AdcsRepository" << endl;
     KeyValuePairContainer c = message.GetMessageContents();
 
