@@ -7,6 +7,7 @@
 #include "PowerKeys.h"
 #include "Identifiers.h"
 #include <cstdio>
+#include <string>
 using std::cout;
 using std::endl;
 
@@ -105,7 +106,7 @@ void TestLorisMessenger(){
 	//The second argument here is the ID of whoever initiated sending the message.
 	cout << "Sending data to recipient " << recipients.power_repository << endl;
 
-	char reply[255]="";
+	std::string reply="";
 
 
 	tester.SendAndAwaitReply(recipients.power_repository,recipients.power_subsystem,reply);

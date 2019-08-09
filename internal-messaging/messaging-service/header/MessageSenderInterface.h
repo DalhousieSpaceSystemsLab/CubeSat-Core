@@ -29,7 +29,7 @@ private:
 
     //Method to send flattened message as char array and await reply from recipient
     //message - Char array representing a Message object no larger then 256 bytes (Must be output of flatten method of Message object)
-    void SendFlattenedMessageAndAwaitReply(char message[],string reply);
+    void SendFlattenedMessageAwaitReply(char message[],string reply);
 
 };
 

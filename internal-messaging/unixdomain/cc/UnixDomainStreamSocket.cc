@@ -74,3 +74,8 @@ void UnixDomainStreamSocket::ResetBuffer() {
 void UnixDomainStreamSocket::ClearAddress() {
     bzero((char *) &socket_address_, sizeof(socket_address_));
 }
+
+string UnixDomainStreamSocket::GetBufferContents(){
+	string contents = this->buffer_;
+	return contents;
+}

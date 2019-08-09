@@ -29,7 +29,7 @@ public:
 
 	//Method to send stored message to recipient from sender (Using Identifer int - see Identifier.h for correct values)
 	//Awaits reply from recipient until message recieved or timeout TODO implement timeout in SendAndAwaitReply
-	int SendAndAwaitReply(unsigned int recipient, unsigned int sender,char* reply);
+	int SendAndAwaitReply(unsigned int recipient, unsigned int sender,string reply);
 
 
 	

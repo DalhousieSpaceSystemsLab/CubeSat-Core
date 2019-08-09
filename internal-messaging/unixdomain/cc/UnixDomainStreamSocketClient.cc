@@ -36,7 +36,7 @@ int UnixDomainStreamSocketClient::Send(char message[]) {
     return 0;
 }
 
-int UnixDomainStreamSocketClient::SendMessageAwaitReply(char message[]) {
+int UnixDomainStreamSocketClient::SendMessageAwaitReply(char message[],string reply) {
     if (WriteToSocket(message, socket_file_descriptor_) != 0) {
         error("ERROR SENDING MESSAGE");
         return 1;
@@ -46,6 +46,7 @@ int UnixDomainStreamSocketClient::SendMessageAwaitReply(char message[]) {
         error("ERROR READING FROM SOCKET");
         return 1;
     }
+    reply=GetReply();
     return 0;
 }
 
@@ -53,4 +54,8 @@ int UnixDomainStreamSocketClient::SendMessageAwaitReply(char message[]) {
 int UnixDomainStreamSocketClient::HandleMessage(char *buffer,int file_descriptor){
     cout << "Handling message " << buffer << endl;
     return 0;
+}
+
+string UnixDomainStreamSocketClient::GetReply(){
+	return GetBufferContents();
 }

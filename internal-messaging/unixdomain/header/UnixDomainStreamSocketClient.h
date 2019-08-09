@@ -14,7 +14,7 @@
 	A simple client in the internet domain using Unix Domain Socket
 */
 //REF: http://www.linuxhowtos.org/C_C++/socket.htm
-class UnixDomainStreamSocketClient : public UnixDomainStreamSocket {
+class UnixDomainStreamSocketClient : protected UnixDomainStreamSocket {
 public:
     //Constructor 
     //sock_path - local file system path to unix domain socket as string
@@ -26,7 +26,9 @@ public:
 
     //Sends message awaiting reply from repository
     //message - what data will be sent (should be below 256 bytes)
-    int SendMessageAwaitReply(char message[]);
+    int SendMessageAwaitReply(char message[],string reply);
+
+    string GetReply();
 
 private:
     //initial connection to Unix Domain socket for data transfer
