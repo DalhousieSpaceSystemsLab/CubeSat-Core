@@ -5,20 +5,21 @@
 #include "Repository.h"
 #include <string>
 
-Repository::Repository(std::string socket_path,unsigned int identifier)
-        : UnixDomainStreamSocketServer(socket_path) {this->identifier_=identifier;}
+Repository::Repository(std::string socket_path)
+        : UnixDomainStreamSocketServer(socket_path) {this->identifier_=0;}
 
-int Repository::HandleMessage(char *buffer){
+int Repository::HandleMessage(char *buffer,int client_file_descriptor){
     cout << "Handling message: " << buffer << endl;
     DataMessage msg = DataMessage(buffer);
-    ProcessMessage(msg);
+    ProcessMessage(msg,client_file_descriptor);
     return 0;
 }
 
-int ReplyToClient(DataMessage& message){
+int Repository::ReplyToClient(DataMessage& message,int client_file_descriptor){
 	char msg[255];//TODO Spencer, can I just arbitrarily set the length of the message? and send it? - Andrew
-
-	WriteToSocket(message.ToString(msg,255),new_socket_file_descriptor_);
+	message.ToString(msg,255);
+	WriteToSocket(msg,client_file_descriptor);
+	return 1;
 }
 
 //Check if the key is contained in the watch list for the repository.

@@ -26,6 +26,12 @@ public:
 
 	//Method to send stored message to recipient from sender (Using Identifer int - see Identifier.h for correct values)
 	int Send(unsigned int recipient, unsigned int sender);
+
+	//Method to send stored message to recipient from sender (Using Identifer int - see Identifier.h for correct values)
+	//Awaits reply from recipient until message recieved or timeout TODO implement timeout in SendAndAwaitReply
+	int SendAndAwaitReply(unsigned int recipient, unsigned int sender,char* reply);
+
+
 	
 	//Removes all information stored in message
 	int ClearMessage();

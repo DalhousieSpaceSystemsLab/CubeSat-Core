@@ -5,10 +5,10 @@
 #include "PowerRepository.h"
 
 #include "PowerKeys.h"
-#include "Identifiers.h"
 
 PowerRepository::PowerRepository(std::string filePaths)
-        : Repository(filePaths,identifiers_.power_repository) {
+        : Repository(filePaths) {
+	this->identifier_=identifiers_.power_repository;
 	AddKeysToWatchList();
 }
 
@@ -27,7 +27,7 @@ int PowerRepository::AddKeysToWatchList(){
 	return 0;
 }
 
-int PowerRepository::ProcessMessage(DataMessage message){
+int PowerRepository::ProcessMessage(DataMessage message,int client_file_descriptor){
 	//TODO add in checks to determine if there are requests.
         cout << "Processing Message Object in PowerRepository" << endl;
         KeyValuePairContainer c = message.GetMessageContents();
@@ -64,7 +64,7 @@ int PowerRepository::ProcessMessage(DataMessage message){
         if(requests.size()>0){
         	DataMessage return_message(GetIdentifier(),message.GetRecipient());
         	BuildReturnDataMessage(message,return_message);
-        	ReplyToClient(return_message);
+        	ReplyToClient(return_message,client_file_descriptor);
         }
         return 0;
 }

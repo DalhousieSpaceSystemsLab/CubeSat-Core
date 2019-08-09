@@ -12,7 +12,7 @@
 class PowerRepository : public Repository {
 public:
     PowerRepository(std::string filePaths);
-    int ProcessMessage(DataMessage message);
+    int ProcessMessage(DataMessage message,int client_file_descriptor);
 
     int AddKeysToWatchList();
 };

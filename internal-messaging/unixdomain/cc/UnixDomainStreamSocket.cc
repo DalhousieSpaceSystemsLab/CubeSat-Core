@@ -57,7 +57,7 @@ int UnixDomainStreamSocket::ReadFromSocket(int new_socket_file_descriptor, int b
         error("ERROR reading from socket");
         return 0;
     }
-    return HandleMessage(buffer_);
+    return HandleMessage(buffer_,new_socket_file_descriptor);
 }
 
 //Prints error messages

@@ -22,3 +22,11 @@ void MessageSenderInterface::SendDataMessage(DataMessage message) {
     SendFlattenedMessage(msg);
 }
 
+void MessageSenderInterface::SendAndAwaitReply(DataMessage message,char*reply) {
+    char msg[255] = "";
+    message.Flatten(msg);
+    SendFlattenedMessage(msg);
+}
+
+
+

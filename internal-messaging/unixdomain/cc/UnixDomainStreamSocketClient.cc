@@ -50,7 +50,7 @@ int UnixDomainStreamSocketClient::SendMessageAwaitReply(char message[]) {
 }
 
 //default implementation
-int UnixDomainStreamSocketClient::HandleMessage(char *buffer){
+int UnixDomainStreamSocketClient::HandleMessage(char *buffer,int file_descriptor){
     cout << "Handling message " << buffer << endl;
     return 0;
 }

@@ -36,5 +36,5 @@ private:
     //Gets called once a message has arrived to the socket, this should be implimented by any repository in order to process and create Message object
     //Return 0 if request handled successfully
     //Return 1 if request handling failed
-    virtual int HandleMessage(char *buffer);
+    virtual int HandleMessage(char *buffer,int file_descriptor);
 };

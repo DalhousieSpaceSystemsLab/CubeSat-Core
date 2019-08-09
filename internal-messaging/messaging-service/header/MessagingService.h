@@ -21,6 +21,8 @@ protected:
     //Converts Identifier (as int) to the filepath of the Unix Domain Socket
     std::string IdentifierToProcessFilePath(unsigned int identifier);
     UnixDomainStreamSocketClient client_socket_;
+
+    void SendAndAwaitReply(DataMessage message,char*reply);
 };
 
 
