@@ -19,7 +19,7 @@ public:
     void SetRecipient( unsigned int recipient);
     
     //Methods to send Message objects
-    void SendDataMessage(DataMessage message);
+    string SendDataMessage(DataMessage message);
     string SendDataMessageAwaitReply(DataMessage message);
     
 private:

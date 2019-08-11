@@ -42,7 +42,9 @@ string UnixDomainStreamSocketClient::SendMessageAwaitReply(char message[]) {
         return "FAILURE";
     }
     int capacity=255;
+	cout << "Reading from Socket..." << endl;
     if (ReadFromSocket(socket_file_descriptor_,capacity) != 0) {
+
         error("ERROR READING FROM SOCKET");
         return "FAILURE";
     }

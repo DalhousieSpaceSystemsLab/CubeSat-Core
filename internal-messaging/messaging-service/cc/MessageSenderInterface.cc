@@ -12,29 +12,27 @@ void MessageSenderInterface::SetRecipient(unsigned int recipient){
     client_socket_ = UnixDomainStreamSocketClient(path);
 }
 
+//Send message to socket
 void MessageSenderInterface::SendFlattenedMessage(char message[]) {
     client_socket_.Send(message);
 }
 
+//Send message to socket and await reply
 string MessageSenderInterface::SendFlattenedMessageAwaitReply(char message[]) {
     return client_socket_.SendMessageAwaitReply(message);
 }
 
 
-void MessageSenderInterface::SendDataMessage(DataMessage message) {
+string MessageSenderInterface::SendDataMessage(DataMessage message) {
     char msg[255] = "";
     message.Flatten(msg);
-    SendFlattenedMessage(msg);
+    if(message.requests.size()>0){
+    	return SendFlattenedMessageAwaitReply(msg);
+    }
+    else{
+    	SendFlattenedMessage(msg);
+    	return "";
+    }
 }
-
-string MessageSenderInterface::SendDataMessageAwaitReply(DataMessage message) {
-    char msg[255] = "";
-
-    message.Flatten(msg);
-
-    return SendFlattenedMessageAwaitReply(msg);
-
-}
-
 
 

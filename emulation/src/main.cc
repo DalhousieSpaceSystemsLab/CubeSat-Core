@@ -113,6 +113,7 @@ void TestLorisMessenger(){
 	strcpy(test,reply.data());
 	cout << "hello" << test << endl;
 	cout << "reply..." << reply.data() << endl;
+	cout << "reply: " << reply << endl;
 	DataMessage message(test);
 
 	cout << "test" << endl;
