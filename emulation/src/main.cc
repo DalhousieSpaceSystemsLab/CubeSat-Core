@@ -108,9 +108,13 @@ void TestLorisMessenger(){
 
 	std::string reply="";
 
-	reply = tester.SendAndAwaitReply(recipients.power_repository,recipients.power_subsystem);
-	char test[400];
+	reply = tester.Send(recipients.power_repository,recipients.power_subsystem);
+	char test[255];
 	strcpy(test,reply.data());
+	cout << "printing test" << endl;
+	for(int i=0;i<255;i++){
+		cout << test[i];
+	}
 	cout << "hello" << test << endl;
 	cout << "reply..." << reply.data() << endl;
 	cout << "reply: " << reply << endl;

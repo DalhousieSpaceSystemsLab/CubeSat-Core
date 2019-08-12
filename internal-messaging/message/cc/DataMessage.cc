@@ -103,6 +103,12 @@ void DataMessage::AddRequest(int request){
     requests.push_back(request);
 }
 
+bool DataMessage::HasRequests(){
+	if(this->requests.size()>0){
+		return true;
+	}
+	return false;
+}
 std::vector<int>& DataMessage::GetRequests(){
 	std::vector<int>& request_copy = requests;
 	return request_copy;

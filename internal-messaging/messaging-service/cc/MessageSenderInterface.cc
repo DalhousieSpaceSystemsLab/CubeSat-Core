@@ -26,7 +26,7 @@ string MessageSenderInterface::SendFlattenedMessageAwaitReply(char message[]) {
 string MessageSenderInterface::SendDataMessage(DataMessage message) {
     char msg[255] = "";
     message.Flatten(msg);
-    if(message.requests.size()>0){
+    if(message.HasRequests()){
     	return SendFlattenedMessageAwaitReply(msg);
     }
     else{

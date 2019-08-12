@@ -26,6 +26,7 @@ class DataMessage : public Message{
         void AddRequest(int request);
         std::vector<int>& GetRequests();
 
+        bool HasRequests();
     private:
         std::vector<int> requests;
 };
