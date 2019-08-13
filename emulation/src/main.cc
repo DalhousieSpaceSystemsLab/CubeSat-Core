@@ -113,7 +113,9 @@ void TestLorisMessenger(){
 	cout << "reply: " << reply << endl;
 	DataMessage message(reply);
 
-	cout << "test" << endl;
+	cout << "Message received from power repository!" << endl;
+
+
 
 //	cout << "Sending data to recipient " << recipients.comms_repository << endl;
 //	tester.Send(recipients.comms_repository,0);

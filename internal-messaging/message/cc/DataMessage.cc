@@ -37,19 +37,21 @@ int DataMessage::BuildFromCharacters(char * flat){
 	    char hex_string[32];
 	    memset(integer_string, 0, 32);
 	    memset(hex_string, 0, 32);
-
-	    //TODO Move code for parsing header into parent class
 	    // Find sender, recipient, time and flag
 	    int i = BuildHeader(flat, 0);
 	    i++;
+	    //TODO Spencer, should the flag be parsed in parent class Message? - Andrew
 	    // Skip over flag
 	    while(flat[i] != '|'){
 	        i++;
 	    }
-	    i++;
+	    //i++;
+
+	    //TODO Find more robust solution for when no requests exist
 	    // Find Requests
-	    while(flat[i] != '|'){
+	    while(flat[i] != '|' && flat[i-1] != '|'){
 	        // Get next request
+	    	//TODO fix bug where infinite loop is reached due to no requests in the message
 	        while(flat[i] != '-' && flat[i] != '|'){
 	            sprintf(integer_string, "%c", flat[i]);
 	            strcat(hex_string, integer_string);
