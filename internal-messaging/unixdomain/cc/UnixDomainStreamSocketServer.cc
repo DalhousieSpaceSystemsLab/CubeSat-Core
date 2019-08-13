@@ -55,13 +55,24 @@ void UnixDomainStreamSocketServer::WaitForConnection() {
         client_address_size = sizeof(client_address_);
         new_socket_file_descriptor_ = accept(socket_file_descriptor_,
                                              (struct sockaddr *) &client_address_, &client_address_size);
-        //TODO Avoid blocking? We need to keep looping sometimes when there is no client waiting.
+        /*
+         * TODO Avoid blocking? We need to keep looping sometimes when there is no client waiting.
+         * Andrew, August 13 2019: We may not need to block. Repositories just wait and listen for connections.
+         *  They don't need to do anything else. Ignore this todo for now.
+         */
+
         //accept() blocks until connection is made
         if (new_socket_file_descriptor_ < 0)
             error("ERROR on accept");
         else{
         	//Code only proceeds beyond this point if connection was made. Is this true?
         	cout << "Handling new request" << endl;
+
+        	/*
+        	 * TODO: I think there is an issue with how we are calling ReadFromSocket.
+        	 * Why is 255 being used as a capacity? What happens if the message is over 255?
+        	 * What happens if its under 255? -Andrew
+        	 */
             ReadFromSocket(new_socket_file_descriptor_, 255);
         	// this->HandleConnection(new_socket_file_descriptor_);
         }

@@ -26,6 +26,11 @@ DataMessage::DataMessage(char* flat)
 	BuildFromCharacters(flat);
 }
 
+/*
+ * Takes a character array, extracts data, and assigns it to class variables
+ * This function assumes that flat is the "flattened" version of a pre-existing DataMessage
+ * TODO for andrew: give this a better name
+ */
 int DataMessage::BuildFromCharacters(char * flat){
 	 std::cout << "Creating Data Message" << std::endl;
 	    char integer_string[32];
@@ -33,7 +38,8 @@ int DataMessage::BuildFromCharacters(char * flat){
 	    memset(integer_string, 0, 32);
 	    memset(hex_string, 0, 32);
 
-	    // Find sneder, recipient, time and flag
+	    //TODO Move code for parsing header into parent class
+	    // Find sender, recipient, time and flag
 	    int i = BuildHeader(flat, 0);
 	    i++;
 	    // Skip over flag
@@ -66,7 +72,6 @@ int DataMessage::BuildFromCharacters(char * flat){
 	    i = BuildContents(flat, i);
 	    return 1;
 }
-
 
 void DataMessage::Flatten(char* msg) {
     int message_size = 0;
@@ -101,7 +106,10 @@ void DataMessage::Flatten(char* msg) {
         }
     }
     strcat(msg, "|");
-
+    /*
+    *	TODO for Spencer: Can you put these delimiting string values in constants somewhere?
+    *	Maybe in the header of this class - Andrew
+    */
     // Add Key Value Pairs
     this->contents_.Flatten(msg, message_size);
     message_size += 1;
@@ -122,6 +130,7 @@ bool DataMessage::HasRequests(){
 	}
 	return false;
 }
+
 std::vector<int>& DataMessage::GetRequests(){
 	std::vector<int>& request_copy = requests;
 	return request_copy;

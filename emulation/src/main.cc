@@ -110,7 +110,6 @@ void TestLorisMessenger(){
 
 	reply = tester.Send(recipients.power_repository,recipients.power_subsystem);
 
-	cout << "reply..." << reply.data() << endl;
 	cout << "reply: " << reply << endl;
 	DataMessage message(reply);
 

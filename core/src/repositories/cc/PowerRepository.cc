@@ -62,7 +62,7 @@ int PowerRepository::ProcessMessage(DataMessage message,int client_file_descript
         cout << "Adding data" << endl;
         AddData(message);
         if(requests.size()>0){
-        	DataMessage return_message(GetIdentifier(),message.GetRecipient());
+        	DataMessage return_message(GetIdentifier(),message.GetSender());
         	BuildReturnDataMessage(message,return_message);
         	ReplyToClient(return_message,client_file_descriptor);
         }
