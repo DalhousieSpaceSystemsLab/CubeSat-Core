@@ -15,45 +15,57 @@ DataMessage::DataMessage(unsigned int sender, unsigned int recipient, long time,
 :Message(sender, recipient, time, 100, contents)
 {}
 
+DataMessage::DataMessage(string flat){
+	char cstr[flat.size() + 1];
+	std::strcpy(cstr, flat.c_str());	// or pass &s[0]
+	BuildFromCharacters(cstr);
+}
+
 DataMessage::DataMessage(char* flat)
 {
-    std::cout << "Creating Data Message" << std::endl;
-    char integer_string[32];
-    char hex_string[32];
-    memset(integer_string, 0, 32);
-    memset(hex_string, 0, 32);
-
-    // Find sneder, recipient, time and flag
-    int i = BuildHeader(flat, 0);
-    i++;
-    // Skip over flag
-    while(flat[i] != '|'){
-        i++;
-    }
-    i++;
-    // Find Requests
-    while(flat[i] != '|'){
-        // Get next request
-        while(flat[i] != '-' && flat[i] != '|'){
-            sprintf(integer_string, "%c", flat[i]);
-            strcat(hex_string, integer_string); 
-            i++;
-        }
-        try {
-            int request = std::stoi(hex_string,nullptr,16);
-            requests.push_back(request);
-        } catch (std::exception const &e) {}
-        memset(integer_string, 0, 32);
-        memset(hex_string, 0, 32);
-        if(flat[i] != '|'){
-            i++;
-        };
-    }
-
-    // Find key value pairs
-    i++;
-    i = BuildContents(flat, i);
+	BuildFromCharacters(flat);
 }
+
+int DataMessage::BuildFromCharacters(char * flat){
+	 std::cout << "Creating Data Message" << std::endl;
+	    char integer_string[32];
+	    char hex_string[32];
+	    memset(integer_string, 0, 32);
+	    memset(hex_string, 0, 32);
+
+	    // Find sneder, recipient, time and flag
+	    int i = BuildHeader(flat, 0);
+	    i++;
+	    // Skip over flag
+	    while(flat[i] != '|'){
+	        i++;
+	    }
+	    i++;
+	    // Find Requests
+	    while(flat[i] != '|'){
+	        // Get next request
+	        while(flat[i] != '-' && flat[i] != '|'){
+	            sprintf(integer_string, "%c", flat[i]);
+	            strcat(hex_string, integer_string);
+	            i++;
+	        }
+	        try {
+	            int request = std::stoi(hex_string,nullptr,16);
+	            requests.push_back(request);
+	        } catch (std::exception const &e) {}
+	        memset(integer_string, 0, 32);
+	        memset(hex_string, 0, 32);
+	        if(flat[i] != '|'){
+	            i++;
+	        };
+	    }
+
+	    // Find key value pairs
+	    i++;
+	    i = BuildContents(flat, i);
+	    return 1;
+}
+
 
 void DataMessage::Flatten(char* msg) {
     int message_size = 0;
