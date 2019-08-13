@@ -50,6 +50,7 @@ int DataMessage::BuildFromCharacters(char * flat){
 	            i++;
 	        }
 	        try {
+	        	std::cout << "Adding: " << hex_string << "to requests in DataMessage" << std::endl;
 	            int request = std::stoi(hex_string,nullptr,16);
 	            requests.push_back(request);
 	        } catch (std::exception const &e) {}

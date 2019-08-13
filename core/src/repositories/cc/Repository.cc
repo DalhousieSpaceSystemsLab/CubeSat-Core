@@ -18,7 +18,7 @@ int Repository::HandleMessage(char *buffer,int client_file_descriptor){
 int Repository::ReplyToClient(DataMessage& message,int client_file_descriptor){
 	char msg[255];//TODO Spencer, can I just arbitrarily set the length of the message? and send it? - Andrew
 	message.Flatten(msg);
-
+	cout << "Replying to client at " << client_file_descriptor << " with message: " << msg << endl;
 	WriteToSocket(msg,client_file_descriptor);
 	return 1;
 }
@@ -86,6 +86,9 @@ int Repository::BuildReturnDataMessage(DataMessage request_message,DataMessage& 
 		for(int i=0;i<number_of_reqs;i++){
 			//Check if the requested key is watched by this repository
 			unsigned int requested_key = requests[i];
+			cout << "uint requested_key " << requested_key << endl;
+			cout << "requested_key " << requests[i] << endl;
+
 			if(WatchListContainsKey(requested_key)){
 				no_keys_watched_and_requested=false;
 				//Check if the repository contains the requested key

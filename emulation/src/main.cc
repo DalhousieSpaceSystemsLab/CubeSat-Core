@@ -97,8 +97,8 @@ void TestLorisMessenger(){
 	tester.Add(power_keys.current_sensor1,0.2f);//reading from a current sensor
 	tester.Add(power_keys.battery_level,1);//battery level
 	tester.Add(power_keys.battery_level,string);//string test
-	tester.AddRequest(100); //examples of adding requests
-	tester.AddRequest(10336);
+	tester.AddRequest(1); //examples of adding requests
+	tester.AddRequest(2);
 
 	//Look up the identifier for the recipient (in this case, its a process known as the "power repository")
 	Identifiers recipients;
