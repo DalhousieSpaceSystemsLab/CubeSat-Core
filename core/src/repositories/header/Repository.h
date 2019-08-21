@@ -21,7 +21,7 @@ protected:
 
 	Identifiers identifiers_;
 
-    int ReplyToClient(DataMessage& return_message,int client_file_descriptor);
+    int ReplyToConnectedClient(DataMessage& return_message);
     int BuildReturnDataMessage(DataMessage request_message,DataMessage& return_message);
     int AddData(DataMessage message);
     unsigned int GetIdentifier();
@@ -41,7 +41,7 @@ private:
 
     //KeyValuePairContainer repository_data;
     void HandleConnection(int file_descriptor);
-    virtual int ProcessMessage(DataMessage message,int client_file_descriptor) = 0;
+    virtual int ProcessMessage(DataMessage message) = 0;
 
     bool WatchListContainsKey(unsigned int key);
 

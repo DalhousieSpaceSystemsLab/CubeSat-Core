@@ -23,7 +23,7 @@ int PayloadRepository::AddKeysToWatchList(){
 }
 
 
-int PayloadRepository::ProcessMessage(DataMessage message,int client_file_descriptor){
+int PayloadRepository::ProcessMessage(DataMessage message){
     cout << "Processing Message Object in PayloadRepository" << endl;
     KeyValuePairContainer c = message.GetMessageContents();
 

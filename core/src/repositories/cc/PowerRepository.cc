@@ -27,7 +27,7 @@ int PowerRepository::AddKeysToWatchList(){
 	return 0;
 }
 
-int PowerRepository::ProcessMessage(DataMessage message,int client_file_descriptor){
+int PowerRepository::ProcessMessage(DataMessage message){
 	//TODO add in checks to determine if there are requests.
         cout << "Processing Message Object in PowerRepository" << endl;
         KeyValuePairContainer c = message.GetMessageContents();
@@ -64,7 +64,7 @@ int PowerRepository::ProcessMessage(DataMessage message,int client_file_descript
         if(requests.size()>0){
         	DataMessage return_message(GetIdentifier(),message.GetSender());
         	BuildReturnDataMessage(message,return_message);
-        	ReplyToClient(return_message,client_file_descriptor);
+        	ReplyToConnectedClient(return_message);
         }
         return 0;
 }

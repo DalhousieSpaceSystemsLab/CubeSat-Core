@@ -22,7 +22,7 @@ int CommsRepository::AddKeysToWatchList(){
 	return 0;
 }
 
-int CommsRepository::ProcessMessage(DataMessage message,int client_file_descriptor){
+int CommsRepository::ProcessMessage(DataMessage message){
     cout << "Processing Message Object in CommsRepository" << endl;
     KeyValuePairContainer c = message.GetMessageContents();
 

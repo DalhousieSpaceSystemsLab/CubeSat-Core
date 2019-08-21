@@ -12,7 +12,7 @@
 class PayloadRepository : public Repository {
 public:
     PayloadRepository(std::string filePaths);
-    int ProcessMessage(DataMessage message,int client_file_descriptor);
+    int ProcessMessage(DataMessage message);
     int AddKeysToWatchList();
 };
 

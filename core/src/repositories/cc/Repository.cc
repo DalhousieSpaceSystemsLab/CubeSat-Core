@@ -11,14 +11,15 @@ Repository::Repository(std::string socket_path)
 int Repository::HandleMessage(char *buffer,int client_file_descriptor){
     cout << "Handling message: " << buffer << endl;
     DataMessage msg = DataMessage(buffer);
-    ProcessMessage(msg,client_file_descriptor);
+    ProcessMessage(msg);
     return 0;
 }
 
-int Repository::ReplyToClient(DataMessage& message,int client_file_descriptor){
+int Repository::ReplyToConnectedClient(DataMessage& message){
 	//TODO Spencer, can I just arbitrarily set the length of the message? and send it? - Andrew
     char msg[255] = "";
 	message.Flatten(msg);
+	int client_file_descriptor=this->socket_file_descriptor_;
 	cout << "Replying to client at " << client_file_descriptor << " with message: " << msg << endl;
 	WriteToSocket(msg,client_file_descriptor);
 	return 1;
