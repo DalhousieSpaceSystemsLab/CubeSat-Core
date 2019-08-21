@@ -26,7 +26,7 @@ class UnixDomainStreamSocketServer : public UnixDomainStreamSocket {
 
 private:
 
-    int new_socket_file_descriptor_;
+    int current_client_socket_file_descriptor_;
     int socket_io_status_;
     int servlen, n;
     socklen_t client_address_size;
@@ -45,6 +45,7 @@ public:
     //sock_path - local file system path to unix domain socket as string
     UnixDomainStreamSocketServer(string sock_path);
 
+    int current_client_file_descriptor();
 
     //TODO Add a virtual function that allows the server to perform some operation in between waiting
     //TODO Find a way to continue looping IF there are no waiting clients. RIght now it just pauses.
