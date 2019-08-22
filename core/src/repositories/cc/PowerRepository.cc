@@ -8,7 +8,6 @@
 
 PowerRepository::PowerRepository(std::string filePaths)
         : Repository(filePaths) {
-	this->identifier_=identifiers_.power_repository;
 	AddKeysToWatchList();
 }
 
@@ -29,13 +28,13 @@ int PowerRepository::AddKeysToWatchList(){
 
 int PowerRepository::ProcessMessage(DataMessage message){
 
-    cout << "Processing Message Object in PowerRepository" << endl;
-    KeyValuePairContainer c = message.GetMessageContents();
+	/*Perform optional processing here*/
 
-    cout << "Recipient : Sender : Time Created" << endl;
-	cout << message.GetRecipient() << " : " << message.GetSender() << " : " << message.GetTimeCreated() << endl;
-
-    cout << "requests:" << endl;
 
     return 0;
+}
+
+unsigned int PowerRepository::repository_identifier(){
+	Identifiers ids;
+	return ids.power_repository;
 }

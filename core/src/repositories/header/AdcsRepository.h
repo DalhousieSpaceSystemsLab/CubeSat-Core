@@ -15,6 +15,7 @@ public:
     int ProcessMessage(DataMessage message);
     int AddKeysToWatchList();
 
+    unsigned int repository_identifier();
 };
 
 

@@ -19,10 +19,9 @@ protected:
     //Keys which indicates what data the repository will contain
     std::vector<Key> watch_list_;
 
-	Identifiers identifiers_;
-
 	/**
-	 * Replies with return_message to whatever client is currently connected to repository
+	 * Replies with return_message to whatever client is currently connected to
+	 * repository
 	 * @param return_message
 	 * @return
 	 */
@@ -37,12 +36,18 @@ protected:
     int BuildReturnDataMessage(DataMessage request_message,
     		DataMessage& return_message);
 
-
+    /**
+     * Offloads data contained in a DataMessage and stores it
+     * @param message
+     * @return
+     */
     int AddData(DataMessage message);
 
-    //TODO Make this a pure virtual function. In the implementation, the repository will access the identiifers struct, rather than store it in a variable
-    unsigned int GetIdentifier();
-    unsigned int identifier_;
+    /**
+     *
+     * @return Repository Identifier which uniquely identifies the repository
+     */
+    virtual unsigned int repository_identifier() = 0;
 
 
 private:

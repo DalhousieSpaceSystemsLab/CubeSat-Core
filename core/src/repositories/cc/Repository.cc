@@ -6,7 +6,7 @@
 #include <string>
 
 Repository::Repository(std::string socket_path)
-        : UnixDomainStreamSocketServer(socket_path) {this->identifier_=0;}
+        : UnixDomainStreamSocketServer(socket_path) {}
 
 int Repository::HandleMessage(char *buffer,int client_file_descriptor){
     cout << "Handling message: " << buffer << endl;
@@ -21,7 +21,7 @@ int Repository::HandleMessage(char *buffer,int client_file_descriptor){
     ProcessMessage(message);
 
     //Build an empty reply message
- 	DataMessage reply_message(this->GetIdentifier(),message.GetSender());
+ 	DataMessage reply_message(this->repository_identifier(),message.GetSender());
 
  	//Append any requested data to the reply_message, if the repository has it
     if(message.HasRequests()){
@@ -161,9 +161,4 @@ int Repository::BuildReturnDataMessage(DataMessage request_message,DataMessage& 
 		cout << "The data message contained no requests." << endl;
 	}
 	return 1;
-}
-
-
-unsigned int Repository::GetIdentifier(){
-	return this->identifier_;
 }
