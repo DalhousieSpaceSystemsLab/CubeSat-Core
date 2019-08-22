@@ -22,7 +22,7 @@ using std::string;
 	A simple server in the internet domain using Unix Domain Socket
 */
 //REF: http://www.linuxhowtos.org/C_C++/socket.htm
-class UnixDomainStreamSocketServer : public UnixDomainStreamSocket {
+class UnixDomainStreamSocketServer : protected UnixDomainStreamSocket {
 
 private:
 
