@@ -21,8 +21,22 @@ protected:
 
 	Identifiers identifiers_;
 
+	/**
+	 * Replies with return_message to whatever client is currently connected to repository
+	 * @param return_message
+	 * @return
+	 */
     int ReplyToConnectedClient(DataMessage& return_message);
+
+    /**
+     * Builds the message containing requested data
+     * @param request_message
+     * @param return_message
+     * @return
+     */
     int BuildReturnDataMessage(DataMessage request_message,DataMessage& return_message);
+
+
     int AddData(DataMessage message);
     unsigned int GetIdentifier();
     unsigned int identifier_;
@@ -41,8 +55,8 @@ private:
 
     //KeyValuePairContainer repository_data;
     void HandleConnection(int file_descriptor);
-    virtual int ProcessMessage(DataMessage message) = 0;
 
+    virtual int ProcessMessage(DataMessage message) = 0;
     bool WatchListContainsKey(unsigned int key);
 
 
