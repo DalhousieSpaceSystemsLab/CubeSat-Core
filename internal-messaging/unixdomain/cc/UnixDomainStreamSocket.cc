@@ -57,7 +57,7 @@ int UnixDomainStreamSocket::ReadFromSocket(int new_socket_file_descriptor, int b
         error("ERROR reading from socket");
         return 0;
     }
-    return HandleMessage(buffer_);
+    return HandleMessage(buffer_,new_socket_file_descriptor);
 }
 
 //Prints error messages
@@ -73,4 +73,9 @@ void UnixDomainStreamSocket::ResetBuffer() {
 //Clears all fields in the socket_address_ struct
 void UnixDomainStreamSocket::ClearAddress() {
     bzero((char *) &socket_address_, sizeof(socket_address_));
+}
+
+string UnixDomainStreamSocket::GetBufferContents(){
+	string contents = this->buffer_;
+	return contents;
 }

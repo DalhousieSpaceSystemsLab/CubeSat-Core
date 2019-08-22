@@ -8,14 +8,92 @@
 Repository::Repository(std::string socket_path)
         : UnixDomainStreamSocketServer(socket_path) {}
 
-int Repository::HandleMessage(char *buffer){
+int Repository::HandleMessage(char *buffer,int client_file_descriptor){
     cout << "Handling message: " << buffer << endl;
-    DataMessage msg = DataMessage(buffer);
-    ProcessMessage(msg);
+
+    //Convert the buffer contents into a DataMessage object
+    DataMessage message = DataMessage(buffer);
+
+    //Extract any new, watched data from the message
+    ExtractDataFromReceivedMessage(message);
+
+    //Perform any additional, optional processing for the message
+    ProcessMessage(message);
+
+    //Build an empty reply message
+ 	DataMessage reply_message(this->repository_identifier(),message.GetSender());
+
+ 	//Append any requested data to the reply_message, if the repository has it
+    if(message.HasRequests()){
+      	BuildReturnDataMessage(message,reply_message);
+    }
+
+    //Reply to the client
+   	ReplyToConnectedClient(reply_message);
+
     return 0;
 }
 
-//Check if the key is contained in the watch list for the repository.
+
+
+int Repository::ExtractDataFromReceivedMessage(DataMessage received_message){
+    //TODO remove the cout statements when deemed "too annoying and unnecessary"
+	cout << "Extracting data from received message" << endl;
+    KeyValuePairContainer data = received_message.GetMessageContents();
+
+    cout << "Adding data" << endl;
+    //Get all keys for each primitive type
+	std::vector<int> float_keys = received_message.GetFloatKeys();
+	std::vector<int> int_keys = received_message.GetIntKeys();
+	std::vector<int> string_keys = received_message.GetStringKeys();
+
+	//Iterate through all key float value pairs and add any that are watched
+	for(int i=0;i<float_keys.size();i++){
+		unsigned int current_key = float_keys[i];
+		cout << "Current Key: " << current_key << endl;
+		if(WatchListContainsKey(current_key)){
+			cout << "Updating value for: "<<current_key << endl;
+			repository_data_.AddKeyValuePair(current_key,received_message.
+					GetFloat(current_key));
+		}
+	}
+
+	//Iterate through all key int value pairs and add any that are watched
+	for(int i=0;i<int_keys.size();i++){
+		unsigned int current_key = int_keys[i];
+		cout << "Current Key: " << current_key << endl;
+		if(WatchListContainsKey(current_key)){
+			cout << "Updating value for: "<<current_key << endl;
+			repository_data_.AddKeyValuePair(current_key,received_message.
+					GetInt(current_key));
+		}
+	}
+
+	//Iterate through all key string value pairs and add any that are watched
+	for(int i=0;i<string_keys.size();i++){
+		unsigned int current_key = string_keys[i];
+		cout << "Current Key: " << current_key << endl;
+		if(WatchListContainsKey(current_key)){
+			cout << "Updating value for: "<<current_key << endl;
+			repository_data_.AddKeyValuePair(current_key,received_message.
+					GetString(current_key));
+		}
+	}
+
+	return 0;
+}
+
+int Repository::ReplyToConnectedClient(DataMessage& message){
+	//TODO Spencer, can I just arbitrarily set the length of the message? and send it? - Andrew
+    char msg[255] = "";
+	message.Flatten(msg);
+	int client_file_descriptor=this->current_client_file_descriptor();
+	cout << "Replying to client at " << client_file_descriptor << " with message: " << msg << endl;
+	WriteToSocket(msg,client_file_descriptor);
+	return 1;
+}
+
+
 bool Repository::WatchListContainsKey(unsigned int key){
 
 	//TODO there is the potential for optimizing this search by
@@ -28,46 +106,7 @@ bool Repository::WatchListContainsKey(unsigned int key){
 	return false;
 }
 
-//Checks for key value pairs in message which have a key in the watch list
-int Repository::AddData(DataMessage message){
-	std::vector<int> float_keys = message.GetFloatKeys();
-	std::vector<int> int_keys = message.GetIntKeys();
-	std::vector<int> string_keys = message.GetStringKeys();
-
-	for(int i=0;i<float_keys.size();i++){
-		unsigned int current_key = float_keys[i];
-		cout << "Current Key: " << current_key << endl;
-		if(WatchListContainsKey(current_key)){
-			cout << "Updating value for: "<<current_key << endl;
-			repository_data_.AddKeyValuePair(current_key,message.
-					GetFloat(current_key));
-		}
-	}
-
-	for(int i=0;i<int_keys.size();i++){
-		unsigned int current_key = int_keys[i];
-		cout << "Current Key: " << current_key << endl;
-		if(WatchListContainsKey(current_key)){
-			cout << "Updating value for: "<<current_key << endl;
-			repository_data_.AddKeyValuePair(current_key,message.
-					GetInt(current_key));
-		}
-	}
-
-	for(int i=0;i<string_keys.size();i++){
-		unsigned int current_key = string_keys[i];
-		cout << "Current Key: " << current_key << endl;
-		if(WatchListContainsKey(current_key)){
-			cout << "Updating value for: "<<current_key << endl;
-			repository_data_.AddKeyValuePair(current_key,message.
-					GetString(current_key));
-		}
-	}
-
-	return 0;
-}
-
-int Repository::ReturnData(DataMessage request_message,DataMessage& return_message){
+int Repository::BuildReturnDataMessage(DataMessage request_message,DataMessage& return_message){
 	std::vector<int> requests = request_message.GetRequests();
 	int number_of_reqs=requests.size();
 	if(number_of_reqs>0){
@@ -77,6 +116,9 @@ int Repository::ReturnData(DataMessage request_message,DataMessage& return_messa
 		for(int i=0;i<number_of_reqs;i++){
 			//Check if the requested key is watched by this repository
 			unsigned int requested_key = requests[i];
+			cout << "uint requested_key " << requested_key << endl;
+			cout << "requested_key " << requests[i] << endl;
+
 			if(WatchListContainsKey(requested_key)){
 				no_keys_watched_and_requested=false;
 				//Check if the repository contains the requested key
@@ -88,7 +130,6 @@ int Repository::ReturnData(DataMessage request_message,DataMessage& return_messa
 					return_message.Add(requested_key,
 						repository_data_.GetFloat(requested_key));
 				}
-
 			}
 		}
 		if(no_keys_watched_and_requested){
@@ -98,4 +139,5 @@ int Repository::ReturnData(DataMessage request_message,DataMessage& return_messa
 	else{
 		cout << "The data message contained no requests." << endl;
 	}
+	return 1;
 }

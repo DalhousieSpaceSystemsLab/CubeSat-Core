@@ -12,13 +12,30 @@ void MessageSenderInterface::SetRecipient(unsigned int recipient){
     client_socket_ = UnixDomainStreamSocketClient(path);
 }
 
+//Send message to socket
 void MessageSenderInterface::SendFlattenedMessage(char message[]) {
     client_socket_.Send(message);
 }
 
-void MessageSenderInterface::SendDataMessage(DataMessage message) {
+//TODO return int rather than string. Pass in string reference to get reply
+//Send message to socket and await reply
+string MessageSenderInterface::SendFlattenedMessageAwaitReply(char message[]) {
+	string reply="";
+    client_socket_.SendMessageAwaitReply(message, reply);
+    return reply;
+}
+
+
+string MessageSenderInterface::SendDataMessage(DataMessage message) {
     char msg[255] = "";
     message.Flatten(msg);
-    SendFlattenedMessage(msg);
+    if(message.HasRequests()){
+    	return SendFlattenedMessageAwaitReply(msg);
+    }
+    else{
+    	SendFlattenedMessage(msg);
+    	return "";
+    }
 }
+
 

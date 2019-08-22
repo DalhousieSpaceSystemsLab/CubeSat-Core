@@ -14,6 +14,9 @@ public:
     GpsRepository(std::string filePaths);
     int ProcessMessage(DataMessage message);
     int AddKeysToWatchList();
+
+    unsigned int repository_identifier();
+
 };
 
 

@@ -25,7 +25,9 @@ public:
 	int AddRequest(int request);
 
 	//Method to send stored message to recipient from sender (Using Identifer int - see Identifier.h for correct values)
-	int Send(unsigned int recipient, unsigned int sender);
+	//TODO implement time out in UnixDomainStreamSocketClient for when server doesn't respond with reply
+	string Send(unsigned int recipient, unsigned int sender);
+
 	
 	//Removes all information stored in message
 	int ClearMessage();

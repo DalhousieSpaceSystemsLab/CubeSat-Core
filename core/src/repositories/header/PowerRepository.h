@@ -13,8 +13,11 @@ class PowerRepository : public Repository {
 public:
     PowerRepository(std::string filePaths);
     int ProcessMessage(DataMessage message);
+    unsigned int repository_identifier();
 
     int AddKeysToWatchList();
+
+
 };
 
 

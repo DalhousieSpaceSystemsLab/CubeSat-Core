@@ -2,6 +2,7 @@
 #ifndef LORIS_DATAMESSAGE_H
 #define LORIS_DATAMESSAGE_H
 #include "Message.h"
+using std::string;
 
 // Message used to collect and/or request information from a subsystem
 // DataMessage format:
@@ -18,6 +19,8 @@ class DataMessage : public Message{
         //Builds message from character array output of flatten method
         DataMessage(char* flat);
 
+        DataMessage(string flat);
+
         // Flattens message into a compressed character array that can be parsed by the Message(char* flat) constructor
         // msg - pointer to char array with a minimum size of 256 bytes.
         void Flatten(char* msg) override;
@@ -26,8 +29,10 @@ class DataMessage : public Message{
         void AddRequest(int request);
         std::vector<int>& GetRequests();
 
+        bool HasRequests();
     private:
         std::vector<int> requests;
+        int BuildFromCharacters(char * flat);
 };
 
 #endif

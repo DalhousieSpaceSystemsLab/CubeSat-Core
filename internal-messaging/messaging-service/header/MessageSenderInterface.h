@@ -19,12 +19,18 @@ public:
     void SetRecipient( unsigned int recipient);
     
     //Methods to send Message objects
-    void SendDataMessage(DataMessage message);
+    string SendDataMessage(DataMessage message);
+    string SendDataMessageAwaitReply(DataMessage message);
     
 private:
     //Method to send flattened message as char array 
     //message - Char array representing a Message object no larger then 256 bytes (Must be output of flatten method of Message object)
     void SendFlattenedMessage(char message[]);
+
+    //Method to send flattened message as char array and await reply from recipient
+    //message - Char array representing a Message object no larger then 256 bytes (Must be output of flatten method of Message object)
+    string SendFlattenedMessageAwaitReply(char message[]);
+
 };
 
 #endif //LORIS_MESSAGESENDERINTERFACE_H
