@@ -10,9 +10,97 @@ Repository::Repository(std::string socket_path)
 
 int Repository::HandleMessage(char *buffer,int client_file_descriptor){
     cout << "Handling message: " << buffer << endl;
-    DataMessage msg = DataMessage(buffer);
-    ProcessMessage(msg);
+
+    //Convert the buffer contents into a DataMessage object
+    DataMessage message = DataMessage(buffer);
+
+    //Extract any new, watched data from the message
+    ExtractDataFromReceivedMessage(message);
+
+    //Perform any additional, optional processing for the message
+    ProcessMessage(message);
+
+    //Build an empty reply message
+ 	DataMessage reply_message(this->GetIdentifier(),message.GetSender());
+
+ 	//Append any requested data to the reply_message, if the repository has it
+    if(message.HasRequests()){
+      	BuildReturnDataMessage(message,reply_message);
+    }
+
+    //Reply to the client
+   	ReplyToConnectedClient(reply_message);
+
     return 0;
+}
+
+
+
+int Repository::ExtractDataFromReceivedMessage(DataMessage received_message){
+    //TODO remove the cout statements when deemed "too annoying and unnecessary"
+	cout << "Getting message key value pairs" << endl;
+    KeyValuePairContainer data = received_message.GetMessageContents();
+
+    //Delete this-----
+    std::vector<int> floatKeys = data.GetFloatKeys();
+    std::vector<int> intKeys = data.GetIntKeys();
+    std::vector<int> stringKeys = data.GetStringKeys();
+    cout << "key value pairs:" << endl;
+
+    //Logging statements
+    for(int i = 0; i < intKeys.size(); i++){
+    	cout << intKeys.at(i) << " : " << data.GetInt(intKeys.at(i)) << endl;
+    }
+
+    for(int i = 0; i < floatKeys.size(); i++){
+    	cout << floatKeys.at(i) << " : " << data.GetFloat(floatKeys.at(i)) << endl;
+    }
+
+    for(int i = 0; i < stringKeys.size(); i++){
+    	cout << stringKeys.at(i) << " : " << data.GetString(stringKeys.at(i)) << endl;
+    }
+    //Delete this ^^^^
+
+    cout << "Adding data" << endl;
+    //Get all keys for each primitive type
+	std::vector<int> float_keys = received_message.GetFloatKeys();
+	std::vector<int> int_keys = received_message.GetIntKeys();
+	std::vector<int> string_keys = received_message.GetStringKeys();
+
+	//Iterate through all key float value pairs and add any that are watched
+	for(int i=0;i<float_keys.size();i++){
+		unsigned int current_key = float_keys[i];
+		cout << "Current Key: " << current_key << endl;
+		if(WatchListContainsKey(current_key)){
+			cout << "Updating value for: "<<current_key << endl;
+			repository_data_.AddKeyValuePair(current_key,received_message.
+					GetFloat(current_key));
+		}
+	}
+
+	//Iterate through all key int value pairs and add any that are watched
+	for(int i=0;i<int_keys.size();i++){
+		unsigned int current_key = int_keys[i];
+		cout << "Current Key: " << current_key << endl;
+		if(WatchListContainsKey(current_key)){
+			cout << "Updating value for: "<<current_key << endl;
+			repository_data_.AddKeyValuePair(current_key,received_message.
+					GetInt(current_key));
+		}
+	}
+
+	//Iterate through all key string value pairs and add any that are watched
+	for(int i=0;i<string_keys.size();i++){
+		unsigned int current_key = string_keys[i];
+		cout << "Current Key: " << current_key << endl;
+		if(WatchListContainsKey(current_key)){
+			cout << "Updating value for: "<<current_key << endl;
+			repository_data_.AddKeyValuePair(current_key,received_message.
+					GetString(current_key));
+		}
+	}
+
+	return 0;
 }
 
 int Repository::ReplyToConnectedClient(DataMessage& message){
@@ -25,7 +113,7 @@ int Repository::ReplyToConnectedClient(DataMessage& message){
 	return 1;
 }
 
-//Check if the key is contained in the watch list for the repository.
+
 bool Repository::WatchListContainsKey(unsigned int key){
 
 	//TODO there is the potential for optimizing this search by
@@ -37,46 +125,6 @@ bool Repository::WatchListContainsKey(unsigned int key){
 	}
 	return false;
 }
-
-//Checks for key value pairs in message which have a key in the watch list
-int Repository::AddData(DataMessage message){
-	std::vector<int> float_keys = message.GetFloatKeys();
-	std::vector<int> int_keys = message.GetIntKeys();
-	std::vector<int> string_keys = message.GetStringKeys();
-
-	for(int i=0;i<float_keys.size();i++){
-		unsigned int current_key = float_keys[i];
-		cout << "Current Key: " << current_key << endl;
-		if(WatchListContainsKey(current_key)){
-			cout << "Updating value for: "<<current_key << endl;
-			repository_data_.AddKeyValuePair(current_key,message.
-					GetFloat(current_key));
-		}
-	}
-
-	for(int i=0;i<int_keys.size();i++){
-		unsigned int current_key = int_keys[i];
-		cout << "Current Key: " << current_key << endl;
-		if(WatchListContainsKey(current_key)){
-			cout << "Updating value for: "<<current_key << endl;
-			repository_data_.AddKeyValuePair(current_key,message.
-					GetInt(current_key));
-		}
-	}
-
-	for(int i=0;i<string_keys.size();i++){
-		unsigned int current_key = string_keys[i];
-		cout << "Current Key: " << current_key << endl;
-		if(WatchListContainsKey(current_key)){
-			cout << "Updating value for: "<<current_key << endl;
-			repository_data_.AddKeyValuePair(current_key,message.
-					GetString(current_key));
-		}
-	}
-
-	return 0;
-}
-
 
 int Repository::BuildReturnDataMessage(DataMessage request_message,DataMessage& return_message){
 	std::vector<int> requests = request_message.GetRequests();

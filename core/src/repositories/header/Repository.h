@@ -29,18 +29,32 @@ protected:
     int ReplyToConnectedClient(DataMessage& return_message);
 
     /**
-     * Builds the message containing requested data
+     * Builds a message containing data according to requests
      * @param request_message
      * @param return_message
      * @return
      */
-    int BuildReturnDataMessage(DataMessage request_message,DataMessage& return_message);
+    int BuildReturnDataMessage(DataMessage request_message,
+    		DataMessage& return_message);
 
 
     int AddData(DataMessage message);
+
+    //TODO Make this a pure virtual function. In the implementation, the repository will access the identiifers struct, rather than store it in a variable
     unsigned int GetIdentifier();
     unsigned int identifier_;
+
+
 private:
+
+    /**
+     * Extracts key value pairs which the repository is designated to store
+     * @param received_message
+     * @return
+     */
+    int ExtractDataFromReceivedMessage(DataMessage received_message);
+
+
     //Keys will be added to the watch_list_ in this function. Must be implemented or else
     //the repository will never accept, store, or return data.
     /*
@@ -56,6 +70,11 @@ private:
     //KeyValuePairContainer repository_data;
     void HandleConnection(int file_descriptor);
 
+    /**
+     * Perform additional processing on the message received (optional)
+     * @param message
+     * @return
+     */
     virtual int ProcessMessage(DataMessage message) = 0;
     bool WatchListContainsKey(unsigned int key);
 
