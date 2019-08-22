@@ -16,13 +16,14 @@ public:
     int HandleMessage(char *buffer, int client_file_descriptor);
 
 protected:
+    //TODO make watch_list_ a map
     //Keys which indicates what data the repository will contain
     std::vector<Key> watch_list_;
 
 	/**
 	 * Replies with return_message to whatever client is currently connected to
-	 * repository
-	 * @param return_message
+	 * the repository
+	 * @param return_message The message that will be flattened and sent back
 	 * @return
 	 */
     int ReplyToConnectedClient(DataMessage& return_message);

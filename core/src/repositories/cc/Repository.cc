@@ -38,28 +38,8 @@ int Repository::HandleMessage(char *buffer,int client_file_descriptor){
 
 int Repository::ExtractDataFromReceivedMessage(DataMessage received_message){
     //TODO remove the cout statements when deemed "too annoying and unnecessary"
-	cout << "Getting message key value pairs" << endl;
+	cout << "Extracting data from received message" << endl;
     KeyValuePairContainer data = received_message.GetMessageContents();
-
-    //Delete this-----
-    std::vector<int> floatKeys = data.GetFloatKeys();
-    std::vector<int> intKeys = data.GetIntKeys();
-    std::vector<int> stringKeys = data.GetStringKeys();
-    cout << "key value pairs:" << endl;
-
-    //Logging statements
-    for(int i = 0; i < intKeys.size(); i++){
-    	cout << intKeys.at(i) << " : " << data.GetInt(intKeys.at(i)) << endl;
-    }
-
-    for(int i = 0; i < floatKeys.size(); i++){
-    	cout << floatKeys.at(i) << " : " << data.GetFloat(floatKeys.at(i)) << endl;
-    }
-
-    for(int i = 0; i < stringKeys.size(); i++){
-    	cout << stringKeys.at(i) << " : " << data.GetString(stringKeys.at(i)) << endl;
-    }
-    //Delete this ^^^^
 
     cout << "Adding data" << endl;
     //Get all keys for each primitive type
@@ -150,7 +130,6 @@ int Repository::BuildReturnDataMessage(DataMessage request_message,DataMessage& 
 					return_message.Add(requested_key,
 						repository_data_.GetFloat(requested_key));
 				}
-
 			}
 		}
 		if(no_keys_watched_and_requested){
