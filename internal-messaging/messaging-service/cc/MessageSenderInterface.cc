@@ -17,9 +17,12 @@ void MessageSenderInterface::SendFlattenedMessage(char message[]) {
     client_socket_.Send(message);
 }
 
+//TODO return int rather than string. Pass in string reference to get reply
 //Send message to socket and await reply
 string MessageSenderInterface::SendFlattenedMessageAwaitReply(char message[]) {
-    return client_socket_.SendMessageAwaitReply(message);
+	string reply="";
+    client_socket_.SendMessageAwaitReply(message, reply);
+    return reply;
 }
 
 

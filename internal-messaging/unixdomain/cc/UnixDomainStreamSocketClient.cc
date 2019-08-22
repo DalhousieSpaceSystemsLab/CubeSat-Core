@@ -35,21 +35,21 @@ int UnixDomainStreamSocketClient::Send(char message[]) {
     }
     return 0;
 }
-//TODO Should I return a string or should I pass in a char array pointer...
-string UnixDomainStreamSocketClient::SendMessageAwaitReply(char message[]) {
+
+int UnixDomainStreamSocketClient::SendMessageAwaitReply(char message[], string & reply) {
     if (WriteToSocket(message, socket_file_descriptor_) != 0) {
         error("ERROR SENDING MESSAGE");
-        return "FAILURE";
+        return 1;
     }
     int capacity=255;
 	cout << "Reading from Socket..." << endl;
     if (ReadFromSocket(socket_file_descriptor_,capacity) != 0) {
 
         error("ERROR READING FROM SOCKET");
-        return "FAILURE";
+        return 1;
     }
-    string reply=GetReply();
-    return reply;
+    reply=GetReply();
+    return 0;
 }
 
 //default implementation
