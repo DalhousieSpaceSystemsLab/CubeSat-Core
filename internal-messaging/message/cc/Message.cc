@@ -187,7 +187,7 @@ int Message::FlattenHeader(char* msg, int msg_size){
         throw std::invalid_argument( "Message to large" );
     }
     strcat(msg, integer_string); 
-    strcat(msg, "|");
+    strcat(msg, section_break_string);
 
     sprintf(integer_string, "%x", this->recipient_);
     message_size += strlen(integer_string) + 1;
@@ -195,7 +195,7 @@ int Message::FlattenHeader(char* msg, int msg_size){
         throw std::invalid_argument( "Message to large" );
     }
     strcat(msg, integer_string);
-    strcat(msg, "|");
+    strcat(msg, section_break_string);
 
     sprintf(long_string, "%lx", this->time_created_);
     message_size += strlen(long_string) + 1;
@@ -203,7 +203,7 @@ int Message::FlattenHeader(char* msg, int msg_size){
         throw std::invalid_argument( "Message to large" );
     }
     strcat(msg, long_string);
-    strcat(msg, "|");
+    strcat(msg, section_break_string);
 
     sprintf(integer_string, "%x", this->flag);
     message_size += strlen(integer_string) + 1;
@@ -211,7 +211,7 @@ int Message::FlattenHeader(char* msg, int msg_size){
         throw std::invalid_argument( "Message to large" );
     }
     strcat(msg, integer_string); 
-    strcat(msg, "|");
+    strcat(msg, section_break_string);
 
     return message_size;
 }
@@ -224,7 +224,7 @@ int Message::BuildHeader(char* flat, int index){
     int i = index;
 
     // Find sender
-    while(flat[i] != '|'){
+    while(flat[i] != section_break){
         sprintf(integer_string, "%c", flat[i]);
         strcat(hex_string, integer_string); 
         i++;
@@ -238,7 +238,7 @@ int Message::BuildHeader(char* flat, int index){
     memset(hex_string, 0, 32);
 
     // Find recipient
-    while(flat[i] != '|'){
+    while(flat[i] != section_break){
         sprintf(integer_string, "%c", flat[i]);
         strcat(hex_string, integer_string);
         i++; 
@@ -252,7 +252,7 @@ int Message::BuildHeader(char* flat, int index){
     memset(hex_string, 0, 32);
     
     // Find time sent
-    while(flat[i] != '|'){
+    while(flat[i] != section_break){
         sprintf(integer_string, "%c", flat[i]);
         strcat(hex_string, integer_string); 
         i++;
@@ -266,7 +266,7 @@ int Message::BuildHeader(char* flat, int index){
     memset(hex_string, 0, 32);
     
     // Find flag
-    while(flat[i] != '|'){
+    while(flat[i] != section_break){
         sprintf(integer_string, "%c", flat[i]);
         strcat(hex_string, integer_string); 
         i++;
@@ -289,7 +289,7 @@ int Message::BuildContents(char* flat, int index){
     memset(hex_string, 0, 32);
     int i = index;
     int key;
-    while(flat[i] != '\3'){
+    while(flat[i] != message_break){
         //Get key
         while(flat[i] != '~'){
             sprintf(integer_string, "%c", flat[i]);
@@ -303,7 +303,7 @@ int Message::BuildContents(char* flat, int index){
         memset(long_string, 0, 64);
         memset(hex_string, 0, 32);
         // Get value
-        while(flat[i] != '|'){
+        while(flat[i] != section_break){
             sprintf(integer_string, "%c", flat[i]);
             strcat(hex_string, integer_string); 
             i++;
