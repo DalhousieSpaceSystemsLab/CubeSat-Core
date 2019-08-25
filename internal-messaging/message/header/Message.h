@@ -4,10 +4,9 @@
 #include "KeyValuePairContainer.h"
 #include <string>
 
-static const char section_break = '|';
-static const char* section_break_string = "|";
-static const char message_break = '\3';
-static const char* message_break_string = "\3";
+static const char* section_break = "|";
+static const char* pair_break = "~";
+static const char* message_break = "\3";
 
 
 //Used to represent a message that can be sent over via Messager

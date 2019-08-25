@@ -43,17 +43,17 @@ int DataMessage::BuildFromCharacters(char *flat) {
 	i++;
 	//TODO Spencer, should the flag be parsed in parent class Message? - Andrew
 	// Skip over flag
-	while (flat[i] != section_break) {
+	while (flat[i] != *section_break) {
 		i++;
 	}
 	//i++;
 
 	//TODO Find more robust solution for when no requests exist
 	// Find Requests
-	while (flat[i] != section_break && flat[i - 1] != section_break) {
+	while (flat[i] != *section_break && flat[i - 1] != *section_break) {
 		// Get next request
 		//TODO fix bug where infinite loop is reached due to no requests in the message
-		while (flat[i] != '-' && flat[i] != section_break) {
+		while (flat[i] != '-' && flat[i] != *section_break) {
 			sprintf(integer_string, "%c", flat[i]);
 			strcat(hex_string, integer_string);
 			i++;
@@ -67,7 +67,7 @@ int DataMessage::BuildFromCharacters(char *flat) {
 		}
 		memset(integer_string, 0, 32);
 		memset(hex_string, 0, 32);
-		if (flat[i] != section_break) {
+		if (flat[i] != *section_break) {
 			i++;
 		};
 	}
@@ -108,10 +108,10 @@ void DataMessage::Flatten(char *msg) {
 			strcat(msg, integer_string);
 		} else {
 			strcat(msg, integer_string);
-			strcat(msg, "-");
+			strcat(msg, request_break);
 		}
 	}
-	strcat(msg, section_break_string);
+	strcat(msg, section_break);
 	/*
 	 *	TODO for Spencer: Can you put these delimiting string values in constants somewhere?
 	 *	Maybe in the header of this class - Andrew
@@ -123,7 +123,7 @@ void DataMessage::Flatten(char *msg) {
 		throw std::invalid_argument("Message to large");
 	}
 	// Add end char
-	strcat(msg, message_break_string);
+	strcat(msg, message_break);
 }
 
 void DataMessage::AddRequest(int request) {

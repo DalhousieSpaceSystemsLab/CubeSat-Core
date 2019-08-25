@@ -22,7 +22,7 @@ CommandMessage::CommandMessage(char* flat)
     int i = BuildHeader(flat, 0);
     i++;
     // Skip over flag
-    while(flat[i] != section_break){
+    while(flat[i] != *section_break){
         i++;
     }
     i++;
@@ -46,5 +46,5 @@ void CommandMessage::Flatten(char* msg) {
             throw std::invalid_argument( "Message to large" );
     }
     // Add end char
-    strcat(msg, message_break_string);
+    strcat(msg, message_break);
 }
