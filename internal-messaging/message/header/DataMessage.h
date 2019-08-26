@@ -8,6 +8,9 @@ using std::string;
 // DataMessage format:
 // sender|recipient|time_created|flag|request-request-request|key~value|key~value|\0
 // flag = 100
+
+static const char* request_break = "-";
+
 class DataMessage : public Message{
     public:
         //Constructors

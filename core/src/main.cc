@@ -4,43 +4,16 @@
 #include "AdcsRepository.h"
 #include "GpsRepository.h"
 #include "PayloadRepository.h"
+#include<stdlib.h>
+#include<iostream>
+
+ProcessFilePaths file_paths;
 
 int StartPowerRepository();
 int StartGpsRepository();
 int StartCommsRepository();
 int StartAdcsRepository();
 int StartPayloadRepository();
-
-#include<stdlib.h>
-#include<iostream>
-
-ProcessFilePaths file_paths;
-
-int main(int argc, char *argv[]){
-
-	//argv[0] is the executable name
-	//argv[1] is the option number
-
-	if(argc>1){
-		cout << "Starting process: " << argv[1] << endl;
-		int option_number=atoi(argv[1]);
-
-		switch(option_number){
-			case 1 : StartPowerRepository(); break;
-			case 2 : StartPayloadRepository(); break;
-			case 3 : StartGpsRepository(); break;
-			case 4 : StartCommsRepository(); break;
-			case 5 : StartAdcsRepository(); break;
-			default : cout << "Invalid argument" << endl; break;
-			return 1;
-
-		}
-	}
-	else{
-		cout << "Insufficient arguments specified" << endl;
-	    return 0;
-	}
-}
 
 int StartPowerRepository(){
 	cout << "Starting Power Repository" << endl;
@@ -118,4 +91,30 @@ int TestRepositories(){
 ////	gps_server_.WaitForConnection();
 
     return 1;
+}
+
+int main(int argc, char *argv[]){
+
+	//argv[0] is the executable name
+	//argv[1] is the option number
+
+	if(argc>1){
+		cout << "Starting process: " << argv[1] << endl;
+		int option_number=atoi(argv[1]);
+
+		switch(option_number){
+			case 1 : StartPowerRepository(); break;
+			case 2 : StartPayloadRepository(); break;
+			case 3 : StartGpsRepository(); break;
+			case 4 : StartCommsRepository(); break;
+			case 5 : StartAdcsRepository(); break;
+			default : cout << "Invalid argument" << endl; break;
+			return 1;
+
+		}
+	}
+	else{
+		cout << "Insufficient arguments specified" << endl;
+	    return 0;
+	}
 }

@@ -4,6 +4,11 @@
 #include "KeyValuePairContainer.h"
 #include <string>
 
+static const char* section_break = "|";
+static const char* pair_break = "~";
+static const char* message_break = "\3";
+
+
 //Used to represent a message that can be sent over via Messager
 //Contains Key Value pairs as data, sender and recipient for routing, and Time Created for logging
 class Message {
