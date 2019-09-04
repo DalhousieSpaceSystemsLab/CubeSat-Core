@@ -22,7 +22,7 @@ public:
     
     //Methods to send Message objects
     string SendDataMessage(DataMessage message) override;
-    //Commented out because SendDataMessage in MessageSendingService deals automatically waits if the message contains requests
+    //Commented out because SendDataMessage in MessageSendingService automatically waits if the message contains requests
     // string SendDataMessageAwaitReply(DataMessage message) override;
     
 private:

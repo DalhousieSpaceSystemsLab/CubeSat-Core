@@ -13,7 +13,7 @@ class MessageSenderInterface {
 public:
     //Methods to send Message objects
     virtual string SendDataMessage(DataMessage message) = 0;
-    //Commented out because SendDataMessage in MessageSendingService deals automatically waits if the message contains requests
+    //Commented out because SendDataMessage in MessageSendingService automatically waits if the message contains requests
     // virtual string SendDataMessageAwaitReply(DataMessage message) = 0;
 protected:
     //Constructor
