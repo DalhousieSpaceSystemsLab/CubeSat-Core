@@ -18,20 +18,19 @@ void MessageSendingService::SendFlattenedMessage(char message[]) {
     client_socket_.Send(message);
 }
 
-//TODO return int rather than string. Pass in string reference to get reply
 //Send message to socket and await reply
-string MessageSendingService::SendFlattenedMessageAwaitReply(char message[]) {
-	string reply="";
+int MessageSendingService::SendFlattenedMessageAwaitReply(char message[], string &reply) {
     client_socket_.SendMessageAwaitReply(message, reply);
-    return reply;
+    return 0;
 }
-
 
 string MessageSendingService::SendDataMessage(DataMessage message) {
     char msg[255] = "";
+    string reply;
     message.Flatten(msg);
     if(message.HasRequests()){
-    	return SendFlattenedMessageAwaitReply(msg);
+    	SendFlattenedMessageAwaitReply(msg, reply);
+        return reply;
     }
     else{
     	SendFlattenedMessage(msg);
