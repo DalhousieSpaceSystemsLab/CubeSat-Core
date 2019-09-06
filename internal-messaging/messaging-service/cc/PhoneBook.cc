@@ -2,17 +2,13 @@
 // Created by Spencer Axford on 2019-05-15.
 //
 
-#include "MessagingService.h"
-#include "ProcessFilePaths.h"
-#include "Identifiers.h"
+#include "PhoneBook.h"
 #include <string>
+#include <iostream>
 
-MessagingService::MessagingService(unsigned int recipient) : 
-    client_socket_(IdentifierToProcessFilePath(recipient)){}
-
-std::string MessagingService::IdentifierToProcessFilePath(unsigned int identifier){
+std::string PhoneBook::IdentifierToProcessFilePath(unsigned int identifier){
     Identifiers ids;
-	ProcessFilePaths filePaths;
+    ProcessFilePaths filePaths;
     std::string filepath;
     switch(identifier){
         case ids.power_subsystem :
