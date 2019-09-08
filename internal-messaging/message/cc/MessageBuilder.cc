@@ -21,7 +21,7 @@ DataMessage MessageBuilder::CompleteMessage()
     return DataMessage(this->current_sender_, this->current_recipient_, current_time, this->message_contents_);
 }
 
-int MessageBuilder::BuildMessageFromFlattened(Message &message, string flattened_message){
+int MessageBuilder::BuildMessageFromFlattened(Message *&message, string flattened_message){
     //count through section delimiters to find flag
     int section_delimiters = 0;
     string flag_string = "";
@@ -36,17 +36,19 @@ int MessageBuilder::BuildMessageFromFlattened(Message &message, string flattened
             break;
         }
     }
-    int flag = std::stoi(flag_string, 0, 16); // Convert falg_string to base 10 flag
+    int flag = std::stoi(flag_string, 0, 16); // Convert flag_string to base 10 flag
     if(flag == 100){ //Data Message
-        message = DataMessage(flattened_message);
-        return 0;
+        DataMessage *dm = new DataMessage(flattened_message);
+        message = static_cast<Message*>(dm);
+        return 1;
     }
     else if(flag == 200){ //Command Message
-        message = CommandMessage(flattened_message);
-        return 0;
+        CommandMessage cm(flattened_message);
+        message = static_cast<Message*>(&cm);
+        return 1;
     }
     else{ // Unknown Message Type
-        return 1;
+        return 0;
     }
 }
 

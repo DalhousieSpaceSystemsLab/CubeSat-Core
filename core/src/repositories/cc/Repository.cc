@@ -119,30 +119,32 @@ void Repository::start() {
 	Message *message;
 	mrs.StartListeningForClients();
 	while(true){
-		mrs.ListenForMessage(*message);
+		mrs.ListenForMessage(message);
 		if ( DataMessage * dm = dynamic_cast<DataMessage*>( message ) ) {
+			cout << "Message was a DataMessage" << endl;
 			//Extract any new, watched data from the message
-		ExtractDataFromReceivedMessage(*dm);
+			ExtractDataFromReceivedMessage(*dm);
 
-		//Perform any additional, optional processing for the message
-		ProcessMessage(*dm);
+			//Perform any additional, optional processing for the message
+			ProcessMessage(*dm);
 
-		//Build an empty reply message
-		DataMessage reply_message(this->repository_identifier(), dm->GetSender());
+			//Build an empty reply message
+			DataMessage reply_message(this->repository_identifier(), dm->GetSender());
 
-		//Append any requested data to the reply_message, if the repository has it
-		if(dm->HasRequests()){
-			BuildReturnDataMessage(*dm,reply_message);
-		}
+			//Append any requested data to the reply_message, if the repository has it
+			if(dm->HasRequests()){
+				BuildReturnDataMessage(*dm,reply_message);
+			}
 
-		//Reply to the client
-		ReplyToConnectedClient(reply_message);
+			//Reply to the client
+			ReplyToConnectedClient(reply_message);
 		}
 		else if ( CommandMessage * cm = dynamic_cast<CommandMessage*>( message ) ) {
 			//TODO Add process for command messages
 		}
 		else {
-		throw "unknown message type";
+			cout << "Unable to cast to a known message type" << endl;
+			throw "unknown message type";
 		}
 	}
 }

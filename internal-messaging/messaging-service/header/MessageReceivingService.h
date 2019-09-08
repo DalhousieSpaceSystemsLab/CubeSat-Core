@@ -25,7 +25,7 @@ public:
     int StartListeningForClients();
 
     //Method to listen for, and recieve a message
-    int ListenForMessage(Message &message) override;
+    int ListenForMessage(Message *&message) override;
     //Method to reply to last connected sender
     int Reply(Message &message) override;
     

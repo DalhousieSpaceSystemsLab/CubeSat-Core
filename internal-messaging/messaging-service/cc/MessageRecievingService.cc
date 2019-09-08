@@ -21,14 +21,14 @@ int MessageReceivingService::StartListeningForClients(){
 }
 
 
-int MessageReceivingService::ListenForMessage(Message &message){
+int MessageReceivingService::ListenForMessage(Message *&message){
     std::string flat_message;
     server_socket_.HandleConnection(flat_message);
-    if(MessageBuilder::BuildMessageFromFlattened(message, flat_message) != 0){
+    if(MessageBuilder::BuildMessageFromFlattened(message, flat_message) == 0){
         throw "ERROR determining message type";
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 int MessageReceivingService::Reply(Message &message){

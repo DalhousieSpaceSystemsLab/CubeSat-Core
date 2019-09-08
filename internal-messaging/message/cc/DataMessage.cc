@@ -65,7 +65,6 @@ int DataMessage::BuildFromCharacters(char *flat) {
 			i++;
 		};
 	}
-
 	// Find key value pairs
 	i++;
 	i = BuildContents(flat, i);
