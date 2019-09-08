@@ -74,6 +74,7 @@ bool Repository::WatchListContainsKey(unsigned int key){
 }
 
 int Repository::BuildReturnDataMessage(DataMessage request_message,DataMessage& return_message){
+	cout << "Building return message" << endl;
 	std::vector<int> requests = request_message.GetRequests();
 	int number_of_reqs=requests.size();
 	if(number_of_reqs>0){
@@ -126,9 +127,10 @@ void Repository::start() {
 			DataMessage reply_message(this->repository_identifier(), dm->GetSender());
 
 			//Append any requested data to the reply_message, if the repository has it
-			if(dm->HasRequests()){
-				BuildReturnDataMessage(*dm,reply_message);
-			}
+			// if(dm->HasRequests()){
+			cout << "Message has requests for information" << endl;
+			BuildReturnDataMessage(*dm,reply_message);
+			// }
 
 			//Reply to the client
 			ReplyToConnectedClient(reply_message);
