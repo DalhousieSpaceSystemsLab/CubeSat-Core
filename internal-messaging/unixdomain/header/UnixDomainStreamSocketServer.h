@@ -47,12 +47,15 @@ public:
 
     int current_client_file_descriptor();
 
+    //Starts listening on the socket file descriptor
+    int StartListening();
+
     //TODO Add a virtual function that allows the server to perform some operation in between waiting
     //TODO Find a way to continue looping IF there are no waiting clients. RIght now it just pauses.
     //TODO Checkout "fcntl". May potentially allow non-blocking mode
     //Method to poll socket for new connections from UnixDomainStreamSocketClients
     //Calls ReadFromSocket once a connection is found
-    virtual void WaitForConnection();
+    virtual int HandleConnection(string &message);
 };
 
 #endif // LORIS_UNIXDOMAIN_UNIXDOMAIN_SERVER_H_

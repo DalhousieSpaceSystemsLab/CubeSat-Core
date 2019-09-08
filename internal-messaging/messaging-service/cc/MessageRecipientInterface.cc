@@ -1,3 +1,3 @@
 #include "MessageRecipientInterface.h"
 
-MessageRecipentInterface::MessageRecipientInterface(){}
+MessageRecipientInterface::MessageRecipientInterface(){}

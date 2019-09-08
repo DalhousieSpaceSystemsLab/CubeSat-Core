@@ -2,6 +2,7 @@
 #include <cstring>
 #include "CommandMessage.h"
 #include <stdexcept>
+#include <string>
 
 CommandMessage::CommandMessage()
 :CommandMessage(0,0)
@@ -30,6 +31,12 @@ CommandMessage::CommandMessage(char* flat)
     i = BuildContents(flat, i);
 }
 
+CommandMessage::CommandMessage(string flat) {
+	char cstr[flat.size() + 1];
+	std::strcpy(cstr, flat.c_str());	// or pass &s[0]
+	BuildFromCharacters(cstr);
+}
+
 void CommandMessage::Flatten(char* msg) {
     int message_size = 0;
     
@@ -47,4 +54,26 @@ void CommandMessage::Flatten(char* msg) {
     }
     // Add end char
     strcat(msg, message_break);
+}
+
+int CommandMessage::BuildFromCharacters(char *flat) {
+	std::cout << "Creating Data Message" << std::endl;
+	char integer_string[32];
+	char hex_string[32];
+	memset(integer_string, 0, 32);
+	memset(hex_string, 0, 32);
+	// Find sender, recipient, time and flag
+	int i = BuildHeader(flat, 0);
+	i++;
+
+	//TODO Spencer, should the flag be parsed in parent class Message? - Andrew
+	// Skip over flag
+	while (flat[i] != *section_break) {
+		i++;
+	}
+
+	// Find key value pairs
+	i++;
+	i = BuildContents(flat, i);
+	return 1;
 }

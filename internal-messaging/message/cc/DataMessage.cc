@@ -26,12 +26,6 @@ DataMessage::DataMessage(char *flat) {
 	BuildFromCharacters(flat);
 }
 
-/**
- * Takes a character array, extracts data, and assigns it to class variables
- * This function assumes that flat is the "flattened" version of a pre-existing DataMessage
- * @param flat
- * @return
- */
 int DataMessage::BuildFromCharacters(char *flat) {
 	std::cout << "Creating Data Message" << std::endl;
 	char integer_string[32];

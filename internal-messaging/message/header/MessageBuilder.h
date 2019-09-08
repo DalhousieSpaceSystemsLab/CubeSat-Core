@@ -17,6 +17,10 @@ public:
     //Returns message object created
     DataMessage CompleteMessage();
 
+    //Builds a message from a flattened message string, will build proper message type
+    //based on flag and assign it to the Message object
+    static int BuildMessageFromFlattened(Message &message, string flattened_message);
+
     //Setters for message contents
     void SetRecipient(unsigned int recipient);
     void SetSender(unsigned int sender);
