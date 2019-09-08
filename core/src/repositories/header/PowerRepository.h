@@ -6,17 +6,15 @@
 #define LORIS_POWERREPOSITORY_H
 
 #include "Repository.h"
-// #include "../../message/identifiers/ProcessFilePaths.h"
 #include <string>
 
 class PowerRepository : public Repository {
 public:
-    PowerRepository(std::string filePaths);
+    PowerRepository(unsigned int identifier);
     int ProcessMessage(DataMessage message);
     unsigned int repository_identifier();
 
     int AddKeysToWatchList();
-
 
 };
 

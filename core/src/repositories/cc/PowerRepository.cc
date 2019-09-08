@@ -3,11 +3,10 @@
 //
 
 #include "PowerRepository.h"
-
 #include "PowerKeys.h"
 
-PowerRepository::PowerRepository(std::string filePaths)
-        : Repository(filePaths) {
+PowerRepository::PowerRepository(unsigned int identifier)
+        : Repository(identifier) {
 	AddKeysToWatchList();
 }
 
@@ -29,7 +28,6 @@ int PowerRepository::AddKeysToWatchList(){
 int PowerRepository::ProcessMessage(DataMessage message){
 
 	/*Perform optional processing here*/
-
 
     return 0;
 }

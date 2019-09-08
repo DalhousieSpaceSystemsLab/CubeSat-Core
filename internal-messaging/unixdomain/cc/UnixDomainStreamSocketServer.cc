@@ -73,6 +73,7 @@ int UnixDomainStreamSocketServer::HandleConnection(string &message) {
         char buf[buffer_size];
         ReadFromSocket(buf, current_client_socket_file_descriptor_, buffer_size);
         message = buf;
+        return 0;
     }
 }
 
@@ -80,6 +81,7 @@ int UnixDomainStreamSocketServer::StartListening(){
     //Indicate that the socket is for listening
     listen(socket_file_descriptor_, 5);
     cout << "Listening on socket " << socket_address_.sun_path << "..." << endl;
+    return 0;
 }
 
 // Clean way to print server info

@@ -4,8 +4,8 @@
 
 #include "PayloadRepository.h"
 
-PayloadRepository::PayloadRepository(std::string filePaths)
-        : Repository(filePaths) {}
+PayloadRepository::PayloadRepository(unsigned int identifier)
+        : Repository(identifier) {}
 
 //Adds all keys, to watch_list, for storing/returning future data
 int PayloadRepository::AddKeysToWatchList(){

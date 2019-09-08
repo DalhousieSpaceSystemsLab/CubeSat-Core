@@ -54,12 +54,6 @@ int UnixDomainStreamSocketClient::SendMessageAwaitReply(char message[], string &
     return 0;
 }
 
-//default implementation
-int UnixDomainStreamSocketClient::HandleMessage(char *buffer,int file_descriptor){
-    cout << "Handling message " << buffer << endl;
-    return 0;
-}
-
 string UnixDomainStreamSocketClient::GetReply(){
 	return GetBufferContents();
 }

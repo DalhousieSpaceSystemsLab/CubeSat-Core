@@ -11,7 +11,7 @@
 
 class CommsRepository : public Repository {
 public:
-    CommsRepository(std::string filePaths);
+    CommsRepository(unsigned int identifier);
     int ProcessMessage(DataMessage message);
     int AddKeysToWatchList();
 

@@ -7,13 +7,19 @@
 #include "MessageBuilder.h"
 #include <string>
 
-MessageReceivingService::MessageReceivingService(unsigned int identifier):
+ MessageReceivingService::MessageReceivingService(unsigned int identifier):
     server_socket_(PhoneBook::IdentifierToProcessFilePath(identifier)) {}
 
 void MessageReceivingService::SetIdentifier(unsigned int identifier){
     std::string path = PhoneBook::IdentifierToProcessFilePath(identifier);
     server_socket_ = UnixDomainStreamSocketServer(path);
 }
+
+int MessageReceivingService::StartListeningForClients(){
+    server_socket_.StartListening();
+    return 0;
+}
+
 
 int MessageReceivingService::ListenForMessage(Message &message){
     std::string flat_message;
@@ -25,7 +31,7 @@ int MessageReceivingService::ListenForMessage(Message &message){
     return 0;
 }
 
-int MessageReceivingService::ReplyWithDataMessage(DataMessage message){
+int MessageReceivingService::Reply(Message &message){
     
     return 0;
 }

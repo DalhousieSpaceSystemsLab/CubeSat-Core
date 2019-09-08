@@ -15,7 +15,7 @@ public:
     //Method to listen for, and recieve a message
     virtual int ListenForMessage(Message &message) = 0;
     //Method to reply to last connected sender
-    virtual int ReplyWithDataMessage(DataMessage message) = 0;
+    virtual int Reply(Message &message) = 0;
 protected:
     //Constructor
     MessageRecipientInterface();

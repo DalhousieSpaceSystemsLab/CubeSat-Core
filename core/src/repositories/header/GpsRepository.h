@@ -11,7 +11,7 @@
 
 class GpsRepository : public Repository {
 public:
-    GpsRepository(std::string filePaths);
+    GpsRepository(unsigned int identifier);
     int ProcessMessage(DataMessage message);
     int AddKeysToWatchList();
 

@@ -21,10 +21,13 @@ public:
     //Setter for Identifer after object construction
     void SetIdentifier( unsigned int identifier);
     
+    //Method to start listening on a socket path for a client (must call once before ListenForMessage)
+    int StartListeningForClients();
+
     //Method to listen for, and recieve a message
     int ListenForMessage(Message &message) override;
     //Method to reply to last connected sender
-    int ReplyWithDataMessage(DataMessage message) override;
+    int Reply(Message &message) override;
     
 private:
     UnixDomainStreamSocketServer server_socket_;

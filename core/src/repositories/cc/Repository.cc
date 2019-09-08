@@ -5,36 +5,8 @@
 #include "Repository.h"
 #include <string>
 
-Repository::Repository(std::string socket_path)
-        : UnixDomainStreamSocketServer(socket_path) {}
-
-int Repository::HandleMessage(char *buffer,int client_file_descriptor){
-    cout << "Handling message: " << buffer << endl;
-
-    //Convert the buffer contents into a DataMessage object
-    DataMessage message = DataMessage(buffer);
-
-    //Extract any new, watched data from the message
-    ExtractDataFromReceivedMessage(message);
-
-    //Perform any additional, optional processing for the message
-    ProcessMessage(message);
-
-    //Build an empty reply message
- 	DataMessage reply_message(this->repository_identifier(),message.GetSender());
-
- 	//Append any requested data to the reply_message, if the repository has it
-    if(message.HasRequests()){
-      	BuildReturnDataMessage(message,reply_message);
-    }
-
-    //Reply to the client
-   	ReplyToConnectedClient(reply_message);
-
-    return 0;
-}
-
-
+Repository::Repository(unsigned int identifier)
+        : mrs(identifier) {}
 
 int Repository::ExtractDataFromReceivedMessage(DataMessage received_message){
     //TODO remove the cout statements when deemed "too annoying and unnecessary"
@@ -85,11 +57,12 @@ int Repository::ExtractDataFromReceivedMessage(DataMessage received_message){
 
 int Repository::ReplyToConnectedClient(DataMessage& message){
 	//TODO Spencer, can I just arbitrarily set the length of the message? and send it? - Andrew
-    char msg[255] = "";
-	message.Flatten(msg);
-	int client_file_descriptor=this->current_client_file_descriptor();
-	cout << "Replying to client at " << client_file_descriptor << " with message: " << msg << endl;
-	WriteToSocket(msg,client_file_descriptor);
+    // char msg[255] = "";
+	// message.Flatten(msg);
+	mrs.Reply(message);
+	// int client_file_descriptor=this->current_client_file_descriptor();
+	// cout << "Replying to client at " << client_file_descriptor << " with message: " << msg << endl;
+	// WriteToSocket(msg,client_file_descriptor);
 	return 1;
 }
 
@@ -140,4 +113,36 @@ int Repository::BuildReturnDataMessage(DataMessage request_message,DataMessage& 
 		cout << "The data message contained no requests." << endl;
 	}
 	return 1;
+}
+
+void Repository::start() {
+	Message *message;
+	mrs.StartListeningForClients();
+	while(true){
+		mrs.ListenForMessage(*message);
+		if ( DataMessage * dm = dynamic_cast<DataMessage*>( message ) ) {
+			//Extract any new, watched data from the message
+		ExtractDataFromReceivedMessage(*dm);
+
+		//Perform any additional, optional processing for the message
+		ProcessMessage(*dm);
+
+		//Build an empty reply message
+		DataMessage reply_message(this->repository_identifier(), dm->GetSender());
+
+		//Append any requested data to the reply_message, if the repository has it
+		if(dm->HasRequests()){
+			BuildReturnDataMessage(*dm,reply_message);
+		}
+
+		//Reply to the client
+		ReplyToConnectedClient(reply_message);
+		}
+		else if ( CommandMessage * cm = dynamic_cast<CommandMessage*>( message ) ) {
+			//TODO Add process for command messages
+		}
+		else {
+		throw "unknown message type";
+		}
+	}
 }

@@ -4,8 +4,8 @@
 
 #include "GpsRepository.h"
 
-GpsRepository::GpsRepository(std::string filePaths)
-        : Repository(filePaths) {}
+GpsRepository::GpsRepository(unsigned int identifier)
+        : Repository(identifier) {}
 
 //Adds all keys, to watch_list, for storing/returning future data
 int GpsRepository::AddKeysToWatchList(){
