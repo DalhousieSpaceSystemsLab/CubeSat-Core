@@ -40,7 +40,7 @@ void UnixDomainStreamSocketServer::BindSocketToAddress(int socket_file_descripto
     }
 }
 
-int UnixDomainStreamSocketServer::current_client_file_descriptor(){
+int UnixDomainStreamSocketServer::GetCurrentClientFileDescriptor(){
 	return this->current_client_socket_file_descriptor_;
 }
 
@@ -92,4 +92,11 @@ void UnixDomainStreamSocketServer::ToString() {
     cout << "socket_address_.sun_path: " << socket_address_.sun_path << endl;
     cout << "&socket_address_: " << &socket_address_ << endl;
     cout << "socket_address_ size: " << sizeof(socket_address_) << endl;
+}
+
+int UnixDomainStreamSocketServer::ReplyToCurrentClient(char* message){
+    int client_file_descriptor = GetCurrentClientFileDescriptor();
+	cout << "Replying to client at " << client_file_descriptor << " with message: " << message << endl;
+	WriteToSocket(message, client_file_descriptor);
+    return 0;
 }

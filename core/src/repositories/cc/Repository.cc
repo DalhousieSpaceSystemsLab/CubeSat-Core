@@ -56,13 +56,7 @@ int Repository::ExtractDataFromReceivedMessage(DataMessage received_message){
 }
 
 int Repository::ReplyToConnectedClient(DataMessage& message){
-	//TODO Spencer, can I just arbitrarily set the length of the message? and send it? - Andrew
-    // char msg[255] = "";
-	// message.Flatten(msg);
 	mrs.Reply(message);
-	// int client_file_descriptor=this->current_client_file_descriptor();
-	// cout << "Replying to client at " << client_file_descriptor << " with message: " << msg << endl;
-	// WriteToSocket(msg,client_file_descriptor);
 	return 1;
 }
 

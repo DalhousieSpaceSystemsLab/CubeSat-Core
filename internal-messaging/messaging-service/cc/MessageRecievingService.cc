@@ -24,6 +24,7 @@ int MessageReceivingService::StartListeningForClients(){
 int MessageReceivingService::ListenForMessage(Message *&message){
     std::string flat_message;
     server_socket_.HandleConnection(flat_message);
+    cout << "Handling message: " << flat_message << endl; 
     if(MessageBuilder::BuildMessageFromFlattened(message, flat_message) == 0){
         throw "ERROR determining message type";
         return 0;
@@ -32,6 +33,9 @@ int MessageReceivingService::ListenForMessage(Message *&message){
 }
 
 int MessageReceivingService::Reply(Message &message){
-    
+    //TODO Message length should be set by repo - to come after refactor
+    char msg[255] = "";
+	message.Flatten(msg);
+    server_socket_.ReplyToCurrentClient(msg);
     return 0;
 }
