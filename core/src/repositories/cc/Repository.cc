@@ -127,13 +127,13 @@ void Repository::start() {
 			DataMessage reply_message(this->repository_identifier(), dm->GetSender());
 
 			//Append any requested data to the reply_message, if the repository has it
-			// if(dm->HasRequests()){
-			cout << "Message has requests for information" << endl;
-			BuildReturnDataMessage(*dm,reply_message);
-			// }
-
-			//Reply to the client
-			ReplyToConnectedClient(reply_message);
+			if(dm->HasRequests()){
+				cout << "Message has requests for information" << endl;
+				BuildReturnDataMessage(*dm,reply_message);
+				
+				//Reply to the client
+				ReplyToConnectedClient(reply_message);
+			}
 		}
 		else if ( CommandMessage * cm = dynamic_cast<CommandMessage*>( message ) ) {
 			//TODO Add process for command messages
