@@ -26,12 +26,6 @@ DataMessage::DataMessage(char *flat) {
 	BuildFromCharacters(flat);
 }
 
-/**
- * Takes a character array, extracts data, and assigns it to class variables
- * This function assumes that flat is the "flattened" version of a pre-existing DataMessage
- * @param flat
- * @return
- */
 int DataMessage::BuildFromCharacters(char *flat) {
 	std::cout << "Creating Data Message" << std::endl;
 	char integer_string[32];
@@ -41,18 +35,13 @@ int DataMessage::BuildFromCharacters(char *flat) {
 	// Find sender, recipient, time and flag
 	int i = BuildHeader(flat, 0);
 	i++;
-	//TODO Spencer, should the flag be parsed in parent class Message? - Andrew
-	// Skip over flag
-	while (flat[i] != *section_break) {
-		i++;
-	}
-	//i++;
 
 	//TODO Find more robust solution for when no requests exist
 	// Find Requests
-	while (flat[i] != *section_break && flat[i - 1] != *section_break) {
+	while (flat[i] != *section_break) {
+		std::cout << "Getting requests" << std::endl;
 		// Get next request
-		//TODO fix bug where infinite loop is reached due to no requests in the message
+		//TODO fix bug where infinite loop is reached due to no requests in the message -- I have not see this bug?
 		while (flat[i] != '-' && flat[i] != *section_break) {
 			sprintf(integer_string, "%c", flat[i]);
 			strcat(hex_string, integer_string);
@@ -60,7 +49,7 @@ int DataMessage::BuildFromCharacters(char *flat) {
 		}
 		try {
 			std::cout << "Adding: " << hex_string
-					<< "to requests in DataMessage" << std::endl;
+					<< " to requests in DataMessage" << std::endl;
 			int request = std::stoi(hex_string, nullptr, 16);
 			requests.push_back(request);
 		} catch (std::exception const &e) {
@@ -71,7 +60,6 @@ int DataMessage::BuildFromCharacters(char *flat) {
 			i++;
 		};
 	}
-
 	// Find key value pairs
 	i++;
 	i = BuildContents(flat, i);

@@ -4,8 +4,8 @@
 
 #include "AdcsRepository.h"
 
-AdcsRepository::AdcsRepository(std::string filePaths)
-        : Repository(filePaths) {}
+AdcsRepository::AdcsRepository(unsigned int identifier)
+        : Repository(identifier) {}
 
 //Adds all keys, to watch_list, for storing/returning future data
 int AdcsRepository::AddKeysToWatchList(){

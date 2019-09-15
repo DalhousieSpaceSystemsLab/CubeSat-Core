@@ -1,4 +1,4 @@
-#include "ProcessFilePaths.h"
+#include "Identifiers.h"
 #include "PowerRepository.h"
 #include "CommsRepository.h"
 #include "AdcsRepository.h"
@@ -7,7 +7,7 @@
 #include<stdlib.h>
 #include<iostream>
 
-ProcessFilePaths file_paths;
+Identifiers ids;
 
 int StartPowerRepository();
 int StartGpsRepository();
@@ -20,8 +20,8 @@ int StartPowerRepository(){
 	/*
 	 * Start power repository...
 	 */
-    PowerRepository power_server_(file_paths.power_repository);
-    power_server_.WaitForConnection();
+    PowerRepository power_server_(ids.power_repository);
+    power_server_.start();
 
 	return 1;
 }
@@ -32,8 +32,8 @@ int StartGpsRepository(){
 	/*
 	 * Start gps repository...
 	 */
-	GpsRepository gps_server_(file_paths.gps_repository);
-	gps_server_.WaitForConnection();
+	GpsRepository gps_server_(ids.gps_repository);
+	gps_server_.start();
 
 	return 1;
 }
@@ -43,8 +43,8 @@ int StartCommsRepository(){
 	/*
 	 * Start Comms repository...
 	 */
-	CommsRepository comms_server_(file_paths.comms_repository);
-	comms_server_.WaitForConnection();
+	CommsRepository comms_server_(ids.comms_repository);
+	comms_server_.start();
 	return 1;
 }
 
@@ -53,8 +53,8 @@ int StartPayloadRepository(){
 	/*
 	 * Start power repository...
 	 */
-	PayloadRepository payload_server_(file_paths.payload_repository);
-	payload_server_.WaitForConnection();
+	PayloadRepository payload_server_(ids.payload_repository);
+	payload_server_.start();
 
 	return 1;
 }
@@ -64,15 +64,15 @@ int StartAdcsRepository(){
 	/*
 	 * Start power repository...
 	 */
-	AdcsRepository adcs_server_(file_paths.adcs_repository);
-	adcs_server_.WaitForConnection();
+	AdcsRepository adcs_server_(ids.adcs_repository);
+	adcs_server_.start();
 	return 1;
 }
 
 int TestRepositories(){
 	//TODO have default constructor where the filepath is hard coded? But keep the current constructor optional
-    PowerRepository power_server_(file_paths.power_repository);
-     power_server_.WaitForConnection();
+    PowerRepository power_server_(ids.power_repository);
+     power_server_.start();
 
 //    CommsRepository comms_server_(file_paths.comms_repository);
 //	cout << file_paths.comms_repository << endl;

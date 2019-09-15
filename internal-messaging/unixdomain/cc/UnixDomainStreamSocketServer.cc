@@ -40,47 +40,48 @@ void UnixDomainStreamSocketServer::BindSocketToAddress(int socket_file_descripto
     }
 }
 
-int UnixDomainStreamSocketServer::current_client_file_descriptor(){
+int UnixDomainStreamSocketServer::GetCurrentClientFileDescriptor(){
 	return this->current_client_socket_file_descriptor_;
 }
 
 //TODO Add a virtual function that allows the server to perform some operation in between waiting
-//TODO Find a way to continue looping IF there are no waiting clients. RIght now it just pauses.
 //TODO Checkout "fcntl". May potentially allow non-blocking mode
-void UnixDomainStreamSocketServer::WaitForConnection() {
-    cout << "Listening on socket " << socket_address_.sun_path << "..." << endl;
+int UnixDomainStreamSocketServer::HandleConnection(string &message) {
+    cout << "Waiting for connection..." << endl;
+    //Wait for connection
+    client_address_size = sizeof(client_address_);
+    current_client_socket_file_descriptor_ = accept(socket_file_descriptor_,
+                                         (struct sockaddr *) &client_address_, &client_address_size);
+    
+    //accept() blocks until connection is made
+    if (current_client_socket_file_descriptor_ < 0){ //file descriptor was closed by OS
+        error("ERROR on accept");
+        return 1;
+    }
+    else{
+    	//Code only proceeds beyond this point if connection was made and OS closed file descriptor (set to -1)
+    	cout << "Handling new request" << endl;
+    
+    	/*
+    	 * TODO: I think there is an issue with how we are calling ReadFromSocket.
+    	 * Why is 255 being used as a capacity? What happens if the message is over 255?
+    	 * What happens if its under 255? -Andrew
+         * Spencer - will complete this TODO after refactor so I can effectively decided where 
+         * buffer_size should be set
+    	 */
+        int buffer_size = 255;
+        char buf[buffer_size];
+        ReadFromSocket(buf, current_client_socket_file_descriptor_, buffer_size);
+        message = buf;
+        return 0;
+    }
+}
+
+int UnixDomainStreamSocketServer::StartListening(){
     //Indicate that the socket is for listening
     listen(socket_file_descriptor_, 5);
-
-    //TODO maybe add some other check to determine whether looping can continue...
-    while (true) {
-        cout << "Waiting for connection..." << endl;
-        //Wait for connection
-        client_address_size = sizeof(client_address_);
-        current_client_socket_file_descriptor_ = accept(socket_file_descriptor_,
-                                             (struct sockaddr *) &client_address_, &client_address_size);
-        /*
-         * TODO Avoid blocking? We need to keep looping sometimes when there is no client waiting.
-         * Andrew, August 13 2019: We may not need to block. Repositories just wait and listen for connections.
-         *  They don't need to do anything else. Ignore this todo for now.
-         */
-
-        //accept() blocks until connection is made
-        if (current_client_socket_file_descriptor_ < 0)
-            error("ERROR on accept");
-        else{
-        	//Code only proceeds beyond this point if connection was made. Is this true?
-        	cout << "Handling new request" << endl;
-
-        	/*
-        	 * TODO: I think there is an issue with how we are calling ReadFromSocket.
-        	 * Why is 255 being used as a capacity? What happens if the message is over 255?
-        	 * What happens if its under 255? -Andrew
-        	 */
-            ReadFromSocket(current_client_socket_file_descriptor_, 255);
-        	// this->HandleConnection(current_client_socket_file_descriptor_);
-        }
-    }
+    cout << "Listening on socket " << socket_address_.sun_path << "..." << endl;
+    return 0;
 }
 
 // Clean way to print server info
@@ -91,4 +92,11 @@ void UnixDomainStreamSocketServer::ToString() {
     cout << "socket_address_.sun_path: " << socket_address_.sun_path << endl;
     cout << "&socket_address_: " << &socket_address_ << endl;
     cout << "socket_address_ size: " << sizeof(socket_address_) << endl;
+}
+
+int UnixDomainStreamSocketServer::ReplyToCurrentClient(char* message){
+    int client_file_descriptor = GetCurrentClientFileDescriptor();
+	cout << "Replying to client at " << client_file_descriptor << " with message: " << message << endl;
+	WriteToSocket(message, client_file_descriptor);
+    return 0;
 }

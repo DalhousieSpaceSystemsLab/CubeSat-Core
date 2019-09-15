@@ -4,8 +4,8 @@
 
 #include "CommsRepository.h"
 
-CommsRepository::CommsRepository(std::string filePaths)
-        : Repository(filePaths) {}
+CommsRepository::CommsRepository(unsigned int identifier)
+        : Repository(identifier) {}
 
 //Adds all keys, to watch_list, for storing/returning future data
 int CommsRepository::AddKeysToWatchList(){

@@ -5,15 +5,17 @@
 #ifndef LORIS_REPOSITORY_H
 #define LORIS_REPOSITORY_H
 
+#include "Message.h"
 #include "DataMessage.h"
-#include "UnixDomainStreamSocketServer.h"
+#include "CommandMessage.h"
+#include "MessageReceivingService.h"
 #include <string>
 #include "Identifiers.h"
 
-class Repository : public UnixDomainStreamSocketServer {
+class Repository {
 public:
-    Repository(std::string socket_path);
-    int HandleMessage(char *buffer, int client_file_descriptor);
+    Repository(unsigned int identifier);
+    void start();
 
 protected:
     //TODO make watch_list_ a map
@@ -50,9 +52,8 @@ protected:
      */
     virtual unsigned int repository_identifier() = 0;
 
-
 private:
-
+    MessageReceivingService mrs;
     /**
      * Extracts key value pairs which the repository is designated to store
      * @param received_message
@@ -83,11 +84,6 @@ private:
      */
     virtual int ProcessMessage(DataMessage message) = 0;
     bool WatchListContainsKey(unsigned int key);
-
-
-
-
 };
-
 
 #endif //LORIS_REPOSITORY_H

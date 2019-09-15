@@ -41,20 +41,16 @@ int UnixDomainStreamSocketClient::SendMessageAwaitReply(char message[], string &
         error("ERROR SENDING MESSAGE");
         return 1;
     }
+    //TODO move capacity to a location where user can set it
     int capacity=255;
-	cout << "Reading from Socket..." << endl;
-    if (ReadFromSocket(socket_file_descriptor_,capacity) != 0) {
+    char buf[capacity];
+	cout << "Reading from Socket " << socket_file_descriptor_ << " for a reply" << endl;
+    if (ReadFromSocket(buf, socket_file_descriptor_,capacity) != 0) {
 
         error("ERROR READING FROM SOCKET");
         return 1;
     }
-    reply=GetReply();
-    return 0;
-}
-
-//default implementation
-int UnixDomainStreamSocketClient::HandleMessage(char *buffer,int file_descriptor){
-    cout << "Handling message " << buffer << endl;
+    reply=buf;
     return 0;
 }
 

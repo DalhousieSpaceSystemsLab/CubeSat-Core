@@ -35,6 +35,12 @@ class DataMessage : public Message{
         bool HasRequests();
     private:
         std::vector<int> requests;
+        /**
+         * Takes a character array, extracts data, and assigns it to class variables
+         * This function assumes that flat is the "flattened" version of a pre-existing DataMessage
+         * @param flat
+         * @return
+         */
         int BuildFromCharacters(char * flat);
 };
 

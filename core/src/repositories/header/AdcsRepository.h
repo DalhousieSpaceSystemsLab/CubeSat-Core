@@ -11,7 +11,7 @@
 
 class AdcsRepository : public Repository {
 public:
-    AdcsRepository(std::string filePaths);
+    AdcsRepository(unsigned int identifier);
     int ProcessMessage(DataMessage message);
     int AddKeysToWatchList();
 

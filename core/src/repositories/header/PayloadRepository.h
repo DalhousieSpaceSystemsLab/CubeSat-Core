@@ -11,7 +11,7 @@
 
 class PayloadRepository : public Repository {
 public:
-    PayloadRepository(std::string filePaths);
+    PayloadRepository(unsigned int identifier);
     int ProcessMessage(DataMessage message);
     int AddKeysToWatchList();
 
