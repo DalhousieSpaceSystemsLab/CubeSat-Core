@@ -28,24 +28,23 @@ int UnixDomainStreamSocketClient::ConnectToSocket(char sun_path[]) {
     return 0;
 }
 
-int UnixDomainStreamSocketClient::Send(char message[]) {
-    if (WriteToSocket(message, socket_file_descriptor_) != 0) {
+int UnixDomainStreamSocketClient::Send(char message[], unsigned int message_capacity) {
+    if (WriteToSocket(message, socket_file_descriptor_, message_capacity) != 0) {
         error("ERROR SENDING MESSAGE");
         return 1;
     }
     return 0;
 }
 
-int UnixDomainStreamSocketClient::SendMessageAwaitReply(char message[], string & reply) {
-    if (WriteToSocket(message, socket_file_descriptor_) != 0) {
+int UnixDomainStreamSocketClient::SendMessageAwaitReply(char message[], string & reply, unsigned int message_capacity, unsigned int reply_capacity) {
+    if (WriteToSocket(message, socket_file_descriptor_, message_capacity) != 0) {
         error("ERROR SENDING MESSAGE");
         return 1;
     }
     //TODO move capacity to a location where user can set it
-    int capacity=255;
-    char buf[capacity];
+    char buf[reply_capacity];
 	cout << "Reading from Socket " << socket_file_descriptor_ << " for a reply" << endl;
-    if (ReadFromSocket(buf, socket_file_descriptor_,capacity) != 0) {
+    if (ReadFromSocket(buf, socket_file_descriptor_, reply_capacity) != 0) {
 
         error("ERROR READING FROM SOCKET");
         return 1;

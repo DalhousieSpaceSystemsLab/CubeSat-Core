@@ -42,11 +42,11 @@ public:
     bool ContainsIntKey(unsigned int key);
 
 
-    //Flattens for message sending - returns new msg_size (CANNOT EXCEED 255)
-    int Flatten(char* msg, int msg_size);
-    int FlattenIntPairs(char* msg, int msg_size);
-    int FlattenFloatPairs(char* msg, int msg_size);
-    int FlattenStringPairs(char* msg, int msg_size);
+    //Flattens for message sending - returns new msg_size (CANNOT EXCEED message_max_size)
+    int Flatten(char* msg, int msg_size, unsigned int message_max_size);
+    int FlattenIntPairs(char* msg, int msg_size, unsigned int message_max_size);
+    int FlattenFloatPairs(char* msg, int msg_size, unsigned int message_max_size);
+    int FlattenStringPairs(char* msg, int msg_size, unsigned int message_max_size);
 private:
     std::vector<KeyIntPair> key_int_pairs_;
     std::vector<KeyFloatPair> key_float_pairs_;

@@ -52,10 +52,13 @@ public:
     //TODO Checkout "fcntl". May potentially allow non-blocking mode
     //Method to poll socket for new connections from UnixDomainStreamSocketClients
     //Calls ReadFromSocket once a connection is found
-    virtual int HandleConnection(string &message);
+    //Gets information that is waiting on the unix socket
+    //Contents will be set as message string for processing
+    //Will get a fill the message string with a maxiumum of *capacity* chars
+    virtual int HandleConnection(string &message, unsigned int capacity);
 
     //Sends message to the last file descriptor connected via HandleConnection
-    int ReplyToCurrentClient(char* message);
+    int ReplyToCurrentClient(char* message, unsigned int reply_capacity);
 
 };
 

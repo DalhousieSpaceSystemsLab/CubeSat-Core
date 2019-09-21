@@ -32,10 +32,9 @@ int UnixDomainStreamSocket::InitializeSocket(char sun_path[]) {
 }
 
 //Write msg to the socket specified by the sfd
-int UnixDomainStreamSocket::WriteToSocket(const char *msg, int new_socket_file_descriptor) {
+int UnixDomainStreamSocket::WriteToSocket(const char *msg, int new_socket_file_descriptor, unsigned int buffer_capacity) {
 
-    strcpy(this->buffer_, msg);
-    n_ = write(new_socket_file_descriptor, this->buffer_, strlen(this->buffer_));
+    n_ = write(new_socket_file_descriptor, msg, buffer_capacity);
 
     if (n_ < 0) {
         error("ERROR writing to socket");
@@ -47,7 +46,7 @@ int UnixDomainStreamSocket::WriteToSocket(const char *msg, int new_socket_file_d
 }
 
 //Read from the socket specified by the sfd
-int UnixDomainStreamSocket::ReadFromSocket(char* buffer, int new_socket_file_descriptor, int buffer_capacity) {
+int UnixDomainStreamSocket::ReadFromSocket(char* buffer, int new_socket_file_descriptor, unsigned int buffer_capacity) {
 
     n_ = read(new_socket_file_descriptor, buffer, buffer_capacity);
 

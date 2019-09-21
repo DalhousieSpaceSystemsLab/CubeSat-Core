@@ -7,7 +7,8 @@
 #include "PowerKeys.h"
 #include "Identifiers.h"
 using namespace std;
-// THIS IS DEPRECIATED - BETTER TO USE EMULATION 
+// THIS IS VERY DEPRECIATED - BETTER TO USE EMULATION 
+// BEST TO REMOVE THIS FILE?
 int main() {
 	//Initialize the messenger
 	LorisMessenger tester;

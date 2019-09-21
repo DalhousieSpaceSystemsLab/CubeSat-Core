@@ -7,8 +7,13 @@
 #include "MessageBuilder.h"
 #include <string>
 
+//Constructor creates UnixDomainStreamSocketServer and sets
  MessageReceivingService::MessageReceivingService(unsigned int identifier):
-    server_socket_(PhoneBook::IdentifierToProcessFilePath(identifier)) {}
+    server_socket_(PhoneBook::IdentifierToProcessFilePath(identifier)), message_capacity(DEFAULT_MESSAGE_CAPACITY) {}
+
+ MessageReceivingService::MessageReceivingService(unsigned int identifier, unsigned int capacity):
+    server_socket_(PhoneBook::IdentifierToProcessFilePath(identifier)), message_capacity(capacity) {}
+
 
 void MessageReceivingService::SetIdentifier(unsigned int identifier){
     std::string path = PhoneBook::IdentifierToProcessFilePath(identifier);
@@ -23,9 +28,9 @@ int MessageReceivingService::StartListeningForClients(){
 
 int MessageReceivingService::ListenForMessage(Message *&message){
     std::string flat_message;
-    server_socket_.HandleConnection(flat_message);
+    server_socket_.HandleConnection(flat_message, this->message_capacity);
     cout << "Handling message: " << flat_message << endl; 
-    if(MessageBuilder::BuildMessageFromFlattened(message, flat_message) == 0){
+    if(MessageBuilder::BuildMessageFromFlattened(message, flat_message, this->message_capacity) == 0){
         throw "ERROR determining message type";
         return 0;
     }
@@ -33,9 +38,12 @@ int MessageReceivingService::ListenForMessage(Message *&message){
 }
 
 int MessageReceivingService::Reply(Message &message){
-    //TODO Message length should be set by repo - to come after refactor
-    char msg[255] = "";
-	message.Flatten(msg);
-    server_socket_.ReplyToCurrentClient(msg);
-    return 0;
+    if(message.GetCapacity() > 0){
+        char msg[message.GetCapacity()];
+        message.Flatten(msg);
+        server_socket_.ReplyToCurrentClient(msg, message.GetCapacity());
+        return 0;
+    }
+    throw "Message Capacity is not set correctly";
+    return 1;
 }

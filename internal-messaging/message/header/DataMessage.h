@@ -14,15 +14,17 @@ static const char* request_break = "-";
 class DataMessage : public Message{
     public:
         //Constructors
-    	DataMessage();
         //Build message with sender and reciepient, time created will be set to the current date and time
-        DataMessage(unsigned int sender, unsigned int recipient);
+        DataMessage(unsigned int sender = 0, unsigned int recipient = 0);
         //Total constructor building message with all private members 
         DataMessage(unsigned int sender, unsigned int recipient, long time,  KeyValuePairContainer contents);
         //Builds message from character array output of flatten method
         DataMessage(char* flat);
+        DataMessage(char* flat, unsigned int max_size);
 
         DataMessage(string flat);
+        DataMessage(string flat, unsigned int max_size);
+
 
         // Flattens message into a compressed character array that can be parsed by the Message(char* flat) constructor
         // msg - pointer to char array with a minimum size of 256 bytes.

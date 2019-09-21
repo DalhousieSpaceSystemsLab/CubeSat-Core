@@ -38,7 +38,7 @@ void Emulate(){
 	cout << "Running and calling all emulators updates." << endl;
 	printf("Time\t Battery Level\t Zenith\t 	Azimuth\t\n");
 	for(int i=0;i<10;i++){
-		DataMessage msg(0,0);
+		DataMessage msg = DataMessage();
 		manager.GetCurrentState(msg);
 		std::vector<int> int_keys = msg.GetIntKeys();
 		std::vector<int> float_keys = msg.GetFloatKeys();

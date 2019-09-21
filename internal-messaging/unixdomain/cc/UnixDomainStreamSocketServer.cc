@@ -46,7 +46,7 @@ int UnixDomainStreamSocketServer::GetCurrentClientFileDescriptor(){
 
 //TODO Add a virtual function that allows the server to perform some operation in between waiting
 //TODO Checkout "fcntl". May potentially allow non-blocking mode
-int UnixDomainStreamSocketServer::HandleConnection(string &message) {
+int UnixDomainStreamSocketServer::HandleConnection(string &message, unsigned int capacity) {
     cout << "Waiting for connection..." << endl;
     //Wait for connection
     client_address_size = sizeof(client_address_);
@@ -61,17 +61,11 @@ int UnixDomainStreamSocketServer::HandleConnection(string &message) {
     else{
     	//Code only proceeds beyond this point if connection was made and OS closed file descriptor (set to -1)
     	cout << "Handling new request" << endl;
-    
-    	/*
-    	 * TODO: I think there is an issue with how we are calling ReadFromSocket.
-    	 * Why is 255 being used as a capacity? What happens if the message is over 255?
-    	 * What happens if its under 255? -Andrew
-         * Spencer - will complete this TODO after refactor so I can effectively decided where 
-         * buffer_size should be set
-    	 */
-        int buffer_size = 255;
-        char buf[buffer_size];
-        ReadFromSocket(buf, current_client_socket_file_descriptor_, buffer_size);
+
+        //Warning! 
+        //Setting capacity too low may cut off message from client, but be sure that capacity is unified between client and server
+        char buf[capacity];
+        ReadFromSocket(buf, current_client_socket_file_descriptor_, capacity);
         message = buf;
         return 0;
     }
@@ -94,9 +88,9 @@ void UnixDomainStreamSocketServer::ToString() {
     cout << "socket_address_ size: " << sizeof(socket_address_) << endl;
 }
 
-int UnixDomainStreamSocketServer::ReplyToCurrentClient(char* message){
+int UnixDomainStreamSocketServer::ReplyToCurrentClient(char* message, unsigned int reply_capacity){
     int client_file_descriptor = GetCurrentClientFileDescriptor();
 	cout << "Replying to client at " << client_file_descriptor << " with message: " << message << endl;
-	WriteToSocket(message, client_file_descriptor);
+	WriteToSocket(message, client_file_descriptor, reply_capacity);
     return 0;
 }

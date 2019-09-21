@@ -4,10 +4,6 @@
 #include <stdexcept>
 #include <string>
 
-CommandMessage::CommandMessage()
-:CommandMessage(0,0)
-{}
-
 CommandMessage::CommandMessage(unsigned int sender, unsigned int recipient)
 :CommandMessage(sender, recipient, 0, KeyValuePairContainer())
 {}
@@ -16,9 +12,14 @@ CommandMessage::CommandMessage(unsigned int sender, unsigned int recipient, long
 :Message(sender, recipient, time, 200, contents)
 {}
 
-CommandMessage::CommandMessage(char* flat)
+CommandMessage::CommandMessage(char* flat) :
+    CommandMessage(flat, DEFAULT_MESSAGE_CAPACITY){
+}
+
+CommandMessage::CommandMessage(char* flat, unsigned int max_size)
 {
     std::cout << "Creating Command Message" << std::endl;
+    setCapacity(max_size);
     // Find sender, recipient, and time
     int i = BuildHeader(flat, 0);
     i++;
@@ -31,8 +32,13 @@ CommandMessage::CommandMessage(char* flat)
     i = BuildContents(flat, i);
 }
 
-CommandMessage::CommandMessage(string flat) {
-	char cstr[flat.size() + 1];
+CommandMessage::CommandMessage(string flat) :
+    CommandMessage(flat, DEFAULT_MESSAGE_CAPACITY){
+}
+
+CommandMessage::CommandMessage(string flat, unsigned int max_size) {
+	setCapacity(max_size);
+    char cstr[flat.size() + 1];
 	std::strcpy(cstr, flat.c_str());	// or pass &s[0]
 	BuildFromCharacters(cstr);
 }
@@ -47,9 +53,9 @@ void CommandMessage::Flatten(char* msg) {
     }
 
     // Add Key Value Pairs
-    this->contents_.Flatten(msg, message_size);
+    this->contents_.Flatten(msg, message_size, capacity);
     message_size += 1;
-    if(message_size > 255){
+    if(message_size > capacity){
             throw std::invalid_argument( "Message to large" );
     }
     // Add end char

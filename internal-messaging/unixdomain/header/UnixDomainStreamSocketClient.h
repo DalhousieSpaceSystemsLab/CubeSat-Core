@@ -21,12 +21,13 @@ public:
     UnixDomainStreamSocketClient(std::string sock_path);
 
     //Sends message without awaiting reply
-    //message - what data will be sent (should be below 256 bytes)
-    int Send(char message[]);
+    //message - what data will be sent
+    //message_capacity - must be equal to or larger then the number of characters to send
+    int Send(char message[], unsigned int message_capacity);
 
     //Sends message awaiting reply from repository
     //message - what data will be sent (should be below 256 bytes)
-    int SendMessageAwaitReply(char message[], string & reply);
+    int SendMessageAwaitReply(char message[], string & reply, unsigned int message_capacity, unsigned int reply_capacity);
 
     string GetReply();
 
