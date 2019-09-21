@@ -30,7 +30,9 @@ string MessageSendingService::SendDataMessage(DataMessage message) {
 
 string MessageSendingService::SendDataMessage(DataMessage message, unsigned int reply_capacity) {
     char msg[message.GetCapacity()];
+    memset( msg, 0, message.GetCapacity()*sizeof(char) );
     message.Flatten(msg);
+    cout << "sending message: " << msg << endl; 
     if(message.HasRequests()){
         string reply;
     	SendFlattenedMessageAwaitReply(msg, reply, message.GetCapacity(), reply_capacity);

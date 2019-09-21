@@ -21,13 +21,13 @@ class DataMessage : public Message{
         //Builds message from character array output of flatten method
         DataMessage(char* flat);
         DataMessage(char* flat, unsigned int max_size);
-
+        //Builds message from string output of flatten method
         DataMessage(string flat);
         DataMessage(string flat, unsigned int max_size);
 
 
         // Flattens message into a compressed character array that can be parsed by the Message(char* flat) constructor
-        // msg - pointer to char array with a minimum size of 256 bytes.
+        // msg - pointer to char array with a minimum size of *capacity* bytes.
         void Flatten(char* msg) override;
 
         // Methods for adding and collecting requests

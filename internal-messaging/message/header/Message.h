@@ -25,7 +25,7 @@ public:
     Message(char* flat);
 
     // Flattens message into a compressed character array that can be parsed by the Message(char* flat) constructor
-    // msg - pointer to char array with a minimum size of 256 bytes.
+    // msg - pointer to char array with a minimum size of *capacity* bytes.
     virtual void Flatten(char* msg) = 0;
 
     //Getters for private members

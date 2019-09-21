@@ -25,7 +25,6 @@ class UnixDomainStreamSocket {
 private:
 
     char *path_;            //Server socket path
-    char buffer_[256];
     int n_;
 
 protected:
@@ -48,14 +47,8 @@ protected:
     //called when error is found
     void error(const char *msg);
 
-    //clears buffer
-    void ResetBuffer();
-
     //clears current socket address struct
     void ClearAddress();
-    
-public:
-    string GetBufferContents();
 
 };
 

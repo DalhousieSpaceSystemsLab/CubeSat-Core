@@ -40,7 +40,6 @@ int UnixDomainStreamSocket::WriteToSocket(const char *msg, int new_socket_file_d
         error("ERROR writing to socket");
         return 1;
     }
-    ResetBuffer();
 
     return 0;
 }
@@ -63,17 +62,8 @@ void UnixDomainStreamSocket::error(const char *msg) {
     perror(msg);
 }
 
-//Sets buffer_ to an array of 0's
-void UnixDomainStreamSocket::ResetBuffer() {
-    bzero(buffer_, 256);
-}
-
 //Clears all fields in the socket_address_ struct
 void UnixDomainStreamSocket::ClearAddress() {
     bzero((char *) &socket_address_, sizeof(socket_address_));
 }
 
-string UnixDomainStreamSocket::GetBufferContents(){
-	string contents = this->buffer_;
-	return contents;
-}

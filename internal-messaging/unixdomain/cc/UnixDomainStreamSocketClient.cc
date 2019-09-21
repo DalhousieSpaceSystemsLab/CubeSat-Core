@@ -41,7 +41,6 @@ int UnixDomainStreamSocketClient::SendMessageAwaitReply(char message[], string &
         error("ERROR SENDING MESSAGE");
         return 1;
     }
-    //TODO move capacity to a location where user can set it
     char buf[reply_capacity];
 	cout << "Reading from Socket " << socket_file_descriptor_ << " for a reply" << endl;
     if (ReadFromSocket(buf, socket_file_descriptor_, reply_capacity) != 0) {
@@ -51,8 +50,4 @@ int UnixDomainStreamSocketClient::SendMessageAwaitReply(char message[], string &
     }
     reply=buf;
     return 0;
-}
-
-string UnixDomainStreamSocketClient::GetReply(){
-	return GetBufferContents();
 }

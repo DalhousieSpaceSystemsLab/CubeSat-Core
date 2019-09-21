@@ -26,10 +26,8 @@ public:
     int Send(char message[], unsigned int message_capacity);
 
     //Sends message awaiting reply from repository
-    //message - what data will be sent (should be below 256 bytes)
+    //message - what data will be sent (should be below *message_capacity* bytes)
     int SendMessageAwaitReply(char message[], string & reply, unsigned int message_capacity, unsigned int reply_capacity);
-
-    string GetReply();
 
 private:
     //initial connection to Unix Domain socket for data transfer
