@@ -9,10 +9,10 @@
 
 //Constructor creates UnixDomainStreamSocketServer and sets
  MessageReceivingService::MessageReceivingService(unsigned int identifier):
-    server_socket_(PhoneBook::IdentifierToProcessFilePath(identifier)), message_capacity(DEFAULT_MESSAGE_CAPACITY) {}
+    server_socket_(PhoneBook::IdentifierToProcessFilePath(identifier)) {}
 
  MessageReceivingService::MessageReceivingService(unsigned int identifier, unsigned int capacity):
-    server_socket_(PhoneBook::IdentifierToProcessFilePath(identifier)), message_capacity(capacity) {}
+    server_socket_(PhoneBook::IdentifierToProcessFilePath(identifier)) {}
 
 
 void MessageReceivingService::SetIdentifier(unsigned int identifier){
@@ -26,11 +26,11 @@ int MessageReceivingService::StartListeningForClients(){
 }
 
 
-int MessageReceivingService::ListenForMessage(Message *&message){
+int MessageReceivingService::ListenForMessage(Message *&message, unsigned int message_capacity){
     std::string flat_message;
-    server_socket_.HandleConnection(flat_message, this->message_capacity);
+    server_socket_.HandleConnection(flat_message, message_capacity);
     cout << "Handling message: " << flat_message << endl; 
-    if(MessageBuilder::BuildMessageFromFlattened(message, flat_message, this->message_capacity) == 0){
+    if(MessageBuilder::BuildMessageFromFlattened(message, flat_message, message_capacity) == 0){
         throw "ERROR determining message type";
         return 0;
     }

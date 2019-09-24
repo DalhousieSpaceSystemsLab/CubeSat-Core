@@ -26,13 +26,12 @@ public:
     int StartListeningForClients();
 
     //Method to listen for, and recieve a message
-    int ListenForMessage(Message *&message) override;
+    int ListenForMessage(Message *&message, unsigned int message_capacity = DEFAULT_MESSAGE_CAPACITY) override;
     //Method to reply to last connected sender
     int Reply(Message &message) override;
     
 private:
     UnixDomainStreamSocketServer server_socket_;
-    unsigned int message_capacity;
 };
 
 #endif //LORIS_MESSAGERECEIVINGSERVICE_H
