@@ -26,7 +26,10 @@ public:
     int Send(char message[], unsigned int message_capacity);
 
     //Sends message awaiting reply from repository
-    //message - what data will be sent (should be below *message_capacity* bytes)
+    //message - what data will be sent (should have less or equal bytes to the message_capacity value)
+    //reply - string that will contain the reply from the server
+    //message_capacity - maximum number of characters that will be sent from message
+    //reply_capacity - maximum number of characters that will be read from the server and added to reply
     int SendMessageAwaitReply(char message[], string & reply, unsigned int message_capacity, unsigned int reply_capacity);
 
 private:

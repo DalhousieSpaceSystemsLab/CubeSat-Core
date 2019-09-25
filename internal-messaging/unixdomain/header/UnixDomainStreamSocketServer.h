@@ -54,10 +54,13 @@ public:
     //Calls ReadFromSocket once a connection is found
     //Gets information that is waiting on the unix socket
     //Contents will be set as message string for processing
-    //Will get a fill the message string with a maxiumum of *capacity* chars
+    //Will get and fill the message string from the socket
+    //Will not get more bytes from socket then the specified capacity
     virtual int HandleConnection(string &message, unsigned int capacity);
 
     //Sends message to the last file descriptor connected via HandleConnection
+    //message - message to be sent to current client
+    //reply_capacity - maximum number of bytes that will be sent through the socket
     int ReplyToCurrentClient(char* message, unsigned int reply_capacity);
 
 };

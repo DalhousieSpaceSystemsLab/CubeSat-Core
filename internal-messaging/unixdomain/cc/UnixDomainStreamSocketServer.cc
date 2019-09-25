@@ -64,6 +64,7 @@ int UnixDomainStreamSocketServer::HandleConnection(string &message, unsigned int
 
         //Warning! 
         //Setting capacity too low may cut off message from client, but be sure that capacity is unified between client and server
+        //TODO - Check if message end character delimiter was recieved, if not clear socket
         char buf[capacity];
         ReadFromSocket(buf, current_client_socket_file_descriptor_, capacity);
         message = buf;

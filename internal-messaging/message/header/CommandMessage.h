@@ -22,8 +22,9 @@ class CommandMessage : public Message{
         CommandMessage(string flat);
         CommandMessage(string flat, unsigned int max_size);
 
-        // Flattens message into a compressed character array that can be parsed by the Message(char* flat) constructor
-        // msg - pointer to char array with a minimum size of *capacity* bytes.
+        //Flattens message into a compressed character array that can be parsed by the Message(char* flat) constructor
+        //msg - pointer to char array
+        //msg should have atleast the capacity (of base class Message) worth of bytes allocated
         void Flatten(char* msg) override;
 
     private: 

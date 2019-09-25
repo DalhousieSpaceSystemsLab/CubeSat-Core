@@ -27,7 +27,8 @@ class DataMessage : public Message{
 
 
         // Flattens message into a compressed character array that can be parsed by the Message(char* flat) constructor
-        // msg - pointer to char array with a minimum size of *capacity* bytes.
+        // msg - pointer to char array
+        
         void Flatten(char* msg) override;
 
         // Methods for adding and collecting requests
