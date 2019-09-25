@@ -111,11 +111,12 @@ void TestLorisMessenger(){
 	reply = tester.Send(recipients.power_repository,recipients.power_subsystem);
 
 	cout << "reply: " << reply << endl;
-	DataMessage message(reply);
-
-	cout << "Message received from power repository!" << endl;
-
-
+	if (reply != ""){
+		DataMessage message(reply);
+		cout << "Message received from power repository!" << endl;
+	}else {
+		cout << "No reply was recieved" << endl;
+	}
 
 //	cout << "Sending data to recipient " << recipients.comms_repository << endl;
 //	tester.Send(recipients.comms_repository,0);
