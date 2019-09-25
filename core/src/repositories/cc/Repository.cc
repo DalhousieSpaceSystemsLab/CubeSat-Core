@@ -132,7 +132,7 @@ void Repository::start() {
 				BuildReturnDataMessage(*dm,reply_message);
 				
 				//Reply to the client
-				// ReplyToConnectedClient(reply_message);
+				ReplyToConnectedClient(reply_message);
 			}
 		}
 		else if ( CommandMessage * cm = dynamic_cast<CommandMessage*>( message ) ) {
