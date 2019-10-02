@@ -51,7 +51,7 @@ void HardwareEmulationManager::SendDataToCore(DataMessage data) {
 }
 
 void HardwareEmulationManager::GetCurrentStateString(char * string, int capacity){
-	DataMessage msg(0,0);
+	DataMessage msg = DataMessage();
 	GetCurrentState(msg);
 	msg.ToString(string,capacity);
 }

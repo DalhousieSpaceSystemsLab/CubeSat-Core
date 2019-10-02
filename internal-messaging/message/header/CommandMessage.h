@@ -11,18 +11,20 @@ using std::string;
 class CommandMessage : public Message{
     public:
         //Constructors
-    	CommandMessage();
         //Build message with sender and reciepient, time created will be set to the current date and time
-        CommandMessage(unsigned int sender, unsigned int recipient);
+        CommandMessage(unsigned int sender = 0, unsigned int recipient = 0);
         //Total constructor building message with all private members 
         CommandMessage(unsigned int sender, unsigned int recipient, long time,  KeyValuePairContainer contents);
         //Builds message from character array output of flatten method
         CommandMessage(char* flat);
+        CommandMessage(char* flat, unsigned int max_size);
 
         CommandMessage(string flat);
+        CommandMessage(string flat, unsigned int max_size);
 
-        // Flattens message into a compressed character array that can be parsed by the Message(char* flat) constructor
-        // msg - pointer to char array with a minimum size of 256 bytes.
+        //Flattens message into a compressed character array that can be parsed by the Message(char* flat) constructor
+        //msg - pointer to char array
+        //msg should have atleast the capacity (of base class Message) worth of bytes allocated
         void Flatten(char* msg) override;
 
     private: 
