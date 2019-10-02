@@ -14,26 +14,32 @@ void MessageSendingService::SetRecipient(unsigned int recipient){
 }
 
 //Send message to socket
-void MessageSendingService::SendFlattenedMessage(char message[]) {
-    client_socket_.Send(message);
+void MessageSendingService::SendFlattenedMessage(char message[], unsigned int message_size) {
+    client_socket_.Send(message, message_size);
 }
 
 //Send message to socket and await reply
-int MessageSendingService::SendFlattenedMessageAwaitReply(char message[], string &reply) {
-    client_socket_.SendMessageAwaitReply(message, reply);
+int MessageSendingService::SendFlattenedMessageAwaitReply(char message[], string &reply, unsigned int message_capacity, unsigned int reply_capacity) {
+    client_socket_.SendMessageAwaitReply(message, reply, message_capacity, reply_capacity);
     return 0;
 }
 
 string MessageSendingService::SendDataMessage(DataMessage message) {
-    char msg[255] = "";
-    string reply;
+    return SendDataMessage(message, DEFAULT_MESSAGE_CAPACITY);
+}
+
+string MessageSendingService::SendDataMessage(DataMessage message, unsigned int reply_capacity) {
+    char msg[message.GetCapacity()];
+    memset( msg, 0, message.GetCapacity()*sizeof(char) );
     message.Flatten(msg);
+    cout << "sending message: " << msg << endl; 
     if(message.HasRequests()){
-    	SendFlattenedMessageAwaitReply(msg, reply);
+        string reply;
+    	SendFlattenedMessageAwaitReply(msg, reply, message.GetCapacity(), reply_capacity);
         return reply;
     }
     else{
-    	SendFlattenedMessage(msg);
+    	SendFlattenedMessage(msg, message.GetCapacity());
     	return "";
     }
 }

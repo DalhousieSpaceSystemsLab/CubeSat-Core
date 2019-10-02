@@ -19,7 +19,7 @@ public:
 
     //Builds a message from a flattened message string, will build proper message type
     //based on flag and assign it to the Message object
-    static int BuildMessageFromFlattened(Message *&message, string flattened_message);
+    static int BuildMessageFromFlattened(Message *&message, string flattened_message, unsigned int max_capacity);
 
     //Setters for message contents
     void SetRecipient(unsigned int recipient);

@@ -29,7 +29,7 @@ Message::Message(unsigned int sender, unsigned int recipient)
     //NULL
 }
 Message::Message(unsigned int sender, unsigned int recipient, long time, int childs_flag, KeyValuePairContainer contents)
-:sender_(sender), recipient_(recipient), time_created_(time), contents_(contents), flag(childs_flag)
+:sender_(sender), recipient_(recipient), time_created_(time), contents_(contents), flag(childs_flag), capacity(DEFAULT_MESSAGE_CAPACITY)
 {
     // NULL
 }
@@ -183,7 +183,7 @@ int Message::FlattenHeader(char* msg, int msg_size){
      // Add Sender, Recipient, and Time
     sprintf(integer_string, "%x", this->sender_);
     message_size += strlen(integer_string) + 1;
-    if(message_size > 255){
+    if(message_size > capacity){
         throw std::invalid_argument( "Message to large" );
     }
     strcat(msg, integer_string); 
@@ -191,7 +191,7 @@ int Message::FlattenHeader(char* msg, int msg_size){
 
     sprintf(integer_string, "%x", this->recipient_);
     message_size += strlen(integer_string) + 1;
-    if(message_size > 255){
+    if(message_size > capacity){
         throw std::invalid_argument( "Message to large" );
     }
     strcat(msg, integer_string);
@@ -199,7 +199,7 @@ int Message::FlattenHeader(char* msg, int msg_size){
 
     sprintf(long_string, "%lx", this->time_created_);
     message_size += strlen(long_string) + 1;
-    if(message_size > 255){
+    if(message_size > capacity){
         throw std::invalid_argument( "Message to large" );
     }
     strcat(msg, long_string);
@@ -207,7 +207,7 @@ int Message::FlattenHeader(char* msg, int msg_size){
 
     sprintf(integer_string, "%x", this->flag);
     message_size += strlen(integer_string) + 1;
-    if(message_size > 255){
+    if(message_size > capacity){
         throw std::invalid_argument( "Message to large" );
     }
     strcat(msg, integer_string); 
@@ -331,4 +331,11 @@ int Message::BuildContents(char* flat, int index){
 
 int Message::GetFlag(){
     return this->flag;
+}
+
+void Message::setCapacity(unsigned int max){
+    this->capacity = max;
+}
+unsigned int Message::GetCapacity(){
+    return this->capacity;
 }

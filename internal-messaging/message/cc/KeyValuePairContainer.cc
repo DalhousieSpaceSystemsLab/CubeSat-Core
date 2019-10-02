@@ -132,14 +132,14 @@ int KeyValuePairContainer::GetAmountofStringPairs(){
     return this->key_string_pairs_.size();
 }
 
-int KeyValuePairContainer::Flatten(char* msg, int msg_size){
-    msg_size += FlattenIntPairs(msg, msg_size);
-    msg_size += FlattenFloatPairs(msg, msg_size);
-    msg_size += FlattenStringPairs(msg, msg_size);
+int KeyValuePairContainer::Flatten(char* msg, int msg_size, unsigned int max_message_size){
+    msg_size += FlattenIntPairs(msg, msg_size, max_message_size);
+    msg_size += FlattenFloatPairs(msg, msg_size, max_message_size);
+    msg_size += FlattenStringPairs(msg, msg_size, max_message_size);
     return msg_size;
 }
     
-int KeyValuePairContainer::FlattenIntPairs(char* msg, int msg_size){
+int KeyValuePairContainer::FlattenIntPairs(char* msg, int msg_size, unsigned int max_message_size){
     char integer_string[32];
     std::vector<int> keys = this->GetIntKeys();
     int i = 0;
@@ -150,14 +150,14 @@ int KeyValuePairContainer::FlattenIntPairs(char* msg, int msg_size){
         strcat(msg, integer_string);
         //Increase msg_size proportionally
         msg_size += strlen(integer_string) + 1;
-        if(msg_size > 255){
+        if(msg_size > max_message_size){
             throw std::invalid_argument( "Message to large" );
         }
         //Add key value pair to msg
         strcat(msg, "~");
         sprintf(integer_string, "%x", this->GetInt(keys[i]));
         msg_size += strlen(integer_string) + 1;
-        if(msg_size > 255){
+        if(msg_size > max_message_size){
             throw std::invalid_argument( "Message to large" );
         }
         strcat(msg, integer_string); 
@@ -165,13 +165,13 @@ int KeyValuePairContainer::FlattenIntPairs(char* msg, int msg_size){
         i++;
     }
     msg_size += 1;
-    if(msg_size > 255){
+    if(msg_size > max_message_size){
         throw std::invalid_argument( "Message to large" );
     }
     return msg_size;
 }
 
-int KeyValuePairContainer::FlattenFloatPairs(char* msg, int msg_size){
+int KeyValuePairContainer::FlattenFloatPairs(char* msg, int msg_size, unsigned int max_message_size){
     char integer_string[32];
     std::vector<int> keys = this->GetFloatKeys();
     int i = 0;
@@ -181,7 +181,7 @@ int KeyValuePairContainer::FlattenFloatPairs(char* msg, int msg_size){
         sprintf(integer_string, "%x", keys[i]);
        //Increase message size
         msg_size += strlen(integer_string) + 1;
-        if(msg_size > 255){
+        if(msg_size > max_message_size){
             throw std::invalid_argument( "Message to large" );
         }
         //Add key value pair to msg
@@ -189,7 +189,7 @@ int KeyValuePairContainer::FlattenFloatPairs(char* msg, int msg_size){
         strcat(msg, "~");
         sprintf(integer_string, "%f", this->GetFloat(keys[i]));
         msg_size += strlen(integer_string) + 1;
-        if(msg_size > 255){
+        if(msg_size > max_message_size){
             throw std::invalid_argument( "Message to large" );
         }
         strcat(msg, integer_string); 
@@ -199,7 +199,7 @@ int KeyValuePairContainer::FlattenFloatPairs(char* msg, int msg_size){
     return msg_size;
 }
 
-int KeyValuePairContainer::FlattenStringPairs(char* msg, int msg_size){
+int KeyValuePairContainer::FlattenStringPairs(char* msg, int msg_size, unsigned int max_message_size){
     char integer_string[32];
     std::vector<int> keys = this->GetStringKeys();
     int i = 0;
@@ -209,7 +209,7 @@ int KeyValuePairContainer::FlattenStringPairs(char* msg, int msg_size){
         sprintf(integer_string, "%x", keys[i]);
        //Increase message size
         msg_size += strlen(integer_string) + 1;
-        if(msg_size > 255){
+        if(msg_size > max_message_size){
             throw std::invalid_argument( "Message to large" );
         }
         //Add key value pair to msg
@@ -218,7 +218,7 @@ int KeyValuePairContainer::FlattenStringPairs(char* msg, int msg_size){
         char *string = (char*)std::malloc(strlen(this->GetString(keys[i]).c_str()) + 1);
         sprintf(string, "%s", this->GetString(keys[i]).c_str());
         msg_size += strlen(string) + 1;
-        if(msg_size > 255){
+        if(msg_size > max_message_size){
             throw std::invalid_argument( "Message to large" );
         }
         strcat(msg, string); 

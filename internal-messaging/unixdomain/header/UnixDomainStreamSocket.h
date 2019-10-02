@@ -26,7 +26,6 @@ class UnixDomainStreamSocket {
 private:
 
     char *path_;            //Server socket path
-    char buffer_[256];
     int n_;
 
 protected:
@@ -36,12 +35,13 @@ protected:
 
     //Writes message out to socket
     //new_socket_file_descripter - sets socket file descripter for the send action
-    int WriteToSocket(const char *msg, int new_socket_file_descriptor);
+    int WriteToSocket(const char *msg, int new_socket_file_descriptor, unsigned int buffer_capcity);
 
     //Reads message from socket with connection
     //new_socket_file_descripter - file descripter for socket file with waiting connection 
     //timeout - seconds before read operation times out, defaults to 60 seconds
     int ReadFromSocket(char* buffer, int new_socket_file_descriptor, int buffer_capacity, unsigned int timeout = 60);
+
 
     //Sets up initial connection to socket when first created using socket path
     //sun_path - path to unix domain socket
@@ -50,14 +50,8 @@ protected:
     //called when error is found
     void error(const char *msg);
 
-    //clears buffer
-    void ResetBuffer();
-
     //clears current socket address struct
     void ClearAddress();
-    
-public:
-    string GetBufferContents();
 
 };
 

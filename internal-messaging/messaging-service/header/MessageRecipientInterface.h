@@ -13,7 +13,7 @@ class MessageRecipientInterface {
 
 public:
     //Method to listen for, and recieve a message
-    virtual int ListenForMessage(Message *&message) = 0;
+    virtual int ListenForMessage(Message *&message, unsigned int message_capacity) = 0;
     //Method to reply to last connected sender
     virtual int Reply(Message &message) = 0;
 protected:
