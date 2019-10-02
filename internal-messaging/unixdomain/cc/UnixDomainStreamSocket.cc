@@ -45,7 +45,14 @@ int UnixDomainStreamSocket::WriteToSocket(const char *msg, int new_socket_file_d
 }
 
 //Read from the socket specified by the sfd
-int UnixDomainStreamSocket::ReadFromSocket(char* buffer, int new_socket_file_descriptor, unsigned int buffer_capacity) {
+
+int UnixDomainStreamSocket::ReadFromSocket(char* buffer, int new_socket_file_descriptor, int buffer_capacity, unsigned int timeout) {
+
+    //Set timeout on socket
+    struct timeval tv;
+    tv.tv_sec = timeout;
+    tv.tv_usec = 0;
+    setsockopt(new_socket_file_descriptor, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv); 
 
     n_ = read(new_socket_file_descriptor, buffer, buffer_capacity);
 
