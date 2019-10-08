@@ -3,7 +3,7 @@ using std::cout;
 using std::endl;
 #include <string.h>
 #include "DataMessage.h"
-#include <gtest.h>
+#include <gtest/gtest.h>
 
 int main(){
 cout << "Hello! This is a message creation test!" << endl;

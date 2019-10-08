@@ -26,7 +26,7 @@ include_directories(
 	${CMAKE_CURRENT_LIST_DIR}/messenger/header
 	${CMAKE_CURRENT_LIST_DIR}/unixdomain/header)
 
-#add internal-messaging
+# add internal-messaging
 add_library(internal-messaging ${SRC})
 
 # Link everything
