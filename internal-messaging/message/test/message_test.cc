@@ -3,11 +3,12 @@ using std::cout;
 using std::endl;
 #include <string.h>
 #include "DataMessage.h"
+#include <gtest.h>
 
 int main(){
-cout << "HEllo! This is a message creation test!" << endl;
+cout << "Hello! This is a message creation test!" << endl;
 //Empty message test
-DataMessage message(0,0);
+DataMessage message = DataMessage();
 int capacity=128;
 char str[capacity];
 message.ToString(str,capacity);
