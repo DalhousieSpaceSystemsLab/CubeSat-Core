@@ -1,6 +1,10 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 PROJECT("core")
 
+SET ( EXECUTABLE_OUTPUT_PATH 
+  "${PROJECT_SOURCE_DIR}/../../build"
+)
+
 INCLUDE_DIRECTORIES(
   "camera/header"
   "repositories/header"
