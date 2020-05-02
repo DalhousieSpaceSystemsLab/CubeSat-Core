@@ -11,10 +11,17 @@
 /core/output
 *.o
 *.gch
-<<<<<<< HEAD
 */lib
 *.vscode
-=======
 *.vscode
->>>>>>> emulation-refinement
 /.metadata/
+
+*.cmake
+CMakeCache.txt
+Makefile
+CMakeFiles
+*.a
+core/src/core
+emulation/src/emulation
+build/core
+build/emulation
