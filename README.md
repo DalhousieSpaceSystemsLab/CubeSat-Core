@@ -54,4 +54,4 @@ $ cd CubeSat-Core
 $ cmake .
 $ make
 ```
-And watch the magic happen :)
+And watch the magic happen :) You'll find the compiled binaries in the `build/` directory.
