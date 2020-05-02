@@ -2,19 +2,21 @@
 // Created by Spencer Axford on 2019-05-16.
 //
 
-#ifndef DALCUBESAT_POWERREPOSITORY_H
-#define DALCUBESAT_POWERREPOSITORY_H
+#ifndef LORIS_POWERREPOSITORY_H
+#define LORIS_POWERREPOSITORY_H
 
 #include "Repository.h"
-// #include "../../message/identifiers/ProcessFilePaths.h"
 #include <string>
 
 class PowerRepository : public Repository {
 public:
-    PowerRepository(std::string filePaths);
-    int ProcessMessage(Message message);
+    PowerRepository(unsigned int identifier);
+    int ProcessMessage(DataMessage message);
+    unsigned int repository_identifier();
+
+    int AddKeysToWatchList();
 
 };
 
 
-#endif //DALCUBESAT_POWERREPOSITORY_H
+#endif //LORIS_POWERREPOSITORY_H

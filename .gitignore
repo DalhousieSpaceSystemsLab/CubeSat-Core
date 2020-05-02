@@ -1,4 +1,6 @@
 /emulation/inc
+/emulation/.d/
+/emulation/.vscode/
 /core/main
 /core/.d/
 /core/inc
@@ -9,3 +11,17 @@
 /core/output
 *.o
 *.gch
+*/lib
+*.vscode
+*.vscode
+/.metadata/
+
+*.cmake
+CMakeCache.txt
+Makefile
+CMakeFiles
+*.a
+core/src/core
+emulation/src/emulation
+build/core
+build/emulation

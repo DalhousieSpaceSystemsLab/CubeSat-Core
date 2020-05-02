@@ -3,15 +3,36 @@
 //
 
 #include "PowerRepository.h"
+#include "PowerKeys.h"
 
-PowerRepository::PowerRepository(std::string filePaths)
-        : Repository(filePaths) {}
+PowerRepository::PowerRepository(unsigned int identifier)
+        : Repository(identifier) {
+	AddKeysToWatchList();
+}
 
-int PowerRepository::ProcessMessage(Message message){
-        cout << "Processing Message Object in PowerRepository" << endl;
-        KeyValuePairContainer c = message.GetMessageContents();
+//Adds all keys, to watch_list, for storing/returning future data
+int PowerRepository::AddKeysToWatchList(){
 
-	cout << message.GetRecipient() << " : " << message.GetSender() << " : " << message.GetTimeCreated() << endl;
-        cout << c.GetFloat(0) << " : " << c.GetInt(0) << endl; 
-        return 0;
+	PowerKeys keys;
+	this->watch_list_.push_back(keys.current_sensor1);
+	this->watch_list_.push_back(keys.battery_level);
+
+	cout << "Printing watch list..." << endl;
+	for(int i=0;i<watch_list_.size();i++){
+		cout << i << watch_list_[i].key() << endl;
+	}
+
+	return 0;
+}
+
+int PowerRepository::ProcessMessage(DataMessage message){
+
+	/*Perform optional processing here*/
+
+    return 0;
+}
+
+unsigned int PowerRepository::repository_identifier(){
+	Identifiers ids;
+	return ids.power_repository;
 }
