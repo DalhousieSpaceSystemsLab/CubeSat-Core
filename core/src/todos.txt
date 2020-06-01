@@ -1,5 +1,0 @@
-Todos
-
-Kyle:
-
-Change str in processmessage in cubesat to Message object
