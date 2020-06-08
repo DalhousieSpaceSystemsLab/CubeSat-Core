@@ -75,7 +75,11 @@ int main()
   }
 
   // Initialize client placeholders
-  for(int x = 0; x < MAX_NUM_CLI; x++) clients[x].conn = -1;
+  for(int x = 0; x < MAX_NUM_CLI; x++)
+  {
+    clients[x].conn.rx = -1;
+    clients[x].conn.tx = -1;
+  }
 
   // Initialize client placeholders for client handlers
   set_clients(clients);
@@ -94,19 +98,24 @@ int main()
       fprintf(stderr, "error reading client name. skipping to next in queue...\n");
       continue;
     }
-    /*
+
     //Check if the client name is already in use
     // Parse through clients
     for(int x = 0; x < MAX_NUM_CLI; x++)
     {
       //check if the new client name is already in use
-      if(strcmp(name, clients[x]) == 0)
+      if(strncmp(name, clients[x].name, 3) == 0)  // match found
       {
+        // Check if one of the connection placeholders is uninitialized
+        if(clients[x].conn.rx == -1) clients[x].conn.rx = conn;       // set rx conn placeholder
+        else if(clients[x].conn.tx == -1) clients[x].conn.tx = conn;  // set tx conn placeholder
+        else continue;                                                // skip client with duplicate name
+
         //if yes, remove the previous user (or stop the new user **discuss with alex based on bug)
-        clients[x] = -1;
+        // clients[x] = -1;
       }
     }
-    */
+
     // Find next available client placeholder
     int next_cli;
     if((next_cli = get_free_client()) == -1) // no free client found
