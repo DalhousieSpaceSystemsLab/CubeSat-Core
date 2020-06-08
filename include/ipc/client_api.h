@@ -9,6 +9,9 @@
 #ifndef CUBESAT_CORE_INCLUDE_IPC_CLIENT_API_H
 #define CUBESAT_CORE_INCLUDE_IPC_CLIENT_API_H
 
+// Project headers
+#include "settings.h"
+
 // Standard C Libraries
 #include <stdio.h>
 #include <sys/socket.h>
