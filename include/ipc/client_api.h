@@ -29,9 +29,10 @@ extern "C" {
 #endif
 
 // Client API
-int ipc_init(char name[3]);
-int ipc_send(char dest[3], char * msg, size_t msg_len);
-int ipc_recv(char src[3], char * buffer, size_t buffer_len);
+int ipc_init(char name[3]);                                 // Initialize client side IPC interface
+int ipc_send(char dest[3], char * msg, size_t msg_len);     // Send message to another process
+int ipc_recv(char src[3], char * buffer, size_t buffer_len);  // Receive message from another process
+int ipc_close();                                            // Close client side IPC interface
 
 #ifdef __cplusplus
 }
@@ -67,6 +68,7 @@ namespace dss
     void    ipc_send_map(char dest[3], map<string, string> * map);
     void    ipc_send_map(char dest[3], map<string, int> * map);
     void    ipc_send_map(char dest[3], map<int, int> * map);
+    void    close();
   };
 };
 
