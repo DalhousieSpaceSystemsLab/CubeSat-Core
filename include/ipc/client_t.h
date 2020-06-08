@@ -9,10 +9,13 @@
 #ifndef CUBESAT_CORE_INCLUDE_IPC_CLIENT_T_H
 #define CUBESAT_CORE_INCLUDE_IPC_CLIENT_T_H
 
+// Connection type
+#include "conn_t.h"
+
 typedef struct Client
 {
-  int   conn;     // connection socket placeholder
-  char  name[3];  // client name placeholder
+  conn_t  conn;     // connection socket placeholders
+  char    name[3];  // client name placeholder
 } client_t;
 
 #endif /* end of include guard: CUBESAT_CORE_INCLUDE_IPC_CLIENT_T_H */
