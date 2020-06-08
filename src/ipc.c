@@ -99,6 +99,9 @@ int main()
       continue;
     }
 
+    // Create placeholder to indicate peexisting client
+    int client_exists = -1;
+
     //Check if the client name is already in use
     // Parse through clients
     for(int x = 0; x < MAX_NUM_CLI; x++)
@@ -115,6 +118,8 @@ int main()
         // clients[x] = -1;
       }
     }
+
+    // TODO: complete ipc with new conn_t
 
     // Find next available client placeholder
     int next_cli;
