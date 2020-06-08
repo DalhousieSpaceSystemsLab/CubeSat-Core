@@ -60,8 +60,50 @@ int ipc_send(char dest[3], char * msg, size_t msg_len)
   // Create message with destination client fronted
   sprintf(msg_final, "%.3s %*s\0", dest, msg_len, msg);
 
-  // DEBUG
-  printf("Final message is %s\n", msg_final);
+  // Send final message to IPC
+  if(write(sock, msg_final, 3 + msg_len) < 3 + msg_len) // write() failed
+  {
+    fprintf(stderr, "write() failed\n");
+    return -1;
+  }
+
+  // done
+  return 0;
+}
+
+// Receive message from another process
+int ipc_recv(char src[3], char * buffer, size_t buffer_len)
+{
+  // Create placeholder for incoming message from IPC
+  char msg[MAX_MSG_LEN];
+
+  // Wait for incoming message from the IPC
+  int bytes_read = -1;
+  if((bytes_read = read(sock, msg, MAX_MSG_LEN)) <= 0) // read() failed or zero length msg
+  {
+    fprintf(stderr, "Failed to read message from IPC\n");
+    return -1;
+  }
+
+  // Check if message fits within buffer
+  if(buffer_len < bytes_read) // buffer too small
+  {
+    fprintf(stderr, "Buffer provided to ipc_recv is too small to contain message.\n");
+    return -1;
+  }
+
+  // Copy message into buffer
+  strncpy(buffer, msg, bytes_read);
+
+  // done
+  return 0;
+}
+
+// Close client side interface
+int ipc_close()
+{
+  // Close connection socket to the IPC
+  close(sock);
 
   // done
   return 0;
