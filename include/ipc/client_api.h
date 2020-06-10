@@ -64,10 +64,10 @@ namespace dss
     // Methods
     void    init(string name);
     void    send(string dest, string msg);
+    void    send_map(char dest[3], map<string, string> * map);
+    void    send_map(char dest[3], map<string, int> * map);
+    void    send_map(char dest[3], map<int, int> * map);
     string  recv(string src);
-    void    ipc_send_map(char dest[3], map<string, string> * map);
-    void    ipc_send_map(char dest[3], map<string, int> * map);
-    void    ipc_send_map(char dest[3], map<int, int> * map);
     void    close();
   };
 };
