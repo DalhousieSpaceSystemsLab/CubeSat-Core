@@ -15,7 +15,7 @@ INCLUDE_DIRECTORIES(
   "${PROJECT_SOURCE_DIR}/../include/cmocka"
 )
 
-# IPC client API library
+# IPC library
 SET("LIB_API" "api")
 SET("SRC_API" "client_api.c" "client_api.cc")
 ADD_LIBRARY(${LIB_API} ${SRC_API})
