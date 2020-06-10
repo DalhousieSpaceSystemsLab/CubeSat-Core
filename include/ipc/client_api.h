@@ -1,5 +1,5 @@
 /*
-* client_api.hpp
+* client_api.h
 *
 *   purpose: provides API for other subsystems to use the IPC system as clients.
 *   author: alex amellal
