@@ -18,6 +18,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <pthread.h>
+#include <stdbool.h>
 
 // Placeholder for clients
 static client_t clients[MAX_NUM_CLI];
@@ -100,7 +101,7 @@ int main()
     }
 
     // Create placeholder to indicate peexisting client
-    int client_exists = -1;
+    bool client_exists = false;
 
     //Check if the client name is already in use
     // Parse through clients
@@ -109,6 +110,9 @@ int main()
       //check if the new client name is already in use
       if(strncmp(name, clients[x].name, 3) == 0)  // match found
       {
+        // Set that client exists
+        client_exists = true;
+
         // Check if one of the connection placeholders is uninitialized
         if(clients[x].conn.rx == -1) clients[x].conn.rx = conn;       // set rx conn placeholder
         else if(clients[x].conn.tx == -1) clients[x].conn.tx = conn;  // set tx conn placeholder
@@ -119,22 +123,25 @@ int main()
       }
     }
 
-    // TODO: complete ipc with new conn_t
-
-    // Find next available client placeholder
-    int next_cli;
-    if((next_cli = get_free_client()) == -1) // no free client found
+    // Check if client doesnt exists
+    if(!client_exists)
     {
-      // Wait until client placeholder is free
-      for(;;)
+      // Find next available client placeholder
+      int next_cli;
+      if((next_cli = get_free_client()) == -1) // no free client found
       {
-        // Wait a second
-        sleep(1);
+        // Wait until client placeholder is free
+        for(;;)
+        {
+          // Wait a second
+          sleep(1);
 
-        // Check for free client
-        if((next_cli = get_free_client()) != -1) break;
+          // Check for free client
+          if((next_cli = get_free_client()) != -1) break;
+        }
       }
     }
+
 
     // Store client attributes in placeholder
     clients[next_cli].conn = conn;
