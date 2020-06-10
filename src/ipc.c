@@ -123,6 +123,8 @@ int main()
       }
     }
 
+    // TODO: finish implementing new conn_t everywhere
+
     // Check if client doesnt exists
     if(!client_exists)
     {
