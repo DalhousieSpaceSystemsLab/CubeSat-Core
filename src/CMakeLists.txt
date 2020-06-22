@@ -68,10 +68,10 @@ TARGET_LINK_LIBRARIES(${BIN_CLI_CPP}
 TARGET_COMPILE_OPTIONS(${BIN_CLI_CPP} BEFORE PUBLIC "-g")
 
 # Testing binary
-SET("BIN_TEST" "test")
-SET("SRC_TEST" "test.c")
-ADD_EXECUTABLE(${BIN_TEST} ${SRC_TEST})
-TARGET_LINK_LIBRARIES(${BIN_TEST}
- ${LIB_CMOCKA}
- "-Wl,--wrap=read,--wrap=write"
-)
+# SET("BIN_TEST" "test")
+# SET("SRC_TEST" "test.c")
+# ADD_EXECUTABLE(${BIN_TEST} ${SRC_TEST})
+# TARGET_LINK_LIBRARIES(${BIN_TEST}
+#  ${LIB_CMOCKA}
+#  "-Wl,--wrap=read,--wrap=write"
+# )

@@ -60,7 +60,7 @@ void * handle_client_requests(void * client_)
   char  message[MAX_MSG_LEN];
 
   // Handle incoming requests from client
-  while((req_len = read(client->conn.rx, req, MAX_MSG_LEN)) > 0)
+  while((req_len = read(client->conn, req, MAX_MSG_LEN)) > 0)
   {
     // Check if request is at least <3 char> + space + <1 char> = 5 in length
     if(req_len < 4) // request is too short
@@ -85,7 +85,7 @@ void * handle_client_requests(void * client_)
     for(int x = 0; x < MAX_NUM_CLI; x++)
     {
       // Check if connection active
-      if(clients[x].conn.rx == -1 || clients[x].conn.tx == -1) continue; // skip
+      if(clients[x].conn == -1) continue; // skip
 
       // Check if name matches
       if(strncmp(clients[x].name, dest_name, 3) == 0) // name matches
@@ -113,7 +113,7 @@ void * handle_client_requests(void * client_)
 
     // Send message to destination client
     int bytes_written = -1;
-    if((bytes_written = write(clients[dest_client_index].conn.tx, message, strlen(message))) < (int) strlen(message)) // write() failed
+    if((bytes_written = write(clients[dest_client_index].conn, message, strlen(message))) < (int) strlen(message)) // write() failed
     {
       perror("write() failed");
       fprintf(stderr, "wrote %d/%.0lu bytes from clients %.3s to %.3s. skipping to next client request.\n", bytes_written, strlen(message), client->name, clients[dest_client_index].name);
@@ -127,12 +127,10 @@ void * handle_client_requests(void * client_)
   }
 
   // Close connection to client
-  close(client->conn.rx);
-  close(client->conn.tx);
+  close(client->conn);
 
   // Free client placeholder
-  client->conn.rx = -1;
-  client->conn.tx = -1;
+  client->conn = -1;
 
   // done
 }
