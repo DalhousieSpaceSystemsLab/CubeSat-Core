@@ -31,3 +31,4 @@ build/ipc
 build/test
 build/client_old
 *.out.*
+build/*
