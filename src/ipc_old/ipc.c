@@ -7,9 +7,9 @@
 */
 
 // Project Headers
-#include "ipc/settings.h"
-#include "ipc/client_t.h"
-#include "ipc/client_handler.h"
+#include "ipc_old/settings.h"
+#include "ipc_old/client_t.h"
+#include "ipc_old/client_handler.h"
 
 // Standard C Libraries
 #include <stdio.h>
@@ -18,7 +18,6 @@
 #include <unistd.h>
 #include <string.h>
 #include <pthread.h>
-#include <stdbool.h>
 
 // Placeholder for clients
 static client_t clients[MAX_NUM_CLI];
@@ -76,11 +75,7 @@ int main()
   }
 
   // Initialize client placeholders
-  for(int x = 0; x < MAX_NUM_CLI; x++)
-  {
-    clients[x].conn.rx = -1;
-    clients[x].conn.tx = -1;
-  }
+  for(int x = 0; x < MAX_NUM_CLI; x++) clients[x].conn = -1;
 
   // Initialize client placeholders for client handlers
   set_clients(clients);
@@ -99,51 +94,33 @@ int main()
       fprintf(stderr, "error reading client name. skipping to next in queue...\n");
       continue;
     }
-
-    // Create placeholder to indicate peexisting client
-    bool client_exists = false;
-
+    /*
     //Check if the client name is already in use
     // Parse through clients
     for(int x = 0; x < MAX_NUM_CLI; x++)
     {
       //check if the new client name is already in use
-      if(strncmp(name, clients[x].name, 3) == 0)  // match found
+      if(strcmp(name, clients[x]) == 0)
       {
-        // Set that client exists
-        client_exists = true;
-
-        // Check if one of the connection placeholders is uninitialized
-        if(clients[x].conn.rx == -1) clients[x].conn.rx = conn;       // set rx conn placeholder
-        else if(clients[x].conn.tx == -1) clients[x].conn.tx = conn;  // set tx conn placeholder
-        else continue;                                                // skip client with duplicate name
-
         //if yes, remove the previous user (or stop the new user **discuss with alex based on bug)
-        // clients[x] = -1;
+        clients[x] = -1;
       }
     }
-
-    // TODO: finish implementing new conn_t everywhere
-
-    // Check if client doesnt exists
-    if(!client_exists)
+    */
+    // Find next available client placeholder
+    int next_cli;
+    if((next_cli = get_free_client()) == -1) // no free client found
     {
-      // Find next available client placeholder
-      int next_cli;
-      if((next_cli = get_free_client()) == -1) // no free client found
+      // Wait until client placeholder is free
+      for(;;)
       {
-        // Wait until client placeholder is free
-        for(;;)
-        {
-          // Wait a second
-          sleep(1);
+        // Wait a second
+        sleep(1);
 
-          // Check for free client
-          if((next_cli = get_free_client()) != -1) break;
-        }
+        // Check for free client
+        if((next_cli = get_free_client()) != -1) break;
       }
     }
-
 
     // Store client attributes in placeholder
     clients[next_cli].conn = conn;

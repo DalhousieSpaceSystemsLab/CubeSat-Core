@@ -7,7 +7,7 @@
 *   request formatting: <destination client name> <message>
 */
 
-#include "ipc/client_handler.h"
+#include "ipc_old/client_handler.h"
 
 // Clients array placeholder
 static client_t * clients = NULL;
@@ -33,7 +33,7 @@ int get_free_client()
   // Parse through clients
   for(int x = 0; x < MAX_NUM_CLI; x++)
   {
-    if(clients[x].conn.rx == -1 && clients[x].conn.tx == -1) return x;
+    if(clients[x].conn == -1) return x;
   }
 
   // done, nothing found

@@ -37,6 +37,18 @@ TARGET_LINK_LIBRARIES(${BIN_IPC}
 )
 TARGET_COMPILE_OPTIONS(${BIN_IPC} BEFORE PUBLIC "-g")
 
+# IPC old binary
+SET("BIN_IPC_OLD" "ipc_old")
+SET("SRC_IPC_OLD"
+  "ipc_old/ipc.c"
+  "ipc_old/client_handler.c"
+)
+ADD_EXECUTABLE(${BIN_IPC_OLD} ${SRC_IPC_OLD})
+TARGET_LINK_LIBRARIES(${BIN_IPC_OLD}
+  "pthread"
+)
+TARGET_COMPILE_OPTIONS(${BIN_IPC_OLD} BEFORE PUBLIC "-g")
+
 # Client binary
 SET("BIN_CLI" "client")
 SET("SRC_CLI" "client.c")
