@@ -17,7 +17,7 @@ INCLUDE_DIRECTORIES(
 
 # IPC library
 SET("LIB_IPC" "ipc")
-SET("SRC_LIB_IPC" "client_api.c" "client_api.cc")
+SET("SRC_LIB_IPC" "libipc/client_api.c" "libipc/client_api.cc")
 ADD_LIBRARY(${LIB_IPC} ${SRC_LIB_IPC})
 
 # CMocka library
@@ -28,7 +28,7 @@ ADD_LIBRARY(${LIB_CMOCKA} STATIC ${SRC_CMOCKA})
 # IPC daemon binary
 SET("BIN_IPCD" "ipcd")
 SET("SRC_IPCD"
-  "ipcd/ipc.c"
+  "ipcd/main.c"
   "ipcd/client_handler.c"
 )
 ADD_EXECUTABLE(${BIN_IPCD} ${SRC_IPCD})
@@ -40,7 +40,7 @@ TARGET_COMPILE_OPTIONS(${BIN_IPCD} BEFORE PUBLIC "-g")
 # IPC daemon old binary
 SET("BIN_IPCD_OLD" "ipcd_old")
 SET("SRC_IPCD_OLD"
-  "ipcd_old/ipc.c"
+  "ipcd_old/main.c"
   "ipcd_old/client_handler.c"
 )
 ADD_EXECUTABLE(${BIN_IPCD_OLD} ${SRC_IPCD_OLD})

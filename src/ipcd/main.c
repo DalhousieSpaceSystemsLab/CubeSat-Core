@@ -1,5 +1,5 @@
 /*
-* ipc.c
+* main.c
 *
 *   purpose: act a middleman between processes to complete communication requests
 *   author: alex amellal
@@ -22,7 +22,7 @@
 
 int main()
 {
-  
+
   // done
   return 0;
 }
