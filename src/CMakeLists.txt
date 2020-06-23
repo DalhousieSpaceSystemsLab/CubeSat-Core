@@ -16,66 +16,66 @@ INCLUDE_DIRECTORIES(
 )
 
 # IPC library
-SET("LIB_API" "api")
-SET("SRC_API" "client_api.c" "client_api.cc")
-ADD_LIBRARY(${LIB_API} ${SRC_API})
+SET("LIB_IPC" "ipc")
+SET("SRC_LIB_IPC" "client_api.c" "client_api.cc")
+ADD_LIBRARY(${LIB_IPC} ${SRC_LIB_IPC})
 
 # CMocka library
 SET("LIB_CMOCKA" "cmocka")
 SET("SRC_CMOCKA" "cmocka/cmocka.c")
 ADD_LIBRARY(${LIB_CMOCKA} STATIC ${SRC_CMOCKA})
 
-# IPC binary
-SET("BIN_IPC" "ipc")
-SET("SRC_IPC"
-  "ipc.c"
-  "client_handler.c"
+# IPC daemon binary
+SET("BIN_IPCD" "ipcd")
+SET("SRC_IPCD"
+  "ipcd/ipc.c"
+  "ipcd/client_handler.c"
 )
-ADD_EXECUTABLE(${BIN_IPC} ${SRC_IPC})
-TARGET_LINK_LIBRARIES(${BIN_IPC}
+ADD_EXECUTABLE(${BIN_IPCD} ${SRC_IPCD})
+TARGET_LINK_LIBRARIES(${BIN_IPCD}
   "pthread"
 )
-TARGET_COMPILE_OPTIONS(${BIN_IPC} BEFORE PUBLIC "-g")
+TARGET_COMPILE_OPTIONS(${BIN_IPCD} BEFORE PUBLIC "-g")
 
-# IPC old binary
-SET("BIN_IPC_OLD" "ipc_old")
-SET("SRC_IPC_OLD"
-  "ipc_old/ipc.c"
-  "ipc_old/client_handler.c"
+# IPC daemon old binary
+SET("BIN_IPCD_OLD" "ipcd_old")
+SET("SRC_IPCD_OLD"
+  "ipcd_old/ipc.c"
+  "ipcd_old/client_handler.c"
 )
-ADD_EXECUTABLE(${BIN_IPC_OLD} ${SRC_IPC_OLD})
-TARGET_LINK_LIBRARIES(${BIN_IPC_OLD}
+ADD_EXECUTABLE(${BIN_IPCD_OLD} ${SRC_IPCD_OLD})
+TARGET_LINK_LIBRARIES(${BIN_IPCD_OLD}
   "pthread"
 )
-TARGET_COMPILE_OPTIONS(${BIN_IPC_OLD} BEFORE PUBLIC "-g")
+TARGET_COMPILE_OPTIONS(${BIN_IPCD_OLD} BEFORE PUBLIC "-g")
 
 # Client binary
 SET("BIN_CLI" "client")
-SET("SRC_CLI" "client.c")
+SET("SRC_CLI" "ipc_client/client.c")
 ADD_EXECUTABLE(${BIN_CLI} ${SRC_CLI})
 TARGET_LINK_LIBRARIES(${BIN_CLI}
   "pthread"
-  ${LIB_API}
+  ${LIB_IPC}
 )
 TARGET_COMPILE_OPTIONS(${BIN_CLI} BEFORE PUBLIC "-g")
 
 # Client binary (old)
 SET("BIN_CLI_OLD" "client_old")
-SET("SRC_CLI_OLD" "client_old.c")
+SET("SRC_CLI_OLD" "ipc_client_old/client_old.c")
 ADD_EXECUTABLE(${BIN_CLI_OLD} ${SRC_CLI_OLD})
 TARGET_LINK_LIBRARIES(${BIN_CLI_OLD}
   "pthread"
-  ${LIB_API}
+  ${LIB_IPC}
 )
 TARGET_COMPILE_OPTIONS(${BIN_CLI} BEFORE PUBLIC "-g")
 
 # Client binary (C++)
-SET("BIN_CLI_CPP" "client_cpp")
-SET("SRC_CLI_CPP" "client.cc")
+SET("BIN_CLI_CPP" "client_cc")
+SET("SRC_CLI_CPP" "ipc_client/client.cc")
 ADD_EXECUTABLE(${BIN_CLI_CPP} ${SRC_CLI_CPP})
 TARGET_LINK_LIBRARIES(${BIN_CLI_CPP}
   "pthread"
-  ${LIB_API}
+  ${LIB_IPC}
 )
 TARGET_COMPILE_OPTIONS(${BIN_CLI_CPP} BEFORE PUBLIC "-g")
 
