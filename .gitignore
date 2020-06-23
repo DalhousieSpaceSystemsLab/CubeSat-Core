@@ -30,3 +30,4 @@ build/client_cpp
 build/ipc
 build/test
 build/client_old
+*.out.*
