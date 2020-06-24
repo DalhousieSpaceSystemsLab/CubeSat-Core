@@ -30,6 +30,7 @@ SET("BIN_IPCD" "ipcd")
 SET("SRC_IPCD"
   "ipcd/main.c"
   "ipcd/client_handler.c"
+  "ipcd/ipcd.c"
 )
 ADD_EXECUTABLE(${BIN_IPCD} ${SRC_IPCD})
 TARGET_LINK_LIBRARIES(${BIN_IPCD}

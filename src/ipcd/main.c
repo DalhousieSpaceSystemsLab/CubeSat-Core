@@ -7,21 +7,28 @@
 */
 
 // Project Headers
-#include "ipc/settings.h"
-#include "ipc/client_t.h"
-#include "ipc/client_handler.h"
+#include "ipc/ipcd.h"
 
-// Standard C Libraries
+// Standard C libraries
 #include <stdio.h>
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <unistd.h>
-#include <string.h>
-#include <pthread.h>
-#include <stdbool.h>
 
 int main()
 {
+  // Initialize IPC daemon
+  if(ipcd_init() == -1) // ipcd_init() failed
+  {
+    fprintf(stderr, "ipcd_init() failed\n");
+    return -1;
+  }
+
+  
+
+  // Close the IPC daemon
+  if(ipcd_close() == -1) // ipcd_close() failed
+  {
+    fprintf(stderr, "ipcd_close() failed\n");
+    return -1;
+  }
 
   // done
   return 0;
