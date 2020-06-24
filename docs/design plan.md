@@ -15,9 +15,9 @@ automate operations on satellite once certain conditions are met.
   - Include minimal safeguards against disruptive usage (e.g.: spam).
 
 ### API:
-  - int ipcd_init() :
-    purpose: initializes the IPC daemon.
-    returns: 0 if no error; -1 upon error.
+#### int ipcd_init() :
+purpose: initializes the IPC daemon.
+returns: 0 if no error; -1 upon error.
   
-  - int icpd_accept() :
-    purpose: begin 
+#### int icpd_accept() :
+purpose: begin 
