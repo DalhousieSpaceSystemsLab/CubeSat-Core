@@ -1,0 +1,8 @@
+[Mission Server]
+{
+  purpose: automate operations on satellite once certain conditions are met.
+  methods:
+    - method 1 
+    - method 2
+  
+}
