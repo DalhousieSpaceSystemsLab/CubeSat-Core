@@ -156,8 +156,15 @@ static int get_client_index(char name[3])
 
   // Parse through clients in client array 
   for(int x = 0; x < MAX_NUM_CLI; x++) 
+  {
     if(strcmp(name, clients[x].name) == 0) 
+    {
+      if(clients[x].conn.rx != -1 && clients[x].conn.tx != -1)
+      {
       index = x;
+      }
+    }
+  }
 
   // done
   return index;
