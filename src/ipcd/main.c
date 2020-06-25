@@ -21,8 +21,6 @@ int main()
     return -1;
   }
 
-  
-
   // Close the IPC daemon
   if(ipcd_close() == -1) // ipcd_close() failed
   {
