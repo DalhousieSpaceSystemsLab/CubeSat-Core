@@ -23,11 +23,14 @@ static int sock = -1;
 static struct sockaddr_un address;
 static        socklen_t   address_len = -1;
 
+pthread_t thread_start_accepting;
 
 //////////////////////
 //  Private Methods //
 //////////////////////
 
+// Start accepting incoming client connections
+static void * start_accepting(void * params);
 /////////////////////
 //  Public Methods //
 /////////////////////
@@ -74,10 +77,21 @@ int ipcd_init()
 }
 
 // Start accepting incoming client connections
-int ipcd_accept()
+int ipcd_start_accepting()
 {
-  // Accept incoming connection 
-  // if(accept(sock, ))
+  // Create start_accepting thread 
+  if(pthread_create(&thread_start_accepting, NULL, start_accepting, NULL) != 0) // pthread_create() failed
+  {
+    fprintf(stderr, "pthread_create() failed : ");
+    return -1;
+  }
+
+  // Detach thread 
+  if(pthread_detach(thread_start_accepting) != 0) // pthread_detach() failed 
+{
+    fprintf(stderr, "pthread_detach() failed : ");
+    return -1;
+  }
 
   // done 
   return 0;
@@ -100,3 +114,44 @@ int ipcd_close()
 //  Threads //
 //////////////
 
+static void * start_accepting(void * params)
+{
+  for(;;)
+  {
+    // Accept new client 
+    if(accept(sock, (struct sockaddr *) &address, &address_len) == -1) // accept() failed
+    {
+      perror("accept() failed");
+      pthread_exit(NULL);
+    }
+
+    // Create placeholder for client name 
+    char name[3];
+
+    // Read client name 
+    if(read(sock, name, 3) < 3) // read() failed
+    {
+      fprintf(stderr, "read() failed : ");
+      return -1;
+    }
+
+    // Check if client already registered
+
+  }
+}
+
+// Returns the index of the matching client if found.
+// If no match is found, returns -1.
+static int get_client_index(char name[3])
+{
+  // Create placeholder for matching client index
+  int index = -1;
+
+  // Parse through clients in client array 
+  for(int x = 0; x < MAX_NUM_CLI; x++) 
+    if(strcmp(name, clients[x].name) == 0) 
+      index = x;
+
+  // done
+  return index;
+}
