@@ -23,6 +23,7 @@ static int sock = -1;
 static struct sockaddr_un address;
 static        socklen_t   address_len = -1;
 
+// Placeholders for threads 
 pthread_t thread_start_accepting;
 
 //////////////////////
@@ -31,9 +32,15 @@ pthread_t thread_start_accepting;
 
 // Start accepting incoming client connections
 static void * start_accepting(void * params);
+
+// Returns the index of the matching client if found.
+// If no match is found, returns -1.
+static int get_client_index(char name[3]);
+
 /////////////////////
 //  Public Methods //
 /////////////////////
+
 // Initialize the IPC daemon
 int ipcd_init()
 {
@@ -88,7 +95,7 @@ int ipcd_start_accepting()
 
   // Detach thread 
   if(pthread_detach(thread_start_accepting) != 0) // pthread_detach() failed 
-{
+  {
     fprintf(stderr, "pthread_detach() failed : ");
     return -1;
   }
