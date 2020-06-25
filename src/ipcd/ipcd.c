@@ -17,7 +17,7 @@
 static client_t * clients = NULL;
 
 // Placeholder for incoming connection socket
-static int                sock = -1;
+static int sock = -1;
 
 // Placeholder for incoming connection socket address
 static struct sockaddr_un address;
