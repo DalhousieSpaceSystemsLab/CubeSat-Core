@@ -22,8 +22,8 @@
 #include <pthread.h>
 
 // Methods 
-int ipcd_init();    // Initialize the IPC daemon
-int ipcd_accept();  // Start accepting incoming client connections
-int ipcd_close();   // Shutdown the IPC daemon
+int ipcd_init();            // Initialize the IPC daemon
+int ipcd_start_accepting(); // Start accepting incoming client connections
+int ipcd_close();           // Shutdown the IPC daemon
 
 #endif // end of CUBESAT_CORE_INCLUDE_IPC_IPCD_H header guard.
