@@ -23,10 +23,14 @@ static int sock = -1;
 static struct sockaddr_un address;
 static        socklen_t   address_len = -1;
 
-//////////////
-//  Methods //
-//////////////
 
+//////////////////////
+//  Private Methods //
+//////////////////////
+
+/////////////////////
+//  Public Methods //
+/////////////////////
 // Initialize the IPC daemon
 int ipcd_init()
 {
