@@ -153,7 +153,7 @@ static void * start_accepting(void * params)
     // Add client 
     int index = -1;
     if((index = register_client(name)) == -1) // register_client() failed 
-    { 
+    {
       fprintf(stderr, "register_client() failed : start_accepting() failed\n");
       pthread_exit(NULL);
     }
