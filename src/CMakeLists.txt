@@ -18,9 +18,10 @@ INCLUDE_DIRECTORIES(
 # IPC library
 SET("LIB_IPC" "ipc")
 SET("SRC_LIB_IPC" 
+  "libipc/conn_t/conn_t.c"
+  "libipc/client_t/client_t.c"
   "libipc/client_api.c" 
   "libipc/client_api.cc"
-  "client_t/client_t.c"
 )
 ADD_LIBRARY(${LIB_IPC} ${SRC_LIB_IPC})
 
