@@ -150,15 +150,15 @@ static void * start_accepting(void * params)
       pthread_exit(NULL);
     }
 
-    // Check if client already registered
+    // Add client 
     int index = -1;
-    if((index = get_client_index(name)) == -1) // client doesn't exist
+    if((index = register_client(name)) == -1) // register_client() failed 
     { 
-      // Create new client  // 
-      if((index = get_free_client_index(clients)) == -1) // no clients are free 
-      {
-      }
+      fprintf(stderr, "register_client() failed : start_accepting() failed\n");
+      pthread_exit(NULL);
     }
+
+    // 
   }
 }
 
