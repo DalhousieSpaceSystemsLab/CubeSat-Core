@@ -42,7 +42,7 @@ static int get_client_index(char name[3]);
 static int get_free_client_index();
 
 // Adds client to first available free slot in specified array 
-static int add_client(char name[3]);
+static int register_client(char name[3]);
 
 /////////////////////
 //  Public Methods //
