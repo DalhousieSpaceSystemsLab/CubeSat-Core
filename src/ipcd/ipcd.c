@@ -164,8 +164,35 @@ static int get_client_index(char name[3])
       index = x;
       }
     }
+
+// Adds client to first available free slot in specified array
+// Returns newly created client's index in the client array 
+// Returns -1 if client already exists or if no free space available.
+static int add_client(char name[3])
+{
+  // Check if client already registered
+  if(get_client_index(name) != -1) // client exists
+  {
+    fprintf(stderr, "client already exists : ");
+    return -1;
   }
 
+  // Get index of available client slot 
+  int index = -1;
+  if((index = get_free_client_index()) == -1) // no free slots available 
+  {
+    fprintf(stderr, "no free client slots available : ");
+    return -1;
+  }
+
+  // Create new client 
+  clients[index] = client_t_new();
+  
+  // Set client name 
+  strncpy(clients[index].name, name, 3);
+
+  // TODO : finish add_client function AND start_accepting thread
+
   // done
-  return index;
+  return 0;
 }
