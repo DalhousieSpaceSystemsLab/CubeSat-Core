@@ -204,10 +204,10 @@ int get_free_client_index()
   return index;
 }
 
-// Adds client to first available free slot in specified array
+// Registers client to first available free slot in specified array
 // Returns newly created client's index in the client array 
 // Returns -1 if client already exists or if no free space available.
-static int add_client(char name[3])
+static int register_client(char name[3])
 {
   // Check if client already registered
   if(get_client_index(name) != -1) // client exists
@@ -230,8 +230,6 @@ static int add_client(char name[3])
   // Set client name 
   strncpy(clients[index].name, name, 3);
 
-  // TODO : finish add_client function AND start_accepting thread
-
   // done 
-  return 0;
+  return index;
 }
