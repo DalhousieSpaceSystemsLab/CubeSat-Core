@@ -37,6 +37,13 @@ static void * start_accepting(void * params);
 // If no match is found, returns -1.
 static int get_client_index(char name[3]);
 
+// Returns first free client slot in client array.
+// If no slots are available, returns -1.
+static int get_free_client_index();
+
+// Adds client to first available free slot in specified array 
+static int add_client(char name[3]);
+
 /////////////////////
 //  Public Methods //
 /////////////////////
@@ -129,6 +136,7 @@ static void * start_accepting(void * params)
     if(accept(sock, (struct sockaddr *) &address, &address_len) == -1) // accept() failed
     {
       perror("accept() failed");
+      fprintf(stderr, "accept() failed : start_accepting() failed\n");
       pthread_exit(NULL);
     }
 
@@ -138,12 +146,19 @@ static void * start_accepting(void * params)
     // Read client name 
     if(read(sock, name, 3) < 3) // read() failed
     {
-      fprintf(stderr, "read() failed : ");
-      return -1;
+      perror("start_accepting() : read() failed");
+      pthread_exit(NULL);
     }
 
     // Check if client already registered
-
+    int index = -1;
+    if((index = get_client_index(name)) == -1) // client doesn't exist
+    { 
+      // Create new client  // 
+      if((index = get_free_client_index(clients)) == -1) // no clients are free 
+      {
+      }
+    }
   }
 }
 
@@ -157,13 +172,37 @@ static int get_client_index(char name[3])
   // Parse through clients in client array 
   for(int x = 0; x < MAX_NUM_CLI; x++) 
   {
-    if(strcmp(name, clients[x].name) == 0) 
+    // Check if client exists
+    if(strcmp(clients[x].name, name) == 0) // name matches 
     {
-      if(clients[x].conn.rx != -1 && clients[x].conn.tx != -1)
-      {
       index = x;
-      }
     }
+  }
+    
+  // done
+  return index;
+}
+
+// Returns first free client slot in client array.
+// If no slots are available, returns -1.
+int get_free_client_index()
+{
+  // Create placeholder for free client index 
+  int index = -1;
+
+  // Parse through clients index 
+  for(int x = 0; x < MAX_NUM_CLI; x++) 
+  {
+    // Check for vacant client
+    if(client_t_stat(clients[x]) == -1) // free client found 
+    {
+      index = x;
+    }
+  }
+
+  // done
+  return index;
+}
 
 // Adds client to first available free slot in specified array
 // Returns newly created client's index in the client array 
@@ -193,6 +232,6 @@ static int add_client(char name[3])
 
   // TODO : finish add_client function AND start_accepting thread
 
-  // done
+  // done 
   return 0;
 }
