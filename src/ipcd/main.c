@@ -21,6 +21,13 @@ int main()
     return -1;
   }
 
+  // Start accepting new clients 
+  ipcd_start_accepting();
+
+  // Wait for user to press enter 
+  printf("Press [ENTER] to quit\n");
+  getc(stdin);
+
   // Close the IPC daemon
   if(ipcd_close() == -1) // ipcd_close() failed
   {
