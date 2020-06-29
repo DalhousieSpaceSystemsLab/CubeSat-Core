@@ -166,7 +166,21 @@ static void * start_accepting(void * params)
       pthread_exit(NULL);
     }
 
-    // 
+    // Check client connection status
+    if(conn_t_stat(clients[index]) == -1) // conn is uninitialized
+    {
+      // Check if RX socket uninitialized 
+      if(clients[index].conn.rx == -1)
+      {
+        clients[index].conn.rx = conn;
+      } 
+      
+      // Check if TX socket uninitialized
+      else if(clients[index].conn.tx == -1)
+      {
+        clients[index].conn.tx = conn;
+      }
+    }
   }
 }
 
