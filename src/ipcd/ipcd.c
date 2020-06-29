@@ -72,6 +72,13 @@ int ipcd_init()
   // Set address length
   address_len = sizeof(address);
 
+  // Unlink socket 
+  if(unlink(address.sun_path) == -1) // unlink() failed 
+  {
+    perror("unlink() failed");
+    return -1;
+  }
+
   // Bind socket to fd at specified address
   if(bind(sock, (struct sockaddr *) &address, address_len) == -1) // bind() failed 
   {
