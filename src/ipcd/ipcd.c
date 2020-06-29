@@ -140,7 +140,8 @@ static void * start_accepting(void * params)
   for(;;)
   {
     // Accept new client 
-    if(accept(sock, (struct sockaddr *) &address, &address_len) == -1) // accept() failed
+    int conn = -1;
+    if((conn = accept(sock, (struct sockaddr *) &address, &address_len)) == -1) // accept() failed
     {
       perror("accept() failed");
       fprintf(stderr, "accept() failed : start_accepting() failed\n");
