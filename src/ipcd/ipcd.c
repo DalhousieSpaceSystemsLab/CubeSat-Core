@@ -228,18 +228,18 @@ int get_free_client_index()
 
 // Registers client to first available free slot in specified array
 // Returns newly created client's index in the client array 
-// Returns -1 if client already exists or if no free space available.
+// Returns index of pre-existing client if name matches
+// Returns -1 if no free space available.
 static int register_client(char name[3])
 {
   // Check if client already registered
-  if(get_client_index(name) != -1) // client exists
+  int index = -1;
+  if((index = get_client_index(name)) != -1) // client exists
   {
-    fprintf(stderr, "client already exists : ");
-    return -1;
+    return index;
   }
 
   // Get index of available client slot 
-  int index = -1;
   if((index = get_free_client_index()) == -1) // no free slots available 
   {
     fprintf(stderr, "no free client slots available : ");
