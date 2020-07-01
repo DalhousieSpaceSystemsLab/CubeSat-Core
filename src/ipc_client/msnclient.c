@@ -81,13 +81,12 @@ void start_sending()
 {
   for(;;)
   {
-    // Get command from user
-    char cmd[MAX_MSG_LEN];
-    printf("Enter command: ");
-    fgets(cmd, MAX_MSG_LEN, stdin);
+    // Get mission from msnqueue
+    const char *message[MAX_MSG_LEN];
+    message = get_msn();
 
     // Check if exit
-    if(strncmp(cmd, "exit", 4) == 0) // user wants to exit
+    if(strncmp(message, "exit", 4) == 0) // user wants to exit
     {
       break;
     }
@@ -96,14 +95,14 @@ void start_sending()
     char dest[3], msg[MAX_MSG_LEN];
 
     // Copy dest into dest placeholder
-    strncpy(dest, cmd, 3);
+    strncpy(dest, message, 3);
 
     // Copy rest into msg
-    int cmd_len = strlen(cmd);
-    for(int x = 4; x < cmd_len; x++) msg[x-4] = cmd[x];
+    int message_len = strlen(message);
+    for(int x = 4; x < cmd_len; x++) msg[x-4] = message[x];
 
     // Add null termination characters
-    msg[strlen(cmd)-4] = '\0';
+    msg[strlen(message)-4] = '\0';
 
     // Send message to process
     if(ipc_send(dest, msg, strlen(msg)) == -1) // ipc_send() failed
@@ -196,6 +195,7 @@ const char *get_msn()
       fclose(file);
   } else {
     printf("Error opening file");
+    message = "exit";
   }
   return message;
 }
