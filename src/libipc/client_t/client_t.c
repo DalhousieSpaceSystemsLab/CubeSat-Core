@@ -13,20 +13,31 @@
 client_t client_t_new()
 {
   // Create placeholder for initialized client
-  client_t client = {
-    .conn = conn_t_new(),
-    .name = "\0\0\0"
-  };
+  client_t client;
+
+  // Initialize client connection placeholder 
+  client.conn = conn_t_new();
+
+  // Initialize client name 
+  memset(client.name, 0, NAME_LEN);
 
   // done
   return client;
 }
 
-// Returns 0 if client is blank, -1 if used
+// Returns 0 if client is blank, 1 if used
 int client_t_stat(client_t client)
 {
   // Check name 
-  if(strncmp(client.name, "\0\0\0", 3) == 0) return -1;
+  for(int x = 0; x < NAME_LEN; x++)
+  {
+    // Iterate through name characters to ensure they're blank
+    if(client.name[x] != 0) // non-blank character found
+    {
+      // Declare used client
+      return 1;
+    }
+  }
 
   // done
   return 0;
