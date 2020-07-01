@@ -59,7 +59,7 @@ int ipcd_init()
   }
 
   // Initialize listening socket for incoming clients
-  if(socket(sock, AF_UNIX, SOCK_STREAM) == -1) // socket() failed
+  if((sock = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) // socket() failed
   {
     perror("socket() failed");
     return -1;
@@ -71,6 +71,13 @@ int ipcd_init()
 
   // Set address length
   address_len = sizeof(address);
+
+  // Unlink socket 
+  if(unlink(address.sun_path) == -1) // unlink() failed 
+  {
+    perror("unlink() failed");
+    return -1;
+  }
 
   // Bind socket to fd at specified address
   if(bind(sock, (struct sockaddr *) &address, address_len) == -1) // bind() failed 
@@ -133,7 +140,8 @@ static void * start_accepting(void * params)
   for(;;)
   {
     // Accept new client 
-    if(accept(sock, (struct sockaddr *) &address, &address_len) == -1) // accept() failed
+    int conn = -1;
+    if((conn = accept(sock, (struct sockaddr *) &address, &address_len)) == -1) // accept() failed
     {
       perror("accept() failed");
       fprintf(stderr, "accept() failed : start_accepting() failed\n");
@@ -158,7 +166,21 @@ static void * start_accepting(void * params)
       pthread_exit(NULL);
     }
 
-    // 
+    // Check client connection status
+    if(conn_t_stat(clients[index]) == -1) // conn is uninitialized
+    {
+      // Check if RX socket uninitialized 
+      if(clients[index].conn.rx == -1)
+      {
+        clients[index].conn.rx = conn;
+      } 
+      
+      // Check if TX socket uninitialized
+      else if(clients[index].conn.tx == -1)
+      {
+        clients[index].conn.tx = conn;
+      }
+    }
   }
 }
 
@@ -206,18 +228,18 @@ int get_free_client_index()
 
 // Registers client to first available free slot in specified array
 // Returns newly created client's index in the client array 
-// Returns -1 if client already exists or if no free space available.
+// Returns index of pre-existing client if name matches
+// Returns -1 if no free space available.
 static int register_client(char name[3])
 {
   // Check if client already registered
-  if(get_client_index(name) != -1) // client exists
+  int index = -1;
+  if((index = get_client_index(name)) != -1) // client exists
   {
-    fprintf(stderr, "client already exists : ");
-    return -1;
+    return index;
   }
 
   // Get index of available client slot 
-  int index = -1;
   if((index = get_free_client_index()) == -1) // no free slots available 
   {
     fprintf(stderr, "no free client slots available : ");

@@ -86,6 +86,14 @@ TARGET_LINK_LIBRARIES(${BIN_CLI_CPP}
 )
 TARGET_COMPILE_OPTIONS(${BIN_CLI_CPP} BEFORE PUBLIC "-g")
 
+# Functional style C - IPCD daemon
+SET("F_BIN_IPCD" "f_ipcd")
+SET("F_SRC_IPCD" "functional/ipcd.c")
+ADD_EXECUTABLE(${F_BIN_IPCD} ${F_SRC_IPCD})
+TARGET_LINK_LIBRARIES(${F_BIN_IPCD}
+  ${LIB_IPC}
+)
+
 # Testing binary
 # SET("BIN_TEST" "test")
 # SET("SRC_TEST" "test.c")
