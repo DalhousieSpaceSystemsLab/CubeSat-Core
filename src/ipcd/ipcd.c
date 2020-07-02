@@ -245,9 +245,12 @@ int ipcd_init()
     return -1;
   }
 
-  // Initialize socket address
-  address.sun_family = AF_UNIX;
-  strcpy(address.sun_path, "./socket.socket");
+  // Create placeholders for socket address 
+  const struct sockaddr_un address = {
+    .sun_family = AF_UNIX,
+    .sun_path   = "./socket.socket"
+  };
+  const socklen_t address_len = sizeof(address);
 
   // Set address length
   address_len = sizeof(address);
