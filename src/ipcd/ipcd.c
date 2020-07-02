@@ -263,14 +263,14 @@ int ipcd_init()
   }
 
   // Bind socket to fd at specified address
-  if(bind(sock, (struct sockaddr *) &address, address_len) == -1) // bind() failed 
+  if(bind(val(sock), (struct sockaddr *) &address, address_len) == -1) // bind() failed 
   {
     perror("bind() failed");
     return -1;
   }
 
   // Put socket into listen mode 
-  if(listen(sock, MAX_NUM_CLI) == -1) // listen() failed 
+  if(listen(val(sock), MAX_NUM_CLI) == -1) // listen() failed 
   {
     perror("listen() failed");
     return -1;
@@ -304,11 +304,8 @@ int ipcd_start_accepting()
 // Shutdown the IPC daemon
 int ipcd_close()
 {
-  // Free memory for clients
-  // free(clients);
-
   // Close incoming connection socket
-  close(sock);
+  close(val(sock));
 
   // done
   return 0;
