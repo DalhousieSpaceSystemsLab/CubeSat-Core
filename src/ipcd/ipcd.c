@@ -27,55 +27,6 @@ static pthread_t thread_start_accepting;
 //  Private Methods //
 //////////////////////
 
-// static void * start_accepting(void * params)
-// {
-//   for(;;)
-//   {
-//     // Accept new client 
-//     int conn = -1;
-//     if((conn = accept(sock, (struct sockaddr *) &address, &address_len)) == -1) // accept() failed
-//     {
-//       perror("accept() failed");
-//       fprintf(stderr, "accept() failed : start_accepting() failed\n");
-//       pthread_exit(NULL);
-//     }
-
-//     // Create placeholder for client name 
-//     char name[3];
-
-//     // Read client name 
-//     if(read(sock, name, 3) < 3) // read() failed
-//     {
-//       perror("start_accepting() : read() failed");
-//       pthread_exit(NULL);
-//     }
-
-//     // Add client 
-//     int index = -1;
-//     if((index = register_client(name)) == -1) // register_client() failed 
-//     {
-//       fprintf(stderr, "register_client() failed : start_accepting() failed\n");
-//       pthread_exit(NULL);
-//     }
-
-//     // Check client connection status
-//     if(conn_t_stat(clients[index]) == -1) // conn is uninitialized
-//     {
-//       // Check if RX socket uninitialized 
-//       if(clients[index].conn.rx == -1)
-//       {
-//         clients[index].conn.rx = conn;
-//       } 
-      
-//       // Check if TX socket uninitialized
-//       else if(clients[index].conn.tx == -1)
-//       {
-//         clients[index].conn.tx = conn;
-//       }
-//     }
-//   }
-// }
-
 // Thread which processes incoming client connections
 static void * start_accepting()
 {
@@ -153,78 +104,6 @@ static void * start_accepting()
   }
 }
 
-// Returns the index of the matching client if found.
-// If no match is found, returns -1.
-static int get_client_index(char name[NAME_LEN])
-{
-  // Create placeholder for matching client index
-  int index = -1;
-
-  // Parse through clients in client array 
-  for(int x = 0; x < MAX_NUM_CLI; x++) 
-  {
-    // Check if client exists
-    if(strcmp(clients[x].name, name) == 0) // name matches 
-    {
-      index = x;
-    }
-  }
-    
-  // done
-  return index;
-}
-
-// Returns first free client slot in client array.
-// If no slots are available, returns -1.
-int get_free_client_index()
-{
-  // Create placeholder for free client index 
-  int index = -1;
-
-  // Parse through clients index 
-  for(int x = 0; x < MAX_NUM_CLI; x++) 
-  {
-    // Check for vacant client
-    if(client_t_stat(clients[x]) == -1) // free client found 
-    {
-      index = x;
-    }
-  }
-
-  // done
-  return index;
-}
-
-// Registers client to first available free slot in specified array
-// Returns newly created client's index in the client array 
-// Returns index of pre-existing client if name matches
-// Returns -1 if no free space available.
-static int register_client(char name[NAME_LEN])
-{
-  // Check if client already registered
-  int index = -1;
-  if((index = get_client_index(name)) != -1) // client exists
-  {
-    return index;
-  }
-
-  // Get index of available client slot 
-  if((index = get_free_client_index()) == -1) // no free slots available 
-  {
-    fprintf(stderr, "no free client slots available : ");
-    return -1;
-  }
-
-  // Create new client 
-  clients[index] = client_t_new();
-  
-  // Set client name 
-  strncpy(clients[index].name, name, NAME_LEN);
-
-  // done 
-  return index;
-}
-
 /////////////////////
 //  Public Methods //
 /////////////////////
@@ -251,9 +130,6 @@ int ipcd_init()
     .sun_path   = "./socket.socket"
   };
   const socklen_t address_len = sizeof(address);
-
-  // Set address length
-  address_len = sizeof(address);
 
   // Unlink socket 
   if(unlink(address.sun_path) == -1) // unlink() failed 
