@@ -17,11 +17,8 @@
 static client_t clients[MAX_NUM_CLI];
 
 // Placeholder for incoming connection socket
-static int sock = -1;
-
-// Placeholder for incoming connection socket address
-static struct sockaddr_un address;
-static        socklen_t   address_len = -1;
+static int sock_ = -1;
+static immut(int) sock;
 
 // Placeholders for threads 
 static pthread_t thread_start_accepting;
