@@ -239,7 +239,7 @@ int ipcd_init()
   }
 
   // Initialize listening socket for incoming clients
-  if((sock = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) // socket() failed
+  if((sock_ = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) // socket() failed
   {
     perror("socket() failed");
     return -1;
