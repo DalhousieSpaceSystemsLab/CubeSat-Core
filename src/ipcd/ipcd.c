@@ -81,9 +81,11 @@ static void * start_accepting()
 {
   for(;;)
   {
-    // Accept new client 
+    // Create placeholder for client connection
     int conn = -1;
-    if((conn = accept(sock, (struct sockaddr *) &address, &address_len)) == -1) // accept() failed 
+
+    // Accept new client 
+    if((conn = accept(val(sock), NULL, NULL)) == -1) // accept() failed 
     {
       perror("start_accepting() : accept() failed");
       pthread_exit(NULL);
@@ -91,7 +93,7 @@ static void * start_accepting()
 
     // Get client name 
     char name[NAME_LEN];
-    if(read(sock, name, NAME_LEN) <= 0) // read() failed 
+    if(read(val(sock), name, NAME_LEN) <= 0) // read() failed 
     {
       perror("start_accepting() : read() failed");
       pthread_exit(NULL);
