@@ -57,6 +57,7 @@ static void * start_accepting()
       if(strncmp(clients[x].name, name, NAME_LEN) == 0) // name matches
       {
         index = x;
+        break;
       }
     }
 
@@ -82,8 +83,14 @@ static void * start_accepting()
         // Check client placeholder status 
         if(client_t_stat(clients[x]) == 0) // client placeholder is vacant 
         {
+          // Save new client in vacant position
           clients[x] = client;
+
+          // Update vacant index
           vacant_index = x;
+
+          // Stop looking for vacant clients 
+          break;
         }
       }
 
@@ -96,11 +103,18 @@ static void * start_accepting()
     }
 
     // Otherwise, client is already registered.
-    // Set remaining tx connection socket
-    else 
+    // Set remaining connection socket
+    else if(index < MAX_NUM_CLI)
     {
-      clients[index];
+      // Check client connection placeholders.
+      // Set the uninitialized one to conn.
+      if(clients[index].conn.rx == -1) clients[index].conn.rx = conn;
+      else if(clients[index].conn.tx == -1) clients[index].conn.tx = conn;
+      else continue;  // nothing to do.
     }
+
+    // Client is ready
+    continue;
   }
 }
 
@@ -184,5 +198,24 @@ int ipcd_close()
   close(val(sock));
 
   // done
+  return 0;
+}
+
+// Prints the list of clients
+int ipcd_print_clients()
+{
+  for(int x = 0; x < MAX_NUM_CLI; x++)
+  {
+    printf("Client #%d\n", x);
+    printf("{\n");
+    printf("\tname = %.3s\n", clients[x].name);
+    printf("\tconn = {\n");
+    printf("\t\t.rx = %d,\n", clients[x].conn.rx);
+    printf("\t\t.tx = %d\n", clients[x].conn.tx);
+    printf("\t}\n");
+    printf("}\n\n");
+  }
+
+  // done 
   return 0;
 }
