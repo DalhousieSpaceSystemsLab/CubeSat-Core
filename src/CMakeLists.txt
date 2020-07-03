@@ -22,6 +22,7 @@ SET("SRC_LIB_IPC"
   "libipc/client_t/client_t.c"
   "libipc/client_api.c" 
   "libipc/client_api.cc"
+  "libipc/util/serialize.cc"
 )
 ADD_LIBRARY(${LIB_IPC} ${SRC_LIB_IPC})
 
