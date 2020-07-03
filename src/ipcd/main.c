@@ -24,6 +24,15 @@ int main()
   // Start accepting new clients 
   ipcd_start_accepting();
 
+  for(;;)
+  {
+    ipcd_print_clients();
+
+    printf("Press [ENTER] to print again or 'q' to stop printing.\n");
+    char input = getc(stdin);
+    if(input == 'q') break;  
+  }
+
   // Wait for user to press enter 
   printf("Press [ENTER] to quit\n");
   getc(stdin);
