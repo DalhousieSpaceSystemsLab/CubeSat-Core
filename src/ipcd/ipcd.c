@@ -44,7 +44,7 @@ static void * start_accepting()
 
     // Get client name 
     char name[NAME_LEN];
-    if(read(val(sock), name, NAME_LEN) <= 0) // read() failed 
+    if(read(conn, name, NAME_LEN) <= 0) // read() failed 
     {
       perror("start_accepting() : read() failed");
       pthread_exit(NULL);
