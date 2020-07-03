@@ -18,7 +18,7 @@ static client_t clients[MAX_NUM_CLI];
 
 // Placeholder for incoming connection socket
 static int sock_ = -1;
-static immut(int) sock;
+static immut(int) sock = &sock_;
 
 // Placeholders for threads 
 static pthread_t thread_start_accepting;
