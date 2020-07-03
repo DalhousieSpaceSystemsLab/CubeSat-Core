@@ -29,10 +29,10 @@ extern "C" {
 #endif
 
 // Client API
-int ipc_init(char name[3]);                                 // Initialize client side IPC interface
-int ipc_send(char dest[3], char * msg, size_t msg_len);     // Send message to another process
+int ipc_connect(char name[3]);                                // Initialize client side IPC interface
+int ipc_send(char dest[3], char * msg, size_t msg_len);       // Send message to another process
 int ipc_recv(char src[3], char * buffer, size_t buffer_len);  // Receive message from another process
-int ipc_close();                                            // Close client side IPC interface
+int ipc_disconnect();                                         // Close client side IPC interface
 
 #ifdef __cplusplus
 }
