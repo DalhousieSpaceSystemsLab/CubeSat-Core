@@ -10,14 +10,11 @@
 #include "ipc/client_api.h"
 
 // Private variables
-static char name[3];  // client name on IPC
 static int sock = -1; // connection socket to IPC
 
 // Initialize client API and connect to IPC daemon.
 int ipc_connect(char name[3])
 {
-  // Set name
-  for(int x = 0; x < 3; x++) name[x] = name_[x];
 
   // Create placeholder for socket address
   const struct sockaddr_un address = {
