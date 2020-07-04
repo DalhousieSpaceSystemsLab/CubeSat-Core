@@ -13,6 +13,13 @@
 static int sock_ = -1;            // mutable connection socket to IPC
 static immut(int) sock = &sock_;  // immutable connection socket to IPC
 
+static char qsend_dest[NAME_LEN];   // send queue destination name 
+static char qsend_msg[NAME_LEN];    // send queue message placeholder
+
+static char   qrecv_src[NAME_LEN];  // receive queue source name filter 
+static char * qrecv_msg = NULL;     // receive queue message placeholder 
+static size_t qrecv_msg_len = -1;   // receive queue message 
+
 // Initialize client API and connect to IPC daemon.
 int ipc_connect(char name[3])
 {
@@ -95,6 +102,36 @@ int ipc_recv(char src[3], char * buffer, size_t buffer_len)
   // done
   return 0;
 }
+
+// Adds outgoing message to send queue
+int ipc_qsend(char dest[3], char * msg, size_t msg_len)
+{
+  // Copy destination into queue
+  for(int x = 0; x < NAME_LEN; x++) qsend_dest[x] = dest[x];
+
+  // Copy message into queue
+  for(int x = 0; x < msg_len && x < MAX_MSG_LEN; x++) qsend_msg[x] = msg[x];
+  
+  // Add null termination character to message if message is shorter than max
+  if(msg_len < MAX_MSG_LEN) qsend_msg[msg_len] = '\0';
+
+  // done
+  return 0;
+}
+
+// Adds incoming message request to recv queue
+int ipc_qrecv(char src[3], char * buffer, size_t buffer_len)
+{
+  // Copy src filter into queue 
+  for(int x = 0; x < NAME_LEN; x++) qrecv_src[x] = src[x];
+
+  // Copy buffer data into queue 
+  qrecv_msg = buffer;
+  qrecv_msg_len = buffer_len;
+
+  // done
+  return 0;
+} 
 
 // Disconnect from IPC daemon and close client side interface
 int ipc_disconnect()
