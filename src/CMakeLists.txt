@@ -57,14 +57,14 @@ TARGET_LINK_LIBRARIES(${BIN_IPCD_OLD}
 TARGET_COMPILE_OPTIONS(${BIN_IPCD_OLD} BEFORE PUBLIC "-g")
 
 # Client binary
-# SET("BIN_CLI" "client")
-# SET("SRC_CLI" "ipc_client/client.c")
-# ADD_EXECUTABLE(${BIN_CLI} ${SRC_CLI})
-# TARGET_LINK_LIBRARIES(${BIN_CLI}
-#   "pthread"
-#   ${LIB_IPC}
-# )
-# TARGET_COMPILE_OPTIONS(${BIN_CLI} BEFORE PUBLIC "-g")
+SET("BIN_CLI" "client")
+SET("SRC_CLI" "ipc_client/client.c")
+ADD_EXECUTABLE(${BIN_CLI} ${SRC_CLI})
+TARGET_LINK_LIBRARIES(${BIN_CLI}
+  "pthread"
+  ${LIB_IPC}
+)
+TARGET_COMPILE_OPTIONS(${BIN_CLI} BEFORE PUBLIC "-g")
 
 # Client binary (old)
 SET("BIN_CLI_OLD" "client_old")
