@@ -13,8 +13,8 @@
 static char name[3];  // client name on IPC
 static int sock = -1; // connection socket to IPC
 
-// Initialize client API interface
-int ipc_init(char name_[3])
+// Initialize client API and connect to IPC daemon.
+int ipc_connect(char name[3])
 {
   // Set name
   for(int x = 0; x < 3; x++) name[x] = name_[x];
@@ -99,8 +99,8 @@ int ipc_recv(char src[3], char * buffer, size_t buffer_len)
   return 0;
 }
 
-// Close client side interface
-int ipc_close()
+// Disconnect from IPC daemon and close client side interface
+int ipc_disconnect()
 {
   // Close connection socket to the IPC
   close(sock);
