@@ -59,7 +59,7 @@ int ipc_connect(char name[3])
 int ipc_send(char dest[3], char * msg, size_t msg_len)
 {
   // Create placeholder for message to be sent
-  char msg_final[3 + msg_len];
+  char msg_final[3 + msg_len + 1];
 
   // Create message with destination client fronted
   sprintf(msg_final, "%.3s %*s\0", dest, msg_len, msg);
@@ -67,7 +67,7 @@ int ipc_send(char dest[3], char * msg, size_t msg_len)
   // Send final message to IPC
   if(write(val(sock), msg_final, 3 + msg_len) < 3 + msg_len) // write() failed
   {
-    fprintf(stderr, "write() failed\n");
+    fprintf(stderr, "write() failed : ");
     return -1;
   }
 
