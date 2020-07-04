@@ -10,35 +10,35 @@
 #include "ipc/client_api.h"
 
 // Private variables
-static int sock = -1; // connection socket to IPC
+static int sock_ = -1;            // mutable connection socket to IPC
+static immut(int) sock = &sock_;  // immutable connection socket to IPC
 
 // Initialize client API and connect to IPC daemon.
 int ipc_connect(char name[3])
 {
-
   // Create placeholder for socket address
   const struct sockaddr_un address = {
     .sun_family = AF_UNIX,
     .sun_path   = "./socket.socket",
   };
-  socklen_t address_len = sizeof(address);
+  const socklen_t address_len = sizeof(address);
 
   // Initiate socket
-  if((sock = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) // socket() failed
+  if((sock_ = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) // socket() failed
   {
     perror("socket() failed");
     return -1;
   }
 
   // Connect to host
-  if(connect(sock, (struct sockaddr *) &address, address_len) == -1) // connect() failed
+  if(connect(val(sock), (struct sockaddr *) &address, address_len) == -1) // connect() failed
   {
     perror("connect() failed");
     return -1;
   }
 
   // Send name to host
-  if(write(sock, name, strlen(name)) < strlen(name)) // write() failed
+  if(write(val(sock), name, strlen(name)) < strlen(name)) // write() failed
   {
     perror("write() failed");
     return -1;
@@ -58,7 +58,7 @@ int ipc_send(char dest[3], char * msg, size_t msg_len)
   sprintf(msg_final, "%.3s %*s\0", dest, msg_len, msg);
 
   // Send final message to IPC
-  if(write(sock, msg_final, 3 + msg_len) < 3 + msg_len) // write() failed
+  if(write(val(sock), msg_final, 3 + msg_len) < 3 + msg_len) // write() failed
   {
     fprintf(stderr, "write() failed\n");
     return -1;
@@ -100,7 +100,7 @@ int ipc_recv(char src[3], char * buffer, size_t buffer_len)
 int ipc_disconnect()
 {
   // Close connection socket to the IPC
-  close(sock);
+  close(val(sock));
 
   // done
   return 0;
