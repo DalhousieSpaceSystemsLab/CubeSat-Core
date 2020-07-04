@@ -35,7 +35,7 @@ void ipc::init(string name)
   strcpy(c_name, name.c_str());
 
   // Run C init
-  if(ipc_init(c_name) == -1) // ipc_init() failed
+  if(ipc_connect(c_name) == -1) // ipc_connect() failed
   {
     throw err_ipc_init_failed;
   }
