@@ -12,6 +12,7 @@
 // Project headers
 #include "settings.h"
 #include "util/immut.h"
+#include "ipc/client_t.h"
 
 // Standard C Libraries
 #include <stdio.h>
