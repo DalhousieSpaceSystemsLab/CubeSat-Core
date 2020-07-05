@@ -158,7 +158,7 @@ int ipc_qsend(char dest[NAME_LEN], char * msg, size_t msg_len)
 
   // Copy message into queue
   for(int x = 0; x < msg_len && x < MAX_MSG_LEN; x++) qsend_msg[x] = msg[x];
-  
+
   // Copy message length into queue 
   qsend_msg_len = msg_len;
 
@@ -203,11 +203,15 @@ int ipc_refresh()
     }
   }
 
-  // Send data 
-  if(write(self.conn.tx, qsend_msg, MAX_MSG_LEN) < MAX_MSG_LEN) // send() failed 
+  // Check if qsend buffers valid
+  if(qsend_msg_len > 0) // qsend is good to go
   {
-    perror("send() failed");
-    return -1;
+    // Send data 
+    if(write(self.conn.tx, qsend_msg, MAX_MSG_LEN) < MAX_MSG_LEN) // send() failed 
+    {
+      perror("send() failed");
+      return -1;
+    }
   }
 
   // done
