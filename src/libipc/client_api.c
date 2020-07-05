@@ -35,13 +35,15 @@ int ipc_connect(char name[NAME_LEN])
   };
   const socklen_t address_len = sizeof(address);
 
-  // Initiate rx/tx sockets
-  if((self.conn.rx = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) // socket() failed
+  // Initiate rx socket
+  // Nonblocking flag enabled for this socket
+  if((self.conn.rx = socket(AF_UNIX, SOCK_STREAM | SOCK_NONBLOCK, 0)) == -1) // socket() failed
   {
     perror("socket() failed");
     return -1;
   }
 
+  // Initiate tx socket
   if((self.conn.tx = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) // socket() failed
   {
     perror("socket() failed");
@@ -108,21 +110,27 @@ int ipc_recv(char src[NAME_LEN], char * buffer, size_t buffer_len)
 
   // Wait for incoming message from the IPC
   int bytes_read = -1;
-  if((bytes_read = read(self.conn.rx, msg, MAX_MSG_LEN)) <= 0) // read() failed or zero length msg
+  while((bytes_read = read(self.conn.rx, msg, MAX_MSG_LEN)) <= 0) // read() failed 
   {
-    fprintf(stderr, "Failed to read message from IPC\n");
-    return -1;
-  }
+    // Check if read() should have blocked 
+    if(errno == EWOULDBLOCK || errno == EAGAIN) // read() should have blocked
+    {
+      // Delay next read() attempt  
+      sleep(READ_BLOCK_DELAY); 
 
-  // Check if message fits within buffer
-  if(buffer_len < bytes_read) // buffer too small
-  {
-    fprintf(stderr, "Buffer provided to ipc_recv is too small to contain message.\n");
-    return -1;
+      // Try again
+      continue;
+    } 
+
+    else // read() really failed
+    {  
+      perror("read() failed");
+      return -1;
+    }
   }
 
   // Copy message into buffer
-  strncpy(buffer, msg, bytes_read);
+  strncpy(buffer, msg, buffer_len);
 
   // done
   return 0;

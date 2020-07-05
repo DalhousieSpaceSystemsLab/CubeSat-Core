@@ -10,8 +10,9 @@
 #define CUBESAT_CORE_INCLUDE_IPC_SETTINGS_H
 
 // IPC
-#define MAX_NUM_CLI 5
-#define MAX_MSG_LEN 128
-#define NAME_LEN    3
+#define MAX_NUM_CLI       5
+#define MAX_MSG_LEN       128
+#define NAME_LEN          3
+#define READ_BLOCK_DELAY  1   // seconds
 
 #endif /* end of include guard: CUBESAT_CORE_INCLUDE_IPC_SETTINGS_H */
