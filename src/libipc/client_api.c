@@ -140,14 +140,27 @@ int ipc_recv(char src[NAME_LEN], char * buffer, size_t buffer_len)
 // Adds outgoing message to send queue
 int ipc_qsend(char dest[NAME_LEN], char * msg, size_t msg_len)
 {
+  // Check for null message or 0 length 
+  if(msg == NULL || msg_len <= 0) 
+  {
+    // Set qsend message placeholder to 0
+    memset(qsend_msg, 0, MAX_MSG_LEN);
+
+    // Set qsend message length to -1 
+    qsend_msg_len = -1;
+    
+    // done
+    return 0;
+  }
+
   // Copy destination into queue
   for(int x = 0; x < NAME_LEN; x++) qsend_dest[x] = dest[x];
 
   // Copy message into queue
   for(int x = 0; x < msg_len && x < MAX_MSG_LEN; x++) qsend_msg[x] = msg[x];
   
-  // Add null termination character to message if message is shorter than max
-  if(msg_len < MAX_MSG_LEN) qsend_msg[msg_len] = '\0';
+  // Copy message length into queue 
+  qsend_msg_len = msg_len;
 
   // done
   return 0;
