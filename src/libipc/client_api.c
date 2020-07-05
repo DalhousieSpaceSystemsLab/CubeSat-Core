@@ -16,8 +16,8 @@ static char qsend_dest[NAME_LEN];   // send queue destination name
 static char qsend_msg[NAME_LEN];    // send queue message placeholder
 
 static char   qrecv_src[NAME_LEN];  // receive queue source name filter 
-static char * qrecv_msg = NULL;     // receive queue message placeholder 
-static size_t qrecv_msg_len = -1;   // receive queue message 
+static char * qrecv_buf = NULL;     // receive queue message placeholder 
+static size_t qrecv_buf_len = -1;   // receive queue message 
 
 // Initialize client API and connect to IPC daemon.
 int ipc_connect(char name[NAME_LEN])
@@ -159,12 +159,46 @@ int ipc_qrecv(char src[NAME_LEN], char * buffer, size_t buffer_len)
   for(int x = 0; x < NAME_LEN; x++) qrecv_src[x] = src[x];
 
   // Copy buffer data into queue 
-  qrecv_msg = buffer;
-  qrecv_msg_len = buffer_len;
+  qrecv_buf = buffer;
+  qrecv_buf_len = buffer_len;
 
   // done
   return 0;
 } 
+
+// Simultaneously reads/writes queued data
+int ipc_refresh()
+{
+  // Check if qrecv buffer valid 
+  if(qrecv_buf != NULL && qrecv_buf_len > -1) // qrecv is good to go
+  {
+    // Read data
+    if(read(self.conn.rx, qrecv_buf, qrecv_buf_len) <= 0) // read() failed 
+    {
+      // Check if read() should have blocked 
+      if(errno == EWOULDBLOCK || errno == EAGAIN) // read() should have blocked
+      {
+        // no issue, just continue 
+      }
+
+      else // read() really failed  
+      {
+        perror("read() failed");
+        return -1;
+      }
+    }
+  }
+
+  // Send data 
+  if(write(self.conn.tx, qsend_msg, MAX_MSG_LEN) < MAX_MSG_LEN) // send() failed 
+  {
+    perror("send() failed");
+    return -1;
+  }
+
+  // done
+  return 0;
+}
 
 // Disconnect from IPC daemon and close client side interface
 int ipc_disconnect()
