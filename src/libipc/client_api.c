@@ -13,11 +13,12 @@
 static client_t self;               // self-referential placeholder for this client
 
 static char qsend_dest[NAME_LEN];   // send queue destination name 
-static char qsend_msg[NAME_LEN];    // send queue message placeholder
+static char qsend_msg[MAX_MSG_LEN]; // send queue message placeholder
+static size_t qsend_msg_len = -1;   // send queue message length
 
 static char   qrecv_src[NAME_LEN];  // receive queue source name filter 
 static char * qrecv_buf = NULL;     // receive queue message placeholder 
-static size_t qrecv_buf_len = -1;   // receive queue message 
+static size_t qrecv_buf_len = -1;   // receive queue message placeholder length
 
 // Initialize client API and connect to IPC daemon.
 int ipc_connect(char name[NAME_LEN])
