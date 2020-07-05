@@ -9,6 +9,8 @@
 // Project headers
 #include "ipc/ipcd.h"
 
+// TODO: make ipcd part of the libipc 
+
 ///////////////////////
 //  Local Variables  //
 ///////////////////////
@@ -19,9 +21,6 @@ static client_t clients[MAX_NUM_CLI];
 // Placeholder for incoming connection socket
 static int sock_ = -1;
 static immut(int) sock = &sock_;
-
-// Placeholders for threads 
-static pthread_t thread_start_accepting;
 
 //////////////////////
 //  Private Methods //
@@ -118,6 +117,12 @@ static void * start_accepting()
   }
 }
 
+// Thread which processes message routing between clients 
+void * start_routing()
+{
+
+}
+
 /////////////////////
 //  Public Methods //
 /////////////////////
@@ -174,6 +179,7 @@ int ipcd_init()
 int ipcd_start_accepting()
 {
   // Create start_accepting thread 
+  pthread_t thread_start_accepting;
   if(pthread_create(&thread_start_accepting, NULL, start_accepting, NULL) != 0) // pthread_create() failed
   {
     fprintf(stderr, "pthread_create() failed : ");
@@ -188,6 +194,17 @@ int ipcd_start_accepting()
   }
 
   // done 
+  return 0;
+}
+
+// Start routing messages between clients 
+int ipcd_start_routing()
+{
+  // Create routing thread 
+  pthread_t thread_start_routing;
+  if(pthread_create())
+
+  // done
   return 0;
 }
 

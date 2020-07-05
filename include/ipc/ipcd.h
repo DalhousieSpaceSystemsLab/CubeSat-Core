@@ -25,6 +25,7 @@
 // Methods 
 int ipcd_init();            // Initialize the IPC daemon
 int ipcd_start_accepting(); // Start accepting incoming client connections
+int ipcd_start_routing();   // Start routing messages between clients 
 int ipcd_close();           // Shutdown the IPC daemon
 
 // Debug 
