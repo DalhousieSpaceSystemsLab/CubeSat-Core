@@ -127,6 +127,11 @@ void start_recving()
       return;
     }
 
+    // Add incoming message to msnqueue.txt
+    static const char filename[] = "msnqueue.txt";
+    FILE *file = fopen(filename, "a");
+    char new_msn = msg + "\n";
+    fprintf(file, new_msn);
     // Print message on screen
     printf("Incoming msg: %s", msg);
   }
