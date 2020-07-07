@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <errno.h>
+#include <time.h>
 
 // Methods 
 int ipcd_init();            // Initialize the IPC daemon

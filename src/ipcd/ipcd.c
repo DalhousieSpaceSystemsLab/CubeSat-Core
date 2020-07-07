@@ -117,10 +117,44 @@ static void * start_accepting()
   }
 }
 
-// Thread which processes message routing between clients 
-void * start_routing()
+// Thread which routes message for an individual client 
+static void * start_routing_client(void * params)
 {
 
+}
+
+// Thread which initializes routing threads for individual clients
+static void * start_routing()
+{
+  // Create placeholder for client router threads 
+  pthread_t client_routers[MAX_NUM_CLI];
+
+  // Initialize client routers to -1
+  for(int x = 0; x < MAX_NUM_CLI; x++) client_routers[x] = -1;
+
+  for(;;)
+  {
+    // Parse through clients in clients array 
+    for(int x = 0; x < MAX_NUM_CLI; x++) 
+    {
+      // Check if active client has an active router 
+      if(client_t_stat(clients[x]) == 1 && client_routers[x] == -1) // active client is missing router 
+      {
+        // Start routing messages for client 
+        if((errno = pthread_create(&client_routers[x], NULL, start_routing_client, &clients[x])) != 0) // pthread_create() failed 
+        {
+          perror("pthread_create() failed");
+          pthread_exit(NULL);
+        }
+      }
+    }
+
+    // Delay before checking client array again 
+    const struct timespec router_delay = {
+      .tv_nsec = ROUTER_CHECK_DELAY
+    };
+    nanosleep(&router_delay, NULL);
+  }
 }
 
 /////////////////////
@@ -200,12 +234,25 @@ int ipcd_start_accepting()
 // Start routing messages between clients 
 int ipcd_start_routing()
 {
-  // Create routing thread 
+  // Create placeholder for start routing thread 
   pthread_t thread_start_routing;
-  if(pthread_create())
+
+  // Create thread 
+  if((errno = pthread_create(&thread_start_routing, NULL, start_routing, NULL)) != 0) // pthread_create() failed 
+  {
+    perror("pthread_create() failed");
+    return -1;
+  }
+
+  // Detach thread 
+  if((errno = pthread_detach(thread_start_routing)) != 0) // pthread_detach() failed 
+  {
+    perror("pthread_detach() failed");
+    return -1;
+  }
 
   // done
-  return 0;
+  return 0; 
 }
 
 // Shutdown the IPC daemon

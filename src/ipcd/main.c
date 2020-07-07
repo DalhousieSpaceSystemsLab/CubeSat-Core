@@ -22,7 +22,18 @@ int main()
   }
 
   // Start accepting new clients 
-  ipcd_start_accepting();
+  if(ipcd_start_accepting() == -1) // ipcd_start_accepting() failed 
+  {
+    fprintf(stderr, "ipcd_start_accepting() failed\n");
+    return -1;
+  }
+
+  // Start routing messages between clients 
+  if(ipcd_start_routing() == -1) // ipcd_start_routing() failed 
+  {
+    fprintf(stderr, "ipcd_start_routing() failed");
+    return -1;
+  }
 
   for(;;)
   {

@@ -49,10 +49,10 @@ int main(int argc, char * argv[])
     printf("Message received from IPC is %.*s\n", MAX_MSG_LEN, msg);
   }
 
-  char dest[NAME_LEN];
+  char dest[NAME_LEN + 2]; // additional 2 bytes needed for appended "\n\0"
   char msg_out[MAX_MSG_LEN];
   printf("Enter the message destination: ");
-  fgets(dest, NAME_LEN, stdin);
+  fgets(dest, NAME_LEN + 2, stdin);
   printf("Enter a message to send now: ");
   fgets(msg_out, MAX_MSG_LEN, stdin);
 
