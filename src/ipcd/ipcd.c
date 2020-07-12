@@ -35,10 +35,21 @@ static void * start_accepting()
     int conn = -1;
 
     // Accept new client 
-    if((conn = accept(val(sock), NULL, NULL)) == -1) // accept() failed 
+    // if((conn = accept(val(sock), NULL, NULL)) == -1) // accept() failed 
+    // {
+    //   perror("start_accepting() : accept() failed");
+    //   pthread_exit(NULL);
+    // }
+    if((conn = accept4(val(sock), NULL, NULL, SOCK_NONBLOCK) == -1)) // accept() failed 
     {
       perror("start_accepting() : accept() failed");
       pthread_exit(NULL);
+    }
+
+    // Configure newly created socket 
+    if(setsockopt(conn, SOL_SOCKET, SO_TYPE, SOCK_STREAM | SOCK_NONBLOCK, sizeof(SOCK_STREAM)))
+    {
+
     }
 
     // Get client name 
@@ -117,10 +128,27 @@ static void * start_accepting()
   }
 }
 
-// Thread which routes message for an individual client 
+// Thread which routes messages for an individual client 
 static void * start_routing_client(void * params)
 {
+  // Create placeholder for client parameter 
+  client_t client = *((client_t *) params);
 
+  for(;;)
+  {
+    // Create placeholder for incoming message 
+    char msg[MAX_MSG_LEN];
+    
+    // Wait for request from client 
+    int bytes_read = -1;
+    if((bytes_read = read(client.conn.tx, msg, MAX_MSG_LEN)) <= 0) // read() failed 
+    {
+      fprintf(stderr, "read() failed : start_routing_client() failed\n");
+      pthread_exit(NULL);
+    }
+
+    // 
+  }
 }
 
 // Thread which initializes routing threads for individual clients

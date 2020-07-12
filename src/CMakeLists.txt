@@ -95,6 +95,15 @@ TARGET_LINK_LIBRARIES(${F_BIN_IPCD}
   ${LIB_IPC}
 )
 
+# Subsystem Server Template 
+SET("BIN_SUBSYS_SERVER" "subsys_server")
+SET("SRC_SUBSYS_SERVER" "subsys_server/server.c")
+ADD_EXECUTABLE(${BIN_SUBSYS_SERVER} ${SRC_SUBSYS_SERVER})
+TARGET_LINK_LIBRARIES(${BIN_SUBSYS_SERVER}
+  "pthread"
+  ${LIB_IPC}
+)
+
 # Testing binary
 # SET("BIN_TEST" "test")
 # SET("SRC_TEST" "test.c")
