@@ -14,6 +14,9 @@
 #include "util/immut.h"
 #include "ipc/client_t.h"
 
+// Feature test macros
+#define _GNU_SOURCE
+
 // Standard C libraries 
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -23,8 +26,6 @@
 #include <pthread.h>
 #include <errno.h>
 #include <time.h>
-
-#define _GNU_SOURCE
 
 // Methods 
 int ipcd_init();            // Initialize the IPC daemon
