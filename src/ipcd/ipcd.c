@@ -46,12 +46,6 @@ static void * start_accepting()
       pthread_exit(NULL);
     }
 
-    // Configure newly created socket 
-    if(setsockopt(conn, SOL_SOCKET, SO_TYPE, SOCK_STREAM | SOCK_NONBLOCK, sizeof(SOCK_STREAM)))
-    {
-
-    }
-
     // Get client name 
     char name[NAME_LEN];
     if(read(conn, name, NAME_LEN) <= 0) // read() failed 
@@ -70,7 +64,7 @@ static void * start_accepting()
         break;
       }
     }
-
+ 
     // Check if client already registered in clients array 
     if(index == -1) // client not found 
     {
@@ -143,8 +137,15 @@ static void * start_routing_client(void * params)
     int bytes_read = -1;
     if((bytes_read = read(client.conn.tx, msg, MAX_MSG_LEN)) <= 0) // read() failed 
     {
-      fprintf(stderr, "read() failed : start_routing_client() failed\n");
-      pthread_exit(NULL);
+      // Check if read would have blocked 
+      if(errno == EWOULDBLOCK)
+      {
+        fprintf(stderr, "read() would have blocked. try again!\n");
+        pthread_exit(NULL);
+      } else {
+        fprintf(stderr, "read() failed : start_routing_client() failed\n");
+        pthread_exit(NULL);
+      }
     }
 
     // 
