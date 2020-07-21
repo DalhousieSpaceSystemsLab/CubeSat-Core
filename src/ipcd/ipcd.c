@@ -105,12 +105,7 @@ static void * start_accepting()
     int conn = -1;
 
     // Accept new client 
-    // if((conn = accept(val(sock), NULL, NULL)) == -1) // accept() failed 
-    // {
-    //   perror("start_accepting() : accept() failed");
-    //   pthread_exit(NULL);
-    // }
-    if((conn = accept4(val(sock), NULL, NULL, SOCK_NONBLOCK) == -1)) // accept() failed 
+    if((conn = accept(val(sock), NULL, NULL)) == -1) // accept() failed 
     {
       perror("start_accepting() : accept() failed");
       pthread_exit(NULL);
