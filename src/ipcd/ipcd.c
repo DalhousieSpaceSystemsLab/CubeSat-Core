@@ -26,6 +26,76 @@ static immut(int) sock = &sock_;
 //  Private Methods //
 //////////////////////
 
+// Thread which routes messages for an individual client 
+static void * start_routing_client(void * params)
+{
+  // Create placeholder for client parameter 
+  client_t client = *((client_t *) params);
+
+  for(;;)
+  {
+    // Create placeholder for incoming message 
+    char msg[MAX_MSG_LEN];
+    
+    // Check if rx/tx sockets ready 
+    if(conn_t_stat(client.conn) == -1) // connection is not ready 
+    {
+      // Wait a second before trying again 
+      sleep(1);
+      continue;
+    }
+
+    // Wait for request from client 
+    int bytes_read = -1;
+    if((bytes_read = read(client.conn.tx, msg, MAX_MSG_LEN)) <= 0) // read() failed 
+    {
+      if(bytes_read == 0) fprintf(stderr, "actually read 0 bytes\n");
+      perror("read() failed : start_routing_client() failed\n");
+      pthread_exit(NULL);
+    } 
+
+    // Check length of incoming message 
+    if(bytes_read <= NAME_LEN) // name or message missing 
+    {
+      fprintf(stdout, "message received without name or message. SKIPPING\n");
+      continue;
+    }
+
+    // Create placeholder for destination name 
+    char name[NAME_LEN];
+
+    // Extract destination name from message 
+    for(int x = 0; x < NAME_LEN; x++)
+    {
+      name[x] = msg[x];
+    }
+
+    // Look for destination client in clients array 
+    for(int x = 0; x < MAX_NUM_CLI; x++) 
+    {
+      // Check if destination name matches another client's name
+      if(strncmp(clients[x].name, name, 3) == 0) // name matches 
+      {
+        // Create placeholder for formatted message 
+        char fmt_msg[MAX_MSG_LEN];
+
+        // Copy source client name into formatted message 
+        strncpy(fmt_msg, client.name, 3);
+
+        // Copy rest of message into formatted message 
+        for(int y = NAME_LEN + 1; y < bytes_read; y++) fmt_msg[y] = msg[y];
+
+        // Send message to destination client 
+        if(write(clients[x].conn.rx, fmt_msg, bytes_read) < bytes_read) // write() failed
+        {
+          perror("write() failed : start_routing_client() failed");
+          pthread_exit(NULL);
+        }
+      }
+    }
+  }
+}
+
 // Thread which processes incoming client connections
 static void * start_accepting()
 {
