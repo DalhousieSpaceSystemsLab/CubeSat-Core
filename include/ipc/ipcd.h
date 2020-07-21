@@ -14,9 +14,6 @@
 #include "util/immut.h"
 #include "ipc/client_t.h"
 
-// Feature test macros
-#define _GNU_SOURCE
-
 // Standard C libraries 
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -29,8 +26,8 @@
 
 // Methods 
 int ipcd_init();            // Initialize the IPC daemon
-int ipcd_start_accepting(); // Start accepting incoming client connections
-int ipcd_start_routing();   // Start routing messages between clients 
+// int ipcd_start_accepting(); // Start accepting incoming client connections
+// int ipcd_start_routing();   // Start routing messages between clients 
 int ipcd_close();           // Shutdown the IPC daemon
 
 // Debug 
