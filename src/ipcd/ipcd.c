@@ -180,40 +180,34 @@ static void * start_accepting()
       if(clients[index].conn.rx == -1) clients[index].conn.rx = conn;
       else if(clients[index].conn.tx == -1) clients[index].conn.tx = conn;
       else continue;  // nothing to do.
-    }
 
-    // Client is ready
-    continue;
-  }
-}
+      // Client is ready //
 
-// Thread which routes messages for an individual client 
-static void * start_routing_client(void * params)
-{
-  // Create placeholder for client parameter 
-  client_t client = *((client_t *) params);
-
-  for(;;)
-  {
-    // Create placeholder for incoming message 
-    char msg[MAX_MSG_LEN];
-    
-    // Wait for request from client 
-    int bytes_read = -1;
-    if((bytes_read = read(client.conn.tx, msg, MAX_MSG_LEN)) <= 0) // read() failed 
-    {
-      // Check if read would have blocked 
-      if(errno == EWOULDBLOCK)
+      // Start routing client 
+      pthread_t thread_start_routing_client;
+      if((errno = pthread_create(&thread_start_routing_client, NULL, start_routing_client, &clients[index])) != 0) // pthread_create() failed 
       {
-        fprintf(stderr, "read() would have blocked. try again!\n");
+        perror("pthread_create() failed");
         pthread_exit(NULL);
-      } else {
-        fprintf(stderr, "read() failed : start_routing_client() failed\n");
+      }
+
+      // Detach thread 
+      if((errno = pthread_detach(thread_start_routing_client)) != 0) // pthread_detach() failed 
+      {
+        perror("pthread_detach() failed");
         pthread_exit(NULL);
       }
     }
 
-    // 
+    // Invalid index returned. Unknown error.
+    else 
+    {
+      fprintf(stderr, "registered client index value is invalid. unknown problem\n");
+      pthread_exit(NULL);
+    }
+
+    // Client is ready
+    continue;
   }
 }
 
@@ -296,6 +290,21 @@ int ipcd_init()
   if(listen(val(sock), MAX_NUM_CLI) == -1) // listen() failed 
   {
     perror("listen() failed");
+    return -1;
+  }
+
+  // Start accepting clients 
+  pthread_t thread_start_accepting;
+  if((errno = pthread_create(&thread_start_accepting, NULL, start_accepting, NULL)) != 0) // pthread_create() failed 
+  {
+    perror("pthread_create() failed");
+    return -1;
+  }
+
+  // Detach thread 
+  if((errno = pthread_detach(thread_start_accepting)) != 0) // pthread_detach() failed 
+  {
+    perror("pthread_detach() failed");
     return -1;
   }
 
