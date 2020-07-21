@@ -1,135 +1,57 @@
-// Unit testing signature
-#define UNIT_TESTING 1
-
-// Project source
-#include "client_handler.c"
-
-// Project headers
+// IPC Client API 
 #include "ipc/settings.h"
-#include "ipc/client_t.h"
+#include "ipc/client_api.h"
 
-// Standard C Libraries
-#include <string.h>
+// Standard C libraries
+#include <stdio.h>
 
-// CMocka libraries
-#include <stdarg.h>
-#include <stddef.h>
-#include <setjmp.h>
-#include <cmocka.h>
+// Unit testing library
+#include <check.h>
 
-static void test_get_free_client()
+// Wrapper for socket function
+int __wrap_socket(int domain, int type, int protocol)
 {
-  // Set correct answer from function
-  int expected_index = 0;
-
-  // Init clients array
-  client_t test_clients[MAX_NUM_CLI];
-  for(int x = 0; x < MAX_NUM_CLI; x++)
-  {
-    if(x == expected_index) test_clients[x].conn = -1;
-    else test_clients[x].conn = 123;
-  }
-
-  // Assign clients pointer to test clients array
-  clients = test_clients;
-
-
-  // Test get_free_client
-  assert_true(get_free_client() == expected_index);
+  return 11;
 }
 
-// Mocked read function
-int __wrap_read(int sock, void * buf, int buf_len)
+// Wrapper for write function
+int __wrap_write(int sock, void * buf, size_t buflen)
 {
-  // Assert parameter values
-  assert_int_equal(sock, (int) mock());     // sock parameter
-  assert_non_null(buf);                     // buf parameter
-  assert_int_equal(buf_len, (int) mock());  // buf_len parameter
-
-  // Send mocked request
-  strcpy((char *) buf, (char *) mock());
-
-  // Return number of returned characters
-  return (int) mock();
+  return buflen;
 }
 
-// Mocked write function
-int __wrap_write(int sock, void * buf, int buf_len)
+// Wrapper for read function
+int __wrap_read(int sock, void * buf, size_t buflen)
 {
-  // Assert parameter values
-  assert_int_equal(sock, (int) mock());     // sock parameter
-  assert_non_null(buf);                     // buf parameter
-  assert_int_equal(buf_len, (int) mock());  // buf_len parameter
+  // Create placeholder for fake message 
+  char * msg = "alx do thing please\0";
 
-  // Check mocked message
-  int result = strcmp((char *) buf, (char *) mock());
-  assert_int_equal(result, 0);
+  // Copy fake message into output buffer
+  strcpy(buf, msg);
 
-  return (int) mock();
+  // done 
+  return strlen(msg);
 }
 
+START_TEST (test_client_api_connect) {
+  ck_assert_int_eq(ipc_connect("rrr"), 0);
+} END_TEST
 
-static void test_handle_client_requests()
-{
-  // Set designated client index for testing
-  int expected_src_index  = 2;
-  int expected_dest_index = 4;
+int main() {
+  Suite *s;
+  TCase *tc;
 
-  // Init mocked clients array
-  client_t test_clients[MAX_NUM_CLI];
-  for(int x = 0; x < MAX_NUM_CLI; x++)
-  {
-    // Generate client name
-    char name[3];
-    sprintf(name, "%03d", x);
+  s = suite_create("loris core software");
+  tc = tcase_create("client api");
 
-    // Set client attributes
-    test_clients[x].conn = x;
-    strcpy(test_clients[x].name, name);
-  }
+  tcase_add_test(tc, test_client_api_connect);
+  suite_add_tcase(s, tc);
 
-  // Assign clients pointer to test clients array
-  clients = test_clients;
+  SRunner *runner = srunner_create(s);
 
-  // Create placeholder for mocked client names
-  char test_src_name[3], test_dest_name[3];
-  sprintf(test_src_name, "%03d", expected_src_index);
-  sprintf(test_dest_name, "%03d", expected_dest_index);
+  srunner_run_all(runner, CK_NORMAL);
+  int no_failed = srunner_ntests_failed(runner);
+  srunner_free(runner);
 
-  // Init mocked client
-  client_t test_client = test_clients[expected_src_index];
-
-  // Create placeholder for mocked request
-  char test_req[MAX_MSG_LEN];
-  sprintf(test_req, "%.3s hello friend", test_dest_name);
-
-  // Create placeholder for mocked message
-  char test_message[MAX_MSG_LEN];
-  sprintf(test_message, "%.3s hello friend", test_src_name);
-
-  // Setup expected values for mock read()
-  will_return(__wrap_read, test_clients[expected_src_index].conn);  // sock parameter
-  will_return(__wrap_read, MAX_MSG_LEN);                            // buf_len parameter
-  will_return(__wrap_read, test_req);                               // mocked request
-  will_return(__wrap_read, strlen(test_req));                       // return value
-
-  // Setup expected values for mock write()
-  will_return(__wrap_write, test_clients[expected_dest_index].conn); // sock parameter
-  will_return(__wrap_write, strlen(test_req));                      // buf_len parameter
-  will_return(__wrap_write, test_message);                          // mocked message
-  will_return(__wrap_write, strlen(test_message));                  // return value
-
-  // Run function
-  handle_client_requests(&test_client);
-}
-
-int main()
-{
-  const struct CMUnitTest tests[] = {
-    cmocka_unit_test(test_get_free_client),
-    cmocka_unit_test(test_handle_client_requests),
-  };
-
-  // done
-  return cmocka_run_group_tests(tests, NULL, NULL);
+  return (no_failed == 0) ? 0 : -1;
 }

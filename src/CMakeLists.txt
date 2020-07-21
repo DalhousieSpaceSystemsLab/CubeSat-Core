@@ -25,6 +25,7 @@ SET("SRC_LIB_IPC"
   "libipc/util/serialize.cc"
 )
 ADD_LIBRARY(${LIB_IPC} ${SRC_LIB_IPC})
+TARGET_COMPILE_OPTIONS(${LIB_IPC} PUBLIC "-g")
 
 # CMocka library
 SET("LIB_CMOCKA" "cmocka")
@@ -96,19 +97,20 @@ TARGET_LINK_LIBRARIES(${F_BIN_IPCD}
 )
 
 # Subsystem Server Template 
-SET("BIN_SUBSYS_SERVER" "subsys_server")
-SET("SRC_SUBSYS_SERVER" "subsys_server/server.c")
-ADD_EXECUTABLE(${BIN_SUBSYS_SERVER} ${SRC_SUBSYS_SERVER})
-TARGET_LINK_LIBRARIES(${BIN_SUBSYS_SERVER}
-  "pthread"
-  ${LIB_IPC}
-)
+# SET("BIN_SUBSYS_SERVER" "subsys_server")
+# SET("SRC_SUBSYS_SERVER" "subsys_server/server.c")
+# ADD_EXECUTABLE(${BIN_SUBSYS_SERVER} ${SRC_SUBSYS_SERVER})
+# TARGET_LINK_LIBRARIES(${BIN_SUBSYS_SERVER}
+#   "pthread"
+#   ${LIB_IPC}
+# )
 
 # Testing binary
-# SET("BIN_TEST" "test")
-# SET("SRC_TEST" "test.c")
-# ADD_EXECUTABLE(${BIN_TEST} ${SRC_TEST})
-# TARGET_LINK_LIBRARIES(${BIN_TEST}
-#  ${LIB_CMOCKA}
-#  "-Wl,--wrap=read,--wrap=write"
-# )
+SET("BIN_TEST" "test")
+SET("SRC_TEST" "test.c")
+ADD_EXECUTABLE(${BIN_TEST} ${SRC_TEST})
+TARGET_LINK_LIBRARIES(${BIN_TEST}
+  ${LIB_IPC}
+  "check"
+ "-Wl,--wrap=read,--wrap=write"
+)
