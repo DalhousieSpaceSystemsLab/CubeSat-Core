@@ -13,61 +13,71 @@ int main(int argc, char * argv[])
 {
   // Check argc
   // if(argc != 2)
-  if(argc < 2)
+  if(argc != 3)
   {
-    fprintf(stderr, "Invalid number of arguments\n Try: ./client <name>\n");
+    fprintf(stderr, "Invalid number of arguments\n Try: ./client <name> <read/write>\n");
     return -1;
   }
 
   // Create placeholder for client name
   char * name = argv[1];
+  char * rdwr = argv[2];
 
   // Check name length
-  if(strlen(name) > 3) // name is too long
+  if(strlen(name) != 3) // name is not correct length
   {
     fprintf(stderr, "name must be 3 characters long\n");
     return -1;
   }
 
-  // Connect to IPC daemon 
-  if(ipc_connect(name) == -1) // ipc_connect() failed 
+  // Connect to IPC system
+  if(ipc_connect(name) == -1) // ipc_connect() failed
   {
-    fprintf(stderr, "ipc_connect() failed\n");
-    return -1;
+    fprintf(stderr, "Failed to connect to the ipc\n");
+    return -1;  
   }
 
-  // Check if read argument provided 
-  if(argc == 3 && strcmp(argv[2], "1") == 0)
+  // Check if client reading or writing 
+  if(strcmp(rdwr, "read") == 0) // reading
   {
-    // Try a simple read/write from IPC 
+    // Create placeholder for incoming message 
     char msg[MAX_MSG_LEN];
+
+    // Read data 
     if(ipc_recv("*", msg, MAX_MSG_LEN) == -1) // ipc_recv() failed 
     {
       fprintf(stderr, "ipc_recv() failed\n");
       return -1;
     }
-    printf("Message received from IPC is %.*s\n", MAX_MSG_LEN, msg);
+
+    // Print data 
+    fprintf(stdout, "message received: %*s\n", MAX_MSG_LEN, msg);
+  } 
+  
+  else if(strcmp(rdwr, "write") == 0) // writing 
+  {
+    // Create placeholder for message to send 
+    char msg[MAX_MSG_LEN];
+
+    // Create message to send 
+    sprintf(msg, "how's it going?");
+
+    // Send message to other client 
+    if(ipc_send("rrr", msg, strlen(msg)) == -1) // ipc_send() failed 
+    {
+      fprintf(stderr, "ipc_send() failed\n");
+      return -1;
+    }
   }
 
-  char dest[NAME_LEN + 2]; // additional 2 bytes needed for appended "\n\0"
-  char msg_out[MAX_MSG_LEN];
-  printf("Enter the message destination: ");
-  fgets(dest, NAME_LEN + 2, stdin);
-  printf("Enter a message to send now: ");
-  fgets(msg_out, MAX_MSG_LEN, stdin);
-
-  if(ipc_send(dest, msg_out, MAX_MSG_LEN) == -1) // ipc_send() failed 
+  else // bad keyword 
   {
-    fprintf(stderr, "ipc_send() failed\n");
+    fprintf(stderr, "invalid setting. try ./client <name> <read/write>\n");
     return -1;
   }
 
-  // Disconnect from IPC daemon 
-  if(ipc_disconnect() == -1) // ipc_disconnect() failed 
-  {
-    fprintf(stderr, "ipc_disconnect() failed\n");
-    return -1;
-  }
+  // Close IPC 
+  ipc_disconnect();
 
   // done
   return 0;
