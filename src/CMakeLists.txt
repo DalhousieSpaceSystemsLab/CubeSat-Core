@@ -87,15 +87,6 @@ TARGET_LINK_LIBRARIES(${BIN_CLI_CPP}
 )
 TARGET_COMPILE_OPTIONS(${BIN_CLI_CPP} BEFORE PUBLIC "-g")
 
-# Functional style C - IPCD daemon
-SET("F_BIN_IPCD" "f_ipcd")
-SET("F_SRC_IPCD" "functional/immut.c")
-ADD_EXECUTABLE(${F_BIN_IPCD} ${F_SRC_IPCD})
-TARGET_LINK_LIBRARIES(${F_BIN_IPCD}
-  "pthread"
-  ${LIB_IPC}
-)
-
 # Subsystem Server Template 
 # SET("BIN_SUBSYS_SERVER" "subsys_server")
 # SET("SRC_SUBSYS_SERVER" "subsys_server/server.c")
