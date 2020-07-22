@@ -127,6 +127,7 @@ int ipc_send(char dest[NAME_LEN], char * msg, size_t msg_len)
 }
 
 // Receive message from another process
+// Returns number of bytes of data copied into buffer.
 int ipc_recv(char src[NAME_LEN], char * buffer, size_t buffer_len)
 {
   // Create placeholder for incoming message from IPC
@@ -153,11 +154,21 @@ int ipc_recv(char src[NAME_LEN], char * buffer, size_t buffer_len)
     }
   }
 
+  // Create placeholder for bytes copied into buffer 
+  int bytes_copied = 0;
+
   // Copy message into buffer
-  strncpy(buffer, msg, buffer_len);
+  for(int x = 0; x < buffer_len && x < bytes_read; x++) 
+  {
+    // Copy character into buffer 
+    buffer[x] = msg[x]; 
+
+    // Update bytes copied
+    bytes_copied++;
+  }
 
   // done
-  return 0;
+  return bytes_copied;
 }
 
 // Adds outgoing message to send queue
