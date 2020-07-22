@@ -86,16 +86,39 @@ int ipc_connect(char name[NAME_LEN])
 // Send message to another process
 int ipc_send(char dest[NAME_LEN], char * msg, size_t msg_len)
 {
-  // Create placeholder for message to be sent
-  char msg_final[3 + msg_len + 1];
-
-  // Create message with destination client fronted
-  sprintf(msg_final, "%.3s %*s\0", dest, msg_len, msg);
-
-  // Send final message to IPC
-  if(write(self.conn.tx, msg_final, 3 + msg_len) < 3 + msg_len) // write() failed
+  // Ensure message is long enough to contain a name 
+  if(msg_len < NAME_LEN)
   {
-    fprintf(stderr, "write() failed : ");
+    fprintf(stderr, "ignoring ipc_send request for message that is too short\n");
+    return -1;
+  }
+
+  // Create placeholder for message to send 
+  char msg_final[MAX_MSG_LEN];
+
+  // Copy destination name into final message 
+  strncpy(msg_final, dest, NAME_LEN);
+
+  // Add space between destination name and message 
+  msg_final[NAME_LEN] = ' ';
+
+  // Create placeholder for msg offset 
+  int offset = NAME_LEN + 1;
+
+  // Copy message into final message 
+  for(int x = offset; (x - offset) < msg_len; x++)
+  {
+    // Copy message character into final message 
+    msg_final[x] = msg[x - offset];
+  }
+
+  // Calculate final message length 
+  size_t msg_final_len = NAME_LEN + msg_len;
+
+  // Write message to ipc 
+  if(write(self.conn.tx, msg_final, msg_final_len) < msg_final_len) // write() failed 
+  {
+    perror("write() failed");
     return -1;
   }
 
