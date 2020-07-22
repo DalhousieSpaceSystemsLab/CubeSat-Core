@@ -61,6 +61,16 @@ static void * start_routing_client(void * params)
       continue;
     }
 
+    // Check if disconnect signal sent 
+    if(strncmp(msg, DISCONNECT_SIG, bytes_read) == 0) // disconnect signal sent 
+    {
+      // Close client
+      client_t_close((client_t *) params);
+
+      // Stop thread 
+      pthread_exit(NULL);
+    }
+
     // Create placeholder for destination name 
     char name[NAME_LEN];
 

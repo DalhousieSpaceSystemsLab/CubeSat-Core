@@ -255,6 +255,9 @@ int ipc_refresh()
 // Disconnect from IPC daemon and close client side interface
 int ipc_disconnect()
 {
+  // Send disconnect signal to IPC 
+  write(self.conn.tx, DISCONNECT_SIG, strlen(DISCONNECT_SIG));
+
   // Close connection socket to the IPC
   client_t_close(&self);
 

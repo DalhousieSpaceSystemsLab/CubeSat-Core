@@ -39,6 +39,10 @@ int conn_t_close(conn_t * conn)
   if(conn->rx != -1) close(conn->rx);
   if(conn->tx != -1) close(conn->tx);
 
+  // Reset connections 
+  conn->rx = -1;
+  conn->tx = -1;
+
   // done 
   return 0;
 }
