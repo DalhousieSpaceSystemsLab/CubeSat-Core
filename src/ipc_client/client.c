@@ -44,14 +44,15 @@ int main(int argc, char * argv[])
     char msg[MAX_MSG_LEN];
 
     // Read data 
-    if(ipc_recv("*", msg, MAX_MSG_LEN) == -1) // ipc_recv() failed 
+    int bytes_read = -1;
+    if((bytes_read = ipc_recv("*", msg, MAX_MSG_LEN)) == -1) // ipc_recv() failed 
     {
       fprintf(stderr, "ipc_recv() failed\n");
       return -1;
     }
 
     // Print data 
-    fprintf(stdout, "message received: %*s\n", MAX_MSG_LEN, msg);
+    printf("message received: %s\n", msg);
   } 
   
   else if(strcmp(rdwr, "write") == 0) // writing 
