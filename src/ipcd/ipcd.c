@@ -82,6 +82,9 @@ static void * start_routing_client(void * params)
         // Copy source client name into formatted message 
         strncpy(fmt_msg, client.name, 3);
 
+        // Add space between source client name and message 
+        fmt_msg[NAME_LEN] = ' ';
+
         // Copy rest of message into formatted message 
         for(int y = NAME_LEN + 1; y < bytes_read; y++) fmt_msg[y] = msg[y];
 
