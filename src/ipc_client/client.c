@@ -77,6 +77,9 @@ int main(int argc, char * argv[])
     return -1;
   }
 
+  printf("presss [ENTER] to quit\n");
+  fgetc(stdin);
+
   // Close IPC 
   ipc_disconnect();
 
