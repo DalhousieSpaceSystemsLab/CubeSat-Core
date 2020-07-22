@@ -23,6 +23,7 @@ SET("SRC_LIB_IPC"
   "libipc/client_api/client_api.c" 
   "libipc/client_api/client_api.cc"
   "libipc/util/serialize.cc"
+  "libipc/ipcd/ipcd.c"
 )
 ADD_LIBRARY(${LIB_IPC} ${SRC_LIB_IPC})
 TARGET_COMPILE_OPTIONS(${LIB_IPC} PUBLIC "-g")
@@ -36,7 +37,6 @@ ADD_LIBRARY(${LIB_CMOCKA} STATIC ${SRC_CMOCKA})
 SET("BIN_IPCD" "ipcd")
 SET("SRC_IPCD"
   "ipcd/main.c"
-  "ipcd/ipcd.c"
 )
 ADD_EXECUTABLE(${BIN_IPCD} ${SRC_IPCD})
 TARGET_LINK_LIBRARIES(${BIN_IPCD}
