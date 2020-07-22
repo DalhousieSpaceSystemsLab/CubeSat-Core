@@ -88,8 +88,11 @@ static void * start_routing_client(void * params)
         // Copy rest of message into formatted message 
         for(int y = NAME_LEN + 1; y < bytes_read; y++) fmt_msg[y] = msg[y];
 
+        // Calculate formatted message length 
+        int fmt_msg_len = NAME_LEN + 1 + bytes_read;
+
         // Send message to destination client 
-        if(write(clients[x].conn.rx, fmt_msg, bytes_read) < bytes_read) // write() failed
+        if(write(clients[x].conn.rx, fmt_msg, fmt_msg_len) < fmt_msg_len) // write() failed
         {
           perror("write() failed : start_routing_client() failed");
           pthread_exit(NULL);
