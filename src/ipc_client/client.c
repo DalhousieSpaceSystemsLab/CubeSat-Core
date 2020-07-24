@@ -40,34 +40,52 @@ int main(int argc, char * argv[])
   // Check if client reading or writing 
   if(strcmp(rdwr, "read") == 0) // reading
   {
-    // Create placeholder for incoming message 
-    char msg[MAX_MSG_LEN];
-
-    // Read data 
-    int bytes_read = -1;
-    if((bytes_read = ipc_recv("*", msg, MAX_MSG_LEN)) == -1) // ipc_recv() failed 
+    for(;;)
     {
-      fprintf(stderr, "ipc_recv() failed\n");
-      return -1;
-    }
+      // Create placeholder for incoming message 
+      char msg[MAX_MSG_LEN];
 
-    // Print data 
-    printf("message received: %s\n", msg);
+      // Read data 
+      int bytes_read = -1;
+      if((bytes_read = ipc_recv("*", msg, MAX_MSG_LEN)) == -1) // ipc_recv() failed 
+      {
+        fprintf(stderr, "ipc_recv() failed\n");
+        return -1;
+      }
+
+      // Print data 
+      printf("message received: %s\n", msg);
+    }
   } 
   
   else if(strcmp(rdwr, "write") == 0) // writing 
   {
-    // Create placeholder for message to send 
-    char msg[MAX_MSG_LEN];
-
-    // Create message to send 
-    sprintf(msg, "how's it going?");
-
-    // Send message to other client 
-    if(ipc_send("rrr", msg, strlen(msg)) == -1) // ipc_send() failed 
+    for(;;)
     {
-      fprintf(stderr, "ipc_send() failed\n");
-      return -1;
+      // Create placeholders for message to send 
+      char dest[NAME_LEN + 2];
+      char msg[MAX_MSG_LEN + 2];
+
+      // Ask user for message and destination 
+      printf("Enter destination's name: ");
+      fgets(dest, NAME_LEN + 2, stdin);
+
+      // Ask user for message 
+      printf("Enter message: ");
+      fgets(msg, MAX_MSG_LEN + 2, stdin);
+
+      // Check if message 'quit'
+      if(strcmp(msg, "quit") == 0) // user is asking to quit 
+      {
+        break;
+      }
+
+      // Send message to other client 
+      if(ipc_send(dest, msg, strlen(msg)) == -1) // ipc_send() failed 
+      {
+        fprintf(stderr, "ipc_send() failed\n");
+        return -1;
+      }
     }
   }
 
