@@ -64,7 +64,7 @@ And watch the magic happen :) You'll find the compiled binaries in the `build/` 
   * Initialize the client side IPC interface and connect to the IPC daemon
   * Necessary to run before using any other IPC related functions
 * Arguments
-  * name: 3 character name used to register you on the IPC network
+  * `name`: 3 character name used to register you on the IPC network
 * Returns
   * On success, 0 is returned
   * On error, -1 is returned
@@ -73,9 +73,9 @@ And watch the magic happen :) You'll find the compiled binaries in the `build/` 
 * Purpose
   * Send message to another process registered on the IPC network
 * Arguments
-  * dest: 3 character name of message recipient
-  * msg: character array pointing to message desired to be sent 
-  * msg_len: length of message pointed by msg
+  * `dest`: 3 character name of message recipient
+  * `msg`: character array pointing to message desired to be sent 
+  * `msg_len`: length of message pointed by `msg`
 * Returns
   * On success, 0 is returned
   * On error, -1 is returned
@@ -84,10 +84,10 @@ And watch the magic happen :) You'll find the compiled binaries in the `build/` 
 * Purpose
   * Receive an incoming message from the IPC network
 * Arguments
-  * src: filter incoming message from IPC network. 
+  * `src`: filter incoming message from IPC network. 
          use '*' to receive message from any sender.
-  * buffer: points to array where incoming message will be stored upon receit.
-  * buffer_len: maximum length of data which can be received and copied into buffer
+  * `buffer`: points to array where incoming message will be stored upon receit.
+  * `buffer_len`: maximum length of data which can be received and copied into `buffer`
 * Returns
   * On success, the number of bytes copied into buffer is returned
   * On error, -1 is returned
