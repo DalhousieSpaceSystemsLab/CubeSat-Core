@@ -9,8 +9,6 @@
 // Project headers
 #include "ipc/ipcd.h"
 
-// TODO: make ipcd part of the libipc 
-
 ///////////////////////
 //  Local Variables  //
 ///////////////////////
