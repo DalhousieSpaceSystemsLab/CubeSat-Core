@@ -216,21 +216,21 @@ int ipc_qrecv(char src[NAME_LEN], char * buffer, size_t buffer_len)
 // Simultaneously reads/writes queued data
 int ipc_refresh()
 {
-    // Read data
+  // Read data
   if(read(self.conn.rx, qrecv_buf, MAX_MSG_LEN) <= 0) // read() failed 
+  {
+    // Check if read() should have blocked 
+    if(errno == EWOULDBLOCK || errno == EAGAIN) // read() should have blocked
     {
-      // Check if read() should have blocked 
-      if(errno == EWOULDBLOCK || errno == EAGAIN) // read() should have blocked
-      {
-        // no issue, just continue 
-      }
-
-      else // read() really failed  
-      {
-        perror("read() failed");
-        return -1;
-      }
+      // no issue, just continue 
     }
+
+    else // read() really failed  
+    {
+      perror("read() failed");
+      return -1;
+    }
+  }
 
   // Check if qsend buffers valid
   if(qsend_msg_len > 0) // qsend is good to go
@@ -242,6 +242,9 @@ int ipc_refresh()
       return -1;
     }
   }
+
+  // Reset qsend message length 
+  qsend_msg_len = -1;
 
   // done
   return 0;
