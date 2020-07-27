@@ -9,6 +9,10 @@
 // Project headers
 #include "ipc/client_api.h"
 
+// Standard C libraries 
+#include <sys/select.h>
+#include <sys/time.h>
+
 int main(int argc, char * argv[])
 {
   // Check argc
@@ -85,6 +89,84 @@ int main(int argc, char * argv[])
       {
         fprintf(stderr, "ipc_send() failed\n");
         return -1;
+      }
+    }
+  }
+
+  else if(strcmp(rdwr, "async") == 0) // async communication
+  {
+    // Prompt user 
+    printf("Enter message: ");
+    fflush(stdout);
+    
+    for(;;)
+    {
+      // Create placeholders for select function 
+      fd_set readstdin;
+      struct timeval tv;
+
+      // Reset select placeholders
+      FD_ZERO(&readstdin);
+      FD_SET(fileno(stdin), &readstdin);
+
+      // Set user read timeout 
+      tv.tv_sec = 1;
+      tv.tv_usec = 0;
+
+      // Check for input 
+      int readable = select(fileno(stdin)+1, &readstdin, NULL, NULL, &tv);
+
+      // Check if user placed an input 
+      if(readable == -1) // select() failed 
+      {
+        fprintf(stderr, "select() failed\n");
+        return -1;
+      }
+
+      else if(readable == 0) // timeout 
+      {
+        // printf("timeout!\n");
+      }
+
+      else // input detected 
+      {
+        // Create placeholder for user's command 
+        char cmd[MAX_MSG_LEN + 2];
+
+        // Read incoming data 
+        fgets(cmd, MAX_MSG_LEN + 2, stdin);
+
+        // Create placeholders for destination + msg 
+        char dest[NAME_LEN];
+        char msg[MAX_MSG_LEN];
+
+        // Parse command into destination + msg 
+        strncpy(dest, cmd, 3);
+        for(int x = (NAME_LEN+1); x < MAX_MSG_LEN; x++) 
+        {
+          // Check if newline character 
+          if(cmd[x] == '\n') // end of command 
+          {
+            // Null terminate string 
+            msg[x-(NAME_LEN+1)] = '\0';
+            
+            // done
+            break;
+          }
+
+          // Copy character into msg 
+          msg[x-(NAME_LEN+1)] = cmd[x];
+        }
+
+        // Print destination and message 
+        printf("dest: ");
+        for(int x = 0; x < NAME_LEN; x++) printf("%c", dest[x]);
+        printf("\n");
+        printf("msg: %s\n", msg);
+
+        // Prompt user again 
+        printf("Enter message: ");
+        fflush(stdout);
       }
     }
   }
