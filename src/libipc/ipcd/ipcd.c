@@ -1,9 +1,10 @@
-/*
+/**
 * ipcd.c
 *
 *   purpose: act a middleman between processes to complete communication requests
 *   author: alex amellal
 *
+* TODO: Add disconnect_client function to standardize the disconnection process
 */
 
 // Project headers
