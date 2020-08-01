@@ -259,6 +259,11 @@ int ipc_refresh()
     // }
   }
 
+  // Reset read queue placeholders 
+  memset(qrecv_src, 0, NAME_LEN);
+  qrecv_buf = NULL;
+  qrecv_buf_len = -1;
+
   // Check if qsend buffers valid
   if(qsend_msg_len > 0) // qsend is good to go
   {
@@ -270,7 +275,9 @@ int ipc_refresh()
     }
   }
 
-  // Reset qsend message length 
+  // Reset qsend placeholders
+  memset(qsend_dest, 0, NAME_LEN);
+  memset(qsend_msg, 0, MAX_MSG_LEN);
   qsend_msg_len = -1;
 
   // done
