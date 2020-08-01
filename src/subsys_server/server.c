@@ -14,7 +14,8 @@ int main()
 }
 
 
-int server_init(){
+int server_init()
+{
   if(ipc_connect(name) == -1) // ipc_connect()
   {
     fprintf(stderr, "ipc_connect() failed\n");
