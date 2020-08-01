@@ -268,9 +268,9 @@ int ipc_refresh()
   if(qsend_msg_len > 0) // qsend is good to go
   {
     // Send data 
-    if(write(self.conn.tx, qsend_msg, MAX_MSG_LEN) < MAX_MSG_LEN) // send() failed 
+    if(ipc_send(qsend_dest, qsend_msg, qsend_msg_len)) // send() failed 
     {
-      perror("send() failed");
+      fprintf(stderr, "ipc_send() failed\n");
       return -1;
     }
   }
