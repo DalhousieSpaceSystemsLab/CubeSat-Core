@@ -141,6 +141,14 @@ int main(int argc, char * argv[])
         }
       }
 
+      else if(read[0] == 'n' && write[0] == 'n') // quit 
+      {
+        ipc_disconnect();
+
+        // quit
+        return 0;
+      }
+
       // Refresh IPC queue 
       if(ipc_refresh() == -1) // ipc_refresh() failed 
       {
