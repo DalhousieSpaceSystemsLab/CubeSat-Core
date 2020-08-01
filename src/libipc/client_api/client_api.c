@@ -226,20 +226,14 @@ int ipc_refresh()
     if(read(self.conn.rx, qrecv_buf, (qrecv_buf_len > MAX_MSG_LEN ? MAX_MSG_LEN : qrecv_buf_len)) <= 0) // read() failed 
     {
       // Check if read() should have blocked 
-    // Check if read() should have blocked 
-      // Check if read() should have blocked 
       if(errno == EWOULDBLOCK || errno == EAGAIN) // read() should have blocked
       {
-        // no issue, just continue 
-      // no issue, just continue 
         // no issue, just continue 
 
         // Set buffer value to 0 
         memset(qrecv_buf, 0, qrecv_buf_len);
       }
 
-      else // read() really failed  
-    else // read() really failed  
       else // read() really failed  
       {
         perror("read() failed");
