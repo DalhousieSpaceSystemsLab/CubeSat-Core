@@ -17,7 +17,7 @@ static char qsend_msg[MAX_MSG_LEN]; // send queue message placeholder
 static size_t qsend_msg_len = -1;   // send queue message length
 
 static char qrecv_src[NAME_LEN];    // receive queue source name filter 
-static char qrecv_buf[MAX_MSG_LEN]; // receive queue message placeholder 
+static char * qrecv_buf = NULL;     // receive queue message placeholder 
 
 // Initialize client API and connect to IPC daemon.
 int ipc_connect(char name[NAME_LEN])
@@ -200,14 +200,16 @@ int ipc_qsend(char dest[NAME_LEN], char * msg, size_t msg_len)
 }
 
 // Adds incoming message request to recv queue
-int ipc_qrecv(char src[NAME_LEN], char * buffer, size_t buffer_len)
+int ipc_qrecv(char src[NAME_LEN], char * buf, size_t buf_len)
 {
   // Copy src filter into queue 
   for(int x = 0; x < NAME_LEN; x++) qrecv_src[x] = src[x];
 
-  // Copy buffer data into queue 
-  if(buffer_len > MAX_MSG_LEN) strncpy(qrecv_buf, buffer, MAX_MSG_LEN);
-  else strncpy(qrecv_src, buffer, buffer_len);
+  // Set receive queue buffer pointer 
+  qrecv_buf = buf;
+
+  // Set receive queue buffer length 
+  qrecv_buf_len = buf_len;
 
   // done
   return 0;
@@ -216,20 +218,50 @@ int ipc_qrecv(char src[NAME_LEN], char * buffer, size_t buffer_len)
 // Simultaneously reads/writes queued data
 int ipc_refresh()
 {
-  // Read data
-  if(read(self.conn.rx, qrecv_buf, MAX_MSG_LEN) <= 0) // read() failed 
+  // Check if read queued 
+  if(qrecv_buf != NULL)
   {
+    // Read data
+    if(read(self.conn.rx, qrecv_buf, (qrecv_buf_len > MAX_MSG_LEN ? MAX_MSG_LEN : qrecv_buf_len)) <= 0) // read() failed 
+    {
+      // Check if read() should have blocked 
     // Check if read() should have blocked 
-    if(errno == EWOULDBLOCK || errno == EAGAIN) // read() should have blocked
-    {
+      // Check if read() should have blocked 
+      if(errno == EWOULDBLOCK || errno == EAGAIN) // read() should have blocked
+      {
+        // no issue, just continue 
       // no issue, just continue 
-    }
+        // no issue, just continue 
 
+        // Set buffer value to 0 
+        memset(qrecv_buf, 0, qrecv_buf_len);
+      }
+
+      else // read() really failed  
     else // read() really failed  
-    {
-      perror("read() failed");
-      return -1;
+      else // read() really failed  
+      {
+        perror("read() failed");
+        return -1;
+      }
     }
+    // int bytes_read = -1;
+    // if((bytes_read = ipc_recv(qrecv_src, qrecv_buf, qrecv_buf_len)) <= 0) // ipc_recv() failed 
+    // {
+    //   if(bytes_read == 0) // nothing received 
+    //   {
+    //     // Set buffer to 0
+    //     memset(qrecv_buf, 0, qrecv_buf_len);
+
+    //     // continue
+    //   }
+
+    //   else 
+    //   {
+    //     fprintf(stderr, "ipc_recv() failed\n");
+    //     return -1;
+    //   }
+    // }
   }
 
   // Check if qsend buffers valid
