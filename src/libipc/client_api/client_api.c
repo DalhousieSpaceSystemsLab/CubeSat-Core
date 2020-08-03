@@ -8,6 +8,7 @@
 
 // Project headers
 #include "ipc/client_api.h"
+#include "util/private.h"
 
 // Private variables
 static client_t self;               // self-referential placeholder for this client
