@@ -114,7 +114,7 @@ int ipc_send(char dest[NAME_LEN], char * msg, size_t msg_len)
   }
 
   // Calculate final message length 
-  size_t msg_final_len = NAME_LEN + msg_len;
+  size_t msg_final_len = NAME_LEN + 1 + msg_len;
 
   // Write message to ipc 
   if(write(self.conn.tx, msg_final, msg_final_len) < msg_final_len) // write() failed 
