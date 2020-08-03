@@ -11,15 +11,15 @@
 #include "util/private.h"
 
 // Private variables
-static client_t self;               // self-referential placeholder for this client
+private client_t self;               // self-referential placeholder for this client
 
-static char qsend_dest[NAME_LEN];   // send queue destination name 
-static char qsend_msg[MAX_MSG_LEN]; // send queue message placeholder
-static int  qsend_msg_len = -1;   // send queue message length
+private char qsend_dest[NAME_LEN];   // send queue destination name 
+private char qsend_msg[MAX_MSG_LEN]; // send queue message placeholder
+private int  qsend_msg_len = -1;     // send queue message length
 
-static char qrecv_src[NAME_LEN];    // receive queue source name filter 
-static char * qrecv_buf = NULL;     // receive queue message placeholder 
-static int  qrecv_buf_len = -1;   // receive queue placeholder length
+private char qrecv_src[NAME_LEN];    // receive queue source name filter 
+private char * qrecv_buf = NULL;     // receive queue message placeholder 
+private int  qrecv_buf_len = -1;     // receive queue placeholder length
 
 // Initialize client API and connect to IPC daemon.
 int ipc_connect(char name[NAME_LEN])

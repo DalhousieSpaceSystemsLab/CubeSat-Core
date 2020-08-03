@@ -15,18 +15,18 @@
 ///////////////////////
 
 // Placeholder for connected clients
-static client_t clients[MAX_NUM_CLI];
+private client_t clients[MAX_NUM_CLI];
 
 // Placeholder for incoming connection socket
-static int sock_ = -1;
-static immut(int) sock = &sock_;
+private int sock_ = -1;
+private immut(int) sock = &sock_;
 
 //////////////////////
 //  Private Methods //
 //////////////////////
 
 // Thread which routes messages for an individual client 
-static void * start_routing_client(void * params)
+private void * start_routing_client(void * params)
 {
   // Create placeholder for client parameter 
   client_t client = *((client_t *) params);
@@ -112,7 +112,7 @@ static void * start_routing_client(void * params)
 }
 
 // Thread which processes incoming client connections
-static void * start_accepting()
+private void * start_accepting()
 {
   for(;;)
   {
