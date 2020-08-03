@@ -98,10 +98,17 @@ TARGET_COMPILE_OPTIONS(${BIN_CLI_CPP} BEFORE PUBLIC "-g")
 
 # Testing binary
 SET("BIN_TEST" "test")
-SET("SRC_TEST" "test.c")
+SET("SRC_TEST" 
+  "tests/test_wrappers.c"
+  "tests/test_client_api.c"
+  "tests/test.c"
+)
 ADD_EXECUTABLE(${BIN_TEST} ${SRC_TEST})
 TARGET_LINK_LIBRARIES(${BIN_TEST}
   ${LIB_IPC}
-  "check"
- "-Wl,--wrap=read,--wrap=write"
+  ${LIB_CMOCKA}
+ "-Wl,--wrap=read,--wrap=write,--wrap=connect,--wrap=socket"
+)
+TARGET_COMPILE_OPTIONS(${BIN_TEST}
+  BEFORE PUBLIC "-g"
 )
