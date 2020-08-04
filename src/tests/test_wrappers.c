@@ -37,7 +37,7 @@ int __wrap_read(int sock, void * buf, size_t buflen)
 {
   assert_int_equal(sock, mock());
   assert_non_null(buf);
-  assert_string_equal(buf, mock());
+  memcpy(buf, (void *) mock(), mock());
   assert_int_equal(buflen, mock());
 
   return mock();
