@@ -82,3 +82,28 @@ void test_client_api_send()
   // Run ipc_send
   assert_int_equal(ipc_send((char *) dest, (char *) msg, msg_len), 0);
 }
+
+void test_client_api_recv()
+{
+  // Create placeholders for wrappers 
+  const char msg_in[] = "pay take picture";
+  const size_t msg_in_len = 16;
+
+  const char expect_msg = "take picture";
+  const size_t expect_msg_len = 12;
+
+  // Configure wrappers //
+  // read() from IPC 
+  will_return(__wrap_read, self_conn_rx);
+  will_return(__wrap_read, msg_in);
+  will_return(__wrap_read, msg_in_len);
+  will_return(__wrap_read, MAX_MSG_LEN);
+  will_return(__wrap_read, msg_in_len);
+
+  // Create placeholder for ipc_recv 
+  char msg[MAX_MSG_LEN];
+
+  // Run ipc_recv & check result
+  assert_int_equal(ipc_recv("*", msg, MAX_MSG_LEN), expect_msg_len);
+  assert_memory_equal(msg, expect_msg, expect_msg_len);
+}

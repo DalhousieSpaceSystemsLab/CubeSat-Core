@@ -23,5 +23,6 @@ int __wrap_read(int sock, void * buf, size_t buflen);
 // Test IPC client API
 void test_client_api_connect();
 void test_client_api_send();
+void test_client_api_recv();
 
 #endif // CUBESAT_CORE_INCLUDE_IPC_TESTS_TEST_CLIENT_API_H
