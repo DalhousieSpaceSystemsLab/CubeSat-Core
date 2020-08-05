@@ -1,6 +1,0 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
-PROJECT("CubeSat-Core")
-
-ADD_SUBDIRECTORY("internal-messaging")
-ADD_SUBDIRECTORY("core/src")
-ADD_SUBDIRECTORY("emulation/src")

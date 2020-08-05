@@ -1,1 +1,0 @@
-GET_BATTERY,Returns the current battery level aboard the cubesat

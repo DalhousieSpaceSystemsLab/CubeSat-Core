@@ -25,3 +25,10 @@ core/src/core
 emulation/src/emulation
 build/core
 build/emulation
+build/client
+build/client_cpp
+build/ipc
+build/test
+build/client_old
+*.out.*
+build/*
