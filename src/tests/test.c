@@ -1,3 +1,11 @@
+/*
+* tests.c
+*
+*   purpose: Unit testing using cmocka library for core software.
+*   author: alex amellal
+*
+*/
+
 #include "ipc/tests.h"
 
 int main() 

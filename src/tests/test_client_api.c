@@ -1,3 +1,11 @@
+/*
+* test_client_api.c
+*
+*   purpose: Unit tests for the IPC client api.
+*   author: alex amellal
+*
+*/
+
 // Project headers 
 #include "ipc/tests.h"
 

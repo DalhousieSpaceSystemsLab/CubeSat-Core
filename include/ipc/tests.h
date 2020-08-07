@@ -1,3 +1,11 @@
+/*
+* tests.h
+*
+*   purpose: Unit testing using cmocka library for core software.
+*   author: alex amellal
+*
+*/
+
 #ifndef CUBESAT_CORE_INCLUDE_IPC_TESTS_TEST_CLIENT_API_H
 #define CUBESAT_CORE_INCLUDE_IPC_TESTS_TEST_CLIENT_API_H
 
