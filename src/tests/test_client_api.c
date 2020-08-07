@@ -89,7 +89,7 @@ void test_client_api_recv()
   const char msg_in[] = "pay take picture";
   const size_t msg_in_len = 16;
 
-  const char expect_msg = "take picture";
+  const char expect_msg[] = "take picture";
   const size_t expect_msg_len = 12;
 
   // Configure wrappers //
