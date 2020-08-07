@@ -107,3 +107,52 @@ void test_client_api_recv()
   assert_int_equal(ipc_recv("*", msg, MAX_MSG_LEN), expect_msg_len);
   assert_memory_equal(msg, expect_msg, expect_msg_len);
 }
+
+void test_client_api_refresh()
+{
+  // Create placeholders 
+  const char dest[3] = "trx";
+  const char msg_send[] = "send image.jpg";
+  const size_t msg_send_len = 14;
+  
+  const char msg_send_cmd[] = "trx send image.jpg";
+  const size_t msg_send_cmd_len = 18;
+
+  const char msg_recv[] = "turn camera off";
+  const size_t msg_recv_len = 15;
+
+  // Configure wrappers //
+  // read() 
+  will_return(__wrap_read, self_conn_rx);
+  will_return(__wrap_read, msg_recv);
+  will_return(__wrap_read, msg_recv_len);
+  will_return(__wrap_read, MAX_MSG_LEN);
+  will_return(__wrap_read, msg_recv_len);
+
+  // write()
+  will_return(__wrap_write, self_conn_tx);
+  will_return(__wrap_write, msg_send_cmd);
+  will_return(__wrap_write, msg_send_cmd_len);
+  will_return(__wrap_write, msg_send_cmd_len);
+
+  // Queue message to send/receive
+  char msg[MAX_MSG_LEN]; 
+  assert_int_equal(ipc_qrecv("*", (char *) msg, MAX_MSG_LEN), 0);
+  assert_int_equal(ipc_qsend((char *) dest, (char *) msg_send, msg_send_len), 0);
+
+  // Run ipc_refresh 
+  assert_int_equal(ipc_refresh(), 0);
+}
+
+void test_client_api_disconnect()
+{
+  // Configure wrappers //
+  // write() 
+  will_return(__wrap_write, self_conn_tx);
+  will_return(__wrap_write, DISCONNECT_SIG);
+  will_return(__wrap_write, strlen(DISCONNECT_SIG));
+  will_return(__wrap_write, strlen(DISCONNECT_SIG));
+
+  // Run ipc_disconnect 
+  assert_int_equal(ipc_disconnect(), 0);
+}

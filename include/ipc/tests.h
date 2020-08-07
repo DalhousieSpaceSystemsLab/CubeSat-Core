@@ -24,5 +24,7 @@ int __wrap_read(int sock, void * buf, size_t buflen);
 void test_client_api_connect();
 void test_client_api_send();
 void test_client_api_recv();
+void test_client_api_refresh();
+void test_client_api_disconnect();
 
 #endif // CUBESAT_CORE_INCLUDE_IPC_TESTS_TEST_CLIENT_API_H
