@@ -155,14 +155,23 @@ int ipc_recv(char src[NAME_LEN], char * buffer, size_t buffer_len)
     }
   }
 
+  // Create placeholder for source name and message 
+  char name[NAME_LEN];
+  char msg_final[MAX_MSG_LEN];
+  size_t msg_final_len = 0;
+
+  // Separate message from source name 
+  strncpy(name, msg, NAME_LEN);
+  for(int x = NAME_LEN + 1; x < bytes_read; x++, msg_final_len++) msg_final[x-(NAME_LEN+1)] = msg[x];
+
   // Create placeholder for bytes copied into buffer 
   int bytes_copied = 0;
 
   // Copy message into buffer
-  for(int x = 0; x < buffer_len && x < bytes_read; x++) 
+  for(int x = 0; x < buffer_len && x < msg_final_len; x++) 
   {
     // Copy character into buffer 
-    buffer[x] = msg[x]; 
+    buffer[x] = msg_final[x]; 
 
     // Update bytes copied
     bytes_copied++;
