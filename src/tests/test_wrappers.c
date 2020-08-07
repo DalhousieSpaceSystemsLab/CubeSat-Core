@@ -1,3 +1,11 @@
+/*
+* tests_wrappers.c
+*
+*   purpose: Provide function wrappers for unit testing on functions with side effects.
+*   author: alex amellal
+*
+*/
+
 #include "ipc/tests.h"
 
 // Wrapper for socket function
