@@ -101,13 +101,14 @@ SET("BIN_TEST" "test")
 SET("SRC_TEST" 
   "tests/test_wrappers.c"
   "tests/test_client_api.c"
+  "tests/test_ipcd.c"
   "tests/test.c"
 )
 ADD_EXECUTABLE(${BIN_TEST} ${SRC_TEST})
 TARGET_LINK_LIBRARIES(${BIN_TEST}
   ${LIB_IPC}
   ${LIB_CMOCKA}
- "-Wl,--wrap=read,--wrap=write,--wrap=connect,--wrap=socket"
+ "-Wl,--wrap=read,--wrap=write,--wrap=close,--wrap=connect,--wrap=socket,--wrap=unlink,--wrap=bind,--wrap=listen,--wrap=pthread_create,--wrap=pthread_detach"
 )
 TARGET_COMPILE_OPTIONS(${BIN_TEST}
   BEFORE PUBLIC "-g"

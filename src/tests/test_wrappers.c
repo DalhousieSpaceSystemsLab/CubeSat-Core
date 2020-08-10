@@ -54,3 +54,54 @@ int __wrap_read(int sock, void * buf, size_t buflen)
 
   return mock();
 }
+
+// Wrapper for close function 
+int __wrap_close(int sockfd)
+{
+  assert_int_equal(sockfd, mock());
+
+  return mock();
+}
+
+// Wrapper for unlink function 
+int __wrap_unlink(const char path[])
+{
+  assert_string_equal(path, mock());
+
+  return (int) mock();
+}
+
+// Wrapper for bind function 
+int __wrap_bind(int sockfd, struct sockaddr * address, socklen_t address_len)
+{
+  assert_int_equal(sockfd, mock());
+  assert_memory_equal(address, mock(), sizeof(struct sockaddr));
+  assert_int_equal(address_len, mock());
+
+  return mock();
+}
+
+// Wrapper for listen function 
+int __wrap_listen(int sockfd, int n)
+{
+  assert_int_equal(sockfd, mock());
+  assert_int_equal(n, mock());
+
+  return mock();
+}
+
+// Wrapper for pthread_create function 
+int __wrap_pthread_create(pthread_t * id, const pthread_attr_t *attr, void *(*start_routine) (void *), void * arg)
+{
+  assert_non_null(id);
+  assert_non_null(start_routine);
+  assert_memory_equal(arg, mock(), mock());
+
+  return mock();
+}
+
+// Wrapper for pthread_detach function 
+int __wrap_pthread_detach(pthread_t id)
+{
+  return mock();
+}

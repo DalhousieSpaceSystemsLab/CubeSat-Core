@@ -13,6 +13,9 @@
 #include "ipc/settings.h"
 #include "ipc/client_api.h"
 
+// IPC daemon
+#include "ipc/ipcd.h"
+
 // CMocka libraries
 #include <stdarg.h>
 #include <stddef.h>
@@ -27,6 +30,11 @@ int __wrap_socket(int domain, int type, int protocol);
 int __wrap_connect(int sock, struct sockaddr * address, socklen_t address_len);
 int __wrap_write(int sock, void * buf, size_t buflen);
 int __wrap_read(int sock, void * buf, size_t buflen);
+int __wrap_close(int sockfd);
+int __wrap_unlink(const char path[]);
+int __wrap_bind(int sockfd, struct sockaddr * address, socklen_t address_len);
+int __wrap_listen(int sockfd, int n);
+
 
 // Test IPC client API
 void test_client_api_connect();
@@ -34,5 +42,9 @@ void test_client_api_send();
 void test_client_api_recv();
 void test_client_api_refresh();
 void test_client_api_disconnect();
+
+// Test IPC daemon 
+void test_ipcd_init();
+void test_ipcd_close();
 
 #endif // CUBESAT_CORE_INCLUDE_IPC_TESTS_TEST_CLIENT_API_H
