@@ -161,6 +161,14 @@ void test_client_api_disconnect()
   will_return(__wrap_write, strlen(DISCONNECT_SIG));
   will_return(__wrap_write, strlen(DISCONNECT_SIG));
 
+  // close(self_conn_rx)
+  will_return(__wrap_close, self_conn_rx);
+  will_return(__wrap_close, 0);
+
+  // close(self_conn_rx)
+  will_return(__wrap_close, self_conn_tx);
+  will_return(__wrap_close, 0);
+
   // Run ipc_disconnect 
   assert_int_equal(ipc_disconnect(), 0);
 }
