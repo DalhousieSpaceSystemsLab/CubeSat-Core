@@ -7,8 +7,17 @@
 */
 
 #include "ipc/tests.h"
+#include "../libipc/ipcd/ipcd.c"
 
 private const int accept_sock = 11;
+ 
+private const client_t expected_client = {
+  .conn = {
+    .rx = 22,
+    .tx = 23,
+  },
+  .name = "pwr"
+};
 
 private const struct sockaddr_un address = {
     .sun_family = AF_UNIX,
@@ -61,4 +70,60 @@ void test_ipcd_close()
 
   // run function 
   assert_int_equal(ipcd_close(), 0);
+}
+
+void test_ipcd_start_accepting()
+{
+  // Configure wrappers //
+
+  // Connect first time //
+  // accept() -> new client 
+  will_return(__wrap_accept, accept_sock);
+  will_return(__wrap_accept, NULL);
+  will_return(__wrap_accept, NULL);
+  will_return(__wrap_accept, expected_client.conn.rx);
+
+  // read() -> get client name 
+  will_return(__wrap_read, expected_client.conn.rx);
+  will_return(__wrap_read, expected_client.name);
+  will_return(__wrap_read, NAME_LEN);
+  will_return(__wrap_read, NAME_LEN);
+
+  // Connect second time //
+  // accept() -> new client 
+  will_return(__wrap_accept, accept_sock);
+  will_return(__wrap_accept, NULL);
+  will_return(__wrap_accept, NULL);
+  will_return(__wrap_accept, expected_client.conn.tx);
+
+  // read() -> get client name 
+  will_return(__wrap_read, expected_client.conn.tx);
+  will_return(__wrap_read, expected_client.name);
+  will_return(__wrap_read, NAME_LEN);
+  will_return(__wrap_read, NAME_LEN);
+
+  // pthread_create() -> start routing client 
+  will_return(__wrap_pthread_create, NULL);
+  will_return(__wrap_pthread_create, sizeof(NULL));
+  will_return(__wrap_pthread_create, 0);
+
+  // pthread_detach() -> detach thread 
+  will_return(__wrap_pthread_detach, 0);
+
+  // Run start_accepting
+  start_accepting((int *) 1);
+
+  // Make sure client was correctly registered
+  assert_int_equal(clients[0].conn.rx, expected_client.conn.rx);
+  assert_int_equal(clients[0].conn.tx, expected_client.conn.tx);
+  assert_memory_equal(clients[0].name, expected_client.name, NAME_LEN);
+
+  // Make sure no other placeholders were affected 
+  const client_t vacant_client = client_t_new();
+  for(int x = 1; x < MAX_NUM_CLI; x++) 
+  {
+    assert_int_equal(clients[x].conn.rx, vacant_client.conn.rx);
+    assert_int_equal(clients[x].conn.tx, vacant_client.conn.tx);
+    assert_memory_equal(clients[x].name, vacant_client.name, NAME_LEN);
+  }
 }

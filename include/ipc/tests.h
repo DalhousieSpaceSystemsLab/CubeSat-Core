@@ -16,14 +16,17 @@
 // IPC daemon
 #include "ipc/ipcd.h"
 
+// Private keyword 
+#include "util/private.h"
+
+// Standard C libraries 
+#include <pthread.h>
+
 // CMocka libraries
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>
 #include <cmocka.h>
-
-// Private keyword 
-#include "util/private.h"
 
 // Test wrappers 
 int __wrap_socket(int domain, int type, int protocol);
@@ -46,5 +49,6 @@ void test_client_api_disconnect();
 // Test IPC daemon 
 void test_ipcd_init();
 void test_ipcd_close();
+void test_ipcd_start_accepting();
 
 #endif // CUBESAT_CORE_INCLUDE_IPC_TESTS_TEST_CLIENT_API_H

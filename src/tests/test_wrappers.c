@@ -46,11 +46,14 @@ int __wrap_read(int sock, void * buf, size_t buflen)
   assert_int_equal(sock, mock());
   assert_non_null(buf);
   
+  // Create placeholders for mock data and mock data length
   char * mock_buf = (char *) mock(); 
   size_t mock_buflen = (size_t) mock();
-  memcpy(buf, mock_buf, mock_buflen);
   
-  assert_int_equal(buflen, mock());
+  assert_true(mock_buflen <= buflen);
+  
+  // Copy mock data into buffer 
+  memcpy(buf, mock_buf, mock_buflen);
 
   return mock();
 }
@@ -87,6 +90,16 @@ int __wrap_listen(int sockfd, int n)
   assert_int_equal(sockfd, mock());
   assert_int_equal(n, mock());
 
+  return mock();
+}
+
+// Wrapper for accept function 
+int __wrap_accept(int sockfd, struct sockaddr * address, socklen_t * address_len)
+{
+  assert_int_equal(sockfd, mock());
+  assert_ptr_equal(address, mock());
+  assert_ptr_equal(address_len, mock());
+  
   return mock();
 }
 

@@ -108,7 +108,8 @@ ADD_EXECUTABLE(${BIN_TEST} ${SRC_TEST})
 TARGET_LINK_LIBRARIES(${BIN_TEST}
   ${LIB_IPC}
   ${LIB_CMOCKA}
- "-Wl,--wrap=read,--wrap=write,--wrap=close,--wrap=connect,--wrap=socket,--wrap=unlink,--wrap=bind,--wrap=listen,--wrap=pthread_create,--wrap=pthread_detach"
+ "-Wl,--wrap=read,--wrap=write,--wrap=close,--wrap=connect,--wrap=socket,--wrap=unlink,--wrap=bind,--wrap=listen,--wrap=accept,--wrap=pthread_create,--wrap=pthread_detach"
+ "pthread"
 )
 TARGET_COMPILE_OPTIONS(${BIN_TEST}
   BEFORE PUBLIC "-g"

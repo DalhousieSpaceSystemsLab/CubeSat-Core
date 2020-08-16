@@ -112,7 +112,7 @@ private void * start_routing_client(void * params)
 }
 
 // Thread which processes incoming client connections
-private void * start_accepting()
+private void * start_accepting(void * debug)
 {
   for(;;)
   {
@@ -212,6 +212,9 @@ private void * start_accepting()
         perror("pthread_detach() failed");
         pthread_exit(NULL);
       }
+
+      // Check if currently unit testing 
+      if(debug) break;
     }
 
     // Invalid index returned. Unknown error.
@@ -276,7 +279,7 @@ int ipcd_init()
 
   // Start accepting clients 
   pthread_t thread_start_accepting;
-  if((errno = pthread_create(&thread_start_accepting, NULL, start_accepting, NULL)) != 0) // pthread_create() failed 
+  if((errno = pthread_create(&thread_start_accepting, NULL, start_accepting, 0)) != 0) // pthread_create() failed 
   {
     perror("pthread_create() failed");
     return -1;
