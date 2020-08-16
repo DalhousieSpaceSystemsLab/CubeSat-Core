@@ -105,7 +105,6 @@ void test_client_api_recv()
   will_return(__wrap_read, self_conn_rx);
   will_return(__wrap_read, msg_in);
   will_return(__wrap_read, msg_in_len);
-  will_return(__wrap_read, MAX_MSG_LEN);
   will_return(__wrap_read, msg_in_len);
 
   // Create placeholder for ipc_recv 
@@ -134,7 +133,6 @@ void test_client_api_refresh()
   will_return(__wrap_read, self_conn_rx);
   will_return(__wrap_read, msg_recv);
   will_return(__wrap_read, msg_recv_len);
-  will_return(__wrap_read, MAX_MSG_LEN);
   will_return(__wrap_read, msg_recv_len);
 
   // write()
