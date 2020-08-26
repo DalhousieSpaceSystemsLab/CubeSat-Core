@@ -52,5 +52,6 @@ void test_client_api_disconnect();
 void test_ipcd_init();
 void test_ipcd_close();
 void test_ipcd_start_accepting();
+void test_ipcd_start_routing_client();
 
 #endif // CUBESAT_CORE_INCLUDE_IPC_TESTS_TEST_CLIENT_API_H
