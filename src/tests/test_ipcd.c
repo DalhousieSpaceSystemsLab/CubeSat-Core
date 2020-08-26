@@ -127,3 +127,39 @@ void test_ipcd_start_accepting()
     assert_memory_equal(clients[x].name, vacant_client.name, NAME_LEN);
   }
 }
+
+void test_ipcd_start_routing_client()
+{
+  // Create placeholders 
+  const char * msg = "trx send image.jpg";
+  const size_t msg_len = 19;
+
+  const char * expected_msg = "pwr send image.jpg";
+  const size_t expected_msg_len = msg_len;
+
+  // Add destination client to list of clients 
+  const client_t dest_client = {
+    .conn = {
+      .rx = 32,
+      .tx = 33,
+    },
+    .name = "trx"
+  };
+  clients[1] = dest_client;
+
+  // Configure wrappers //
+  // read() -> waiting for request from client 
+  will_return(__wrap_read, expected_client.conn.tx);
+  will_return(__wrap_read, msg);
+  will_return(__wrap_read, msg_len);
+  will_return(__wrap_read, msg_len);
+
+  // write() -> send message to destination client 
+  will_return(__wrap_write, dest_client.conn.rx);
+  will_return(__wrap_write, expected_msg);
+  will_return(__wrap_write, expected_msg_len);
+  will_return(__wrap_write, expected_msg_len);
+
+  // Run function 
+  start_routing_client(&clients[0]);
+}
