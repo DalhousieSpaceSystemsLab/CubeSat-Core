@@ -108,6 +108,10 @@ private void * start_routing_client(void * params)
         }
       }
     }
+
+    #ifdef DEBUG
+      break;
+    #endif
   }
 }
 
