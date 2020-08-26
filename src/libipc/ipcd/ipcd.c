@@ -98,7 +98,7 @@ private void * start_routing_client(void * params)
         for(int y = NAME_LEN + 1; y < bytes_read; y++) fmt_msg[y] = msg[y];
 
         // Calculate formatted message length 
-        int fmt_msg_len = NAME_LEN + 1 + bytes_read;
+        int fmt_msg_len = bytes_read;
 
         // Send message to destination client 
         if(write(clients[x].conn.rx, fmt_msg, fmt_msg_len) < fmt_msg_len) // write() failed
