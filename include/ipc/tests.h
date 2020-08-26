@@ -28,6 +28,8 @@
 #include <setjmp.h>
 #include <cmocka.h>
 
+#define DEBUG 1
+
 // Test wrappers 
 int __wrap_socket(int domain, int type, int protocol);
 int __wrap_connect(int sock, struct sockaddr * address, socklen_t address_len);
