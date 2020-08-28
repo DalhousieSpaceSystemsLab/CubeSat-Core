@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 PROJECT("core")
 
 # Set build directory
@@ -21,8 +21,7 @@ SET("SRC_LIB_IPC"
   "libipc/conn_t/conn_t.c"
   "libipc/client_t/client_t.c"
   "libipc/client_api/client_api.c" 
-  "libipc/client_api/client_api.cc"
-  "libipc/util/serialize.cc"
+  # "libipc/util/serialize.cc"
   "libipc/ipcd/ipcd.c"
 )
 ADD_LIBRARY(${LIB_IPC} ${SRC_LIB_IPC})
@@ -77,16 +76,6 @@ TARGET_LINK_LIBRARIES(${BIN_CLI_OLD}
 )
 TARGET_COMPILE_OPTIONS(${BIN_CLI_OLD} BEFORE PUBLIC "-g")
 
-# Client binary (C++)
-SET("BIN_CLI_CPP" "client_cc")
-SET("SRC_CLI_CPP" "ipc_client/client.cc")
-ADD_EXECUTABLE(${BIN_CLI_CPP} ${SRC_CLI_CPP})
-TARGET_LINK_LIBRARIES(${BIN_CLI_CPP}
-  "pthread"
-  ${LIB_IPC}
-)
-TARGET_COMPILE_OPTIONS(${BIN_CLI_CPP} BEFORE PUBLIC "-g")
-
 # Subsystem Server Template 
 # SET("BIN_SUBSYS_SERVER" "subsys_server")
 # SET("SRC_SUBSYS_SERVER" "subsys_server/server.c")
@@ -95,6 +84,18 @@ TARGET_COMPILE_OPTIONS(${BIN_CLI_CPP} BEFORE PUBLIC "-g")
 #   "pthread"
 #   ${LIB_IPC}
 # )
+
+# Dock Daemon 
+SET("BIN_DOCK" "dockd")
+SET("SRC_DOCK" 
+  "subsystem/dock.c"
+  "subsystem/server_container_t.c"
+  "subsystem/servers/template.c"
+)
+ADD_EXECUTABLE(${BIN_DOCK} ${SRC_DOCK})
+TARGET_LINK_LIBRARIES(${BIN_DOCK}
+  "pthread"
+)
 
 # Testing binary
 SET("BIN_TEST" "test")
