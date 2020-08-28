@@ -34,4 +34,4 @@ int ipcd_close();           // Shutdown the IPC daemon
 // Debug 
 int ipcd_print_clients();   // Prints the list of clients
 
-#endif // end of CUBESAT_CORE_INCLUDE_IPC_IPCD_H header guard.
+#endif  // end of CUBESAT_CORE_INCLUDE_IPC_IPCD_H header guard.
