@@ -9,29 +9,29 @@
 #ifndef CUBESAT_CORE_INCLUDE_IPC_IPCD_H
 #define CUBESAT_CORE_INCLUDE_IPC_IPCD_H
 
-// Project headers 
+// Project headers
+#include "ipc/client_t.h"
 #include "ipc/settings.h"
 #include "util/immut.h"
-#include "ipc/client_t.h"
 
-// Standard C libraries 
-#include <sys/socket.h>
-#include <sys/un.h>
+// Standard C libraries
+#include <errno.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <pthread.h>
-#include <errno.h>
+#include <sys/socket.h>
+#include <sys/un.h>
 #include <time.h>
+#include <unistd.h>
 
 // Private keyword
 #include "util/private.h"
 
-// Methods 
-int ipcd_init();            // Initialize the IPC daemon
-int ipcd_close();           // Shutdown the IPC daemon
+// Methods
+int ipcd_init();   // Initialize the IPC daemon
+int ipcd_close();  // Shutdown the IPC daemon
 
-// Debug 
-int ipcd_print_clients();   // Prints the list of clients
+// Debug
+int ipcd_print_clients();  // Prints the list of clients
 
 #endif  // end of CUBESAT_CORE_INCLUDE_IPC_IPCD_H header guard.
