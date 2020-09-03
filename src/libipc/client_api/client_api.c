@@ -162,7 +162,8 @@ int ipc_recv(char src[NAME_LEN], char * buffer, size_t buffer_len)
 
   // Separate message from source name 
   strncpy(name, msg, NAME_LEN);
-  for(int x = NAME_LEN + 1; x < bytes_read; x++, msg_final_len++) msg_final[x-(NAME_LEN+1)] = msg[x];
+  for(int x = NAME_LEN + 1; x < bytes_read; x++, msg_final_len++) 
+     msg_final[x-(NAME_LEN+1)] = msg[x];
 
   // Create placeholder for bytes copied into buffer 
   int bytes_copied = 0;
