@@ -10,8 +10,18 @@
 #define CUBESAT_CORE_INCLUDE_SUBSYSTEM_SERVERS_TEMPLATE_H
 
 // Project headers
-#include "subsystem/server_container_t.h"
+#include "subsystem/server_container.h"
 
-extern subsystem_server_container_t template_server;
+// Feature test macros 
+#define _XOPEN_SOURCE 700
+
+// Standard C libraries 
+#include <pthread.h>
+#include <signal.h>
+
+#include <stdio.h>
+#include <unistd.h>
+
+extern ServerContainer template_server;
 
 #endif  // End of CUBESAT_CORE_INCLUDE_SUBSYSTEM_SERVERS_TEMPLATE_H guard

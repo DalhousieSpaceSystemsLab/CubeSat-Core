@@ -8,7 +8,7 @@
 
 #include "subsystem/servers/template.h"
 
-void* start() {
+void* template_server_start() {
   /**
    * All code needed to start your server goes here.
    * 
@@ -22,9 +22,15 @@ void* start() {
    *  2. Do not quit the start method using 'return'. Instead use pthread_exit(ptr).
    *  3. Do not use pthread_exit with a local variable (value cannot be read).
    */
+  
+  printf("Starting template!\n");
+  for(;;) {
+    printf("waiting...\n");
+    sleep(1);
+  }
 }
 
-void stop() {
+void template_server_stop() {
   /**
    * All code needed to properly shutdown your server goes here.
    * 
@@ -39,6 +45,7 @@ void stop() {
    *  2. Do not quit the start method using 'return'. Instead use pthread_exit(ptr).
    *  3. Do not use pthread_exit with a local variable (value cannot be read).
    */
+  printf("Stopping template!\n");
 }
 
 /**
@@ -51,7 +58,7 @@ void stop() {
  * Once defined, declare it as an extern variable in the header you wish to 
  * dedicate to add your server to the subsystem dock.
  */
-subsystem_server_container_t template_server = {
-    .start = start,
-    .stop  = stop,
+ServerContainer template_server = {
+    .start = template_server_start,
+    .stop  = template_server_stop,
 };
