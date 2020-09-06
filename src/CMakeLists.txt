@@ -88,13 +88,17 @@ TARGET_COMPILE_OPTIONS(${BIN_CLI_OLD} BEFORE PUBLIC "-g")
 # Dock Daemon 
 SET("BIN_DOCK" "dockd")
 SET("SRC_DOCK" 
-  "subsystem/dock.c"
-  "subsystem/server_container_t.c"
+  "subsystem/dock/main.c"
+  "subsystem/dock/dock.c"
   "subsystem/servers/template.c"
+  "subsystem/servers/twin.c"
 )
 ADD_EXECUTABLE(${BIN_DOCK} ${SRC_DOCK})
 TARGET_LINK_LIBRARIES(${BIN_DOCK}
   "pthread"
+)
+TARGET_COMPILE_OPTIONS(${BIN_DOCK} PUBLIC
+  "-g"
 )
 
 # Testing binary
