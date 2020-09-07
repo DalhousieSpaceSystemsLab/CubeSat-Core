@@ -12,6 +12,7 @@ By name, description and function.
 - Power server
 - Watchdog server
 - Filesystem server
+- Logging server
 
 ## Descriptions
 
