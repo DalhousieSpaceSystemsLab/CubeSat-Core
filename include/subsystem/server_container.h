@@ -21,6 +21,7 @@ typedef struct server_container {
   void* (*start)();
   void (*stop)();
   pthread_t tid;
+  pthread_t mtid;
 } ServerContainer;
 
 #endif  // END OF CUBESAT_CORE_INCLUDE_SUBSYSTEM_SERVER_H
