@@ -7,12 +7,12 @@ By name, description and function.
 - Comms server
 - Command server
 - Mission server
+- Filesystem server
+- Logging server
+- Watchdog server
 - Payload server
 - ACS server
 - Power server
-- Watchdog server
-- Filesystem server
-- Logging server
 
 ## Descriptions
 
@@ -33,3 +33,7 @@ Once interpreted, the command is issued to the apropriate server to begin execut
 If a command interpreted by the Command server is found to be designated a future time or coordinate to be executed, the command is forwarded to the mission server.
 
 Once the designated conditions are met, the command is issued to the apropriate server to begin execution.
+
+### Filesystem server
+
+Stores, retrieves and organizes files on the satellite's filesystem.
