@@ -25,7 +25,7 @@ void* template_server_start() {
   
   printf("Starting template!\n");
   for(;;) {
-    printf("waiting...\n");
+    printf("running template...\n");
     sleep(1);
   }
 }

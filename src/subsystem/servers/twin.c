@@ -2,8 +2,8 @@
 
 void * twin_server_start() { 
   printf("Starting twin!\n");
-  for(;;) {
-    printf("waiting...\n");
+  for(int x = 0; x < 4; x++) {
+    printf("running twin...\n");
     sleep(1);
   }
 }
