@@ -17,9 +17,9 @@ By name, description and function.
 
 ### Comms server
 
-Handles the satellite's comms subsystem. Translates incoming raw transmitter data into useful commands, which are forwarded to the Command server for interpretation.
+Handles the satellite's comms subsystem. Decodes incoming raw transmitter data into formatted data, which is forwarded to the Command server for interpretation.
 
-Also translates useful data into raw transmitter data to be sent back down to the groundstation.
+Also encodes useful data into raw transmitter data to be sent back down to the groundstation.
 
 ### Command server
 
