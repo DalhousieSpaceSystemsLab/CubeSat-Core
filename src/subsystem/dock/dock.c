@@ -71,25 +71,19 @@ static int stop_server(ServerContainer* server) {
   }
 
   // Check if tid is initialized 
-  if(server->tid != -1) {
-    // Cancel start thread 
-    pthread_cancel(server->tid);
-
-    // Reset tid value for server 
-    server->tid = -1;
-
-    // Run stop function 
-    server->stop();
+  if(server->tid == -1) {
+    fprintf(stdout, "server not running. NOT STOPPING.\n");
+    return 0;
   }
 
-  // Check if mtid is initialized 
-  if(server->mtid != -1) {
-    // Cancel monitor thread 
-    pthread_cancel(server->mtid);
+  // Cancel start thread 
+  pthread_cancel(server->tid);
 
-    // Reset mtid value 
-    server->mtid = -1;
-  }
+  // Reset tid value for server 
+  server->tid = -1;
+
+  // Run stop function 
+  server->stop();
   
   // done
   return 0;
@@ -115,6 +109,12 @@ static void* monitor_server(void* args) {
 
     // Reset server tid 
     server->tid = -1;
+
+    // Stop server 
+    if(stop_server(server) != 0) {
+      fprintf(stderr, "stop_server() failed\n");
+      return NULL;
+    }
 
     // Restart server 
     if((errno = pthread_create(&server->tid, NULL, server->start, NULL)) != 0) {
