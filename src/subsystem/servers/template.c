@@ -8,6 +8,25 @@
 
 #include "subsystem/servers/template.h"
 
+// Public server control methods 
+void* template_server_start();
+void  template_server_stop();
+
+/**
+ * This is where you define your subsystem server container.
+ * 
+ * It only requires 2 elements to be initialized:
+ *  1. The start() method (see above).
+ *  2. The stop() method (see above).
+ * 
+ * Once defined, declare it as an extern variable in the header you wish to 
+ * dedicate to add your server to the subsystem dock.
+ */
+ServerContainer template_server = {
+    .start = template_server_start,
+    .stop  = template_server_stop,
+};
+
 void* template_server_start() {
   /**
    * All code needed to start your server goes here.
@@ -47,18 +66,3 @@ void template_server_stop() {
    */
   printf("Stopping template!\n");
 }
-
-/**
- * This is where you define your subsystem server container.
- * 
- * It only requires 2 elements to be initialized:
- *  1. The start() method (see above).
- *  2. The stop() method (see above).
- * 
- * Once defined, declare it as an extern variable in the header you wish to 
- * dedicate to add your server to the subsystem dock.
- */
-ServerContainer template_server = {
-    .start = template_server_start,
-    .stop  = template_server_stop,
-};
