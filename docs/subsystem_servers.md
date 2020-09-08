@@ -37,3 +37,7 @@ Once the designated conditions are met, the command is issued to the apropriate 
 ### Filesystem server
 
 Stores, retrieves and organizes files on the satellite's filesystem.
+
+### Logging server
+
+Listens on stdout and stderr for output from all binaries running on the OBC. Stores the logs from each stream in their own respective .log files using the Filesystem server.
