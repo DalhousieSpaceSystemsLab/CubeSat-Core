@@ -9,6 +9,10 @@
 
 // Project headers
 #include "client_api.h"
+#include <signal.h>
+#include <stdlib.h>
+
+void isr(int sig);
 
 int main(int argc, char *argv[])
 {
@@ -176,4 +180,14 @@ int main(int argc, char *argv[])
 
     // done
     return 0;
+}
+
+// Interrupt signal routine 
+void isr(int sig) {
+  switch(sig) {
+    case SIGINT:
+      ipc_disconnect();
+      exit(0);
+      break;
+  }
 }
