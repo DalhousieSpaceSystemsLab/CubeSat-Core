@@ -79,7 +79,7 @@ int ipc_connect(char name[NAME_LEN]) {
 // Send message to another process
 int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
   // Ensure message is long enough to contain a name
-  if (msg_len < NAME_LEN) {
+  if (msg_len < 1) {
     fprintf(stderr, "ignoring ipc_send request for message that is too short\n");
     return -1;
   }
