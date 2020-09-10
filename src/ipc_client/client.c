@@ -21,13 +21,22 @@ int main(int argc, char* argv[]) {
   // Check argc
   // if(argc != 2)
   if (argc != 3) {
-    fprintf(stderr, "Invalid number of arguments\n Try: ./client <name> <read/write>\n");
+    fprintf(stderr, "Invalid number of arguments\n Try: ./client <name> <read/write/async> (async is experimental)\n");
     return -1;
   }
 
   // Create placeholder for client name
   char* name = argv[1];
   char* rdwr = argv[2];
+  
+  // Copy read/write setting into formatted array 
+  char rdwr_fmt[5];
+  strcpy(rdwr_fmt, rdwr);
+
+  // Format rdwr real quick 
+  if(strcmp(rdwr, "read") == 0) {
+    rdwr_fmt[4] = ' ';
+  }
 
   // Check name length
   if (strlen(name) != 3) {  // name is not correct length
@@ -41,8 +50,25 @@ int main(int argc, char* argv[]) {
     return -1;
   }
 
+  // Welcome prompt 
+  printf("\
+  ################################################\n\
+  #           IPC client example program         #\n\
+  ################################################\n\
+  #                  Settings                    #\n\
+  #  Name: %.3s                                   #\n\
+  #  Mode: %.5s                                 #\n\
+  ################################################\n\
+  #                                              #\n\
+  #     Press [CTRL + C] at any time to quit     #\n\
+  #                                              #\n\
+  ################################################\n\n",\
+  name, rdwr_fmt);
+
   // Check if client reading or writing
   if (strcmp(rdwr, "read") == 0) {  // reading
+    printf("[waiting for incoming messages...]\n\n");
+
     for (;;) {
       // Create placeholder for incoming message
       char msg[MAX_MSG_LEN];
