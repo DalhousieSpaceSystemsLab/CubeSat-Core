@@ -7,6 +7,7 @@
 */
 
 // Project headers
+#define _POSIX_C_SOURCE 199309L
 #include "ipc/client_api.h"
 
 // private variables
@@ -125,14 +126,16 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
 
   // Wait for receipt confirmation 
   char recv_conf_msg[MAX_MSG_LEN];
-  int time_el = 0;
-  for(time_el = 0; time_el < RECV_TIMEOUT; time_el++) {
+  long int time_el = 0;
+  long int time_el_max = RECV_TIMEOUT.tv_sec*1000000000L + RECV_TIMEOUT.tv_nsec;
+  long int time_inc = READ_BLOCK_DELAY.tv_sec*1000000000L + READ_BLOCK_DELAY.tv_nsec;
+  for(time_el = 0; time_el < time_el_max; time_el += time_inc) {
     // Check if read fails 
     if(read(self.conn.rx, recv_conf_msg, MAX_MSG_LEN) <= 0) {
       // Check if read should have blocked 
       if(errno == EWOULDBLOCK || errno == EAGAIN) {
         // Wait & try again
-        sleep(READ_BLOCK_DELAY);
+        nanosleep(&READ_BLOCK_DELAY, NULL);
         continue;
       } else {
         // Something actually went wrong 
@@ -146,7 +149,7 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
   }
 
   // Check if receipt confirmation timeout exceeded 
-  if(time_el >= RECV_TIMEOUT) {
+  if(time_el >= RECV_TIMEOUT.tv_sec*1000000000L + RECV_TIMEOUT.tv_nsec) {
     fprintf(stderr, "ipc_send receipt confirmation timed out : ");
     return -1;
   }
@@ -167,7 +170,7 @@ int ipc_recv(char src[NAME_LEN], char *buffer, size_t buffer_len) {
     // Check if read() should have blocked
     if (errno == EWOULDBLOCK || errno == EAGAIN) {  // read() should have blocked
       // Delay next read() attempt
-      sleep(READ_BLOCK_DELAY);
+      nanosleep(&READ_BLOCK_DELAY, NULL);
 
       // Try again
       continue;
