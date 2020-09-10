@@ -25,8 +25,9 @@ static immut(int) sock = &sock_;
 //  Static Methods //
 //////////////////////
 
-static void *start_accepting(void *debug);
-static void *start_routing_client(void *params);
+static void* start_accepting(void *debug);
+static void* start_routing_client(void *params);
+static void disconnect_client(client_t* client);
 
 // Thread which processes incoming client connections
 static void *start_accepting(void *debug) {
@@ -218,6 +219,21 @@ static void *start_routing_client(void *params) {
         break;
     #endif
   }
+}
+
+/**
+ * Disconnect client from IPC network.
+ * 
+ * Closes associated sockets and clears placeholder.
+ */
+void disconnect_client(client_t* client) {
+  // Close connections 
+  conn_t_close(&client->conn);
+
+  // Replace client with vacant placeholder 
+  *client = client_t_new();
+
+  // done
 }
 
 /////////////////////
