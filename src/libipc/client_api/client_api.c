@@ -111,6 +111,46 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
     return -1;
   }
 
+  /**
+   * If sending receipt confirmation, do not wait for another
+   * confirmation.
+   * 
+   * Otherwise, wait for a confirmation. 
+   * If no confirmation is received, consider it a failed transmission.
+   */
+  if(strcmp(msg, RECV_CONF) == 0) {
+    // done 
+    return 0;
+  }
+
+  // Wait for receipt confirmation 
+  char recv_conf_msg[MAX_MSG_LEN];
+  int time_el = 0;
+  for(time_el = 0; time_el < RECV_TIMEOUT; time_el++) {
+    // Check if read fails 
+    if(read(self.conn.rx, recv_conf_msg, MAX_MSG_LEN) <= 0) {
+      // Check if read should have blocked 
+      if(errno == EWOULDBLOCK || errno == EAGAIN) {
+        // Wait & try again
+        sleep(READ_BLOCK_DELAY);
+        continue;
+      } else {
+        // Something actually went wrong 
+        perror("read() failed");
+        return -1;
+      }
+    } else {
+      // read succeeded, get out of loop 
+      break;
+    }
+  }
+
+  // Check if receipt confirmation timeout exceeded 
+  if(time_el >= RECV_TIMEOUT) {
+    fprintf(stderr, "ipc_send receipt confirmation timed out : ");
+    return -1;
+  }
+
   // done
   return 0;
 }
@@ -157,6 +197,12 @@ int ipc_recv(char src[NAME_LEN], char *buffer, size_t buffer_len) {
 
     // Update bytes copied
     bytes_copied++;
+  }
+
+  // Send receipt confirmation
+  if(ipc_send(name, RECV_CONF, strlen(RECV_CONF)) != 0) {
+    fprintf(stderr, "ipc_send() failed : ");
+    return -1;
   }
 
   // done
