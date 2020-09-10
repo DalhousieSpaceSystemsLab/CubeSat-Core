@@ -97,7 +97,7 @@ int ipc_connect(const char *name)
 int ipc_send(const char *dest, char *msg, size_t msg_len)
 {
     // Ensure message is long enough to contain a name
-    if (msg_len < NAME_LEN)
+    if (msg_len < 1)
     {
         fprintf(stderr,
                 "ignoring ipc_send request for message that is too short\n");
