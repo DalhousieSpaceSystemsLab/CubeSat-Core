@@ -159,6 +159,7 @@ static void *start_routing_client(void *params) {
       fprintf(stderr, "read() failed : start_routing_client() failed\n");
       
       // Disconnect client from network
+      disconnect_client((client_t *) params);
 
       // Kill client router thread 
       pthread_exit(NULL);
