@@ -12,6 +12,10 @@
 // Standard C libraries
 #include <sys/select.h>
 #include <sys/time.h>
+#include <signal.h>
+#include <stdlib.h>
+
+void isr(int sig);
 
 int main(int argc, char* argv[]) {
   // Check argc
@@ -157,4 +161,14 @@ int main(int argc, char* argv[]) {
 
   // done
   return 0;
+}
+
+// Interrupt signal routine 
+void isr(int sig) {
+  switch(sig) {
+    case SIGINT:
+      ipc_disconnect();
+      exit(0);
+      break;
+  }
 }
