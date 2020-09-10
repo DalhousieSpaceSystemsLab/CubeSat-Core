@@ -4,6 +4,12 @@
 *   purpose: act a middleman between processes to complete communication requests
 *   author: alex amellal
 *
+*   TODO:
+    - Key-value pair sending 
+    - C++ wrappers 
+    - Queue multiple messages 
+    - Message source filters + dibs on incoming messages?
+*
 */
 
 // Project headers
