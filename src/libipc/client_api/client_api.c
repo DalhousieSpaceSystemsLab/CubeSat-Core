@@ -124,11 +124,13 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
     return 0;
   }
 
-  // Wait for receipt confirmation 
+  // Create placeholders for timeout counters
   char recv_conf_msg[MAX_MSG_LEN];
   long int time_el = 0;
   long int time_el_max = RECV_TIMEOUT.tv_sec*1000000000L + RECV_TIMEOUT.tv_nsec;
   long int time_inc = READ_BLOCK_DELAY.tv_sec*1000000000L + READ_BLOCK_DELAY.tv_nsec;
+  
+  // Wait for receipt confirmation 
   for(time_el = 0; time_el < time_el_max; time_el += time_inc) {
     // Check if read fails 
     if(read(self.conn.rx, recv_conf_msg, MAX_MSG_LEN) <= 0) {
