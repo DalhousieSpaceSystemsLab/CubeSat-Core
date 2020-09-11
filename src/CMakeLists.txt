@@ -10,6 +10,7 @@ project(
     LANGUAGES C CXX
 )
 
+<<<<<<< HEAD
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
     set(BUILD_TESTING ON CACHE BOOL "OPTION TO BUILD TESTING" FORCE)
@@ -60,6 +61,76 @@ execute_process(
 
 execute_process(
     COMMAND "sync"
+=======
+# IPC library
+SET("LIB_IPC" "ipc")
+SET("SRC_LIB_IPC" 
+  "libipc/conn_t/conn_t.c"
+  "libipc/client_t/client_t.c"
+  "libipc/client_api/client_api.c" 
+  "libipc/client_api/client_api.cc"
+  # "libipc/util/serialize.cc"
+  "libipc/ipcd/ipcd.c"
+)
+ADD_LIBRARY(${LIB_IPC} ${SRC_LIB_IPC})
+TARGET_COMPILE_OPTIONS(${LIB_IPC} PUBLIC "-g")
+
+# CMocka library
+SET("LIB_CMOCKA" "cmocka")
+SET("SRC_CMOCKA" "cmocka/cmocka.c")
+ADD_LIBRARY(${LIB_CMOCKA} STATIC ${SRC_CMOCKA})
+
+# IPC daemon binary
+SET("BIN_IPCD" "ipcd")
+SET("SRC_IPCD"
+  "ipcd/main.c"
+)
+ADD_EXECUTABLE(${BIN_IPCD} ${SRC_IPCD})
+TARGET_LINK_LIBRARIES(${BIN_IPCD}
+  "pthread"
+  ${LIB_IPC}
+)
+TARGET_COMPILE_OPTIONS(${BIN_IPCD} BEFORE PUBLIC "-g")
+
+# IPC daemon old binary
+SET("BIN_IPCD_OLD" "ipcd_old")
+SET("SRC_IPCD_OLD"
+  "ipcd_old/main.c"
+  "ipcd_old/client_handler.c"
+)
+ADD_EXECUTABLE(${BIN_IPCD_OLD} ${SRC_IPCD_OLD})
+TARGET_LINK_LIBRARIES(${BIN_IPCD_OLD}
+  "pthread"
+)
+TARGET_COMPILE_OPTIONS(${BIN_IPCD_OLD} BEFORE PUBLIC "-g")
+
+# Client binary
+SET("BIN_CLI" "client")
+SET("SRC_CLI" "ipc_client/client.c")
+ADD_EXECUTABLE(${BIN_CLI} ${SRC_CLI})
+TARGET_LINK_LIBRARIES(${BIN_CLI}
+  "pthread"
+  ${LIB_IPC}
+)
+TARGET_COMPILE_OPTIONS(${BIN_CLI} BEFORE PUBLIC "-g")
+
+# Client binary C++ 
+SET("BIN_CLI_CC" "client_cc")
+SET("SRC_CLI_CC" "ipc_client/client.cc")
+ADD_EXECUTABLE(${BIN_CLI_CC} ${SRC_CLI_CC})
+TARGET_LINK_LIBRARIES(${BIN_CLI_CC} 
+  "pthread"
+  ${LIB_IPC}
+)
+
+# Client binary (old)
+SET("BIN_CLI_OLD" "client_old")
+SET("SRC_CLI_OLD" "ipc_client_old/client_old.c")
+ADD_EXECUTABLE(${BIN_CLI_OLD} ${SRC_CLI_OLD})
+TARGET_LINK_LIBRARIES(${BIN_CLI_OLD}
+  "pthread"
+  ${LIB_IPC}
+>>>>>>> 26c2cf4 (begun C++ wrapper for ipc code)
 )
 
 if(BUILD_TESTING)
