@@ -51,7 +51,7 @@ void ipc::send(string dest, string msg) {
 // Receive message from another process (blocks)
 string ipc::recv(string src) {
   // Make sure source filter matches name length
-  if(src.length() != NAME_LEN) {
+  if(src.length() != NAME_LEN && src.length() != 1) {
     cerr << "Name provided as source filter for ipc::recv() is invalid" << endl;
     throw ipc::EInvalidName();
   }
@@ -60,7 +60,7 @@ string ipc::recv(string src) {
   char msg[MAX_MSG_LEN];
 
   // Run ipc_recv 
-  if(ipc_recv((char *) src.c_str(), msg, MAX_MSG_LEN) != 0) {
+  if(ipc_recv((char *) src.c_str(), msg, MAX_MSG_LEN) <= 0) {
     cerr << "Failed to receive message from IPC. ipc::recv() failed" << endl;
     throw ipc::EConn();
   }
