@@ -5,6 +5,7 @@
 *   author: alex amellal
 *
 *   TODO:
+    - Make receipt confirmations (done)
     - Key-value pair sending 
     - C++ wrappers 
     - Queue multiple messages 
