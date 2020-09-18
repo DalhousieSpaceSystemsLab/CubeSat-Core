@@ -10,6 +10,7 @@
     - C++ wrappers 
     - Queue multiple messages 
     - Message source filters + dibs on incoming messages?
+    - Implement dibs or catch-all source name exception list for ipc_recv
 *
 */
 
