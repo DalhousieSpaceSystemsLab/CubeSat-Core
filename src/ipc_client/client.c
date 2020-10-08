@@ -15,11 +15,11 @@
 #include <signal.h>
 #include <stdlib.h>
 
+// Interrupt signal routine handler
 void isr(int sig);
 
 int main(int argc, char* argv[]) {
   // Check argc
-  // if(argc != 2)
   if (argc != 3) {
     fprintf(stderr, "Invalid number of arguments\n Try: ./client <name> <read/write/async> (async is experimental)\n");
     return -1;
@@ -130,7 +130,7 @@ int main(int argc, char* argv[]) {
 
       // Queue read if desired
       if (read[0] == 'y') {
-        if (ipc_qrecv("*", msg_recv, MAX_MSG_LEN) == -1) {  // ipc_qrecv() failed
+        if (ipc_qrecv("*", msg_recv, MAX_MSG_LEN, NULL) == -1) {  // ipc_qrecv() failed
           fprintf(stderr, "ipc_qrecv() failed\n");
           return -1;
         }
