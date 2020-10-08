@@ -7,10 +7,11 @@
 *   TODO:
     - Make receipt confirmations (done)
     - Key-value pair sending 
-    - C++ wrappers 
+    - C++ wrappers (ongoing)
     - Queue multiple messages 
     - Message source filters + dibs on incoming messages?
-    - Implement dibs or catch-all source name exception list for ipc_recv
+    - Implement dibs or catch-all source name exception list for ipc_recv (ongoing)
+    - Setup unit testing with new functions
 *
 */
 
@@ -264,7 +265,8 @@ int ipcd_init() {
   // Create placeholders for socket address
   const struct sockaddr_un address = {
       .sun_family = AF_UNIX,
-      .sun_path   = "./socket.socket"};
+      .sun_path   = "./socket.socket"
+  };
   const socklen_t address_len = sizeof(address);
 
   // Unlink socket
