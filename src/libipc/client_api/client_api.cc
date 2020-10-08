@@ -9,7 +9,14 @@
 // Project header 
 #include "ipc/client_api.hpp"
 
+// Dalhousie Space Systems namespace 
 using namespace dss;
+
+// Placeholder for qrecv result
+static char qrecv_buf[MAX_MSG_LEN];
+
+// Message request 'dibs' list 
+static MsgReqDib dibs[MAX_NUM_DIBS];
 
 // Initialize client side IPC interface
 void ipc::connect(string name) {
@@ -70,6 +77,70 @@ string ipc::recv(string src) {
 
   // done 
   return msg_cpp;
+}
+
+// Adds outgoing message to send queue
+void ipc::async::send(string dest, string msg) {
+  // Check if dest is the correct length 
+  if(dest.length() != NAME_LEN) {
+    throw ipc::EInvalidName();
+  }
+
+  // Check if message length does not exceed maximum 
+  if(msg.length() > MAX_MSG_LEN) {
+    throw ipc::EInvalidMsg();
+  }
+
+  // Add message to queue 
+  if(ipc_qsend((char *) dest.c_str(), (char *) msg.c_str(), msg.length()) != 0) {
+    cerr << "ipc_qsend() failed" << endl;
+    throw ipc::EAPI();
+  }
+
+  // done 
+  return;
+}
+
+// Adds incoming message request to recv queue (no callback)
+void ipc::async::recv(string src) {
+  // Check source name length 
+  if(src.length() != NAME_LEN) {
+    throw ipc::EInvalidName();
+  }
+
+  // Add message request to queue 
+  if(ipc_qrecv((char *) src.c_str(), qrecv_buf, MAX_MSG_LEN, NULL) != 0) {
+    cerr << "ipc_qrecv() failed" << endl;
+    throw ipc::EAPI();
+  }
+
+  // done 
+  return;
+}
+
+// Adds incoming message request to recv queue (with callback)
+void ipc::async::recv(string src, void (*callback)(string)) {
+  // Check source name length 
+  if(src.length() != NAME_LEN) {
+    throw ipc::EInvalidName();
+  }
+
+
+}
+
+// Simultaneously reads/writes queued data
+string ipc::async::refresh(string src) {
+  // Refresh queued buffers 
+  if(ipc_refresh() != 0) {
+    cerr << "ipc_refresh() failed" << endl;
+    throw ipc::EAPI();
+  }
+
+  // Check if qrecv buffer blank
+
+
+  // done 
+  return "abc";
 }
 
 // Close client side IPC interface
