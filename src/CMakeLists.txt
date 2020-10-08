@@ -22,6 +22,7 @@ SET("SRC_LIB_IPC"
   "libipc/client_t/client_t.c"
   "libipc/client_api/client_api.c" 
   "libipc/client_api/client_api.cc"
+  "libipc/msg_req_dib/msg_req_dib.c"
   # "libipc/util/serialize.cc"
   "libipc/ipcd/ipcd.c"
 )
@@ -55,7 +56,10 @@ ADD_EXECUTABLE(${BIN_IPCD_OLD} ${SRC_IPCD_OLD})
 TARGET_LINK_LIBRARIES(${BIN_IPCD_OLD}
   "pthread"
 )
-TARGET_COMPILE_OPTIONS(${BIN_IPCD_OLD} BEFORE PUBLIC "-g")
+TARGET_COMPILE_OPTIONS(${BIN_IPCD_OLD} BEFORE PUBLIC 
+  "-g"
+  "-std=c++11"
+)
 
 # Client binary
 SET("BIN_CLI" "client")
