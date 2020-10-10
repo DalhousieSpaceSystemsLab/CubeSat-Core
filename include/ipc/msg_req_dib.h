@@ -29,5 +29,6 @@ MsgReqDib MsgReqDib_new();                                                      
 MsgReqDib MsgReqDib_set(char name[NAME_LEN], void (*callback)(char*, size_t));      // Returns initialized dib 
 int       MsgReqDib_add(MsgReqDib element, MsgReqDib * array, size_t array_len);    // Appends or overwrites dib into dib array
 bool      MsgReqDib_exists(char name[NAME_LEN], MsgReqDib *array, size_t array_len); // Checks in array for preexisting dibs
+int       MsgReqDib_remove(char name[NAME_LEN], MsgReqDib *array, size_t array_len); // Removes a dib from an array of dibs
 
 #endif 

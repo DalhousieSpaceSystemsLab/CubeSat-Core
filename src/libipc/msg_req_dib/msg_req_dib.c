@@ -78,3 +78,23 @@ bool MsgReqDib_exists(char name[NAME_LEN], MsgReqDib *array, size_t array_len) {
   // done
   return msg_has_dibs;
 }
+
+// Removes a dib from an array of dibs
+int MsgReqDib_remove(char name[NAME_LEN], MsgReqDib *array, size_t array_len) {
+  // Parse through elements in array 
+  for(int x = 0; x < array_len; x++) {
+    // Check if name matches name in dib 
+    if(strncmp(name, array[x].name, NAME_LEN) == 0) {
+      // 'delete' element (really just clear it out)
+      array[x] = MsgReqDib_new();
+
+      // NOTE:
+      // The for loop intentionally does not 'break' on the first 
+      // match since it could be useful to remove all matches when 
+      // more than one dib was created for a particular source.
+    }
+  }
+
+  // done
+  return 0;
+}
