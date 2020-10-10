@@ -178,10 +178,7 @@ int ipc_recv(char src[NAME_LEN], char *buffer, size_t buffer_len) {
     }
 
     // Create dib 
-    MsgReqDib dib = {
-      .callback = NULL
-    }; 
-    strncpy(dib.name, src, NAME_LEN);
+    MsgReqDib dib = MsgReqDib_set(src, NULL);
 
     // Add to dibs 
     if(MsgReqDib_add(dib, dibs, MAX_NUM_DIBS) != 0) {
@@ -262,6 +259,12 @@ int ipc_recv(char src[NAME_LEN], char *buffer, size_t buffer_len) {
   // Send receipt confirmation
   if(ipc_send(name, RECV_CONF, strlen(RECV_CONF)) != 0) {
     fprintf(stderr, "ipc_send() failed : ");
+    return -1;
+  }
+
+  // Remove dibs 
+  if(MsgReqDib_remove(src, dibs, MAX_NUM_DIBS) != 0) {
+    fprintf(stderr, "failed to remove dib from dibs array : ");
     return -1;
   }
 
