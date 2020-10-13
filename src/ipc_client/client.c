@@ -14,9 +14,14 @@
 #include <sys/time.h>
 #include <signal.h>
 #include <stdlib.h>
+#include <pthread.h>
 
 // Interrupt signal routine handler
 void isr(int sig);
+
+// Listener threads for 'dibs' mode 
+static void *listen1();
+static void *listen2();
 
 int main(int argc, char* argv[]) {
   // Check argc
@@ -71,11 +76,16 @@ int main(int argc, char* argv[]) {
 
     for (;;) {
       // Create placeholder for incoming message
+      char src[NAME_LEN+2];
       char msg[MAX_MSG_LEN];
+
+      // Ask user for source filter 
+      printf("Please enter the desired source filter (* for wildcard): ");
+      fgets(src, NAME_LEN+2, stdin);
 
       // Read data
       int bytes_read = -1;
-      if ((bytes_read = ipc_recv("*", msg, MAX_MSG_LEN)) == -1) {  // ipc_recv() failed
+      if ((bytes_read = ipc_recv(src, msg, MAX_MSG_LEN)) == -1) {  // ipc_recv() failed
         fprintf(stderr, "ipc_recv() failed\n");
         return -1;
       }
@@ -174,6 +184,27 @@ int main(int argc, char* argv[]) {
     }
   }
 
+  else if(strcmp(rdwr, "dibs") == 0) {  // async communication with dibs
+    // Create placeholder for listen threads 
+    pthread_t thread_listen1, thread_listen2;
+    
+    // Create listen 1 thread
+    if(pthread_create(&thread_listen1, NULL, listen1, NULL) != 0) {
+      fprintf(stderr, "pthread_create() for listen1 failed\n");
+      return -1;
+    }
+
+    // Create listen 2 thread
+    if(pthread_create(&thread_listen2, NULL, listen2, NULL) != 0) {
+      fprintf(stderr, "pthread_create() for listen2 failed\n");
+      return -1;
+    }
+
+    // Wait for threads to join 
+    pthread_join(thread_listen1, NULL);
+    pthread_join(thread_listen2, NULL);
+  }
+
   else {  // bad keyword
     fprintf(stderr, "invalid setting. try ./client <name> <read/write>\n");
     return -1;
@@ -196,5 +227,40 @@ void isr(int sig) {
       ipc_disconnect();
       exit(0);
       break;
+  }
+}
+
+// Listen threads for 'dibs' mode 
+static void *listen1() {
+  // Create placeholder for incoming message 
+  char msg[MAX_MSG_LEN];
+
+  for(;;) {
+    // Create ipc_recv listener on all sources 
+    int bytes_read = ipc_recv("*", msg, MAX_MSG_LEN);
+
+    // Add null-termination character 
+    msg[bytes_read] = '\0';
+
+    // Print message 
+    printf("[*] msg = %s\n\n", msg);
+    fflush(stdout);
+  }
+}
+
+static void *listen2() {
+  // Create placeholder for incoming message 
+  char msg[MAX_MSG_LEN];
+
+  for(;;) {
+    // Create ipc_recv listener on a specific source (create dib) 
+    int bytes_read = ipc_recv("pwr", msg, MAX_MSG_LEN);
+
+    // Add null-termination character 
+    msg[bytes_read] = '\0';
+
+    // Print message 
+    printf("[pwr] msg = %s\n\n", msg);
+    fflush(stdout);
   }
 }
