@@ -130,182 +130,276 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
   }
 
   // Create placeholders for timeout counters
-  char recv_conf_msg[MAX_MSG_LEN];
-  long int time_el = 0;
-  long int time_el_max = RECV_TIMEOUT.tv_sec*1000000000L + RECV_TIMEOUT.tv_nsec;
-  long int time_inc = READ_BLOCK_DELAY.tv_sec*1000000000L + READ_BLOCK_DELAY.tv_nsec;
+  // char recv_conf_msg[MAX_MSG_LEN];
+  // long int time_el = 0;
+  // long int time_el_max = RECV_TIMEOUT.tv_sec*1000000000L + RECV_TIMEOUT.tv_nsec;
+  // long int time_inc = READ_BLOCK_DELAY.tv_sec*1000000000L + READ_BLOCK_DELAY.tv_nsec;
   
-  // Wait for receipt confirmation 
-  for(time_el = 0; time_el < time_el_max; time_el += time_inc) {
-    // Check if read fails 
-    if(read(self.conn.rx, recv_conf_msg, MAX_MSG_LEN) <= 0) {
-      // Check if read should have blocked 
-      if(errno == EWOULDBLOCK || errno == EAGAIN) {
-        // Wait & try again
-        nanosleep(&READ_BLOCK_DELAY, NULL);
-        continue;
-      } else {
-        // Something actually went wrong 
-        perror("read() failed");
-        return -1;
-      }
-    } else {
-      // read succeeded, get out of loop 
-      break;
-    }
-  }
+  // // Wait for receipt confirmation 
+  // for(time_el = 0; time_el < time_el_max; time_el += time_inc) {
+  //   // Check if read fails 
+  //   if(read(self.conn.rx, recv_conf_msg, MAX_MSG_LEN) <= 0) {
+  //     // Check if read should have blocked 
+  //     if(errno == EWOULDBLOCK || errno == EAGAIN) {
+  //       // Wait & try again
+  //       nanosleep(&READ_BLOCK_DELAY, NULL);
+  //       continue;
+  //     } else {
+  //       // Something actually went wrong 
+  //       perror("read() failed");
+  //       return -1;
+  //     }
+  //   } else {
+  //     // read succeeded, get out of loop 
+  //     break;
+  //   }
+  // }
 
-  // Check if receipt confirmation timeout exceeded 
-  if(time_el >= RECV_TIMEOUT.tv_sec*1000000000L + RECV_TIMEOUT.tv_nsec) {
-    fprintf(stderr, "ipc_send receipt confirmation timed out : ");
-    return -1;
-  }
+  // // Check if receipt confirmation timeout exceeded 
+  // if(time_el >= RECV_TIMEOUT.tv_sec*1000000000L + RECV_TIMEOUT.tv_nsec) {
+  //   fprintf(stderr, "ipc_send receipt confirmation timed out : ");
+  //   return -1;
+  // }
 
   // done
   return 0;
 }
 
+// // Receive message from another process
+// // Returns number of bytes of data copied into buffer.
+// int ipc_recv(char src[NAME_LEN], char *buffer, size_t buffer_len) {
+//   // Create placeholder for dib 
+//   MsgReqDib dib = MsgReqDib_new();
+
+//   // Check if source name specified 
+//   if(strncmp(src, "*", 1) != 0) {
+//     // Check if dib already exists for source 
+//     if(MsgReqDib_exists(src, dibs, MAX_NUM_DIBS)) {
+//       // Dont bother doing anything, source is already claimed 
+//       fprintf(stderr, "dibs on IPC source \"%.3s\" already exists : ");
+//       return -1;
+//     }
+
+//     // Create dib 
+//     dib = MsgReqDib_set(src, NULL);
+
+//     // Add to dibs 
+//     if(MsgReqDib_add(dib, dibs, MAX_NUM_DIBS) != 0) {
+//       fprintf(stderr, "MsgReqDib_add() failed : ");
+//       return -1;
+//     }
+//   }
+  
+//   // Create placeholder for incoming message from IPC
+//   char msg[MAX_MSG_LEN];
+
+//   // Create placeholder for source name and message
+//   char name[NAME_LEN];
+//   char msg_final[MAX_MSG_LEN];
+//   size_t msg_final_len = 0;
+  
+//   // Block until message is received WITHOUT EXISTING DIBS
+//   bool msg_has_dibs = false;
+//   do {
+//     // Block until message is received from the IPC
+//     int bytes_read = -1;
+//     while((bytes_read = read(self.conn.rx, msg, MAX_MSG_LEN)) <= 0) {
+//       // Check if read should have blocked 
+//       if(errno == EWOULDBLOCK || errno == EAGAIN) {
+//         // Delay next read() attempt
+//         nanosleep(&READ_BLOCK_DELAY, NULL);
+
+//         // Try again
+//         continue;
+//       }
+
+//       // Otherwise, read really failed 
+//       perror("read() failed");
+//       return -1;
+//     }
+
+//     // Separate message from source name 
+//     strncpy(name, msg, NAME_LEN);
+//     strncpy(msg_final, &msg[NAME_LEN + 1], bytes_read - (NAME_LEN + 1));
+
+//     // Set final message length 
+//     msg_final_len = bytes_read;
+
+//     // Message processing for catch-all filter 
+//     if(strncmp(src, "*", 1) == 0) {
+//       // Search for existing dibs 
+//       msg_has_dibs = MsgReqDib_exists(name, dibs, MAX_NUM_DIBS);
+      
+//       // Check if dibs found
+//       if(msg_has_dibs) {
+//         // Format 'send to myself' IPC message 
+//         char msg_refeed[MAX_MSG_LEN];
+//         strncpy(msg_refeed, self.name, NAME_LEN);
+//         strncpy(&msg_refeed[NAME_LEN + 1], msg, bytes_read - (NAME_LEN + 1));
+
+//         // Refeed into IPC 
+//         if(write(self.conn.tx, msg_refeed, bytes_read) < bytes_read) {
+//           perror("write() failed");
+//           return -1;
+//         }
+
+//         // Allow time for message to processed by another thread 
+//         nanosleep(&REFEED_DELAY, NULL);
+//       }
+
+//     // Message filter is NOT catch-all
+//     } else { 
+//       // Check if source filter corresponds 
+//       if(strncmp(src, name, NAME_LEN) == 0) {
+//         // stop checking for dibs
+//         break; 
+      
+//       // Source filter does NOT correspond
+//       } else {
+//         // Set message has dibs flag 
+//         // NOTE: this is only in the potential sense. 
+//         //       the existence of dibs for the real 
+//         //       source is not guaranteed.
+//         msg_has_dibs = true;
+
+//         // Format 'send to myself' IPC message 
+//         char msg_refeed[MAX_MSG_LEN];
+//         strncpy(msg_refeed, self.name, NAME_LEN);
+//         strncpy(&msg_refeed[NAME_LEN + 1], msg, bytes_read - (NAME_LEN + 1));
+
+//         // Refeed into IPC 
+//         if(write(self.conn.tx, msg_refeed, bytes_read) < bytes_read) {
+//           perror("write() failed");
+//           return -1;
+//         }
+
+//         // Allow time for message to processed by another thread 
+//         nanosleep(&REFEED_DELAY, NULL);
+//       }
+//     }
+
+//   } while(msg_has_dibs);
+
+//   // Create placeholder for bytes copied into buffer
+//   int bytes_copied = 0;
+
+//   // Copy message into buffer
+//   for (int x = 0; x < buffer_len && x < msg_final_len; x++) {
+//     // Copy character into buffer
+//     buffer[x] = msg_final[x];
+
+//     // Update bytes copied
+//     bytes_copied++;
+//   }
+
+//   // Send receipt confirmation
+//   if(ipc_send(name, RECV_CONF, strlen(RECV_CONF)) != 0) {
+//     fprintf(stderr, "ipc_send() failed : ");
+//     return -1;
+//   }
+
+//   // Remove dibs 
+//   if(MsgReqDib_remove(src, dibs, MAX_NUM_DIBS) != 0) {
+//     fprintf(stderr, "failed to remove dib from dibs array : ");
+//     return -1;
+//   }
+
+//   // done
+//   return bytes_copied;
+// }
+
 // Receive message from another process
 // Returns number of bytes of data copied into buffer.
-int ipc_recv(char src[NAME_LEN], char *buffer, size_t buffer_len) {
-  // Create placeholder for dib 
-  MsgReqDib dib = MsgReqDib_new();
-
-  // Check if source name specified 
+int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len) {
+  // Check if specific source specified 
   if(strncmp(src, "*", 1) != 0) {
-    // Check if dib already exists for source 
+    // Check if is a preexisting dib on message source
     if(MsgReqDib_exists(src, dibs, MAX_NUM_DIBS)) {
-      // Dont bother doing anything, source is already claimed 
-      fprintf(stderr, "dibs on IPC source \"%.3s\" already exists : ");
+      fprintf(stderr, "unable to claim dibs on message source \"$.*s\" : ", NAME_LEN, src);
       return -1;
     }
 
-    // Create dib 
-    dib = MsgReqDib_set(src, NULL);
-
-    // Add to dibs 
-    if(MsgReqDib_add(dib, dibs, MAX_NUM_DIBS) != 0) {
-      fprintf(stderr, "MsgReqDib_add() failed : ");
+    // Since source is free to claim, place a dib on source 
+    if(MsgReqDib_add(MsgReqDib_set(src, NULL), dibs, MAX_NUM_DIBS) != 0) {
+      fprintf(stderr, "failed to claim dibs on src (%.*s) : ", NAME_LEN, src);
       return -1;
     }
   }
-  
-  // Create placeholder for incoming message from IPC
-  char msg[MAX_MSG_LEN];
 
-  // Create placeholder for source name and message
-  char name[NAME_LEN];
-  char msg_final[MAX_MSG_LEN];
-  size_t msg_final_len = 0;
-  
-  // Block until message is received WITHOUT EXISTING DIBS
-  bool msg_has_dibs = false;
-  do {
-    // Block until message is received from the IPC
+  // Attempt loop
+  for(;;) {
+    // Create buffer for incoming IPC command 
+    char msg[MAX_MSG_LEN];
+    memset(msg, 0, MAX_MSG_LEN);
+
+    // Read message from IPC 
     int bytes_read = -1;
-    while((bytes_read = read(self.conn.rx, msg, MAX_MSG_LEN)) <= 0) {
+    if((bytes_read = read(self.conn.rx, msg, MAX_MSG_LEN)) <= 0) {
       // Check if read should have blocked 
       if(errno == EWOULDBLOCK || errno == EAGAIN) {
-        // Delay next read() attempt
+        // Wait read delay and try again 
         nanosleep(&READ_BLOCK_DELAY, NULL);
-
-        // Try again
         continue;
       }
-
-      // Otherwise, read really failed 
-      perror("read() failed");
+      
+      // Read failed 
+      fprintf(stderr, "read() failed : ");
       return -1;
     }
 
-    // Separate message from source name 
+    // Create placeholders for name 
+    char name[NAME_LEN];
+    char msg_nameless[MAX_MSG_LEN];
+    size_t msg_nameless_len = bytes_read-NAME_LEN-1;
+
+    // Separate name from message 
     strncpy(name, msg, NAME_LEN);
-    strncpy(msg_final, &msg[NAME_LEN + 1], bytes_read - (NAME_LEN + 1));
+    strncpy(msg_nameless, &msg[NAME_LEN+1], msg_nameless_len);
 
-    // Set final message length 
-    msg_final_len = bytes_read;
+    // Create placeholders for message source filter conditions //
+    // Check if source filter is an exact match to incoming message source
+    bool exact_match = (strncmp(src, name, NAME_LEN) == 0);
+    // Check for no preexisting dibs on incoming message source and wildcard used
+    bool wildcard_allowed = !MsgReqDib_exists(name, dibs, MAX_NUM_DIBS) && (strncmp(src, "*", 1) == 0);
 
-    // Message processing for catch-all filter 
-    if(strncmp(src, "*", 1) == 0) {
-      // Search for existing dibs 
-      msg_has_dibs = MsgReqDib_exists(name, dibs, MAX_NUM_DIBS);
-      
-      // Check if dibs found
-      if(msg_has_dibs) {
-        // Format 'send to myself' IPC message 
-        char msg_refeed[MAX_MSG_LEN];
-        strncpy(msg_refeed, self.name, NAME_LEN);
-        strncpy(&msg_refeed[NAME_LEN + 1], msg, bytes_read - (NAME_LEN + 1));
-
-        // Refeed into IPC 
-        if(write(self.conn.tx, msg_refeed, bytes_read) < bytes_read) {
-          perror("write() failed");
-          return -1;
-        }
-
-        // Allow time for message to processed by another thread 
-        nanosleep(&REFEED_DELAY, NULL);
+    // Test to see if filter corresponds to message source (exact match or wildcard)
+    if(exact_match || wildcard_allowed) {
+      // Send receipt confirmation 
+      if(ipc_send(name, RECV_CONF, strlen(RECV_CONF)) != 0) {
+        fprintf(stderr, "ipc_send() failed : ");
+        return -1;
       }
 
-    // Message filter is NOT catch-all
-    } else { 
-      // Check if source filter corresponds 
-      if(strncmp(src, name, NAME_LEN) == 0) {
-        // stop checking for dibs
-        break; 
+      // Copy nameless message into output buffer 
+      strncpy(buf, msg_nameless, (buf_len > msg_nameless_len) ? msg_nameless_len : buf_len);
       
-      // Source filter does NOT correspond
-      } else {
-        // Set message has dibs flag 
-        // NOTE: this is only in the potential sense. 
-        //       the existence of dibs for the real 
-        //       source is not guaranteed.
-        msg_has_dibs = true;
+      // Remove dibs 
+      MsgReqDib_remove(name, dibs, MAX_NUM_DIBS);
 
-        // Format 'send to myself' IPC message 
-        char msg_refeed[MAX_MSG_LEN];
-        strncpy(msg_refeed, self.name, NAME_LEN);
-        strncpy(&msg_refeed[NAME_LEN + 1], msg, bytes_read - (NAME_LEN + 1));
+      // Return number of bytes copied 
+      return msg_nameless_len;
+    
+    // claim failed, re-feed into self
+    } else {  
+      // Format message to 'self'
+      char msg_self[MAX_MSG_LEN];
+      strncpy(msg_self, msg, MAX_MSG_LEN);
+      memcpy(msg_self, self.name, NAME_LEN);
 
-        // Refeed into IPC 
-        if(write(self.conn.tx, msg_refeed, bytes_read) < bytes_read) {
-          perror("write() failed");
-          return -1;
-        }
-
-        // Allow time for message to processed by another thread 
-        nanosleep(&REFEED_DELAY, NULL);
+      // Send message directly to IPC 
+      if(write(self.conn.tx, msg_self, bytes_read) < bytes_read) {
+        perror("write() failed");
+        return -1;
       }
+
+      // Wait read delay and try again 
+      nanosleep(&READ_BLOCK_DELAY, NULL);
+      continue;
     }
-
-  } while(msg_has_dibs);
-
-  // Create placeholder for bytes copied into buffer
-  int bytes_copied = 0;
-
-  // Copy message into buffer
-  for (int x = 0; x < buffer_len && x < msg_final_len; x++) {
-    // Copy character into buffer
-    buffer[x] = msg_final[x];
-
-    // Update bytes copied
-    bytes_copied++;
   }
 
-  // Send receipt confirmation
-  if(ipc_send(name, RECV_CONF, strlen(RECV_CONF)) != 0) {
-    fprintf(stderr, "ipc_send() failed : ");
-    return -1;
-  }
-
-  // Remove dibs 
-  if(MsgReqDib_remove(src, dibs, MAX_NUM_DIBS) != 0) {
-    fprintf(stderr, "failed to remove dib from dibs array : ");
-    return -1;
-  }
-
-  // done
-  return bytes_copied;
+  // done 
+  return 0;
 }
 
 // Adds outgoing message to send queue
