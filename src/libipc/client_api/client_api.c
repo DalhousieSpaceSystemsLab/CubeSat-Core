@@ -433,28 +433,8 @@ int ipc_qsend(char dest[NAME_LEN], char *msg, size_t msg_len) {
 }
 
 // Adds incoming message request to recv queue
-int ipc_qrecv(char src[NAME_LEN], char *buf, size_t buf_len, void (*callback)(char*, size_t)) {
-  // Copy src filter into queue
-  for (int x = 0; x < NAME_LEN; x++) 
-    qrecv_src[x] = src[x];
+int ipc_qrecv(char src[NAME_LEN], void (*callback)(char*, size_t)) {
 
-  // Set receive queue buffer pointer
-  qrecv_buf = buf;
-
-  // Set receive queue buffer length
-  qrecv_buf_len = buf_len;
-
-  // Check if source name specified 
-  if(src[0] != '*') { 
-    // Create dib for source name 
-    MsgReqDib dib = MsgReqDib_set(src, callback);
-
-    // Add dib to array 
-    if(MsgReqDib_add(dib, dibs, MAX_NUM_DIBS) == -1) {
-      fprintf(stderr, "MsgReqDib_add() failed : ");
-      return -1;
-    }
-  }
 
   // done
   return 0;
