@@ -41,6 +41,11 @@ int ipc_connect(char name[NAME_LEN]) {
   };
   const socklen_t address_len = sizeof(address);
 
+  // Initialize dibs array 
+  for(int x = 0; x < MAX_NUM_DIBS; x++) {
+    dibs[x] = MsgReqDib_new();
+  }
+
   // Initiate rx socket
   // Nonblocking flag enabled for this socket
   if ((self.conn.rx = socket(AF_UNIX, SOCK_STREAM | SOCK_NONBLOCK, 0)) == -1) {  // socket() failed
