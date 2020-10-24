@@ -452,7 +452,7 @@ int ipc_qrecv(char src[NAME_LEN], void (*callback)(char*, size_t)) {
   }
 
   // Create a new dib for src 
-  if(MsgReqDib_add(MsgReqDib_set(src, callback), dibs, MAX_NUM_DIBS) != 0) {
+  if(MsgReqDib_add(MsgReqDib_set(src, callback), dibs, MAX_NUM_DIBS) < 0) {
     fprintf(stderr, "MsgReqDib_add() failed : ");
     return -1;
   }
