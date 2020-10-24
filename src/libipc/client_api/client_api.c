@@ -4,8 +4,6 @@
 *   purpose: provides API for other subsystems to use the IPC system as clients.
 *   author: alex amellal
 *
-*   TODO:
-*   - Rewrite ipc_recv function. real buggy
 */
 
 // Project headers
