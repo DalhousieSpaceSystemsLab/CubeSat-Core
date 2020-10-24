@@ -19,6 +19,9 @@
 // Interrupt signal routine handler
 void isr(int sig);
 
+// Test callback for ipc_qrecv
+void callback(char *, size_t);
+
 int main(int argc, char* argv[]) {
   // Check argc
   if (argc != 3) {
@@ -105,6 +108,12 @@ int main(int argc, char* argv[]) {
       printf("Enter message: ");
       fgets(msg, MAX_MSG_LEN + 2, stdin);
 
+      // Check if both entries are the [ENTER] key 
+      if(strncmp(dest, "\n", 1) == 0 && strncmp(msg, "\n", 1) == 0) {
+        // quit
+        break;
+      }
+
       // Check if message 'quit'
       if (strcmp(msg, "quit") == 0) {  // user is asking to quit
         break;
@@ -120,62 +129,42 @@ int main(int argc, char* argv[]) {
 
   else if (strcmp(rdwr, "async") == 0) {  // async communication
     // Create placeholders for messages
-    char msg_recv[MAX_MSG_LEN];
     char msg_send[MAX_MSG_LEN + 2];
+    char src[NAME_LEN + 2];
 
+    // Queue up a bunch of ipc_qrecv
     for (;;) {
-      // Prompt user for read
-      char read[3];
-      printf("read message? (y/n) : ");
-      fgets(read, 3, stdin);
+      // Prompt user to queue ipc_qrecv request 
+      printf("[?] Please enter a source filter (* for wildcard or [ENTER] to go to next step): ");
+      fgets(src, NAME_LEN + 2, stdin);
 
-      // Prompt user for write
-      char write[3];
-      printf("write message? (y/n) : ");
-      fgets(write, 3, stdin);
+      // Check to see if user pressed enter right away 
+      if(strncmp(src, "\n", 1) == 0) {
+        break;
+      }
 
-      // Queue read if desired
-      if (read[0] == 'y') {
-        if (ipc_qrecv("*", NULL) == -1) {  // ipc_qrecv() failed
+      // Run ipc_qrecv
+      if(ipc_qrecv(src, callback) != 0) {
           fprintf(stderr, "ipc_qrecv() failed\n");
           return -1;
         }
       }
 
-      // Queue send if desired
-      if (write[0] == 'y') {
-        // Placeholder for destination name
-        char dest[NAME_LEN + 2];
+    // Keep refreshing 
+    for(;;) {
+      // Prompt user to enter refresh source filter 
+      printf("[?] Please enter a source filter for ipc_refresh (* for wildcard or [ENTER] to quit): ");
+      fgets(src, NAME_LEN + 2, stdin);
 
-        // Prompt user for input
-        printf("Enter destination name: ");
-        fgets(dest, NAME_LEN + 2, stdin);
-        printf("Enter message: ");
-        fgets(msg_send, MAX_MSG_LEN + 2, stdin);
-
-        // Queue message send
-        if (ipc_qsend(dest, msg_send, strlen(msg_send)) == -1) {  // ipc_qsend() failed
-          fprintf(stderr, "ipc_qsend() failed\n");
-          return -1;
-        }
+      // Check if user pressed enter right away 
+      if(strncmp(src, "\n", 1) == 0) {
+        break;
       }
 
-      else if (read[0] == 'n' && write[0] == 'n') {  // quit
-        ipc_disconnect();
-
-        // quit
-        return 0;
-      }
-
-      // Refresh IPC queue
-      if (ipc_refresh() == -1) {  // ipc_refresh() failed
-        fprintf(stderr, "ipc_refresh() failed\n");
+      // Run ipc_refresh_src 
+      if(ipc_refresh_src(src) != 0) {
+        fprintf(stderr, "ipc_refresh_src() failed\n");
         return -1;
-      }
-
-      // Check if message received
-      if (msg_recv[0] != 0) {
-        printf("message received: %s\n", msg_recv);
       }
     }
   }
@@ -207,4 +196,8 @@ void isr(int sig) {
       exit(0);
       break;
   }
+}
+
+void callback(char* msg, size_t msg_len) {
+  printf("\nI AM CALLBACK\n");
 }
