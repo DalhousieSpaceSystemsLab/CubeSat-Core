@@ -29,6 +29,7 @@ MsgReqDib MsgReqDib_set(char name[NAME_LEN], void (*callback)(char*, size_t)) {
 }
 
 // Appends or overwrites dib into dib array
+// Returns index value where dib was added, otherwise -1 in case of error.
 int MsgReqDib_add(MsgReqDib element, MsgReqDib * array, size_t array_len) {
   // Check for existing element with same name 
   for(int x = 0; x < array_len; x++) {
