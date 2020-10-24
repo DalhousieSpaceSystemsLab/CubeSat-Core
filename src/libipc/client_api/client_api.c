@@ -19,10 +19,6 @@ static char qsend_dest[NAME_LEN];    // send queue destination name
 static char qsend_msg[MAX_MSG_LEN];  // send queue message placeholder
 static int qsend_msg_len = -1;       // send queue message length
 
-static char qrecv_src[NAME_LEN];  // receive queue source name filter
-static char *qrecv_buf   = NULL;  // receive queue message placeholder
-static int qrecv_buf_len = -1;    // receive queue placeholder length
-
 static MsgReqDib dibs[MAX_NUM_DIBS]; // Stores message request dibs 
 
 // Initialize client API and connect to IPC daemon.
@@ -445,7 +441,23 @@ int ipc_qsend(char dest[NAME_LEN], char *msg, size_t msg_len) {
 
 // Adds incoming message request to recv queue
 int ipc_qrecv(char src[NAME_LEN], void (*callback)(char*, size_t)) {
+  // Check for preexisting dibs on src
+  if(MsgReqDib_exists(src, dibs, MAX_NUM_DIBS)) {
+    fprintf(stderr, "preexisting dibs on src (%.*s) : ", NAME_LEN, src);
+    return -1;
+  }
 
+  // Check if callback NULL
+  if(callback == NULL) {
+    fprintf(stderr, "callback for ipc_qrecv cannot be null : ");
+    return -1;
+  }
+
+  // Create a new dib for src 
+  if(MsgReqDib_add(MsgReqDib_set(src, callback), dibs, MAX_NUM_DIBS) != 0) {
+    fprintf(stderr, "MsgReqDib_add() failed : ");
+    return -1;
+  }
 
   // done
   return 0;
@@ -458,79 +470,55 @@ int ipc_refresh() {
 
 // Simultaneously reads/writes queued data for specific source 
 int ipc_refresh_src(char src[NAME_LEN]) {
-  // Check if read queued
-  if (qrecv_buf != NULL) {
-    // Read data
-    int bytes_read = -1;
-    if ((bytes_read = read(self.conn.rx, qrecv_buf, (qrecv_buf_len > MAX_MSG_LEN ? MAX_MSG_LEN : qrecv_buf_len))) <= 0) {  // read() failed
-      // Check if read() should have blocked
-      if (errno == EWOULDBLOCK || errno == EAGAIN) {  // read() should have blocked
-        // no issue, just continue
+  //--- QRECV ---//
 
-        // Set buffer value to 0
-        memset(qrecv_buf, 0, qrecv_buf_len);
+  // Create placeholder for incoming message from ipc
+  char msg[MAX_MSG_LEN];
+  int bytes_read = -1;
 
-      } else {  // read() really failed
-        perror("read() failed");
-        return -1;
-      }
-    } else {
-      // Create placeholders for name and separated message 
-      char name[NAME_LEN];
-      char msg_final[MAX_MSG_LEN];
+  // Run single non-blocking read from IPC 
+  if((bytes_read = read(self.conn.rx, msg, MAX_MSG_LEN)) < 0) {
+    // Make sure read really failed (and didnt try to block)
+    if(!(errno == EWOULDBLOCK || errno == EAGAIN)) {
+      perror("read() failed");
+      return -1;
+    }
+  }
 
-      // Separate name from message 
-      strncpy(name, qrecv_buf, NAME_LEN);
-      for (int x = NAME_LEN + 1; x < bytes_read; x++) 
-        msg_final[x - (NAME_LEN + 1)] = qrecv_buf[x];
+  // Check if message was received from IPC
+  if(bytes_read > NAME_LEN + 2) {
+    // Create placeholders for message source name and nameless message 
+    char name[NAME_LEN];
+    char msg_nameless[MAX_MSG_LEN];
+    size_t msg_nameless_len = bytes_read - (NAME_LEN+1);
+    
+    // Separate source name from message
+    strncpy(name, msg, NAME_LEN);
+    strncpy(msg_nameless, &msg[NAME_LEN+1], msg_nameless_len);
 
-      // Check if refresh source filter wildcard or matches message source name 
-      if(src[0] == '*' || strncmp(src, name, NAME_LEN) == 0) {
-        // Check if dibs claimed on source 
-        for(int x = 0; x < MAX_NUM_DIBS; x++) {
-          // Check if name matches 
-          if(strncmp(dibs[x].name, name, NAME_LEN) == 0) {
-            // Check if callback present 
-            if(dibs[x].callback != NULL) {
-              // Run callback 
-              dibs[x].callback(qrecv_buf, bytes_read);
+    // Look for corresponding dibs in dibs array 
+    for(int x = 0; x < MAX_NUM_DIBS; x++) {
+      
+      // Create placeholders for conditions of correspondance
+      bool dib_matches_msg_src = strncmp(name, dibs[x].name, NAME_LEN) == 0;
+      bool dib_matches_src_filter = strncmp(src, dibs[x].name, NAME_LEN) == 0;
+      bool src_filter_wildcard = strncmp(src, "*", 1) == 0;
+      
+      // Check if dib corresponds to dibs rules and src filter
+      if((dib_matches_msg_src && dib_matches_src_filter) || src_filter_wildcard) {
+        // Check for valid callback 
+        if(dibs[x].callback != NULL) {
+          // Run callback and pass message as parameter 
+          (dibs[x].callback)(msg_nameless, msg_nameless_len);
 
-              // Set qrecv buffer value to 0
-              // NOTE: This is because the message was 'consumed' by the callback
-              memset(qrecv_buf, 0, qrecv_buf_len);
-            }
-
-            // Clear dib 
-            dibs[x] = MsgReqDib_new();
-
-            // Stop checking for name matches 
-            break;
-          }
+          // done
+          break;
         }
-
-      // Check if specific source specified but doesnt match message source 
-      } else if(src[0] != '*' && strncmp(src, name, NAME_LEN) != 0) {
-        // Message belongs to another function call.
-        // Refeed into IPC 
-        if(ipc_send(self.name, qrecv_buf, bytes_read) != 0) {
-          fprintf(stderr, "ipc_send() failed : ");
-          return -1;
-        }
-
-        // Clear qrecv buffer 
-        // NOTE: This is because the message was 'consumed' by the refeed
-        memset(qrecv_buf, 0, qrecv_buf_len);
-
-        // Wait some time to allow refeed to reach another function 
-        nanosleep(&REFEED_DELAY, NULL);
       }
     }
   }
 
-  // Reset read queue placeholders
-  memset(qrecv_src, 0, NAME_LEN);
-  qrecv_buf     = NULL;
-  qrecv_buf_len = -1;
+  //--- QSEND ---//
 
   // Check if qsend buffers valid
   if (qsend_msg_len > 0) {  // qsend is good to go
