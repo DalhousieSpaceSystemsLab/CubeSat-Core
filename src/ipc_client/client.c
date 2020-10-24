@@ -136,7 +136,7 @@ int main(int argc, char* argv[]) {
 
       // Queue read if desired
       if (read[0] == 'y') {
-        if (ipc_qrecv("*", msg_recv, MAX_MSG_LEN, NULL) == -1) {  // ipc_qrecv() failed
+        if (ipc_qrecv("*", NULL) == -1) {  // ipc_qrecv() failed
           fprintf(stderr, "ipc_qrecv() failed\n");
           return -1;
         }

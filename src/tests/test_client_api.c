@@ -139,7 +139,7 @@ void test_client_api_refresh() {
 
   // Queue message to send/receive
   char msg[MAX_MSG_LEN];
-  assert_int_equal(ipc_qrecv("*", (char *)msg, MAX_MSG_LEN, NULL), 0);
+  assert_int_equal(ipc_qrecv("*", NULL), 0);
   assert_int_equal(ipc_qsend((char *)dest, (char *)msg_send, msg_send_len), 0);
 
   // Run ipc_refresh
