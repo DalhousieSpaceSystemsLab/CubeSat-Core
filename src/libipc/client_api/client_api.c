@@ -311,8 +311,11 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
 // Receive message from another process
 // Returns number of bytes of data copied into buffer.
 int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len) {
+  // Check if source wildcard 
+  bool src_wildcard = strncmp(src, "*", 1) == 0;
+  
   // Check if specific source specified 
-  if(strncmp(src, "*", 1) != 0) {
+  if(!src_wildcard) {
     // Check if is a preexisting dib on message source
     if(MsgReqDib_exists(src, dibs, MAX_NUM_DIBS)) {
       fprintf(stderr, "unable to claim dibs on message source \"$.*s\" : ", NAME_LEN, src);
@@ -360,10 +363,10 @@ int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len) {
     // Check if source filter is an exact match to incoming message source
     bool exact_match = (strncmp(src, name, NAME_LEN) == 0);
     // Check for no preexisting dibs on incoming message source and wildcard used
-    bool wildcard_allowed = !MsgReqDib_exists(name, dibs, MAX_NUM_DIBS) && (strncmp(src, "*", 1) == 0);
+    bool preexisting_dibs = MsgReqDib_exists(name, dibs, MAX_NUM_DIBS);
 
     // Test to see if filter corresponds to message source (exact match or wildcard)
-    if(exact_match || wildcard_allowed) {
+    if(exact_match || (!preexisting_dibs && src_wildcard)) {
       // Send receipt confirmation 
       if(ipc_send(name, RECV_CONF, strlen(RECV_CONF)) != 0) {
         fprintf(stderr, "ipc_send() failed : ");
