@@ -321,7 +321,7 @@ int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len) {
   
   // Check if specific source specified 
   if(!src_wildcard) {
-    // Check if is a preexisting dib on message source
+    // Check for a preexisting dib on message source
     if(MsgReqDib_exists(src, dibs, MAX_NUM_DIBS)) {
       fprintf(stderr, "unable to claim dibs on message source \"$.*s\" : ", NAME_LEN, src);
       return -1;
@@ -364,31 +364,37 @@ int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len) {
     strncpy(name, msg, NAME_LEN);
     strncpy(msg_nameless, &msg[NAME_LEN+1], msg_nameless_len);
 
-    // Create placeholders for message source filter conditions //
+    //--- Check if message can be claimed ---//
+
     // Check if source filter is an exact match to incoming message source
     bool exact_match = (strncmp(src, name, NAME_LEN) == 0);
+
     // Check for no preexisting dibs on incoming message source and wildcard used
     bool preexisting_dibs = MsgReqDib_exists(name, dibs, MAX_NUM_DIBS);
 
     // Test to see if filter corresponds to message source (exact match or wildcard)
     if(exact_match || (!preexisting_dibs && src_wildcard)) {
+      //--- Message CAN be claimed ---//
+      
       // Send receipt confirmation 
       if(ipc_send(name, RECV_CONF, strlen(RECV_CONF)) != 0) {
         fprintf(stderr, "ipc_send() failed : ");
         return -1;
       }
 
-      // Copy nameless message into output buffer 
-      strncpy(buf, msg_nameless, (buf_len > msg_nameless_len) ? msg_nameless_len : buf_len);
-      
       // Remove dibs 
       MsgReqDib_remove(name, dibs, MAX_NUM_DIBS);
+
+      // Copy nameless message into output buffer 
+      strncpy(buf, msg_nameless, (buf_len > msg_nameless_len) ? msg_nameless_len : buf_len);
 
       // Return number of bytes copied 
       return msg_nameless_len;
     
     // claim failed, re-feed into self
     } else {  
+      //--- Message CANNOT be claimed ---//
+
       // Format message to 'self'
       char msg_self[MAX_MSG_LEN];
       strncpy(msg_self, msg, MAX_MSG_LEN);
