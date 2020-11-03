@@ -131,7 +131,7 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
   // // Listen on IPC for receipt confirmation
   // bool recvd = false;
   // ipc_qrecv(dest, (void (*)(char*,size_t)) {recvd = true});
-  
+
   // // Wait for receipt confirmation 
   // for(struct timespec t = {.tv_sec=0,.tv_nsec=0}; t.tv_sec < RECV_TIMEOUT.tv_sec && t.tv_nsec < RECV_TIMEOUT.tv_nsec; t.tv_sec += READ_BLOCK_DELAY.tv_sec, t.tv_nsec += READ_BLOCK_DELAY.tv_nsec) {
   //   // Refresh incoming messages from destination
