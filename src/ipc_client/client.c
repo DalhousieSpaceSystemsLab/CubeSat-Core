@@ -37,6 +37,14 @@ static void cb_yan(char *msg, size_t msg_len) {
   printf(">> ");
   fflush(stdout);
 }
+
+static void *auto_refresh() {
+  for(;;) {
+    ipc_refresh();
+    nanosleep(&READ_BLOCK_DELAY, NULL);
+  }
+}
+
 int main(int argc, char* argv[]) {
   // Check argc
   if (argc != 3) {
