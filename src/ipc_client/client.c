@@ -151,10 +151,7 @@ int main(int argc, char* argv[]) {
   }
 
   else if (strcmp(rdwr, "async") == 0) {  // async communication
-    // Create placeholders for messages
-    char msg_send[MAX_MSG_LEN + 2];
-    char src[NAME_LEN + 2];
-
+    
     // Create dibs 
     if(ipc_qrecv("bob", cb_bob) != 0) {
       fprintf(stderr, "ipc_qrecv failed : ");
@@ -164,19 +161,19 @@ int main(int argc, char* argv[]) {
     if(ipc_qrecv("yan", cb_yan) != 0) {
       fprintf(stderr, "ipc_qrecv failed : ");
       return -1;
-      }
+    }
 
     if(ipc_qrecv("*", cb_wild) != 0) {
       fprintf(stderr, "ipc_qrecv failed : ");
-          return -1;
-        }
+      return -1;
+    }
 
     // Start refreshing for incoming messages 
     pthread_t thread_auto_refresh;
     if(pthread_create(&thread_auto_refresh, NULL, auto_refresh, NULL) < 0) {
       perror("pthread_create() failed");
       return -1;
-      }
+    }
 
     // Message send loop
     for(;;) {
@@ -201,10 +198,6 @@ int main(int argc, char* argv[]) {
     }
   }
 
-  else if(strcmp(rdwr, "dibs") == 0) {  // async communication with dibs
-    // TODO: make dibs version for client to test dibs feature
-    }
-
   else {  // bad keyword
     fprintf(stderr, "invalid setting. try ./client <name> <read/write>\n");
     return -1;
@@ -228,8 +221,4 @@ void isr(int sig) {
       exit(0);
       break;
   }
-}
-
-void callback(char* msg, size_t msg_len) {
-  printf("\nI AM CALLBACK\n");
 }
