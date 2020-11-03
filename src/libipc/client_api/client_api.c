@@ -355,12 +355,13 @@ int ipc_refresh_src(char src[NAME_LEN]) {
     for(int x = 0; x < MAX_NUM_DIBS; x++) {
       
       // Create placeholders for conditions of correspondance
-      bool dib_matches_msg_src = strncmp(name, dibs[x].name, NAME_LEN) == 0;
+      bool dib_matches_msg_src    = strncmp(name, dibs[x].name, NAME_LEN) == 0;
       bool dib_matches_src_filter = strncmp(src, dibs[x].name, NAME_LEN) == 0;
-      bool src_filter_wildcard = strncmp(src, "*", 1) == 0;
+      bool src_filter_wildcard    = strncmp(src, "*", 1) == 0;
+      bool dib_wildcard           = strncmp(dibs[x].name, "*", 1) == 0;
       
       // Check if dib corresponds to dibs rules and src filter
-      if((dib_matches_msg_src && dib_matches_src_filter) || src_filter_wildcard) {
+      if((dib_matches_msg_src && dib_matches_src_filter) || (dib_matches_msg_src && src_filter_wildcard) || (dib_wildcard && src_filter_wildcard)) {
         // Check for valid callback 
         if(dibs[x].callback != NULL) {
           // Run callback and pass message as parameter 
