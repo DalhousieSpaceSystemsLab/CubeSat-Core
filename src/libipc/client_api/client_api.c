@@ -128,35 +128,22 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
     return 0;
   }
 
-  // Create placeholders for timeout counters
-  // char recv_conf_msg[MAX_MSG_LEN];
-  // long int time_el = 0;
-  // long int time_el_max = RECV_TIMEOUT.tv_sec*1000000000L + RECV_TIMEOUT.tv_nsec;
-  // long int time_inc = READ_BLOCK_DELAY.tv_sec*1000000000L + READ_BLOCK_DELAY.tv_nsec;
+  // // Listen on IPC for receipt confirmation
+  // bool recvd = false;
+  // ipc_qrecv(dest, (void (*)(char*,size_t)) {recvd = true});
   
   // // Wait for receipt confirmation 
-  // for(time_el = 0; time_el < time_el_max; time_el += time_inc) {
-  //   // Check if read fails 
-  //   if(read(self.conn.rx, recv_conf_msg, MAX_MSG_LEN) <= 0) {
-  //     // Check if read should have blocked 
-  //     if(errno == EWOULDBLOCK || errno == EAGAIN) {
-  //       // Wait & try again
-  //       nanosleep(&READ_BLOCK_DELAY, NULL);
-  //       continue;
-  //     } else {
-  //       // Something actually went wrong 
-  //       perror("read() failed");
-  //       return -1;
-  //     }
-  //   } else {
-  //     // read succeeded, get out of loop 
-  //     break;
-  //   }
+  // for(struct timespec t = {.tv_sec=0,.tv_nsec=0}; t.tv_sec < RECV_TIMEOUT.tv_sec && t.tv_nsec < RECV_TIMEOUT.tv_nsec; t.tv_sec += READ_BLOCK_DELAY.tv_sec, t.tv_nsec += READ_BLOCK_DELAY.tv_nsec) {
+  //   // Refresh incoming messages from destination
+  //   ipc_refresh_src(dest);
+
+  //   // Wait before refreshing again
+  //   nanosleep(&READ_BLOCK_DELAY, NULL);
   // }
 
-  // // Check if receipt confirmation timeout exceeded 
-  // if(time_el >= RECV_TIMEOUT.tv_sec*1000000000L + RECV_TIMEOUT.tv_nsec) {
-  //   fprintf(stderr, "ipc_send receipt confirmation timed out : ");
+  // // Check if receipt confirmation failed to be received in time
+  // if(!recvd) {
+  //   fprintf(stderr, "failed to send message, receipt confirmation timed out : ");
   //   return -1;
   // }
 
