@@ -155,38 +155,47 @@ int main(int argc, char* argv[]) {
     char msg_send[MAX_MSG_LEN + 2];
     char src[NAME_LEN + 2];
 
-    // Queue up a bunch of ipc_qrecv
-    for (;;) {
-      // Prompt user to queue ipc_qrecv request 
-      printf("[?] Please enter a source filter (* for wildcard or [ENTER] to go to next step): ");
-      fgets(src, NAME_LEN + 2, stdin);
+    // Create dibs 
+    if(ipc_qrecv("bob", cb_bob) != 0) {
+      fprintf(stderr, "ipc_qrecv failed : ");
+      return -1;
+    }
 
-      // Check to see if user pressed enter right away 
-      if(strncmp(src, "\n", 1) == 0) {
-        break;
+    if(ipc_qrecv("yan", cb_yan) != 0) {
+      fprintf(stderr, "ipc_qrecv failed : ");
+      return -1;
       }
 
-      // Run ipc_qrecv
-      if(ipc_qrecv(src, callback) != 0) {
-          fprintf(stderr, "ipc_qrecv() failed\n");
+    if(ipc_qrecv("*", cb_wild) != 0) {
+      fprintf(stderr, "ipc_qrecv failed : ");
           return -1;
         }
+
+    // Start refreshing for incoming messages 
+    pthread_t thread_auto_refresh;
+    if(pthread_create(&thread_auto_refresh, NULL, auto_refresh, NULL) < 0) {
+      perror("pthread_create() failed");
+      return -1;
       }
 
-    // Keep refreshing 
+    // Message send loop
     for(;;) {
-      // Prompt user to enter refresh source filter 
-      printf("[?] Please enter a source filter for ipc_refresh (* for wildcard or [ENTER] to quit): ");
-      fgets(src, NAME_LEN + 2, stdin);
+      // Create placeholders for user defined message
+      char input[MAX_MSG_LEN + 2];
+      char dest[NAME_LEN + 2];
+      char msg[MAX_MSG_LEN + 2];
 
-      // Check if user pressed enter right away 
-      if(strncmp(src, "\n", 1) == 0) {
-        break;
-      }
+      // Ask user for message to send 
+      printf(">> ");
+      fgets(input, MAX_MSG_LEN + 2, stdin);
 
-      // Run ipc_refresh_src 
-      if(ipc_refresh_src(src) != 0) {
-        fprintf(stderr, "ipc_refresh_src() failed\n");
+      // Separate dest name from msg 
+      strncpy(dest, input, NAME_LEN);
+      strncpy(msg, &input[NAME_LEN+1], MAX_MSG_LEN - (NAME_LEN+1));
+
+      // Send message 
+      if(ipc_send(dest, msg, strlen(msg)) != 0) {
+        fprintf(stderr, "ipc_send() failed\n");
         return -1;
       }
     }
