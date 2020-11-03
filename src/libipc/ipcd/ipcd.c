@@ -9,8 +9,8 @@
     - Key-value pair sending 
     - C++ wrappers (ongoing)
     - Queue multiple messages 
-    - Message source filters + dibs on incoming messages?
-    - Implement dibs or catch-all source name exception list for ipc_recv (ongoing)
+    - Message source filters + dibs on incoming messages? (done)
+    - Implement dibs or catch-all source name exception list for ipc_recv (done)
     - Setup unit testing with new functions
 *
 */
