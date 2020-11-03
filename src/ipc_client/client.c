@@ -19,9 +19,24 @@
 // Interrupt signal routine handler
 void isr(int sig);
 
-// Test callback for ipc_qrecv
-void callback(char *, size_t);
+// Create callbacks for incoming messages
+static void cb_wild(char *msg,size_t msg_len) {
+  printf("\r[*] >> %.*s\n", msg_len, msg);
+  printf(">> ");
+  fflush(stdout);
+}
 
+static void cb_bob(char *msg, size_t msg_len) {
+  printf("\r[bob] >> %.*s\n", msg_len, msg);
+  printf(">> ");
+  fflush(stdout);
+}
+
+static void cb_yan(char *msg, size_t msg_len) {
+  printf("\r[yan] >> %.*s\n", msg_len, msg);
+  printf(">> ");
+  fflush(stdout);
+}
 int main(int argc, char* argv[]) {
   // Check argc
   if (argc != 3) {
