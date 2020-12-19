@@ -18,6 +18,8 @@
 // Project headers
 #include "ipc/ipcd.h"
 
+#define LOG_TRAFFIC 1
+
 ///////////////////////
 //  Local Variables  //
 ///////////////////////
@@ -219,6 +221,27 @@ static void *start_routing_client(void *params) {
         if (write(clients[x].conn.rx, fmt_msg, fmt_msg_len) < fmt_msg_len) {  // write() failed
           perror("write() failed : start_routing_client() failed");
           pthread_exit(NULL);
+        }
+
+        // Traffic Debug
+        if(LOG_TRAFFIC) {
+          // Get current time
+          time_t current_time = time(NULL);
+          struct tm * lt = localtime(&current_time);
+
+          // Extract nameless message 
+          char msg_nameless[MAX_MSG_LEN];
+          strncpy(msg_nameless, &msg[NAME_LEN+1], MAX_MSG_LEN - (NAME_LEN+1));
+
+          // Remove newline character from nameless message 
+          for(int x = 0; x < MAX_MSG_LEN; x++) {
+            if(msg_nameless[x] == '\n') {
+              msg_nameless[x] = 0;
+            }
+          }
+
+          // Print message trace
+          printf("(%.02d:%.02d:%.02d) [%.*s] ===> [%.*s] (%.*s)\n", lt->tm_hour, lt->tm_min, lt->tm_sec, NAME_LEN, client.name, NAME_LEN, name, fmt_msg_len-(NAME_LEN+1), msg_nameless);
         }
       }
     }
