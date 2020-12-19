@@ -10,8 +10,12 @@
 #define _POSIX_C_SOURCE 199309L
 #include "ipc/client_api.h"
 
-// private variables
-static client_t self;  // self-referential placeholder for this client
+// Private variables
+static client_t self;               // self-referential placeholder for this client
+static char qsend_dest[NAME_LEN];   // send queue destination name
+static char qsend_msg[MAX_MSG_LEN]; // send queue message placeholder
+static int qsend_msg_len = -1;      // send queue message length
+static MsgReqDib dibs[MAX_NUM_DIBS];// Stores message request dibs 
 
 static char qsend_dest[NAME_LEN];    // send queue destination name
 static char qsend_msg[MAX_MSG_LEN];  // send queue message placeholder
