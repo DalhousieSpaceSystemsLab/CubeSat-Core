@@ -45,5 +45,5 @@ void formatting(buffer, fmt_buffer)
 void do_msn(fmt_buffer)
 {
   printf("Yay i did this mission %s!", fmt_buffer);
-  //add your code here you dumbasses
+  //add your code here
 }
