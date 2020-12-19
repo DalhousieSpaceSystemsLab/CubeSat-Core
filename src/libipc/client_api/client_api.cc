@@ -109,7 +109,7 @@ void ipc::async::recv(string src) {
   }
 
   // Add message request to queue 
-  if(ipc_qrecv((char *) src.c_str(), NULL) != 0) {
+  if(ipc_qrecv((char *) src.c_str(), NULL, NULL) != 0) {
     cerr << "ipc_qrecv() failed" << endl;
     throw ipc::EAPI();
   }
