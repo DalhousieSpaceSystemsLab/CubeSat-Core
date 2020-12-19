@@ -18,9 +18,10 @@ MsgReqDib MsgReqDib_new() {
 }
 
 // Returns initialized dib 
-MsgReqDib MsgReqDib_set(char name[NAME_LEN], void (*callback)(char*, size_t)) {
+MsgReqDib MsgReqDib_set(char name[NAME_LEN], void (*callback)(char*, size_t, void*), void* data) {
   MsgReqDib dib = {
-    .callback = callback
+    .callback = callback,
+    .data = data
   };
   strncpy(dib.name, name, NAME_LEN);
 
