@@ -132,27 +132,40 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
   // TODO:
   // - Complete receipt confirmation system
 
-  // Listen on IPC for receipt confirmation
-  // bool recvd = false;
-  // ipc_qrecv(dest, (void (*)(char*,size_t)) {recvd = true});
+  // Create placeholder for receipt confirmation
+  char recv_conf[MAX_MSG_LEN];
+  bool recvd = false;
 
-  // // Wait for receipt confirmation 
-  // for(struct timespec t = {.tv_sec=0,.tv_nsec=0}; t.tv_sec < RECV_TIMEOUT.tv_sec && t.tv_nsec < RECV_TIMEOUT.tv_nsec; t.tv_sec += READ_BLOCK_DELAY.tv_sec, t.tv_nsec += READ_BLOCK_DELAY.tv_nsec) {
-  //   // Refresh incoming messages from destination
-  //   ipc_refresh_src(dest);
+  // Listen for incoming receipt confirmation 
+  if(ipc_qrecv(dest, cb_recv_conf, recv_conf) != 0) {
+    fprintf(stderr, "ipc_qrecv() failed : ");
+    return -1;
+  }
 
-  //   // Wait before refreshing again
-  //   nanosleep(&READ_BLOCK_DELAY, NULL);
-  // }
+  // Refresh message queue until timeout exceeded 
+  clock_t start = clock();
+  for(int x = 0; ((clock() - start) / CLOCKS_PER_SEC) < RECV_TIMEOUT; x++) {
+    // Refresh message queue 
+    if(ipc_refresh_src(dest) != 0) {
+      fprintf(stderr, "ipc_refresh_src() failed : ");
+      return -1;
+    }
 
-  // // Remove dib 
-  // MsgReqDib_remove(dest, dibs, MAX_NUM_DIBS);
+    // Check receipt confirmation placeholder 
+    if(strncmp(recv_conf, RECV_CONF, strlen(RECV_CONF)) == 0) {
+      recvd = true;
+      break;
+    }
 
-  // // Check if receipt confirmation failed to be received in time
-  // if(!recvd) {
-  //   fprintf(stderr, "failed to send message, receipt confirmation timed out : ");
-  //   return -1;
-  // }
+    // Wait read block delay 
+    nanosleep(&READ_BLOCK_DELAY, NULL);
+  }
+
+  // Check if receipt confirmation arrived before timeout 
+  if(!recvd) {
+    fprintf(stderr, "failed to get receipt confirmation before timeout : ");
+    return -1;
+  }
 
   // done
   return 0;
