@@ -237,10 +237,13 @@ int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len) {
     if(exact_match || (!preexisting_dibs && src_wildcard)) {
       //--- Message CAN be claimed ---//
       
-      // Send receipt confirmation 
-      if(ipc_send(name, RECV_CONF, strlen(RECV_CONF)) != 0) {
-        fprintf(stderr, "ipc_send() failed : ");
-        return -1;
+      // Ensure incoming message is NOT receipt confirmation
+      if(!(strncmp(msg_nameless, RECV_CONF, strlen(RECV_CONF)) == 0)) {
+        // Send receipt confirmation 
+        if(ipc_send(name, RECV_CONF, strlen(RECV_CONF)) != 0) {
+          fprintf(stderr, "ipc_send() failed : ");
+          return -1;
+        }
       }
 
       // Remove dibs 
