@@ -30,7 +30,7 @@ void test_client_api_connect() {
 
   // self.conn.rx = socket()
   will_return(__wrap_socket, AF_UNIX);
-  will_return(__wrap_socket, SOCK_STREAM | SOCK_NONBLOCK);
+  will_return(__wrap_socket, SOCK_STREAM/* | SOCK_NONBLOCK*/);
   will_return(__wrap_socket, 0);
   will_return(__wrap_socket, self_conn_rx);
 
@@ -139,7 +139,7 @@ void test_client_api_refresh() {
 
   // Queue message to send/receive
   char msg[MAX_MSG_LEN];
-  assert_int_equal(ipc_qrecv("*", NULL), 0);
+  assert_int_equal(ipc_qrecv("*", NULL, NULL), 0);
   assert_int_equal(ipc_qsend((char *)dest, (char *)msg_send, msg_send_len), 0);
 
   // Run ipc_refresh
