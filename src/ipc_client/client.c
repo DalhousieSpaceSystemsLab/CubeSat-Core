@@ -148,7 +148,7 @@ int main(int argc, char* argv[]) {
     // Create message dibs in IPC 
     for(int x = 0; x < dibs_len; x++) {
       // Check if ipc_qrecv failed
-      if(ipc_qrecv(dibs[x], cb_read) != 0) {
+      if(ipc_qrecv(dibs[x], cb_read, NULL) != 0) {
         fprintf(stderr, "ipc_qrecv() failed\n");
         return -1;
       }
@@ -183,7 +183,7 @@ void isr(int sig) {
 }
 
 // Callback for async communication 
-static cb_read(char *msg, size_t msg_len) {
+static void cb_read(char *msg, size_t msg_len) {
   // Print message 
   printf("Incoming message: %.*s\n", msg_len, msg);
 }
