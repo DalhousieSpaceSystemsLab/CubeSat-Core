@@ -183,7 +183,7 @@ void isr(int sig) {
 }
 
 // Callback for async communication 
-static void cb_read(char *msg, size_t msg_len) {
+static void cb_read(char *msg, size_t msg_len, void* data) {
   // Print message 
   printf("Incoming message: %.*s\n", msg_len, msg);
 }
