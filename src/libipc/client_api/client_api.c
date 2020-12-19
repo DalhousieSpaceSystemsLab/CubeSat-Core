@@ -185,8 +185,8 @@ int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len) {
       return -1;
     }
 
-    // Since source is free to claim, place a dib on source 
-    if(MsgReqDib_add(MsgReqDib_set(src, NULL), dibs, MAX_NUM_DIBS) != 0) {
+    // Since source is free to claim, place a non-callback dib on source 
+    if(MsgReqDib_add(MsgReqDib_set(src, NULL, NULL), dibs, MAX_NUM_DIBS) != 0) {
       fprintf(stderr, "failed to claim dibs on src (%.*s) : ", NAME_LEN, src);
       return -1;
     }
@@ -302,7 +302,7 @@ int ipc_qsend(char dest[NAME_LEN], char *msg, size_t msg_len) {
 }
 
 // Adds incoming message request to recv queue
-int ipc_qrecv(char src[NAME_LEN], void (*callback)(char*, size_t)) {
+int ipc_qrecv(char src[NAME_LEN], void (*callback)(char*, size_t, void*), void* data) {
   // Check for preexisting dibs on src
   if(MsgReqDib_exists(src, dibs, MAX_NUM_DIBS)) {
     fprintf(stderr, "preexisting dibs on src (%.*s) : ", NAME_LEN, src);
@@ -316,7 +316,7 @@ int ipc_qrecv(char src[NAME_LEN], void (*callback)(char*, size_t)) {
   }
 
   // Create a new dib for src 
-  if(MsgReqDib_add(MsgReqDib_set(src, callback), dibs, MAX_NUM_DIBS) < 0) {
+  if(MsgReqDib_add(MsgReqDib_set(src, callback, data), dibs, MAX_NUM_DIBS) < 0) {
     fprintf(stderr, "MsgReqDib_add() failed : ");
     return -1;
   }
@@ -372,7 +372,7 @@ int ipc_refresh_src(char src[NAME_LEN]) {
         // Check for valid callback 
         if(dibs[x].callback != NULL) {
           // Run callback and pass message as parameter 
-          (dibs[x].callback)(msg_nameless, msg_nameless_len);
+          (dibs[x].callback)(msg_nameless, msg_nameless_len, dibs[x].data);
 
           // Send receipt confirmation 
           if(ipc_send(dibs[x].name, RECV_CONF, strlen(RECV_CONF)) != 0) {
