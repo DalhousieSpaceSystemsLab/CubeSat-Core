@@ -19,31 +19,8 @@
 // Interrupt signal routine handler
 void isr(int sig);
 
-// Create callbacks for incoming messages
-static void cb_wild(char *msg,size_t msg_len) {
-  printf("\r[*] >> %.*s\n", msg_len, msg);
-  printf(">> ");
-  fflush(stdout);
-}
-
-static void cb_bob(char *msg, size_t msg_len) {
-  printf("\r[bob] >> %.*s\n", msg_len, msg);
-  printf(">> ");
-  fflush(stdout);
-}
-
-static void cb_yan(char *msg, size_t msg_len) {
-  printf("\r[yan] >> %.*s\n", msg_len, msg);
-  printf(">> ");
-  fflush(stdout);
-}
-
-static void *auto_refresh() {
-  for(;;) {
-    ipc_refresh();
-    nanosleep(&READ_BLOCK_DELAY, NULL);
-  }
-}
+// Callbacks for async communication 
+static void cb_read(char *msg, size_t msg_len);
 
 int main(int argc, char* argv[]) {
   // Check argc
@@ -102,12 +79,12 @@ int main(int argc, char* argv[]) {
       char msg[MAX_MSG_LEN];
 
       // Ask user for source filter 
-      printf("Please enter the desired source filter (* for wildcard): ");
-      fgets(src, NAME_LEN+2, stdin);
+      // printf("Please enter the desired source filter (* for wildcard): ");
+      // fgets(src, NAME_LEN+2, stdin);
 
       // Read data
       int bytes_read = -1;
-      if ((bytes_read = ipc_recv(src, msg, MAX_MSG_LEN)) == -1) {  // ipc_recv() failed
+      if ((bytes_read = ipc_recv("*", msg, MAX_MSG_LEN)) == -1) {  // ipc_recv() failed
         fprintf(stderr, "ipc_recv() failed\n");
         return -1;
       }
@@ -151,50 +128,32 @@ int main(int argc, char* argv[]) {
   }
 
   else if (strcmp(rdwr, "async") == 0) {  // async communication
+    // Create placeholder for dibs 
+    char dibs[MAX_NUM_DIBS][NAME_LEN + 2];
+    size_t dibs_len = 0;
     
-    // Create dibs 
-    if(ipc_qrecv("bob", cb_bob) != 0) {
-      fprintf(stderr, "ipc_qrecv failed : ");
-      return -1;
+    // Get message dibs names from client
+    for(int x = 0; x < MAX_NUM_DIBS; x++) {
+      // Ask user to enter dib
+      printf("Enter a message source you'd like dibs on ([ENTER] when done): ");
+      fgets(dibs[x], NAME_LEN + 2, stdin);
+
+      // Check if user pressed enter 
+      if(dibs[x][0] == '\n') break;
+
+      // Increment dibs counter 
+      dibs_len++;
     }
 
-    if(ipc_qrecv("yan", cb_yan) != 0) {
-      fprintf(stderr, "ipc_qrecv failed : ");
-      return -1;
-    }
-
-    if(ipc_qrecv("*", cb_wild) != 0) {
-      fprintf(stderr, "ipc_qrecv failed : ");
-      return -1;
-    }
-
-    // Start refreshing for incoming messages 
-    pthread_t thread_auto_refresh;
-    if(pthread_create(&thread_auto_refresh, NULL, auto_refresh, NULL) < 0) {
-      perror("pthread_create() failed");
-      return -1;
-    }
-
-    // Message send loop
-    for(;;) {
-      // Create placeholders for user defined message
-      char input[MAX_MSG_LEN + 2];
-      char dest[NAME_LEN + 2];
-      char msg[MAX_MSG_LEN + 2];
-
-      // Ask user for message to send 
-      printf(">> ");
-      fgets(input, MAX_MSG_LEN + 2, stdin);
-
-      // Separate dest name from msg 
-      strncpy(dest, input, NAME_LEN);
-      strncpy(msg, &input[NAME_LEN+1], MAX_MSG_LEN - (NAME_LEN+1));
-
-      // Send message 
-      if(ipc_send(dest, msg, strlen(msg)) != 0) {
-        fprintf(stderr, "ipc_send() failed\n");
+    // Create message dibs in IPC 
+    for(int x = 0; x < dibs_len; x++) {
+      // Check if ipc_qrecv failed
+      if(ipc_qrecv(dibs[x], cb_read) != 0) {
+        fprintf(stderr, "ipc_qrecv() failed\n");
         return -1;
       }
+
+      // 
     }
   }
 
@@ -221,4 +180,10 @@ void isr(int sig) {
       exit(0);
       break;
   }
+}
+
+// Callback for async communication 
+static cb_read(char *msg, size_t msg_len) {
+  // Print message 
+  printf("Incoming message: %.*s\n", msg_len, msg);
 }
