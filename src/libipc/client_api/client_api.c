@@ -128,7 +128,10 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
     return 0;
   }
 
-  // // Listen on IPC for receipt confirmation
+  // TODO:
+  // - Complete receipt confirmation system
+
+  // Listen on IPC for receipt confirmation
   // bool recvd = false;
   // ipc_qrecv(dest, (void (*)(char*,size_t)) {recvd = true});
 
@@ -140,6 +143,9 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
   //   // Wait before refreshing again
   //   nanosleep(&READ_BLOCK_DELAY, NULL);
   // }
+
+  // // Remove dib 
+  // MsgReqDib_remove(dest, dibs, MAX_NUM_DIBS);
 
   // // Check if receipt confirmation failed to be received in time
   // if(!recvd) {
@@ -353,6 +359,12 @@ int ipc_refresh_src(char src[NAME_LEN]) {
         if(dibs[x].callback != NULL) {
           // Run callback and pass message as parameter 
           (dibs[x].callback)(msg_nameless, msg_nameless_len);
+
+          // Send receipt confirmation 
+          if(ipc_send(dibs[x].name, RECV_CONF, strlen(RECV_CONF)) != 0) {
+            fprintf(stderr, "failed to send receipt confirmation : ipc_send() failed : ");
+            return -1;
+          }
 
           // done
           break;
