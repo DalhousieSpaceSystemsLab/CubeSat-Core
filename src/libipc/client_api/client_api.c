@@ -161,6 +161,9 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
     nanosleep(&READ_BLOCK_DELAY, NULL);
   }
 
+  // Remove dib 
+  MsgReqDib_remove(dest, dibs, MAX_NUM_DIBS);
+
   // Check if receipt confirmation arrived before timeout 
   if(!recvd) {
     fprintf(stderr, "failed to get receipt confirmation before timeout : ");
