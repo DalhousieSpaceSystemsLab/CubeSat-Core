@@ -432,3 +432,18 @@ int ipc_disconnect() {
   // done
   return 0;
 }
+
+// Callback which checks for receipt confirmation 
+static void cb_recv_conf(char* msg, size_t msg_len, void* ans) {
+  // Check if output buffer NULL 
+  if(ans == NULL) {
+    // Skip 
+    return;
+  }
+  
+  // Check if message matches receipt confirmation 
+  if(strncmp(msg, RECV_CONF, strlen(RECV_CONF)) == 0) {
+    // Copy receipt confirmation into output buffer 
+    strncpy(ans, msg, msg_len);
+  }
+}
