@@ -369,6 +369,20 @@ int ipc_refresh_src(char src[NAME_LEN]) {
           // done
           break;
         }
+      } else { // Could not claim incoming message. Refeed into ipc 
+        // Create placeholder for msg to self 
+        char msg_to_refeed[MAX_MSG_LEN];
+
+        // Format message for self 
+        strncpy(msg_to_refeed, self.name, NAME_LEN);
+        msg_to_refeed[NAME_LEN] = ' ';
+        strncpy(&msg_to_refeed[NAME_LEN+1], msg_nameless, bytes_read - (NAME_LEN+1));
+
+        // Write message directly to the IPC 
+        if(write(self.conn.tx, msg_to_refeed, bytes_read) < bytes_read) {
+          perror("failed to re-feed message into IPC");
+          return -1;
+        }
       }
     }
   }
