@@ -5,12 +5,12 @@
 *   author: alex amellal
 *
 *   TODO:
-    - Make receipt confirmations (done)
+    - Make receipt confirmations
     - Key-value pair sending 
-    - C++ wrappers (ongoing)
+    - C++ wrappers
     - Queue multiple messages 
-    - Message source filters + dibs on incoming messages? (done)
-    - Implement dibs or catch-all source name exception list for ipc_recv (done)
+    - Message source filters + dibs on incoming messages? (ongoing)
+    - Implement dibs or catch-all source name exception list for ipc_recv (ongoing)
     - Setup unit testing with new functions
 *
 */
