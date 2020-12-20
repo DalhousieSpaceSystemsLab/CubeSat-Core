@@ -152,8 +152,58 @@ int main(int argc, char* argv[]) {
         fprintf(stderr, "ipc_qrecv() failed\n");
         return -1;
       }
+    }
 
-      // 
+    // Loop on demand. Give user choice between refresh and send msg. //
+
+    // Prompt instructions 
+    printf("Enter [r] to refresh incoming messages.\n\
+            Enter [s] to send a message\n\
+            Press [ENTER] to quit\n\n");
+    
+    for(;;) {
+      // Create placeholder for input 
+      char ans[1 + 2];
+
+      // Prompt user for input 
+      printf("> ");
+
+      // Get input 
+      fgets(ans, 1 + 2, stdin);
+
+      // Check if enter, refresh or send
+      if(ans[0] == '\n') {
+        // Quit
+        break;
+      } else if(ans[0] == 'r') {
+        // Refresh 
+        if(ipc_refresh() != 0) {
+          fprintf(stderr, "ipc_refresh() failed\n");
+          return -1;
+        }
+      } else if(ans[0] == 's') {
+        // Create placeholder for message 
+        char msg[MAX_MSG_LEN + 2];
+        
+        // Get message from user 
+        printf(">> ");
+        fgets(msg, MAX_MSG_LEN + 2, stdin);
+
+        // Separate name from msg 
+        char name[NAME_LEN];
+        char msg_nameless[MAX_MSG_LEN];
+        strncpy(name, msg, NAME_LEN);
+        strncpy(msg_nameless, &msg[NAME_LEN+1], MAX_MSG_LEN - (NAME_LEN+1));
+
+        // Send message 
+        if(ipc_send(name, msg_nameless, strlen(msg_nameless)) != 0) {
+          fprintf(stderr, "ipc_send() failed\n");
+          return -1;
+        }
+      } else {
+        // Not a recognized option, skip 
+        continue;
+      }
     }
   }
 
