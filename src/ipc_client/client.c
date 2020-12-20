@@ -157,9 +157,10 @@ int main(int argc, char* argv[]) {
     // Loop on demand. Give user choice between refresh and send msg. //
 
     // Prompt instructions 
-    printf("Enter [r] to refresh incoming messages.\n\
-            Enter [s] to send a message\n\
-            Press [ENTER] to quit\n\n");
+    printf("### Message Loop ###\n\
+    \tEnter [r] to refresh incoming messages.\n\
+    \tEnter [s] to send a message\n\
+    \tPress [ENTER] to quit\n\n");
     
     for(;;) {
       // Create placeholder for input 
@@ -167,6 +168,7 @@ int main(int argc, char* argv[]) {
 
       // Prompt user for input 
       printf("> ");
+      fflush(stdout);
 
       // Get input 
       fgets(ans, 1 + 2, stdin);
