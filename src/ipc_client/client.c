@@ -157,10 +157,10 @@ int main(int argc, char* argv[]) {
     // Loop on demand. Give user choice between refresh and send msg. //
 
     // Prompt instructions 
-    printf("### Message Loop ###\n\
-    \tEnter [r] to refresh incoming messages.\n\
-    \tEnter [s] to send a message\n\
-    \tPress [ENTER] to quit\n\n");
+    printf("### Message Loop ###\n");
+    printf("Enter [r] to refresh incoming messages.\n");
+    printf("Enter [s] to send a message\n");
+    printf("Press [ENTER] to quit\n\n");
     
     for(;;) {
       // Create placeholder for input 
@@ -214,8 +214,8 @@ int main(int argc, char* argv[]) {
     return -1;
   }
 
-  printf("presss [ENTER] to quit\n");
-  fgetc(stdin);
+  // printf("presss [ENTER] to quit\n");
+  // fgetc(stdin);
 
   // Close IPC
   ipc_disconnect();
