@@ -43,7 +43,7 @@ int ipc_connect(char name[NAME_LEN]) {
 
   // Initiate rx socket
   // Nonblocking flag enabled for this socket
-  if ((self.conn.rx = socket(AF_UNIX, SOCK_STREAM/* | SOCK_NONBLOCK*/, 0)) == -1) {  // socket() failed
+  if ((self.conn.rx = socket(AF_UNIX, SOCK_STREAM | SOCK_NONBLOCK, 0)) == -1) {  // socket() failed
     perror("socket() failed");
     return -1;
   }
