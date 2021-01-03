@@ -7,7 +7,7 @@
  */
 
 // Project headers
-#include "ipc/client_api.h"
+#include "client_api.h"
 
 // Standard C libraries
 #include <sys/select.h>

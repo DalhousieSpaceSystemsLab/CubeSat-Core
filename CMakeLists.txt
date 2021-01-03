@@ -10,3 +10,6 @@ project(
 add_subdirectory(libipc_NEW)
 
 add_subdirectory(client_api_NEW)
+
+
+add_subdirectory(client_NEW)

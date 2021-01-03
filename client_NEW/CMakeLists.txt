@@ -133,7 +133,7 @@ endforeach(lang ${${EXE}_languages})
 ################################################################################
 # SPECIAL AND PROJECT SPECIFIC OPTIONS
 ################################################################################
-
+target_link_libraries(${EXE} PRIVATE CLIENT_API)
 
 
 

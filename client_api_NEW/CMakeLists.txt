@@ -12,7 +12,7 @@ option(BUILD_EXAMPLES "[ON/OFF] Build examlples in addition to library" ON)
 #  PROJECT INIT
 ################################################################################
 project(
-    IPC_CLIENT_API
+    CLIENT_API
     VERSION 1.0
     DESCRIPTION "CLIENT CREATION API LIBRARY FOR IPC"
     LANGUAGES C CXX
