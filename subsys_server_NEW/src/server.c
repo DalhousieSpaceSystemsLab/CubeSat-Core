@@ -9,12 +9,10 @@
 #define name "tag"
 
 static int   server_init(void);
-static void *receiving(void *args);
+static void *receiving(void *);
+static void  formatting(buffer, fmt_buffer);
+static void  do_msn(fmt_buffer);
 
-static void  formatting(buffer,
-                       fmt_buffer); /** @note I'm very curious if this will be
-                                        ABI compatible with the C++ code... */
-static void do_msn(fmt_buffer);
 
 // server.c
 
@@ -39,7 +37,7 @@ static int server_init(void)
     pthread_create(&await_msn, NULL, receiving, NULL);
 }
 
-static void *receiving(void *args)
+static void *receiving(void * args)
 {
     char buffer[MAX_MSG_LEN];
     char fmt_buffer[MAX_MSG_LEN];
@@ -51,15 +49,13 @@ static void *receiving(void *args)
     }
 }
 
-
-/* Reminsicient of K&R C from 1971 haha */
 static void formatting(buffer, fmt_buffer)
 {
-    serialize(buffer, fmt_buffer);
+    //serialize(buffer, fmt_buffer);
 }
 
 static void do_msn(fmt_buffer)
 {
-    printf("Yay i did this mission %s!", fmt_buffer);
+    //printf("Yay i did this mission %s!", fmt_buffer);
     // add your code here
 }
