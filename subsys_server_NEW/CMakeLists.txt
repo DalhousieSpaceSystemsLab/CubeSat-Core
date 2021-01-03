@@ -12,9 +12,9 @@ option(BUILD_EXAMPLES "[ON/OFF] Build examlples in addition to library" ON)
 #  PROJECT INIT
 ################################################################################
 project(
-    IPC_DAEMON
+    IPC_SUBSYS_SERVER
     VERSION 1.0
-    DESCRIPTION "EXAMPLE PROJECT FOR CMAKE PROJECT TEMPLATE REPOSITORY"
+    DESCRIPTION "SERVER EXECUTABLE FOR IPC API INTERFACE"
     LANGUAGES C CXX
 )
 set(EXE "${PROJECT_NAME}") # this is PROJECT_NAME, NOT CMAKE_PROJECT_NAME
@@ -143,30 +143,26 @@ endforeach(lang ${${EXE}_languages})
 ################################################################################
 target_link_libraries(${EXE} PRIVATE CLIENT_API)
 
-######################################
-# EXAMPLE OF LINKINAG AGAINST PTHREAD
-######################################
-
-#   find_package(Threads REQUIRED)
-#   if(Threads_FOUND) 
-#       if(WIN32)
-#           if(CMAKE_USE_WIN32_THREADS_INIT)
-#               target_link_libraries(${EXE} PUBLIC pthread)
-#               target_compile_options(${EXE} PUBLIC "-lpthread")
-#           else()
-#               message(FATAL_ERROR "BLAHHH ")
-#           endif()
-#       elseif(UNIX)
-#           if(CMAKE_USE_PTHREADS_INIT)
-#               target_link_libraries(${EXE} PUBLIC pthread)
-#               target_compile_options(${EXE} PUBLIC "-lpthread")
-#           else()
-#               message(FATAL_ERROR "BLAHHH ")
-#           endif()
-#       endif()
-#   else()
-#       message(FATAL_ERROR "No threading libraries have been found. Aborting!")
-#   endif()
+find_package(Threads REQUIRED)
+if(Threads_FOUND) 
+    if(WIN32)
+        if(CMAKE_USE_WIN32_THREADS_INIT)
+            target_link_libraries(${EXE} PUBLIC pthread)
+            target_compile_options(${EXE} PUBLIC "-lpthread")
+        else()
+            message(FATAL_ERROR "BLAHHH ")
+        endif()
+    elseif(UNIX)
+        if(CMAKE_USE_PTHREADS_INIT)
+            target_link_libraries(${EXE} PUBLIC pthread)
+            target_compile_options(${EXE} PUBLIC "-lpthread")
+        else()
+            message(FATAL_ERROR "BLAHHH ")
+        endif()
+    endif()
+else()
+    message(FATAL_ERROR "No threading libraries have been found. Aborting!")
+endif()
 
 ################################################################################
 # TEST CONFIGURATION

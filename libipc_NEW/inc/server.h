@@ -4,7 +4,7 @@
 #define CUBESAT_CORE_INCLUDE_IPC_SERVER_H
 
 //Project Headers
-#include "ipc/client_api.h"
+#include "client_api.h"
 
 //Methods
 int server_init(); //initialize server by connecting to IPC

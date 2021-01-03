@@ -81,6 +81,8 @@ add_subdirectory(client_NEW)
 
 add_subdirectory(ipcd_NEW)
 
+add_subdirectory(subsys_server_NEW)
+
 #COMMENTING THIS OUT BECAUSE IT USES OLD API AND SEEMS TO HAVE CODE
 # THAT LITERALLY WILL NOT COMPILE IN C OR C++
 # such as 
