@@ -75,18 +75,13 @@ if(BUILD_TESTING)
 endif()
 
 
-add_subdirectory(libipc_NEW)
-add_subdirectory(client_api_NEW)
-add_subdirectory(client_NEW)
+# dependencies come first
+add_subdirectory(api/libipc)
+add_subdirectory(api/client_api)
 
-add_subdirectory(ipcd_NEW)
+# executable targets after, and link against necessary dependencies
+add_subdirectory(ipcd)
+add_subdirectory(subsys_server)
+add_subdirectory(client)
+#add_subdirectory(msnclient) # can't get this damn thing to build... SO MANY ERRORS IN THE SOURCE CODE...
 
-add_subdirectory(subsys_server_NEW)
-
-#COMMENTING THIS OUT BECAUSE IT USES OLD API AND SEEMS TO HAVE CODE
-# THAT LITERALLY WILL NOT COMPILE IN C OR C++
-# such as 
-# char c = msg + "\n";
-# addition semantics for literal <- array types are UB in both C and C++...
-
-#add_subdirectory(msnclient_NEW)
