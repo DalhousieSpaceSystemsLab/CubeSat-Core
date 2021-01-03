@@ -7,12 +7,11 @@ project(
     LANGUAGES C CXX
     )
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 add_subdirectory(libipc_NEW)
-
 add_subdirectory(client_api_NEW)
-
 add_subdirectory(client_api_OLD)
-
 add_subdirectory(client_NEW)
 
 

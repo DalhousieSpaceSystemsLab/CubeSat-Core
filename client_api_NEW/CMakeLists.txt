@@ -152,32 +152,27 @@ endforeach(lang ${${LIB}_languages})
 ################################################################################
 target_link_libraries(${LIB} PUBLIC LIB_IPC)
 
-
-
-######################################
-# EXAMPLE OF LINKINAG AGAINST PTHREAD
-######################################
-
-#   find_package(Threads REQUIRED)
-#   if(Threads_FOUND) 
-#       if(WIN32)
-#           if(CMAKE_USE_WIN32_THREADS_INIT)
-#               target_link_libraries(${LIB} PUBLIC pthread)
-#               target_compile_options(${LIB} PUBLIC "-lpthread")
-#           else()
-#               message(FATAL_ERROR "BLAHHH ")
-#           endif()
-#       elseif(UNIX)
-#           if(CMAKE_USE_PTHREADS_INIT)
-#               target_link_libraries(${LIB} PUBLIC pthread)
-#               target_compile_options(${LIB} PUBLIC "-lpthread")
-#           else()
-#               message(FATAL_ERROR "BLAHHH ")
-#           endif()
-#       endif()
-#   else()
-#       message(FATAL_ERROR "No threading libraries have been found. Aborting!")
-#   endif()
+#Link against pthread
+find_package(Threads REQUIRED)
+if(Threads_FOUND) 
+    if(WIN32)
+        if(CMAKE_USE_WIN32_THREADS_INIT)
+            target_link_libraries(${LIB} PUBLIC pthread)
+            target_compile_options(${LIB} PUBLIC "-lpthread")
+        else()
+            message(FATAL_ERROR "BLAHHH ")
+        endif()
+    elseif(UNIX)
+        if(CMAKE_USE_PTHREADS_INIT)
+            target_link_libraries(${LIB} PUBLIC pthread)
+            target_compile_options(${LIB} PUBLIC "-lpthread")
+        else()
+            message(FATAL_ERROR "BLAHHH ")
+        endif()
+    endif()
+else()
+    message(FATAL_ERROR "No threading libraries have been found. Aborting!")
+endif()
 
 ################################################################################
 # TEST CONFIGURATION
