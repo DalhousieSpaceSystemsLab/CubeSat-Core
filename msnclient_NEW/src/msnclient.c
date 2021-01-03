@@ -7,8 +7,7 @@
  */
 
 // Project headers
-#include "client_api.h"
-
+#include "ipc/client_api.h"
 
 // Standard C Libraries
 #include <stdio.h>

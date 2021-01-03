@@ -62,6 +62,8 @@ execute_process(
 )
 
 
+#set(CMAKE_VERBOSE_MAKEFILE ON)
+
 if(BUILD_TESTING)
     enable_testing()
     include(CTest)
@@ -76,5 +78,13 @@ endif()
 add_subdirectory(libipc_NEW)
 add_subdirectory(client_api_NEW)
 add_subdirectory(client_NEW)
+
+add_subdirectory(ipcd_NEW)
+
+#COMMENTING THIS OUT BECAUSE IT USES OLD API AND SEEMS TO HAVE CODE
+# THAT LITERALLY WILL NOT COMPILE IN C OR C++
+# such as 
+# char c = msg + "\n";
+# addition semantics for literal <- array types are UB in both C and C++...
 
 #add_subdirectory(msnclient_NEW)
