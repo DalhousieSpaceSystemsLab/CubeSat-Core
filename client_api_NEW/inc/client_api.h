@@ -31,6 +31,8 @@
 extern "C" {
 #endif
 
+#include "client_api_old.h"
+
 // Client API
 int ipc_connect(char name[3]);                                // Initialize client side IPC interface
 int ipc_send(char dest[3], char * msg, size_t msg_len);       // Send message to another process

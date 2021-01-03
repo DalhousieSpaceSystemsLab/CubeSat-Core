@@ -106,15 +106,6 @@ foreach(lang ${${LIB}_languages})
     target_include_directories(${LIB} PRIVATE ${${LIB}_${lang}_private_include_directories})
 endforeach(lang ${${LIB}_languages})
 
-#set(${LIB}_private_include_directories "")
-#foreach(hdr ${${LIB}_private_headers})
-#    get_filename_component(hdr_dir ${hdr} DIRECTORY)
-#    list(APPEND ${LIB}_private_include_directories ${hdr_dir})
-#endforeach(hdr ${${LIB}_private_headers})
-#list(REMOVE_DUPLICATES ${LIB}_private_include_directories)
-#target_include_directories(${LIB} PRIVATE ${${LIB}_private_include_directories})
-
-
 ################################################################################
 # DETECT PUBLIC HEADERS RECURSIVELY FROM inc FOLDER
 ################################################################################

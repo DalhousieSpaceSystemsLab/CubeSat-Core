@@ -142,7 +142,6 @@ endforeach(lang ${${EXE}_languages})
 # LINK AGAINST THE NECESSARY EXERARIES 
 ################################################################################
 target_link_libraries(${EXE} PRIVATE CLIENT_API)
-target_link_libraries(${EXE} PRIVATE LIB_IPC)
 
 ######################################
 # EXAMPLE OF LINKINAG AGAINST PTHREAD
