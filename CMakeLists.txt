@@ -11,5 +11,9 @@ add_subdirectory(libipc_NEW)
 
 add_subdirectory(client_api_NEW)
 
+add_subdirectory(client_api_OLD)
 
 add_subdirectory(client_NEW)
+
+
+#add_subdirectory(msnclient_NEW)
