@@ -12,9 +12,9 @@ option(BUILD_EXAMPLES "[ON/OFF] Build examlples in addition to library" ON)
 #  PROJECT INIT
 ################################################################################
 project(
-    TEMPLATE_PROJ
+    IPC_CLIENT_API
     VERSION 1.0
-    DESCRIPTION "EXAMPLE PROJECT FOR CMAKE PROJECT TEMPLATE REPOSITORY"
+    DESCRIPTION "CLIENT CREATION API LIBRARY FOR IPC"
     LANGUAGES C CXX
 )
 set(LIB "${PROJECT_NAME}") # this is PROJECT_NAME, NOT CMAKE_PROJECT_NAME
@@ -150,6 +150,8 @@ endforeach(lang ${${LIB}_languages})
 ################################################################################
 # LINK AGAINST THE NECESSARY LIBRARIES 
 ################################################################################
+target_link_libraries(${LIB} PUBLIC LIB_IPC)
+
 
 
 ######################################
