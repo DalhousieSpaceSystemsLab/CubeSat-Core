@@ -13,12 +13,13 @@
 
 #include "serialize.hpp"
 
-std::string serialize(std::map<std::string, std::string> map);
-std::string serialize(std::map<std::string, int> map);
-std::string serialize(std::map<int, std::string> map);
-std::string serialize(std::map<int, int> map);
-std::map<std::string, std::string> deSerialize(std::string message,
-                                               int         mapSize);
+//std::string serialize(std::map<std::string, std::string> map);
+//std::string serialize(std::map<std::string, int> map);
+//std::string serialize(std::map<int, std::string> map);
+//std::string serialize(std::map<int, int> map);
+//std::map<std::string, std::string> deSerialize(std::string msg, int mapSize);
+
+using namespace dss::ipc::util;
 
 
 int main()
@@ -51,7 +52,7 @@ int main()
     // Testing turning above maps into string and then back to map form
     std::string command = serialize(coordinates);
     std::cout << "The map in string form is: \n" << command << "\n";
-    std::map<std::string, std::string> backto = deSerialize(command, 8);
+    std::map<std::string, std::string> backto = deserialize(command, 8);
     std::cout << "And back into a map but iterated through is: \n";
     std::map<std::string, std::string>::iterator iter;
     for (iter = backto.begin(); iter != backto.end(); ++iter)
