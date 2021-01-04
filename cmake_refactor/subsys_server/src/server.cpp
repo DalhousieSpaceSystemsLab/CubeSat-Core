@@ -2,6 +2,8 @@
 
 #include "client_api.h"
 
+#include "serialize.hpp"
+
 /** @note Before refactor, this was >#define name tag<
  * but I couldn't find a symbol for tag so I quoted as a string litteral
  * - Carl
@@ -27,9 +29,9 @@ int main()
 
 
 static int server_init(void)
-{   
+{
     /* sneak past certain compiler warnings */
-    const char* const_name_ptr = (const char*)name; 
+    const char *const_name_ptr = (const char *)name;
     if (ipc_connect(const_name_ptr) == -1) // ipc_connect()
     {
         fprintf(stderr, "ipc_connect() failed\n");
@@ -53,11 +55,11 @@ static void *receiving(void *args)
 
 static void formatting(char *buffer, char *fmt_buffer)
 {
-    //serialize(buffer, fmt_buffer);
+    //dss::ipc::util::serialize(buffer, fmt_buffer);
 }
 
 static void do_msn(char *fmt_buffer)
 {
-    //printf("Yay i did this mission %s!", fmt_buffer);
+    // printf("Yay i did this mission %s!", fmt_buffer);
     // add your code here
 }

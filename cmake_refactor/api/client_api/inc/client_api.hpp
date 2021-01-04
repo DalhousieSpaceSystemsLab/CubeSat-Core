@@ -4,15 +4,11 @@
 
 // Standard C++ Libraries
 #include <map>
-#include <iterator>
 #include <string>
-#include <exception>
 
 // Standard C++ classes
 using std::exception;
-using std::map;
 using std::pair;
-using std::string;
 
 // Client API (C++)
 namespace dss
@@ -20,13 +16,13 @@ namespace dss
 namespace ipc
 {
 // Methods
-void   init(string name);
-void   send(string dest, string msg);
-void   send_map(const char *dest, map<string, string> *map);
-void   send_map(const char *dest, map<string, int> *map);
-void   send_map(const char *dest, map<int, int> *map);
-string recv(string src);
-void   close();
+void        init(std::string name);
+void        send(std::string dest, std::string msg);
+void        send_map(const char *dest, std::map<std::string, std::string> *map);
+void        send_map(const char *dest, std::map<std::string, int> *map);
+void        send_map(const char *dest, std::map<int, int> *map);
+std::string recv(std::string src);
+void        close();
 }; // namespace ipc
 }; // namespace dss
 

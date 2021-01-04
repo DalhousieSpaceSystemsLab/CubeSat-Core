@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 
-option(BUILD_TESTING "[ON/OFF] Boolean to choose to cross compile or not" OFF)
+option(BUILD_TESTING "[ON/OFF] Option to build tests" OFF)
+option(CMAKE_VERBOSE_MAKEFILE "[ON/OFF] Option to emit makefile commands to stdout" OFF)
 
 project(
     IPC_CORE
@@ -60,9 +61,6 @@ execute_process(
 execute_process(
     COMMAND "sync"
 )
-
-
-#set(CMAKE_VERBOSE_MAKEFILE ON)
 
 if(BUILD_TESTING)
     enable_testing()
