@@ -18,7 +18,7 @@ static void  do_msn(char *fmt_buffer);
 
 // server.c
 
-int main()
+int main(void)
 {
     if (server_init() == -1)
     {
@@ -54,7 +54,8 @@ static void *receiving(void *args)
 }
 
 static void formatting(char *buffer, char *fmt_buffer)
-{
+{   
+    #warning NO IDEA WHAT THIS IS SUPPORTED TO DO BECAUSE WE ALREADY HAVE THE PARAMS IN char* format (not std::map)
     //dss::ipc::util::serialize(buffer, fmt_buffer);
 }
 
