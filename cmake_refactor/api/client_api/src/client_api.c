@@ -21,7 +21,7 @@ static char *qrecv_buf   = NULL;  // receive queue message placeholder
 static int qrecv_buf_len = -1;    // receive queue placeholder length
 
 // Initialize client API and connect to IPC daemon.
-int ipc_connect(char name[NAME_LEN]) {
+int ipc_connect(const char *name) {
   // Initialize client placeholder for self
   self = client_t_new();
 
@@ -77,7 +77,7 @@ int ipc_connect(char name[NAME_LEN]) {
 }
 
 // Send message to another process
-int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
+int ipc_send(const char *dest, char *msg, size_t msg_len) {
   // Ensure message is long enough to contain a name
   if (msg_len < NAME_LEN) {
     fprintf(stderr, "ignoring ipc_send request for message that is too short\n");
@@ -117,7 +117,7 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
 
 // Receive message from another process
 // Returns number of bytes of data copied into buffer.
-int ipc_recv(char src[NAME_LEN], char *buffer, size_t buffer_len) {
+int ipc_recv(const char *src, char *buffer, size_t buffer_len) {
   // Create placeholder for incoming message from IPC
   char msg[MAX_MSG_LEN];
 
@@ -165,7 +165,7 @@ int ipc_recv(char src[NAME_LEN], char *buffer, size_t buffer_len) {
 }
 
 // Adds outgoing message to send queue
-int ipc_qsend(char dest[NAME_LEN], char *msg, size_t msg_len) {
+int ipc_qsend(const char *dest, char *msg, size_t msg_len) {
   // Check for null message or 0 length
   if (msg == NULL || msg_len <= 0) {
     // Set qsend message placeholder to 0
@@ -192,7 +192,7 @@ int ipc_qsend(char dest[NAME_LEN], char *msg, size_t msg_len) {
 }
 
 // Adds incoming message request to recv queue
-int ipc_qrecv(char src[NAME_LEN], char *buf, size_t buf_len) {
+int ipc_qrecv(const char *src, char *buf, size_t buf_len) {
   // Copy src filter into queue
   for (int x = 0; x < NAME_LEN; x++) qrecv_src[x] = src[x];
 

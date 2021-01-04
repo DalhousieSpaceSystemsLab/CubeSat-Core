@@ -10,8 +10,8 @@
 
 static int   server_init(void);
 static void *receiving(void *);
-static void  formatting(buffer, fmt_buffer);
-static void  do_msn(fmt_buffer);
+static void  formatting(char *buffer, char *fmt_buffer);
+static void  do_msn(char *fmt_buffer);
 
 
 // server.c
@@ -27,8 +27,10 @@ int main()
 
 
 static int server_init(void)
-{
-    if (ipc_connect(name) == -1) // ipc_connect()
+{   
+    /* sneak past certain compiler warnings */
+    const char* const_name_ptr = (const char*)name; 
+    if (ipc_connect(const_name_ptr) == -1) // ipc_connect()
     {
         fprintf(stderr, "ipc_connect() failed\n");
         return -1;
@@ -37,7 +39,7 @@ static int server_init(void)
     pthread_create(&await_msn, NULL, receiving, NULL);
 }
 
-static void *receiving(void * args)
+static void *receiving(void *args)
 {
     char buffer[MAX_MSG_LEN];
     char fmt_buffer[MAX_MSG_LEN];
@@ -49,12 +51,12 @@ static void *receiving(void * args)
     }
 }
 
-static void formatting(buffer, fmt_buffer)
+static void formatting(char *buffer, char *fmt_buffer)
 {
-    serialize(buffer, fmt_buffer);
+    //serialize(buffer, fmt_buffer);
 }
 
-static void do_msn(fmt_buffer)
+static void do_msn(char *fmt_buffer)
 {
     //printf("Yay i did this mission %s!", fmt_buffer);
     // add your code here

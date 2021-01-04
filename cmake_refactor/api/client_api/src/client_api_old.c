@@ -10,13 +10,13 @@
 #include "client_api.h"
 
 // Private variables
-static char name[3];   // client name on IPC
+static char name[NAME_LEN];   // client name on IPC
 static int sock = -1;  // connection socket to IPC
 
 // Initialize client API interface
-int ipc_init(char name_[3]) {
+int ipc_init(const char *name_) {
   // Set name
-  for (int x = 0; x < 3; x++) name[x] = name_[x];
+  for (int x = 0; x < NAME_LEN; x++) name[x] = name_[x];
 
   // Create placeholder for socket address
   const struct sockaddr_un address = {
@@ -48,12 +48,12 @@ int ipc_init(char name_[3]) {
 }
 
 // Send message to another process
-int ipc_send(char dest[3], char *msg, size_t msg_len) {
+int ipc_send(const char *dest, char *msg, size_t msg_len) {
   // Create placeholder for message to be sent
   char msg_final[3 + msg_len];
 
   // Create message with destination client fronted
-  sprintf(msg_final, "%.3s %*s\0", dest, msg_len, msg);
+  sprintf(msg_final, "%.3s %*s", dest, (int)msg_len, msg);
 
   // Send final message to IPC
   if (write(sock, msg_final, 3 + msg_len) < 3 + msg_len) {  // write() failed
@@ -66,7 +66,7 @@ int ipc_send(char dest[3], char *msg, size_t msg_len) {
 }
 
 // Receive message from another process
-int ipc_recv(char src[3], char *buffer, size_t buffer_len) {
+int ipc_recv(const char *src, char *buffer, size_t buffer_len) {
   // Create placeholder for incoming message from IPC
   char msg[MAX_MSG_LEN];
 

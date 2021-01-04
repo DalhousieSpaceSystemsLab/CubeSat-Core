@@ -29,12 +29,18 @@ extern "C" {
 #endif
 
 // Client API
-int ipc_init(char name[3]); // Initialize client side IPC interface
-int ipc_send(char dest[3], char *msg,
-             size_t msg_len); // Send message to another process
-int ipc_recv(char src[3], char *buffer,
-             size_t buffer_len); // Receive message from another process
-int ipc_close();                 // Close client side IPC interface
+
+// Initialize client side IPC interface
+int ipc_init(const char *name);
+
+// Send message to another process
+int ipc_send(const char *dest, char *msg, size_t msg_len);
+
+// Receive message from another process
+int ipc_recv(const char *src, char *buffer, size_t buffer_len);
+
+// Close client side IPC interface
+int ipc_close();
 
 #ifdef __cplusplus
 }

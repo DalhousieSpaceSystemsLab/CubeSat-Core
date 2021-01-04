@@ -22,9 +22,9 @@ namespace ipc
 // Methods
 void   init(string name);
 void   send(string dest, string msg);
-void   send_map(char dest[3], map<string, string> *map);
-void   send_map(char dest[3], map<string, int> *map);
-void   send_map(char dest[3], map<int, int> *map);
+void   send_map(const char *dest, map<string, string> *map);
+void   send_map(const char *dest, map<string, int> *map);
+void   send_map(const char *dest, map<int, int> *map);
 string recv(string src);
 void   close();
 }; // namespace ipc
