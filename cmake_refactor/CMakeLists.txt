@@ -100,7 +100,11 @@ if(NOT COMMAND _add_executable)
 function(add_executable exe)
     _add_executable(${exe} ${ARGN})
 
-    set(meta_dir "${CMAKE_CURRENT_BINARY_DIR}/metadata")
+    if(CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+        set(meta_dir "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/metadata")
+    else()
+        set(meta_dir "${CMAKE_CURRENT_BINARY_DIR}/metadata")
+    endif(CMAKE_RUNTIME_OUTPUT_DIRECTORY)
 
     if(NOT EXISTS ${meta_dir})
         file(MAKE_DIRECTORY ${meta_dir})
