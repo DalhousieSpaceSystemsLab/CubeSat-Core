@@ -95,78 +95,81 @@ find_program(CMAKE_OBJDUMP ${CMAKE_OBJDUMP_NAME} REQUIRED)
 find_program(CMAKE_SIZE ${CMAKE_SIZE_NAME} REQUIRED)
 
 
-if(NOT COMMAND _add_executable)
-function(add_executable executable)
-    _add_executable(${executable} ${ARGN})
 
-    # for now, just exiting because I can't get this to work consistently across platforms
+if(NOT COMMAND _add_executable)
+function(add_executable exe)
+    _add_executable(${exe} ${ARGN})
+
+
+    add_custom_target(${exe}_postbuild ALL DEPENDS ${exe})
+    add_custom_command( 
+        TARGET ${exe}_postbuild
+        POST_BUILD
+        DEPENDS ${exe}
+        COMMENT "Built exe ${exe} with the following size:"
+        COMMAND ${CMAKE_SIZE} -B "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${exe}${CMAKE_EXECUTABLE_SUFFIX}"
+    )
+
+    add_custom_command( 
+        TARGET ${exe}_postbuild
+        POST_BUILD
+        DEPENDS ${exe}
+        COMMENT "Producing a hex output using ${CMAKE_OBJCOPY}"
+        COMMAND ${CMAKE_OBJCOPY} -O ihex -I elf32-little "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${exe}$CACHE{CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${exe}.hex"
+    )
     return()
 
-
-    add_custom_target(${executable}_postbuild ALL DEPENDS ${executable})
-    add_custom_command( 
-        TARGET ${executable}_postbuild
+    add_custom_command(
+        TARGET ${exe}_postbuild
         POST_BUILD
-        DEPENDS ${executable}
-        COMMENT "Built executable ${executable} with the following size:"
-        COMMAND ${CMAKE_SIZE} -B "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${executable}$CACHE{CMAKE_EXECUTABLE_SUFFIX}"
+        DEPENDS ${exe}
+        COMMAND ${CMAKE_OBJCOPY} -O ihex -I elf32-little "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${exe}${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/metadata/${exe}/${exe}.hex"
     )
 
-    foreach(ext "ihex;binary;")
-        add_custom_command(
-            TARGET ${executable}_postbuild
-            POST_BUILD
-            DEPENDS ${executable}
-            COMMAND ${CMAKE_OBJCOPY} -O ${ext} -I elf32-little "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${executable}$CACHE{CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/metadata/${executable}/${exectuable}.${ext}"
-        )
-    endforeach(ext "ihex;binary;")
+
+    add_custom_command(
+        TARGET ${exe}_postbuild
+        POST_BUILD
+        DEPENDS ${exe}
+        COMMAND ${CMAKE_OBJCOPY} -O binary -I elf32-little "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${exe}${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/metadata/${exe}/${exe}.bin"
+    )
 
     add_custom_command( 
-        TARGET ${executable}_postbuild
+        TARGET ${exe}_postbuild
         POST_BUILD
-        DEPENDS ${executable}
-        COMMENT "Generating lss file from ${executable} using ${CMAKE_OBJDUMP}"
-        COMMAND ${CMAKE_OBJDUMP} -xh "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${executable}$CACHE{CMAKE_EXECUTABLE_SUFFIX}" > "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/metadata/${executable}/${executable}.lss"
+        DEPENDS ${exe}
+        COMMENT "Generating lss file from ${exe} using ${CMAKE_OBJDUMP}"
+        COMMAND ${CMAKE_OBJDUMP} -xh "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${exe}${CMAKE_EXECUTABLE_SUFFIX}" > "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/metadata/${exe}/${exe}.lss"
     )
-endfunction(add_executable executable)
+endfunction(add_executable exe)
 endif(NOT COMMAND _add_executable)
 
 
-
 if(NOT COMMAND _add_library)
-function(add_library library)
-    _add_library(${library} ${ARGN})
+function(add_library lib)
+    _add_library(${lib} ${ARGN})
 
     # for now, just exiting because I can't get this to work consistently across platforms
     return()
 
-    add_custom_target(${library}_postbuild ALL DEPENDS ${library})
+    add_custom_target(${lib}_postbuild ALL DEPENDS ${lib})
 
     add_custom_command( 
-        TARGET ${library}_postbuild
+        TARGET ${lib}_postbuild
         POST_BUILD
-        DEPENDS ${library}
-        COMMENT "Built library ${library} with the following size:"
-        COMMAND ${CMAKE_SIZE} -B "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}   ${library}"
+        DEPENDS ${lib}
+        COMMENT "Built lib ${lib} with the following size:"
+        COMMAND ${CMAKE_SIZE} -B "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}   ${lib}"
     )
-
-    foreach(ext "ihex;binary;")
-        add_custom_command(
-            TARGET ${library}_postbuild
-            POST_BUILD
-            DEPENDS ${library}
-            COMMAND ${CMAKE_OBJCOPY} -O ${ext} -I elf32-little "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${library}" "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/metadata/${library}/${library}.${ext}"
-        )
-    endforeach(ext "ihex;binary;")
 
     add_custom_command( 
-        TARGET ${library}_postbuild
+        TARGET ${lib}_postbuild
         POST_BUILD
-        DEPENDS ${library}
-        COMMENT "Generating lss file from ${library} using ${CMAKE_OBJDUMP}"
-        COMMAND ${CMAKE_OBJDUMP} -xh "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${library}" > "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/metadata/${library}/${library}.lss"
+        DEPENDS ${lib}
+        COMMENT "Generating lss file from ${lib} using ${CMAKE_OBJDUMP}"
+        COMMAND ${CMAKE_OBJDUMP} -xh "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${lib}" > "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/metadata/${lib}/${lib}.lss"
     )
-endfunction(add_library library)
+endfunction(add_library lib)
 endif(NOT COMMAND _add_library)
 
 # dependencies come first
