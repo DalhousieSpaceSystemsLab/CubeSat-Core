@@ -1,7 +1,6 @@
 #include <pthread.h>
 
 #include "client_api.h"
-
 #include "serialize.hpp"
 
 /** @note Before refactor, this was >#define name tag<
@@ -54,9 +53,9 @@ static void *receiving(void *args)
 }
 
 static void formatting(char *buffer, char *fmt_buffer)
-{   
-    #warning NO IDEA WHAT THIS IS SUPPORTED TO DO BECAUSE WE ALREADY HAVE THE PARAMS IN char* format (not std::map)
-    //dss::ipc::util::serialize(buffer, fmt_buffer);
+{
+#warning NO IDEA WHAT THIS IS SUPPORTED TO DO BECAUSE WE ALREADY HAVE THE PARAMS IN char* format (not std::map)
+    // dss::ipc::util::serialize(buffer, fmt_buffer);
 }
 
 static void do_msn(char *fmt_buffer)

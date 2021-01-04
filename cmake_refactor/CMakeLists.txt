@@ -73,6 +73,102 @@ if(BUILD_TESTING)
 endif()
 
 
+set(TOOLCHAIN_PREFIX arm-none-eabi)
+set(CMAKE_C_COMPILER_NAME gcc)
+set(CMAKE_ASM_COMPILER_NAME gcc)
+set(CMAKE_CXX_COMPILER_NAME g++)
+set(CMAKE_OBJCOPY_NAME objcopy)
+set(CMAKE_OBJDUMP_NAME objdump)
+set(CMAKE_SIZE_NAME size)
+set(CMAKE_GDB_NAME gdb) #might also have gdb.py extension
+
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+
+find_program(CMAKE_C_COMPILER ${CMAKE_C_COMPILER_NAME} REQUIRED)
+find_program(CMAKE_ASM_COMPILER ${CMAKE_ASM_COMPILER_NAME} REQUIRED)
+find_program(CMAKE_CXX_COMPILER ${CMAKE_CXX_COMPILER_NAME} REQUIRED)
+find_program(CMAKE_OBJCOPY ${CMAKE_OBJCOPY_NAME} REQUIRED)
+find_program(CMAKE_OBJDUMP ${CMAKE_OBJDUMP_NAME} REQUIRED)
+find_program(CMAKE_SIZE ${CMAKE_SIZE_NAME} REQUIRED)
+
+
+if(NOT COMMAND _add_executable)
+function(add_executable executable)
+    _add_executable(${executable} ${ARGN})
+
+    # for now, just exiting because I can't get this to work consistently across platforms
+    return()
+
+
+    add_custom_target(${executable}_postbuild ALL DEPENDS ${executable})
+    add_custom_command( 
+        TARGET ${executable}_postbuild
+        POST_BUILD
+        DEPENDS ${executable}
+        COMMENT "Built executable ${executable} with the following size:"
+        COMMAND ${CMAKE_SIZE} -B "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${executable}$CACHE{CMAKE_EXECUTABLE_SUFFIX}"
+    )
+
+    foreach(ext "ihex;binary;")
+        add_custom_command(
+            TARGET ${executable}_postbuild
+            POST_BUILD
+            DEPENDS ${executable}
+            COMMAND ${CMAKE_OBJCOPY} -O ${ext} -I elf32-little "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${executable}$CACHE{CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/metadata/${executable}/${exectuable}.${ext}"
+        )
+    endforeach(ext "ihex;binary;")
+
+    add_custom_command( 
+        TARGET ${executable}_postbuild
+        POST_BUILD
+        DEPENDS ${executable}
+        COMMENT "Generating lss file from ${executable} using ${CMAKE_OBJDUMP}"
+        COMMAND ${CMAKE_OBJDUMP} -xh "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${executable}$CACHE{CMAKE_EXECUTABLE_SUFFIX}" > "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/metadata/${executable}/${executable}.lss"
+    )
+endfunction(add_executable executable)
+endif(NOT COMMAND _add_executable)
+
+
+
+if(NOT COMMAND _add_library)
+function(add_library library)
+    _add_library(${library} ${ARGN})
+
+    # for now, just exiting because I can't get this to work consistently across platforms
+    return()
+
+    add_custom_target(${library}_postbuild ALL DEPENDS ${library})
+
+    add_custom_command( 
+        TARGET ${library}_postbuild
+        POST_BUILD
+        DEPENDS ${library}
+        COMMENT "Built library ${library} with the following size:"
+        COMMAND ${CMAKE_SIZE} -B "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}   ${library}"
+    )
+
+    foreach(ext "ihex;binary;")
+        add_custom_command(
+            TARGET ${library}_postbuild
+            POST_BUILD
+            DEPENDS ${library}
+            COMMAND ${CMAKE_OBJCOPY} -O ${ext} -I elf32-little "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${library}" "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/metadata/${library}/${library}.${ext}"
+        )
+    endforeach(ext "ihex;binary;")
+
+    add_custom_command( 
+        TARGET ${library}_postbuild
+        POST_BUILD
+        DEPENDS ${library}
+        COMMENT "Generating lss file from ${library} using ${CMAKE_OBJDUMP}"
+        COMMAND ${CMAKE_OBJDUMP} -xh "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${library}" > "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/metadata/${library}/${library}.lss"
+    )
+endfunction(add_library library)
+endif(NOT COMMAND _add_library)
+
 # dependencies come first
 add_subdirectory(api/libipc)
 add_subdirectory(api/client_api)
