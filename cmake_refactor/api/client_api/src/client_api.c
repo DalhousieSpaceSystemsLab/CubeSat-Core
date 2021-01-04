@@ -5,6 +5,13 @@
 *   author: alex amellal
 *
 */
+#include <unistd.h>
+#include <pthread.h>
+#include <errno.h>
+#include <stdio.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <string.h>
 
 // Project headers
 #include "client_api.h"

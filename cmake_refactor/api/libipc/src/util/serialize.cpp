@@ -13,12 +13,7 @@
 
 #include "serialize.hpp"
 
-//std::string serialize(std::map<std::string, std::string> map);
-//std::string serialize(std::map<std::string, int> map);
-//std::string serialize(std::map<int, std::string> map);
-//std::string serialize(std::map<int, int> map);
-//std::map<std::string, std::string> deSerialize(std::string msg, int mapSize);
-
+/* Bring serialize + deserialize into NS of current TU */
 using namespace dss::ipc::util;
 
 

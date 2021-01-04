@@ -5,6 +5,7 @@
  *   author: alex amellal
  *
  */
+#include <stdio.h>
 
 // Project headers
 #include "client_api.h"

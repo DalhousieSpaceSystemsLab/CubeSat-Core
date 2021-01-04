@@ -5,6 +5,10 @@
 *   author: alex amellal
 *
 */
+// Standard C Libraries
+#include <stdio.h>
+#include <sys/socket.h>
+#include <sys/un.h>
 
 // Project headers
 #include "client_api.h"

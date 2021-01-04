@@ -14,14 +14,7 @@
 #include "immut.h"
 #include "client_t.h"
 
-// Standard C Libraries
-#include <stdio.h>
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <string.h>
-#include <unistd.h>
-#include <pthread.h>
-#include <errno.h>
+
 
 ////////////////
 //  C Version //
