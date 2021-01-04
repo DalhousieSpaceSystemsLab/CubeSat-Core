@@ -1,0 +1,3 @@
+[submodule "JTOK"]
+	path = JTOK
+	url = https://github.com/cmattatall/JTOK
