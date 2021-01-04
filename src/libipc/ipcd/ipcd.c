@@ -12,6 +12,9 @@
     - Message source filters + dibs on incoming messages? (ongoing)
     - Implement dibs or catch-all source name exception list for ipc_recv (ongoing)
     - Setup unit testing with new functions
+
+    BUGS:
+    - Re-feeding messages into IPC eventually erases message. Why?
 *
 */
 
