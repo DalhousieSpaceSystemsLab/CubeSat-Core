@@ -1,3 +1,7 @@
+#ifndef __SERIALIZE_HPP__
+#define __SERIALIZE_HPP__
+#ifdef __cplusplus
+
 /*
 * serialize.hpp
 *
@@ -30,3 +34,6 @@ namespace dss
     }
   }
 }
+
+#endif /* #ifdef __cplusplus */
+#endif /* __SERIALIZE_HPP__ */
