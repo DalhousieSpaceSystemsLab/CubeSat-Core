@@ -132,8 +132,6 @@ function(add_executable exe)
         COMMAND ${CMAKE_OBJCOPY} -O ihex -I elf32-little "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${exe_full}" "${meta_dir}/${exe}/${exe_hex}"
     )
 
-
-
     add_custom_command(
         TARGET ${exe}_postbuild
         POST_BUILD
@@ -157,7 +155,12 @@ if(NOT COMMAND _add_library)
 function(add_library lib)
     _add_library(${lib} ${ARGN})
 
-    # for now, just exiting because I can't get this to work consistently across platforms
+    # for now, just aborting. When namespaced targets are received as 
+    # inputs to this function, for some reason a custom command conflict
+    # gets created since aparently an arbitrary number of custom targets
+    # can exist within the same namespace. Then, when build time occurs,
+    # cmake cannot produce a DAG since the dependency order of the 
+    # custom targets is unclear 
     return()
 
     add_custom_target(${lib}_postbuild ALL DEPENDS ${lib})
