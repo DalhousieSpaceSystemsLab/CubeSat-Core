@@ -72,8 +72,6 @@ if(BUILD_TESTING)
     endif()
 endif()
 
-
-set(TOOLCHAIN_PREFIX arm-none-eabi)
 set(CMAKE_C_COMPILER_NAME gcc)
 set(CMAKE_ASM_COMPILER_NAME gcc)
 set(CMAKE_CXX_COMPILER_NAME g++)
