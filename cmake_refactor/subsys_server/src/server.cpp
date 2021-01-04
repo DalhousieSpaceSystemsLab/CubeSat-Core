@@ -51,7 +51,7 @@ static void *receiving(void * args)
 
 static void formatting(buffer, fmt_buffer)
 {
-    //serialize(buffer, fmt_buffer);
+    serialize(buffer, fmt_buffer);
 }
 
 static void do_msn(fmt_buffer)

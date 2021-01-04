@@ -52,33 +52,7 @@ int ipc_disconnect();                                         // Close client si
 
 #ifdef __cplusplus
 
-// Standard C++ Libraries
-#include <map>
-#include <iterator>
-#include <string>
-#include <exception>
-
-// Standard C++ classes
-using std::map;
-using std::pair;
-using std::string;
-using std::exception;
-
-// Client API (C++)
-namespace dss
-{
-  namespace ipc
-  {
-    // Methods
-    void    init(string name);
-    void    send(string dest, string msg);
-    void    send_map(char dest[3], map<string, string> * map);
-    void    send_map(char dest[3], map<string, int> * map);
-    void    send_map(char dest[3], map<int, int> * map);
-    string  recv(string src);
-    void    close();
-  };
-};
+#include "client_api.hpp"
 
 #endif
 
