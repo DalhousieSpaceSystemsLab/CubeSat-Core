@@ -6,9 +6,15 @@
 *   author:   alex amellal
 *
 */
-
 #ifndef CUBESAT_CORE_INCLUDE_IPC_CONN_T_H
 #define CUBESAT_CORE_INCLUDE_IPC_CONN_T_H
+#ifdef __cplusplus
+/* clang-format off */
+extern "C"
+{
+/* clang-format on */
+#endif /* Start C linkage */
+
 
 // Standard C libraries 
 #include <unistd.h>
@@ -25,4 +31,10 @@ conn_t  conn_t_new();                 // Returns initialized client_t
 int     conn_t_stat();                // Returns connection status (0 = connected, -1 = closed).
 int     conn_t_close(conn_t * conn);  // Closes connection
 
+
+#ifdef __cplusplus
+/* clang-format off */
+}
+/* clang-format on */
+#endif /* End C linkage */
 #endif /* end of include guard: CUBESAT_CORE_INCLUDE_IPC_CONN_T_H */
