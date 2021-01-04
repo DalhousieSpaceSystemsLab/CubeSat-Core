@@ -1,15 +1,25 @@
 /*
-* immut.h
-*
-*   purpose: provides a framework for runtime constants in C.
-*   author: alex amellal
-*
-*/
+ * immut.h
+ *
+ *   purpose: provides a framework for runtime constants in C.
+ *   author: alex amellal
+ *
+ */
+#ifndef __IMMUT_H__
+#define __IMMUT_H__
+#ifdef __cplusplus
+/* clang-format off */
+extern "C"
+{
+/* clang-format on */
+#endif /* Start C linkage */
 
-#ifndef CUBESAT_CORE_INCLUDE_UTIL_IMMUT_H
-#define CUBESAT_CORE_INCLUDE_UTIL_IMMUT_H
-
-#define immut(type) const type * 
+#define immut(type) const type *
 #define val(name) *(name)
 
-#endif // end of header guard for CUBESAT_CORE_INCLUDE_UTIL_IMMUT_H
+#ifdef __cplusplus
+/* clang-format off */
+}
+/* clang-format on */
+#endif /* End C linkage */
+#endif /* __IMMUT_H__ */
