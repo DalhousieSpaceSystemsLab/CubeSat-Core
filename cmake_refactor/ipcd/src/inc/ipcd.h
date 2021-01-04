@@ -24,8 +24,6 @@
 #include <time.h>
 #include <unistd.h>
 
-// Private keyword
-#include "util/private.h"
 
 // Methods
 int ipcd_init();   // Initialize the IPC daemon
