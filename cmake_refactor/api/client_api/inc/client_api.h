@@ -14,8 +14,6 @@
 #include "immut.h"
 #include "client_t.h"
 
-
-
 ////////////////
 //  C Version //
 ////////////////

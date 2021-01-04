@@ -10,10 +10,6 @@
 // Project headers
 #include "client_api.h"
 
-// Standard C libraries
-#include <sys/select.h>
-#include <sys/time.h>
-
 int main(int argc, char *argv[])
 {
     // Check argc
