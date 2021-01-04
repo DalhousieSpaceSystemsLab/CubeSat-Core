@@ -144,7 +144,8 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
 
   // Refresh message queue until timeout exceeded 
   clock_t start = clock();
-  for(int x = 0; ((clock() - start) / CLOCKS_PER_SEC) < RECV_TIMEOUT; x++) {
+  int time_elapsed = 0;
+  for(int x = 0; time_elapsed < RECV_TIMEOUT; x++) {
     // Refresh message queue 
     if(ipc_refresh_src(dest) != 0) {
       fprintf(stderr, "ipc_refresh_src() failed : ");
@@ -159,6 +160,9 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
 
     // Wait read block delay 
     nanosleep(&READ_BLOCK_DELAY, NULL);
+
+    // Update time elapsed 
+    time_elapsed = (clock() - start) / CLOCKS_PER_SEC;
   }
 
   // Remove dib 
