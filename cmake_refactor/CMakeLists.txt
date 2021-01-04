@@ -100,6 +100,19 @@ if(NOT COMMAND _add_executable)
 function(add_executable exe)
     _add_executable(${exe} ${ARGN})
 
+    set(meta_dir "${CMAKE_CURRENT_BINARY_DIR}/metadata")
+
+    if(NOT EXISTS ${meta_dir})
+        file(MAKE_DIRECTORY ${meta_dir})
+    endif(NOT EXISTS ${meta_dir})
+
+    if(NOT EXISTS "${meta_dir}/${exe}")
+        file(MAKE_DIRECTORY "${meta_dir}/${exe}")
+    endif(NOT EXISTS "${meta_dir}/${exe}")
+
+    set(exe_full "${exe}${CMAKE_EXECUTABLE_SUFFIX}")
+    set(exe_hex "${exe}.hex")
+    set(exe_bin "${exe}.bin")
 
     add_custom_target(${exe}_postbuild ALL DEPENDS ${exe})
     add_custom_command( 
@@ -107,7 +120,7 @@ function(add_executable exe)
         POST_BUILD
         DEPENDS ${exe}
         COMMENT "Built exe ${exe} with the following size:"
-        COMMAND ${CMAKE_SIZE} -B "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${exe}${CMAKE_EXECUTABLE_SUFFIX}"
+        COMMAND ${CMAKE_SIZE} -B "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${exe_full}"
     )
 
     add_custom_command( 
@@ -115,23 +128,16 @@ function(add_executable exe)
         POST_BUILD
         DEPENDS ${exe}
         COMMENT "Producing a hex output using ${CMAKE_OBJCOPY}"
-        COMMAND ${CMAKE_OBJCOPY} -O ihex -I elf32-little "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${exe}$CACHE{CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${exe}.hex"
+        COMMAND ${CMAKE_OBJCOPY} -O ihex -I elf32-little "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${exe_full}" "${meta_dir}/${exe}/${exe_hex}"
     )
-    return()
 
-    add_custom_command(
-        TARGET ${exe}_postbuild
-        POST_BUILD
-        DEPENDS ${exe}
-        COMMAND ${CMAKE_OBJCOPY} -O ihex -I elf32-little "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${exe}${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/metadata/${exe}/${exe}.hex"
-    )
 
 
     add_custom_command(
         TARGET ${exe}_postbuild
         POST_BUILD
         DEPENDS ${exe}
-        COMMAND ${CMAKE_OBJCOPY} -O binary -I elf32-little "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${exe}${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/metadata/${exe}/${exe}.bin"
+        COMMAND ${CMAKE_OBJCOPY} -O binary -I elf32-little "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${exe_full}" "${meta_dir}/${exe}/${exe_bin}"
     )
 
     add_custom_command( 
@@ -139,7 +145,7 @@ function(add_executable exe)
         POST_BUILD
         DEPENDS ${exe}
         COMMENT "Generating lss file from ${exe} using ${CMAKE_OBJDUMP}"
-        COMMAND ${CMAKE_OBJDUMP} -xh "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${exe}${CMAKE_EXECUTABLE_SUFFIX}" > "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/metadata/${exe}/${exe}.lss"
+        COMMAND ${CMAKE_OBJDUMP} -xh "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${exe_full}" > "${meta_dir}/${exe}/${exe}.lss"
     )
 endfunction(add_executable exe)
 endif(NOT COMMAND _add_executable)
