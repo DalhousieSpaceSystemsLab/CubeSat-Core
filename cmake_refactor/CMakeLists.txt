@@ -127,6 +127,7 @@ function(add_executable exe)
         TARGET ${exe}_postbuild
         POST_BUILD
         DEPENDS ${exe}
+        BYPRODUCTS "${meta_dir}/${exe}/${exe_hex}"
         COMMENT "Producing a hex output using ${CMAKE_OBJCOPY}"
         COMMAND ${CMAKE_OBJCOPY} -O ihex -I elf32-little "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${exe_full}" "${meta_dir}/${exe}/${exe_hex}"
     )
@@ -137,6 +138,7 @@ function(add_executable exe)
         TARGET ${exe}_postbuild
         POST_BUILD
         DEPENDS ${exe}
+        BYPRODUCTS "${meta_dir}/${exe}/${exe_bin}"
         COMMAND ${CMAKE_OBJCOPY} -O binary -I elf32-little "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${exe_full}" "${meta_dir}/${exe}/${exe_bin}"
     )
 
@@ -173,6 +175,7 @@ function(add_library lib)
         POST_BUILD
         DEPENDS ${lib}
         COMMENT "Generating lss file from ${lib} using ${CMAKE_OBJDUMP}"
+        BYPRODUCTS "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/metadata/${lib}/${lib}.lss"
         COMMAND ${CMAKE_OBJDUMP} -xh "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${lib}" > "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/metadata/${lib}/${lib}.lss"
     )
 endfunction(add_library lib)
