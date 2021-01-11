@@ -196,3 +196,9 @@ add_subdirectory(subsys_server)
 add_subdirectory(client)
 #add_subdirectory(msnclient) # can't get this damn thing to build... SO MANY ERRORS IN THE SOURCE CODE...
 
+TARGET_COMPILE_OPTIONS(${BIN_TEST}
+  BEFORE PUBLIC "-g"
+)
+
+
+#add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../JTOK)
