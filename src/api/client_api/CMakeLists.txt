@@ -134,7 +134,7 @@ endforeach(lang ${${LIB}_languages})
 # SPECIAL AND PROJECT SPECIFIC OPTIONS
 ################################################################################
 
-
+target_compile_options(${LIB} PUBLIC "-g")
 
 
 
