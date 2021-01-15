@@ -390,9 +390,9 @@ int ipc_refresh_src(char src[NAME_LEN]) {
           (dibs[x].callback)(msg_nameless, msg_nameless_len, dibs[x].data);
 
           // Make sure message is NOT a receipt confirmation
-          if(!(strncmp(msg_nameless, RECV_CONF, bytes_read) == 0)) {
+          if(strncmp(msg_nameless, RECV_CONF, bytes_read) != 0) {
             // Send receipt confirmation 
-            if(ipc_send(dibs[x].name, RECV_CONF, strlen(RECV_CONF)) != 0) {
+            if(ipc_send(name, RECV_CONF, strlen(RECV_CONF)) != 0) {
               fprintf(stderr, "failed to send receipt confirmation : ipc_send() failed : ");
               return -1;
             }
