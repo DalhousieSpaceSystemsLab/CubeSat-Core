@@ -142,9 +142,11 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
     return -1;
   }
 
+  // Initialize time placeholders for timeout
+  time_t start, current, time_elapsed = 0;
+  time(&start);
+
   // Refresh message queue until timeout exceeded 
-  clock_t start = clock();
-  int time_elapsed = 0;
   for(int x = 0; time_elapsed < RECV_TIMEOUT; x++) {
     // Refresh message queue 
     if(ipc_refresh_src(dest) != 0) {
@@ -162,7 +164,10 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
     nanosleep(&READ_BLOCK_DELAY, NULL);
 
     // Update time elapsed 
-    time_elapsed = (clock() - start) / CLOCKS_PER_SEC;
+    time(&current);
+    time_elapsed = current - start;
+
+    fprintf(stdout, "time_elapsed = %ld\n", time_elapsed);
   }
 
   // Remove dib 
