@@ -23,6 +23,8 @@
 
 #define LOG_TRAFFIC 1
 
+#define LOG_TRAFFIC 1
+
 ///////////////////////
 //  Local Variables  //
 ///////////////////////
