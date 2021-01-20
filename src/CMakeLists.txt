@@ -192,7 +192,6 @@ add_subdirectory(api/client_api)
 
 # executable targets after, and link against necessary dependencies
 add_subdirectory(ipcd)
-add_subdirectory(subsys_server)
 add_subdirectory(client)
 #add_subdirectory(msnclient) # can't get this damn thing to build... SO MANY ERRORS IN THE SOURCE CODE...
 
