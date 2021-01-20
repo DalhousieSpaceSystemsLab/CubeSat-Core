@@ -129,9 +129,6 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
     return 0;
   }
 
-  // TODO:
-  // - Receipt confirmation timeout lasts forever...fix me
-
   // Create placeholder for receipt confirmation
   char recv_conf[MAX_MSG_LEN];
   bool recvd = false;
