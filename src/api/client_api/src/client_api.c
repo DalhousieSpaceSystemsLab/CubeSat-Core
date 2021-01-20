@@ -373,6 +373,9 @@ int ipc_refresh_src(char src[NAME_LEN]) {
     strncpy(name, msg, NAME_LEN);
     strncpy(msg_nameless, &msg[NAME_LEN+1], msg_nameless_len);
 
+    // Create placeholder to track whether incoming message was claimed 
+    bool msg_was_claimed = false;
+
     // Look for corresponding dibs in dibs array 
     for(int x = 0; x < MAX_NUM_DIBS; x++) {
       
@@ -398,23 +401,29 @@ int ipc_refresh_src(char src[NAME_LEN]) {
             }
           }
 
+          // Set message as claimed 
+          msg_was_claimed = true;
+
           // done
           break;
         }
-      } else { // Could not claim incoming message. Refeed into ipc 
-        // Create placeholder for msg to self 
-        char msg_to_refeed[MAX_MSG_LEN];
+      } 
+    }
 
-        // Format message for self 
-        strncpy(msg_to_refeed, self.name, NAME_LEN);
-        msg_to_refeed[NAME_LEN] = ' ';
-        strncpy(&msg_to_refeed[NAME_LEN+1], msg_nameless, bytes_read - (NAME_LEN+1));
+    // Could not claim incoming message. Refeed into ipc 
+    if(!msg_was_claimed) { 
+      // Create placeholder for msg to self 
+      char msg_to_refeed[MAX_MSG_LEN];
 
-        // Write message directly to the IPC 
-        if(write(self.conn.tx, msg_to_refeed, bytes_read) < bytes_read) {
-          perror("failed to re-feed message into IPC");
-          return -1;
-        }
+      // Format message for self 
+      strncpy(msg_to_refeed, self.name, NAME_LEN);
+      msg_to_refeed[NAME_LEN] = ' ';
+      strncpy(&msg_to_refeed[NAME_LEN+1], msg_nameless, bytes_read - (NAME_LEN+1));
+
+      // Write message directly to the IPC 
+      if(write(self.conn.tx, msg_to_refeed, bytes_read) < bytes_read) {
+        perror("failed to re-feed message into IPC");
+        return -1;
       }
     }
   }
