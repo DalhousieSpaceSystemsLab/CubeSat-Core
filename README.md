@@ -45,13 +45,13 @@ include - Project header file.
 LICENSE – Describes how this project can be used and distributed.
 README.md – General information about the project in Markdown format.
 
-## Building the Project
+## Building the Project (NEW)
 
 In a terminal, run:
 ```
 $ cd CubeSat-Core
-$ cmake .
-$ make
+$ cmake src -B build
+$ cmake --build build
 ```
 And watch the magic happen :) You'll find the compiled binaries in the `build/` directory.
 
