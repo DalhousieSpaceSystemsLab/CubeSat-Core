@@ -160,6 +160,7 @@ int main(int argc, char* argv[]) {
     printf("### Message Loop ###\n");
     printf("Enter [r] to refresh incoming messages.\n");
     printf("Enter [s] to send a message\n");
+    printf("Enter [d] to add a dib\n");
     printf("Press [ENTER] to quit\n\n");
     
     for(;;) {
@@ -202,6 +203,23 @@ int main(int argc, char* argv[]) {
           fprintf(stderr, "ipc_send() failed\n");
           return -1;
         }
+      } else if(ans[0] == 'd') {
+        // Create placeholder for dibs dest 
+        char src[NAME_LEN + 2];
+
+        // Get src name from user 
+        printf("[dib src] >> ");
+        fgets(src, NAME_LEN + 2, stdin);
+
+        // Add dib 
+        if(ipc_qrecv(src, cb_read, NULL) != 0) {
+          fprintf(stdout, "ipc_qrecv() failed\n");
+          return -1;
+        }
+
+        // Confirm
+        printf("[i] Dib successfully added\n\n");
+
       } else {
         // Not a recognized option, skip 
         continue;
