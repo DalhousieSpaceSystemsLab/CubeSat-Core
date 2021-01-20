@@ -43,6 +43,7 @@ static immut(int) sock = &sock_;
 static void* start_accepting(void *debug);
 static void* start_routing_client(void *params);
 static void disconnect_client(client_t* client);
+static void log_traffic(char src[NAME_LEN], char dest[NAME_LEN], char msg[MAX_MSG_LEN], size_t msg_len);
 
 // Thread which processes incoming client connections
 static void *start_accepting(void *debug) {
@@ -229,25 +230,7 @@ static void *start_routing_client(void *params) {
         }
 
         // Traffic Debug
-        if(LOG_TRAFFIC) {
-          // Get current time
-          time_t current_time = time(NULL);
-          struct tm * lt = localtime(&current_time);
-
-          // Extract nameless message 
-          char msg_nameless[MAX_MSG_LEN];
-          strncpy(msg_nameless, &msg[NAME_LEN+1], MAX_MSG_LEN - (NAME_LEN+1));
-
-          // Remove newline character from nameless message 
-          for(int x = 0; x < MAX_MSG_LEN; x++) {
-            if(msg_nameless[x] == '\n') {
-              msg_nameless[x] = 0;
-            }
-          }
-
-          // Print message trace
-          printf("(%.02d:%.02d:%.02d) [%.*s] ===> [%.*s] (%.*s)\n", lt->tm_hour, lt->tm_min, lt->tm_sec, NAME_LEN, client.name, NAME_LEN, name, fmt_msg_len-(NAME_LEN+1), msg_nameless);
-        }
+        if(LOG_TRAFFIC) log_traffic(client.name, clients[x].name, msg, bytes_read);
       }
     }
 
@@ -356,4 +339,24 @@ int ipcd_print_clients() {
 
   // done
   return 0;
+}
+
+static void log_traffic(char src[NAME_LEN], char dest[NAME_LEN], char msg[MAX_MSG_LEN], size_t msg_len) {
+  // Get current time
+  time_t current_time = time(NULL);
+  struct tm * lt = localtime(&current_time);
+
+  // Extract nameless message 
+  char msg_nameless[MAX_MSG_LEN];
+  strncpy(msg_nameless, &msg[NAME_LEN+1], MAX_MSG_LEN - (NAME_LEN+1));
+
+  // Remove newline character from nameless message 
+  for(int x = 0; x < MAX_MSG_LEN; x++) {
+    if(msg_nameless[x] == '\n') {
+      msg_nameless[x] = 0;
+    }
+  }
+
+  // Print message trace
+  printf("(%.02d:%.02d:%.02d) [%.*s] ===> [%.*s] (%.*s)\n", lt->tm_hour, lt->tm_min, lt->tm_sec, NAME_LEN, src, NAME_LEN, dest, msg_len-(NAME_LEN+1), msg_nameless);
 }
