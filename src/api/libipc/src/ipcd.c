@@ -204,6 +204,27 @@ static void *start_routing_client(void *params) {
       name[x] = msg[x];
     }
 
+    // Check for return-to-sender marker
+    if(bytes_read >= NAME_LEN+1 && msg[NAME_LEN] == '*') {
+      /**
+       * Simply return message to sender as if it was sent by dest name 
+       */ 
+      // Remove return-to-sender marker 
+      msg[NAME_LEN] = ' ';
+
+      // Return message to sender 
+      if(write(client.conn.rx, msg, bytes_read) < bytes_read) {
+        perror("write() failed : start_routing_client() failed");
+        pthread_exit(NULL);
+      }
+
+      // Log traffic 
+      log_traffic(client.name, client.name, msg, bytes_read);
+
+      // Continue to next request 
+      continue;
+    }
+
     // Look for destination client in clients array
     for (int x = 0; x < MAX_NUM_CLI; x++) {
       // Check if destination name matches another client's name
