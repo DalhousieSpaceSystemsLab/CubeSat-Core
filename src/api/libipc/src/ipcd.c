@@ -5,12 +5,9 @@
 *   author: alex amellal
 *
 *   TODO:
-    - Make receipt confirmations
     - Key-value pair sending 
     - C++ wrappers
     - Queue multiple messages 
-    - Message source filters + dibs on incoming messages? (ongoing)
-    - Implement dibs or catch-all source name exception list for ipc_recv (ongoing)
     - Setup unit testing with new functions
 
     BUGS:
@@ -20,8 +17,6 @@
 
 // Project headers
 #include "ipcd.h"
-
-#define LOG_TRAFFIC 1
 
 #define LOG_TRAFFIC 1
 
