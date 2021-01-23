@@ -180,6 +180,19 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
   return 0;
 }
 
+// Sends key-value pair to another process
+int ipc_send_json(char dest[NAME_LEN], json_t *json, size_t json_len) {
+  // Convert JSON struct into string 
+  char json_str[MAX_MSG_LEN];
+  size_t json_str_len = 0;
+  if((json_str_len = json_stringify(json, json_len, json_str, MAX_MSG_LEN)) < 0) {
+    fprintf(stderr, "json_stringify() failed : ");
+    return -1;
+  }
+
+  // Send JSON string over IPC 
+  return ipc_send(dest, json_str, json_str_len);
+}
 // Receive message from another process
 // Returns number of bytes of data copied into buffer.
 int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len) {

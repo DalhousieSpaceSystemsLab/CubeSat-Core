@@ -14,6 +14,7 @@
 #include "client_t.h"
 #include "msg_req_dib.h"
 #include "util/immut.h"
+#include "json.h"
 
 // Standard C Libraries
 #include <stdio.h>
@@ -27,11 +28,12 @@
 #include <stdbool.h>
 
 // Client API
-int ipc_connect(char name[3]);                                                            // Initialize client side IPC interface
-int ipc_send(char dest[3], char * msg, size_t msg_len);                                   // Send message to another process
-int ipc_recv(char src[3], char * buffer, size_t buffer_len);                              // Receive message from another process (blocks)
-int ipc_qsend(char dest[3], char * msg, size_t msg_len);                                  // Adds outgoing message to send queue
-int ipc_qrecv(char src[3], void (*callback)(char*, size_t, void*), void* data);           // Adds incoming message request to recv queue
+int ipc_connect(char name[NAME_LEN]);                                                            // Initialize client side IPC interface
+int ipc_send(char dest[NAME_LEN], char * msg, size_t msg_len);                                   // Send message to another process
+int ipc_send_json(char dest[NAME_LEN], json_t *json, size_t json_len);                           // Sends key-value pair to another process
+int ipc_recv(char src[NAME_LEN], char * buffer, size_t buffer_len);                              // Receive message from another process (blocks)
+int ipc_qsend(char dest[NAME_LEN], char * msg, size_t msg_len);                                  // Adds outgoing message to send queue
+int ipc_qrecv(char src[NAME_LEN], void (*callback)(char*, size_t, void*), void* data);           // Adds incoming message request to recv queue
 int ipc_refresh();                                                                        // Simultaneously reads/writes all queued data
 int ipc_refresh_src(char src[NAME_LEN]);                                                  // Simultaneously reads/writes queued data for specific source 
 int ipc_disconnect();                                                                     // Close client side IPC interface
