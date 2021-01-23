@@ -10,7 +10,7 @@
 #include "jsmn.h"
 
 // Parse JSON string into key-value pairs
-int json_parse(char *json, size_t json_len, json_kv_t *kv_pairs, size_t max_pairs) {
+int json_parse(char *json, size_t json_len, json_t *kv_pairs, size_t max_pairs) {
   // Initialize json parser 
   jsmn_parser parser;
   jsmn_init(&parser);
@@ -88,7 +88,7 @@ int json_parse(char *json, size_t json_len, json_kv_t *kv_pairs, size_t max_pair
 }
 
 // Stringify key-value pairs into JSON string
-int json_stringify(json_kv_t *kv_pairs, size_t kv_pairs_len, char *json_str, size_t json_str_len) {
+int json_stringify(json_t *kv_pairs, size_t kv_pairs_len, char *json_str, size_t json_str_len) {
   // Check for null pointers 
   if(kv_pairs == NULL || json_str == NULL) {
     fprintf(stderr, "cannot take null pointer : ");
