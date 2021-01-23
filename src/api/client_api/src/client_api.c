@@ -193,6 +193,7 @@ int ipc_send_json(char dest[NAME_LEN], json_t *json, size_t json_len) {
   // Send JSON string over IPC 
   return ipc_send(dest, json_str, json_str_len);
 }
+
 // Receive message from another process
 // Returns number of bytes of data copied into buffer.
 int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len) {
@@ -403,7 +404,7 @@ int ipc_refresh_src(char src[NAME_LEN]) {
           (dibs[x].callback)(msg_nameless, msg_nameless_len, dibs[x].data);
 
           // Make sure message is NOT a receipt confirmation
-          if(strncmp(msg_nameless, RECV_CONF, bytes_read) != 0) {
+          if(strncmp(msg_nameless, RECV_CONF, msg_nameless_len) != 0) {
             // Send receipt confirmation 
             if(ipc_send(name, RECV_CONF, strlen(RECV_CONF)) != 0) {
               fprintf(stderr, "failed to send receipt confirmation : ipc_send() failed : ");
