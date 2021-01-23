@@ -17,8 +17,12 @@
 #define ROUTER_CHECK_DELAY  1000000 // in nanoseconds
 #define DISCONNECT_SIG      "DISCONNECT"
 #define RECV_CONF           "OK"
-#define RECV_TIMEOUT        3
+#define RECV_TIMEOUT        30
 #define MAX_NUM_DIBS        MAX_NUM_CLI
 #define REFEED_DELAY        READ_BLOCK_DELAY
+
+// JSON
+#define JSON_KEY_LEN        32
+#define JSON_VAL_LEN        32
 
 #endif /* end of include guard: CUBESAT_CORE_INCLUDE_IPC_SETTINGS_H */
