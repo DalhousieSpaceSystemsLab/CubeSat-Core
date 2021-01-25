@@ -125,3 +125,34 @@ int json_stringify(json_t *kv_pairs, size_t kv_pairs_len, char *json_str, size_t
   // done. return length of stringified JSON
   return json_str_x;
 }
+
+// Attenpts to parse string into JSON and reports if valid JSON or not.
+// NOTE: Only supports up to JSON_TEST_LEN key-value pairs. Use json_ntest 
+//       to set custom key-value pair limit.
+bool json_test(char *json, size_t json_len) {
+  // Create test placeholders 
+   json_t kv_pairs[JSON_TEST_LEN];
+
+   // Try 
+   if(json_parse(json, json_len, kv_pairs, JSON_TEST_LEN) < 0) {
+     return false;
+   }
+
+  // done, tests pass.
+  return true;
+}
+
+// Attenpts to parse string into JSON and reports if valid JSON or not
+// NOTE: This function uses <n> key-value pair limit to test parsing.
+bool json_ntest(char *json, size_t json_len, size_t n) {
+  // Create test placeholders 
+   json_t kv_pairs[n];
+
+   // Try 
+   if(json_parse(json, json_len, kv_pairs, n) < 0) {
+     return false;
+   }
+
+  // done, tests pass.
+  return true;
+}
