@@ -20,6 +20,8 @@
 #define RECV_TIMEOUT        30
 #define MAX_NUM_DIBS        MAX_NUM_CLI
 #define REFEED_DELAY        READ_BLOCK_DELAY
+#define MAX_NUM_PACKETS     16
+#define MAX_PACKET_LEN      MAX_MSG_LEN + 5
 
 // JSON
 #define JSON_KEY_LEN        32

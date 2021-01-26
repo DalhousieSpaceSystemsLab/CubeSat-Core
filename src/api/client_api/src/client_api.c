@@ -16,6 +16,7 @@ static char qsend_dest[NAME_LEN];   // send queue destination name
 static char qsend_msg[MAX_MSG_LEN]; // send queue message placeholder
 static int qsend_msg_len = -1;      // send queue message length
 static MsgReqDib dibs[MAX_NUM_DIBS];// Stores message request dibs 
+static ipc_packet_t packets[MAX_NUM_PACKETS]; // Incoming packet queue
 
 // Callback methods
 static void cb_recv_conf(char*, size_t, void*); // Callback which checks for receipt confirmation 

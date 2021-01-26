@@ -15,6 +15,7 @@
 #include "msg_req_dib.h"
 #include "util/immut.h"
 #include "json.h"
+#include "ipc_packet.h"
 
 // Standard C Libraries
 #include <stdio.h>
