@@ -68,4 +68,8 @@ void ipc_packet_clear(ipc_packet_t *queue, size_t queue_len);
 // NOTE: overflow requires being at least MAX_PACKET_LEN in size to avoid overflows (irony)
 int ipc_packet_parse(char *data, size_t data_len, ipc_packet_t *packet_out, char *overflow);
 
+// Exports packet contents into string buffers 
+// RETURN length of msg 
+int ipc_packet_export(ipc_packet_t packet, char src_out[NAME_LEN], char *buffer, size_t buffer_len);
+
 #endif // End of header guard

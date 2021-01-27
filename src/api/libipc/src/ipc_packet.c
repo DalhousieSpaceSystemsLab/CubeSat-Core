@@ -205,3 +205,12 @@ int ipc_packet_parse(char *data, size_t data_len, ipc_packet_t *packet_out, char
   // done, packet failed
   return IPC_PACKET_PARSE_FAILED;
 }
+
+// Exports packet contents into string buffers 
+// RETURN length of msg 
+int ipc_packet_export(ipc_packet_t packet, char src_out[NAME_LEN], char *buffer, size_t max_buffer_len) {
+  strncpy(src_out, packet.addr, NAME_LEN);
+  int msg_len = packet.msg_len < max_buffer_len ? packet.msg_len : max_buffer_len;
+  strncpy(buffer, packet.msg, msg_len);
+  return msg_len;
+}
