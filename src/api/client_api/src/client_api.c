@@ -4,6 +4,7 @@
 *   purpose: provides API for other subsystems to use the IPC system as clients.
 *   author: alex amellal
 *
+*   TODO:
 */
 
 // Project headers
@@ -92,6 +93,9 @@ int ipc_connect(char name[NAME_LEN]) {
 static int ipc_write(char dest[NAME_LEN], char *msg, size_t msg_len) {
   // Create placeholder for outgoing data 
   char data_out[MAX_PACKET_LEN];
+  
+  // Used whenever write() cannot write the entire packet in one piece
+  int cursor = 0;
 
   // Format outgoing data 
   int data_out_len = sprintf(data_out, "%.*s <%.*s>", NAME_LEN, dest, msg_len, msg);
@@ -101,9 +105,15 @@ static int ipc_write(char dest[NAME_LEN], char *msg, size_t msg_len) {
   printf("data_out = %.*s\n", data_out_len, data_out);
   // Write data to the IPC 
   int bytes_written = 0;
-  if((bytes_written = write(self.conn.tx, data_out, data_out_len)) < data_out_len) {
-    perror("write() failed");
-    return -1;
+  while((bytes_written = write(self.conn.tx, &data_out[cursor], data_out_len)) < data_out_len) {
+    if(bytes_written < 0) {
+      perror("write() failed");
+      return -1;
+    } else {
+      cursor = bytes_written;
+      data_out_len -= cursor;
+      continue;
+    }
   }
 
   // done
