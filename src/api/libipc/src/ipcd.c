@@ -5,8 +5,7 @@
 *   author: alex amellal
 *
 *   TODO:
-    - Key-value pair sending 
-    - C++ wrappers
+    - C++ wrappers -- may be worth prioritizing other things
     - Queue multiple messages 
     - Setup unit testing with new functions
 
@@ -38,7 +37,7 @@ static immut(int) sock = &sock_;
 static void* start_accepting(void *debug);
 static void* start_routing_client(void *params);
 static void disconnect_client(client_t* client);
-static void log_traffic(char src[NAME_LEN], char dest[NAME_LEN], char msg[MAX_MSG_LEN], size_t msg_len);
+static void log_traffic(char src[NAME_LEN], char dest[NAME_LEN], char msg[MAX_PACKET_LEN], size_t msg_len);
 
 // Thread which processes incoming client connections
 static void *start_accepting(void *debug) {
@@ -154,7 +153,7 @@ static void *start_routing_client(void *params) {
 
   for (;;) {
     // Create placeholder for incoming message
-    char msg[MAX_MSG_LEN];
+    char msg[MAX_PACKET_LEN];
 
     // Check if rx/tx sockets ready
     if (conn_t_stat(client.conn) == -1) {  // connection is not ready
@@ -165,7 +164,7 @@ static void *start_routing_client(void *params) {
 
     // Wait for request from client
     int bytes_read = -1;
-    if ((bytes_read = read(client.conn.tx, msg, MAX_MSG_LEN)) <= 0) {  // read() failed
+    if ((bytes_read = read(client.conn.tx, msg, MAX_PACKET_LEN)) <= 0) {  // read() failed
       if (bytes_read == 0) fprintf(stderr, "actually read 0 bytes\n");
       fprintf(stderr, "read() failed : start_routing_client() failed\n");
       
@@ -225,7 +224,7 @@ static void *start_routing_client(void *params) {
       // Check if destination name matches another client's name
       if (strncmp(clients[x].name, name, 3) == 0) {  // name matches
         // Create placeholder for formatted message
-        char fmt_msg[MAX_MSG_LEN];
+        char fmt_msg[MAX_PACKET_LEN];
 
         // Copy source client name into formatted message
         strncpy(fmt_msg, client.name, 3);
@@ -357,17 +356,17 @@ int ipcd_print_clients() {
   return 0;
 }
 
-static void log_traffic(char src[NAME_LEN], char dest[NAME_LEN], char msg[MAX_MSG_LEN], size_t msg_len) {
+static void log_traffic(char src[NAME_LEN], char dest[NAME_LEN], char msg[MAX_PACKET_LEN], size_t msg_len) {
   // Get current time
   time_t current_time = time(NULL);
   struct tm * lt = localtime(&current_time);
 
   // Extract nameless message 
-  char msg_nameless[MAX_MSG_LEN];
-  strncpy(msg_nameless, &msg[NAME_LEN+1], MAX_MSG_LEN - (NAME_LEN+1));
+  char msg_nameless[MAX_PACKET_LEN];
+  strncpy(msg_nameless, &msg[NAME_LEN+1], MAX_PACKET_LEN - (NAME_LEN+1));
 
   // Remove newline character from nameless message 
-  for(int x = 0; x < MAX_MSG_LEN; x++) {
+  for(int x = 0; x < MAX_PACKET_LEN; x++) {
     if(msg_nameless[x] == '\n') {
       msg_nameless[x] = 0;
     }
