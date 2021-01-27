@@ -12,7 +12,8 @@
 #include "client_api.h"
 
 // Private constants 
-static enum {
+enum {
+  IPC_WRITE_NORM,
   IPC_WRITE_REFEED
 };
 
@@ -144,7 +145,7 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
 
   // Write message to ipc
   // if (write(self.conn.tx, msg_final, msg_final_len) < msg_final_len) {  // write() failed
-  if (ipc_write(dest, msg, msg_len, NULL) < msg_len) {  // write() failed
+  if (ipc_write(dest, msg, msg_len, IPC_WRITE_NORM) < msg_len) {  // write() failed
     perror("write() failed");
     return -1;
   }
