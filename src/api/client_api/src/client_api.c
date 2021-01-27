@@ -11,6 +11,11 @@
 #define _POSIX_C_SOURCE 199309L
 #include "client_api.h"
 
+// Private constants 
+static enum {
+  IPC_WRITE_REFEED
+};
+
 // Private variables
 static client_t self;               // self-referential placeholder for this client
 static char qsend_dest[NAME_LEN];   // send queue destination name
@@ -96,9 +101,19 @@ static int ipc_write(char dest[NAME_LEN], char *msg, size_t msg_len) {
   
   // Used whenever write() cannot write the entire packet in one piece
   int cursor = 0;
+  int total_bytes_written = 0;
 
+  // Check if sending message to self 
+  int data_out_len = 0;
+  if(flags == IPC_WRITE_REFEED) {
+    // Format outgoing data 
   // Format outgoing data 
-  int data_out_len = sprintf(data_out, "%.*s <%.*s>", NAME_LEN, dest, msg_len, msg);
+    // Format outgoing data 
+    data_out_len = sprintf(data_out, "%.*s* <%.*s>", NAME_LEN, dest, msg_len, msg);
+  } else {
+    // Format outgoing data 
+    data_out_len = sprintf(data_out, "%.*s <%.*s>", NAME_LEN, dest, msg_len, msg);
+  }
 
   // Write data to the IPC 
   int bytes_written = 0;
@@ -109,12 +124,16 @@ static int ipc_write(char dest[NAME_LEN], char *msg, size_t msg_len) {
     } else {
       cursor = bytes_written;
       data_out_len -= cursor;
+      total_bytes_written += bytes_written;
       continue;
     }
   }
 
+  // Update total bytes written
+  total_bytes_written += bytes_written;
+
   // done
-  return bytes_written;
+  return total_bytes_written;
 }
 
 // Send message to another process
