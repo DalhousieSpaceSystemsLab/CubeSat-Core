@@ -21,6 +21,10 @@ static ipc_packet_t packets[MAX_NUM_PACKETS]; // Incoming packet queue
 // Callback methods
 static void cb_recv_conf(char*, size_t, void*); // Callback which checks for receipt confirmation 
 
+// Private methods 
+static int ipc_write(char dest[NAME_LEN], char *msg, size_t msg_len);     // wraps write() function with custom packetizing
+static int ipc_read(char src_ou[NAME_LEN], char *buffer, size_t buffer_len); // wraps read() function with custom packetizing
+
 // Initialize client API and connect to IPC daemon.
 int ipc_connect(char name[NAME_LEN]) {
   // Initialize client placeholder for self
@@ -83,6 +87,29 @@ int ipc_connect(char name[NAME_LEN]) {
   return 0;
 }
 
+// Wraps write() function with custom packetizing
+// RETURN number of bytes sent to IPC.
+static int ipc_write(char dest[NAME_LEN], char *msg, size_t msg_len) {
+  // Create placeholder for outgoing data 
+  char data_out[MAX_PACKET_LEN];
+
+  // Format outgoing data 
+  int data_out_len = sprintf(data_out, "%.*s <%.*s>", NAME_LEN, dest, msg_len, msg);
+
+  // DEBUG 
+  printf("data_out_len = %d\n", data_out_len);
+  printf("data_out = %.*s\n", data_out_len, data_out);
+  // Write data to the IPC 
+  int bytes_written = 0;
+  if((bytes_written = write(self.conn.tx, data_out, data_out_len)) < data_out_len) {
+    perror("write() failed");
+    return -1;
+  }
+
+  // done
+  return bytes_written;
+}
+
 // Send message to another process
 int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
   // Ensure message is long enough to contain a name
@@ -91,29 +118,9 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
     return -1;
   }
 
-  // Create placeholder for message to send
-  char msg_final[MAX_MSG_LEN];
-
-  // Copy destination name into final message
-  strncpy(msg_final, dest, NAME_LEN);
-
-  // Add space between destination name and message
-  msg_final[NAME_LEN] = ' ';
-
-  // Create placeholder for msg offset
-  int offset = NAME_LEN + 1;
-
-  // Copy message into final message
-  for (int x = offset; (x - offset) < msg_len; x++) {
-    // Copy message character into final message
-    msg_final[x] = msg[x - offset];
-  }
-
-  // Calculate final message length
-  size_t msg_final_len = NAME_LEN + 1 + msg_len;
-
   // Write message to ipc
-  if (write(self.conn.tx, msg_final, msg_final_len) < msg_final_len) {  // write() failed
+  // if (write(self.conn.tx, msg_final, msg_final_len) < msg_final_len) {  // write() failed
+  if (ipc_write(dest, msg, msg_len) < msg_len) {  // write() failed
     perror("write() failed");
     return -1;
   }
@@ -193,6 +200,73 @@ int ipc_send_json(char dest[NAME_LEN], json_t *json, size_t json_len) {
 
   // Send JSON string over IPC 
   return ipc_send(dest, json_str, json_str_len);
+}
+
+// Wraps read() function with custom packetizing
+// RETURN number of bytes read from IPC
+static int ipc_read(char src_out[NAME_LEN], char *buffer, size_t buffer_len) {
+  // Check if any packets waiting in queue 
+  if(ipc_packet_waiting(packets, MAX_NUM_PACKETS)) {
+    // Pop packet from queue
+    ipc_packet_t packet = ipc_packet_pop(packets, MAX_NUM_PACKETS);
+
+    // Check if packet blank
+    if(!ipc_packet_blank(packet)) {
+      // Export packet to string buffers 
+      int msg_len = ipc_packet_export(packet, src_out, buffer, buffer_len);
+      
+      // done
+      return msg_len;
+    }
+  }
+  
+  // Read data from IPC
+  char incoming_data[MAX_PACKET_LEN];
+  int incoming_data_len = 0;
+  if((incoming_data_len = read(self.conn.rx, incoming_data, MAX_PACKET_LEN)) < 0) {
+    // Make sure read really failed (and didnt try to block)
+    if(!(errno == EWOULDBLOCK || errno == EAGAIN)) {
+      perror("read() failed");
+      return -1;
+    } else return -1;
+  }
+
+  // Parse data into packets
+  ipc_packet_t next_packet;
+  char overflow[MAX_PACKET_LEN];
+  int overflow_len = -1;
+  for(int x = 0; x < MAX_NUM_PACKETS; x++) {
+    // Attempt to parse data 
+    overflow_len = ipc_packet_parse(incoming_data, incoming_data_len, &next_packet, overflow);
+
+    // Catch parsing errors
+    if(overflow_len < 0) {
+      fprintf(stderr, "ipc_packet_parse() failed : ");
+      return -1;
+    }
+
+    // Add parsed packet to queue
+    if(ipc_packet_add(packets, MAX_NUM_PACKETS, next_packet) < 0) {
+      fprintf(stderr, "ipc_packet_add() failed : ");
+      return -1;
+    }
+
+    // Check for overflow
+    if(overflow_len) {
+      // Replace original data with overflow data
+      strncpy(incoming_data, overflow, overflow_len);
+      incoming_data_len = overflow_len;
+      continue;
+
+    } else break;
+  }
+
+  // Pop packet from queue and export to buffers
+  ipc_packet_t packet = ipc_packet_pop(packets, MAX_NUM_PACKETS);
+  int msg_len = ipc_packet_export(packet, src_out, buffer, buffer_len);
+
+  // done
+  return msg_len;
 }
 
 // Receive message from another process
@@ -362,11 +436,14 @@ int ipc_refresh_src(char src[NAME_LEN]) {
   //--- QRECV ---//
 
   // Create placeholder for incoming message from ipc
+  char name[NAME_LEN];
+  char msg_raw[MAX_MSG_LEN];
   char msg[MAX_MSG_LEN];
-  int bytes_read = -1;
+  int msg_len = -1;
 
   // Run single non-blocking read from IPC 
-  if((bytes_read = read(self.conn.rx, msg, MAX_MSG_LEN)) < 0) {
+  // if((bytes_read = read(self.conn.rx, msg_raw, MAX_MSG_LEN)) < 0) {
+  if((msg_len = ipc_read(name, msg, MAX_MSG_LEN)) < 0) {
     // Make sure read really failed (and didnt try to block)
     if(!(errno == EWOULDBLOCK || errno == EAGAIN)) {
       perror("read() failed");
@@ -375,16 +452,7 @@ int ipc_refresh_src(char src[NAME_LEN]) {
   }
 
   // Check if message was received from IPC
-  if(bytes_read > NAME_LEN + 2) {
-    // Create placeholders for message source name and nameless message 
-    char name[NAME_LEN];
-    char msg_nameless[MAX_MSG_LEN];
-    size_t msg_nameless_len = bytes_read - (NAME_LEN+1);
-    
-    // Separate source name from message
-    strncpy(name, msg, NAME_LEN);
-    strncpy(msg_nameless, &msg[NAME_LEN+1], msg_nameless_len);
-
+  if(msg_len > 0) {
     // Create placeholder to track whether incoming message was claimed 
     bool msg_was_claimed = false;
 
@@ -402,10 +470,10 @@ int ipc_refresh_src(char src[NAME_LEN]) {
         // Check for valid callback 
         if(dibs[x].callback != NULL) {
           // Run callback and pass message as parameter 
-          (dibs[x].callback)(msg_nameless, msg_nameless_len, dibs[x].data);
+          (dibs[x].callback)(msg, msg_len, dibs[x].data);
 
           // Make sure message is NOT a receipt confirmation
-          if(strncmp(msg_nameless, RECV_CONF, msg_nameless_len) != 0) {
+          if(strncmp(msg, RECV_CONF, msg_len) != 0) {
             // Send receipt confirmation 
             if(ipc_send(name, RECV_CONF, strlen(RECV_CONF)) != 0) {
               fprintf(stderr, "failed to send receipt confirmation : ipc_send() failed : ");
@@ -428,12 +496,10 @@ int ipc_refresh_src(char src[NAME_LEN]) {
       char msg_to_refeed[MAX_MSG_LEN];
 
       // Format message for self 
-      strncpy(msg_to_refeed, name, NAME_LEN);
-      msg_to_refeed[NAME_LEN] = '*';
-      strncpy(&msg_to_refeed[NAME_LEN+1], msg_nameless, bytes_read - (NAME_LEN+1));
+      int refeed_len = sprintf(msg_to_refeed, "%.*s* <%.*s>", NAME_LEN, name, msg_len, msg);
 
       // Write message directly to the IPC 
-      if(write(self.conn.tx, msg_to_refeed, bytes_read) < bytes_read) {
+      if(write(self.conn.tx, msg_to_refeed, refeed_len) < refeed_len) {
         perror("failed to re-feed message into IPC");
         return -1;
       }
