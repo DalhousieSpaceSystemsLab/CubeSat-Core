@@ -192,6 +192,15 @@ int main(int argc, char* argv[]) {
         printf(">> ");
         fgets(msg, MAX_MSG_LEN + 2, stdin);
 
+        // Remove newline character 
+        for(int x = 0; x < MAX_MSG_LEN; x++) {
+          if(msg[x] == '\n') {
+            for(int y = x; y < MAX_MSG_LEN+1; y++) {
+              msg[y] = msg[y+1];
+            }
+          }
+        }
+
         // Separate name from msg 
         char name[NAME_LEN];
         char msg_nameless[MAX_MSG_LEN];
