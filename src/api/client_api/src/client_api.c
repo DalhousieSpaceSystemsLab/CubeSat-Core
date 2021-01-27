@@ -100,9 +100,6 @@ static int ipc_write(char dest[NAME_LEN], char *msg, size_t msg_len) {
   // Format outgoing data 
   int data_out_len = sprintf(data_out, "%.*s <%.*s>", NAME_LEN, dest, msg_len, msg);
 
-  // DEBUG 
-  printf("data_out_len = %d\n", data_out_len);
-  printf("data_out = %.*s\n", data_out_len, data_out);
   // Write data to the IPC 
   int bytes_written = 0;
   while((bytes_written = write(self.conn.tx, &data_out[cursor], data_out_len)) < data_out_len) {
