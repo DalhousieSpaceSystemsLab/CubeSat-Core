@@ -316,13 +316,11 @@ int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len) {
 
   // Attempt loop
   for(;;) {
-    // Create buffer for incoming IPC command 
-    char msg[MAX_MSG_LEN];
-    memset(msg, 0, MAX_MSG_LEN);
-
     // Read message from IPC 
-    int bytes_read = -1;
-    if((bytes_read = read(self.conn.rx, msg, MAX_MSG_LEN)) <= 0) {
+    char name[NAME_LEN];
+    char msg[MAX_MSG_LEN];
+    int msg_len = 0;
+    if((msg_len = ipc_read(name, msg, MAX_MSG_LEN)) <= 0) {
       // Check if read should have blocked 
       if(errno == EWOULDBLOCK || errno == EAGAIN) {
         // Wait read delay and try again 
@@ -331,18 +329,9 @@ int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len) {
       }
       
       // Read failed 
-      fprintf(stderr, "read() failed : ");
+      fprintf(stderr, "ipc_read() failed : ");
       return -1;
     }
-
-    // Create placeholders for name 
-    char name[NAME_LEN];
-    char msg_nameless[MAX_MSG_LEN];
-    size_t msg_nameless_len = bytes_read-NAME_LEN-1;
-
-    // Separate name from message 
-    strncpy(name, msg, NAME_LEN);
-    strncpy(msg_nameless, &msg[NAME_LEN+1], msg_nameless_len);
 
     //--- Check if message can be claimed ---//
 
@@ -357,7 +346,7 @@ int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len) {
       //--- Message CAN be claimed ---//
       
       // Ensure incoming message is NOT receipt confirmation
-      if(!(strncmp(msg_nameless, RECV_CONF, strlen(RECV_CONF)) == 0)) {
+      if(!(strncmp(msg, RECV_CONF, strlen(RECV_CONF)) == 0)) {
         // Send receipt confirmation 
         if(ipc_send(name, RECV_CONF, strlen(RECV_CONF)) != 0) {
           fprintf(stderr, "ipc_send() failed : ");
@@ -369,23 +358,18 @@ int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len) {
       MsgReqDib_remove(name, dibs, MAX_NUM_DIBS);
 
       // Copy nameless message into output buffer 
-      strncpy(buf, msg_nameless, (buf_len > msg_nameless_len) ? msg_nameless_len : buf_len);
+      strncpy(buf, msg, (msg_len < buf_len) ? msg_len : buf_len);
 
       // Return number of bytes copied 
-      return msg_nameless_len;
+      return msg_len;
     
     // claim failed, re-feed into self
     } else {  
       //--- Message CANNOT be claimed ---//
 
-      // Format message to 'self'
-      char msg_self[MAX_MSG_LEN];
-      strncpy(msg_self, msg, MAX_MSG_LEN);
-      memcpy(msg_self, self.name, NAME_LEN);
-
-      // Send message directly to IPC 
-      if(write(self.conn.tx, msg_self, bytes_read) < bytes_read) {
-        perror("write() failed");
+      // Refeed message into self
+      if(ipc_write(name, msg, msg_len, IPC_WRITE_REFEED) < msg_len) {
+        perror("ipc_write() failed");
         return -1;
       }
 
