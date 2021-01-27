@@ -500,15 +500,8 @@ int ipc_refresh_src(char src[NAME_LEN]) {
 
     // Could not claim incoming message. Refeed into ipc 
     if(!msg_was_claimed) { 
-      // Create placeholder for msg to self 
-      char msg_to_refeed[MAX_MSG_LEN];
-
-      // Format message for self 
-      int refeed_len = sprintf(msg_to_refeed, "%.*s* <%.*s>", NAME_LEN, name, msg_len, msg);
-
-      // Write message directly to the IPC 
-      if(write(self.conn.tx, msg_to_refeed, refeed_len) < refeed_len) {
-        perror("failed to re-feed message into IPC");
+      if(ipc_write(name, msg, msg_len, IPC_WRITE_REFEED) < msg_len) {
+        perror("ipc_write() failed");
         return -1;
       }
     }
