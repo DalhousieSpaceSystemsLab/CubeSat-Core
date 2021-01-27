@@ -20,6 +20,7 @@ extern "C"
 #include "client_t.h"
 #include "settings.h"
 #include "immut.h"
+#include "ipc_packet.h"
 
 // Standard C libraries
 #include <errno.h>
