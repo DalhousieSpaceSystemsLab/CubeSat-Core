@@ -28,7 +28,7 @@ static ipc_packet_t packets[MAX_NUM_PACKETS]; // Incoming packet queue
 static void cb_recv_conf(char*, size_t, void*); // Callback which checks for receipt confirmation 
 
 // Private methods 
-static int ipc_write(char dest[NAME_LEN], char *msg, size_t msg_len);     // wraps write() function with custom packetizing
+static int ipc_write(char dest[NAME_LEN], char *msg, size_t msg_len, int flags);     // wraps write() function with custom packetizing
 static int ipc_read(char src_ou[NAME_LEN], char *buffer, size_t buffer_len); // wraps read() function with custom packetizing
 
 // Initialize client API and connect to IPC daemon.
@@ -95,7 +95,7 @@ int ipc_connect(char name[NAME_LEN]) {
 
 // Wraps write() function with custom packetizing
 // RETURN number of bytes sent to IPC.
-static int ipc_write(char dest[NAME_LEN], char *msg, size_t msg_len) {
+static int ipc_write(char dest[NAME_LEN], char *msg, size_t msg_len, int flags) {
   // Create placeholder for outgoing data 
   char data_out[MAX_PACKET_LEN];
   
@@ -106,8 +106,6 @@ static int ipc_write(char dest[NAME_LEN], char *msg, size_t msg_len) {
   // Check if sending message to self 
   int data_out_len = 0;
   if(flags == IPC_WRITE_REFEED) {
-    // Format outgoing data 
-  // Format outgoing data 
     // Format outgoing data 
     data_out_len = sprintf(data_out, "%.*s* <%.*s>", NAME_LEN, dest, msg_len, msg);
   } else {
@@ -146,7 +144,7 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
 
   // Write message to ipc
   // if (write(self.conn.tx, msg_final, msg_final_len) < msg_final_len) {  // write() failed
-  if (ipc_write(dest, msg, msg_len) < msg_len) {  // write() failed
+  if (ipc_write(dest, msg, msg_len, NULL) < msg_len) {  // write() failed
     perror("write() failed");
     return -1;
   }
