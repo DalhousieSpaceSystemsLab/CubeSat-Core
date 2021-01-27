@@ -365,10 +365,15 @@ static void log_traffic(char src[NAME_LEN], char dest[NAME_LEN], char msg[MAX_PA
   char msg_nameless[MAX_PACKET_LEN];
   strncpy(msg_nameless, &msg[NAME_LEN+1], MAX_PACKET_LEN - (NAME_LEN+1));
 
-  // Remove newline character from nameless message 
+  // Remove newline character and delimiters from nameless message 
   for(int x = 0; x < MAX_PACKET_LEN; x++) {
     if(msg_nameless[x] == '\n') {
       msg_nameless[x] = 0;
+    }
+
+    // Remove delimiters 
+    if(msg_nameless[x] == '<' || msg_nameless[x] == '>') {
+      msg_nameless[x] = ' ';
     }
   }
 
