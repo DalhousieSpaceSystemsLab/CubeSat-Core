@@ -23,14 +23,15 @@ static char qsend_dest[NAME_LEN];   // send queue destination name
 static char qsend_msg[MAX_MSG_LEN]; // send queue message placeholder
 static int qsend_msg_len = -1;      // send queue message length
 static MsgReqDib dibs[MAX_NUM_DIBS];// Stores message request dibs 
+static MsgReqDib recv_dibs[MAX_NUM_DIBS]; // Stores read-receipt dibs
 static ipc_packet_t packets[MAX_NUM_PACKETS]; // Incoming packet queue
 
 // Callback methods
 static void cb_recv_conf(char*, size_t, void*); // Callback which checks for receipt confirmation 
 
 // Private methods 
-static int ipc_write(char dest[NAME_LEN], char *msg, size_t msg_len, int flags);     // wraps write() function with custom packetizing
-static int ipc_read(char src_ou[NAME_LEN], char *buffer, size_t buffer_len); // wraps read() function with custom packetizing
+static int ipc_write(char dest[NAME_LEN], char *msg, size_t msg_len, int flags);  // wraps write() function with custom packetizing
+static int ipc_read(char src_out[NAME_LEN], char *buffer, size_t buffer_len);     // wraps read() function with custom packetizing
 
 // Initialize client API and connect to IPC daemon.
 int ipc_connect(char name[NAME_LEN]) {
@@ -167,7 +168,7 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
   bool recvd = false;
 
   // Listen for incoming receipt confirmation 
-  if(ipc_qrecv(dest, cb_recv_conf, recv_conf) != 0) {
+  if(ipc_qrecv(dest, cb_recv_conf, recv_conf, IPC_QRECV_RECV) != 0) {
     fprintf(stderr, "ipc_qrecv() failed : ");
     return -1;
   }
@@ -412,9 +413,14 @@ int ipc_qsend(char dest[NAME_LEN], char *msg, size_t msg_len) {
 }
 
 // Adds incoming message request to recv queue
-int ipc_qrecv(char src[NAME_LEN], void (*callback)(char*, size_t, void*), void* data) {
+int ipc_qrecv(char src[NAME_LEN], void (*callback)(char*, size_t, void*), void* data, int flags) {
+  // Set which dibs array to refer to 
+  MsgReqDib * dibs_array;
+  if(flags == IPC_QRECV_MSG) dibs_array = dibs;
+  else dibs_array = recv_dibs;
+  
   // Check for preexisting dibs on src
-  if(MsgReqDib_exists(src, dibs, MAX_NUM_DIBS)) {
+  if(MsgReqDib_exists(src, dibs_array, MAX_NUM_DIBS)) {
     fprintf(stderr, "preexisting dibs on src (%.*s) : ", NAME_LEN, src);
     return -1;
   }
@@ -426,7 +432,7 @@ int ipc_qrecv(char src[NAME_LEN], void (*callback)(char*, size_t, void*), void* 
   }
 
   // Create a new dib for src 
-  if(MsgReqDib_add(MsgReqDib_set(src, callback, data), dibs, MAX_NUM_DIBS) < 0) {
+  if(MsgReqDib_add(MsgReqDib_set(src, callback, data), dibs_array, MAX_NUM_DIBS) < 0) {
     fprintf(stderr, "MsgReqDib_add() failed : ");
     return -1;
   }
@@ -465,21 +471,29 @@ int ipc_refresh_src(char src[NAME_LEN]) {
     // Create placeholder to track whether incoming message was claimed 
     bool msg_was_claimed = false;
 
+    // Check if incoming message is a receipt conf 
+    MsgReqDib *dibs_array;
+    if(strncmp(msg, RECV_CONF, strlen(RECV_CONF)) == 0) {
+      dibs_array = recv_dibs;
+    } else {
+      dibs_array = dibs;
+    }
+
     // Look for corresponding dibs in dibs array 
     for(int x = 0; x < MAX_NUM_DIBS; x++) {
       
       // Create placeholders for conditions of correspondance
-      bool dib_matches_msg_src    = strncmp(name, dibs[x].name, NAME_LEN) == 0;
-      bool dib_matches_src_filter = strncmp(src, dibs[x].name, NAME_LEN) == 0;
+      bool dib_matches_msg_src    = strncmp(name, dibs_array[x].name, NAME_LEN) == 0;
+      bool dib_matches_src_filter = strncmp(src, dibs_array[x].name, NAME_LEN) == 0;
       bool src_filter_wildcard    = strncmp(src, "*", 1) == 0;
-      bool dib_wildcard           = strncmp(dibs[x].name, "*", 1) == 0;
+      bool dib_wildcard           = strncmp(dibs_array[x].name, "*", 1) == 0;
       
       // Check if dib corresponds to dibs rules and src filter
       if((dib_matches_msg_src && dib_matches_src_filter) || (dib_matches_msg_src && src_filter_wildcard) || (dib_wildcard && src_filter_wildcard)) {
         // Check for valid callback 
-        if(dibs[x].callback != NULL) {
+        if(dibs_array[x].callback != NULL) {
           // Run callback and pass message as parameter 
-          (dibs[x].callback)(msg, msg_len, dibs[x].data);
+          (dibs_array[x].callback)(msg, msg_len, dibs_array[x].data);
 
           // Make sure message is NOT a receipt confirmation
           if(strncmp(msg, RECV_CONF, msg_len) != 0) {
