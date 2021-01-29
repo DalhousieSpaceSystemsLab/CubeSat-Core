@@ -27,5 +27,6 @@
 #define JSON_KEY_LEN        32
 #define JSON_VAL_LEN        32
 #define JSON_TEST_LEN       32
+#define JSMN_TOK_OFF        3
 
 #endif /* end of include guard: CUBESAT_CORE_INCLUDE_IPC_SETTINGS_H */

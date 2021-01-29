@@ -16,11 +16,12 @@ int json_parse(char *json, size_t json_len, json_t *kv_pairs, size_t max_pairs) 
   jsmn_init(&parser);
 
   // Allocate jsmn tokens 
-  jsmntok_t tokens[max_pairs + 1];
+  int jsmn_toks = max_pairs + JSMN_TOK_OFF;
+  jsmntok_t tokens[jsmn_toks];
 
   // Parse JSON
   int tokens_parsed;
-  if((tokens_parsed = jsmn_parse(&parser, json, json_len, tokens, max_pairs+1)) < 0) { 
+  if((tokens_parsed = jsmn_parse(&parser, json, json_len, tokens, jsmn_toks)) < 0) { 
    switch(tokens_parsed) {
     case JSMN_ERROR_INVAL:
       fprintf(stderr, "bad token, JSON string is corrupted :");
