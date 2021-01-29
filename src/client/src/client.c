@@ -161,6 +161,7 @@ int main(int argc, char* argv[]) {
     printf("Enter [r] to refresh incoming messages.\n");
     printf("Enter [s] to send a message\n");
     printf("Enter [d] to add a dib\n");
+    printf("Enter [j] to send key-value pairs\n");
     printf("Press [ENTER] to quit\n\n");
     
     for(;;) {
@@ -228,6 +229,36 @@ int main(int argc, char* argv[]) {
 
         // Confirm
         printf("[i] Dib successfully added\n\n");
+
+      } else if(ans[0] == 'j') {
+        char dest[NAME_LEN + 2];
+        int max_kv = 5, total_kv = 0;
+        json_t kv_pairs[max_kv];
+
+        printf("[dest]> ");
+        fgets(dest, NAME_LEN + 2, stdin);
+
+        printf("Press [ENTER] to stop entering key-value pairs\n");
+        for(int x = 0; x < max_kv; x++, total_kv++) {
+          printf("[key]> ");
+          fgets(kv_pairs[x].key, JSON_KEY_LEN, stdin);
+          printf("[value]> ");
+          fgets(kv_pairs[x].val, JSON_VAL_LEN, stdin);
+
+          if(kv_pairs[x].key[0] == '\n' || kv_pairs[x].val[0] == '\n') break;
+
+          for(int y = 0; y < JSON_KEY_LEN; y++) {
+            if(kv_pairs[x].key[y] == '\n') kv_pairs[x].key[y] = '\0';
+          }
+          for(int y = 0; y < JSON_VAL_LEN; y++) {
+            if(kv_pairs[x].val[y] == '\n') kv_pairs[x].val[y] = '\0';
+          }
+        }
+
+        if(ipc_send_json(dest, kv_pairs, total_kv) < 0) {
+          fprintf(stderr, "ipc_send_json() failed\n");
+          return -1;
+        }
 
       } else {
         // Not a recognized option, skip 
@@ -311,6 +342,21 @@ void isr(int sig) {
 
 // Callback for async communication 
 static void cb_read(char *msg, size_t msg_len, void* data) {
+  // Check if incoming message is a key-value pair 
+  if(json_test(msg, msg_len)) {
+    int max_kv = 5;
+    json_t json[max_kv];
+    int kv_parsed = 0;
+    if((kv_parsed = json_parse(msg, msg_len, json, max_kv)) < 0) {
+      fprintf(stderr, "json_parse() failed\n");
+      return;
+    }
+    for(int x = 0; x < kv_parsed; x++) {
+      printf("[pair %d] %s : %s\n", x, json[x].key, json[x].val);
+    }
+    return;
+  }
+  
   // Print message 
   printf("Incoming message: %.*s\n", msg_len, msg);
 }
