@@ -10,7 +10,7 @@
 #define CUBESAT_CORE_INCLUDE_SUBSYSTEM_SERVERS_TEMPLATE_H
 
 // Project headers
-#include "subsystem/server_container.h"
+#include "server_container.h"
 
 // Feature test macros 
 #define _XOPEN_SOURCE 700

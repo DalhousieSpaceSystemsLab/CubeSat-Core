@@ -6,7 +6,7 @@
  * 
  */
 
-#include "subsystem/dock.h"
+#include "dock.h"
 
 // Private methods 
 static int stop_server(ServerContainer* server);

@@ -7,14 +7,14 @@
  */
 
 // Subsystem server container
-#include "subsystem/server_container.h"
+#include "server_container.h"
 
 // Dock library
-#include "subsystem/dock.h"
+#include "dock.h"
 
 // Subsystem servers
-#include "subsystem/servers/template.h"
-#include "subsystem/servers/twin.h"
+#include "template.h"
+#include "twin.h"
 
 // Standard C libraries
 #include <signal.h>

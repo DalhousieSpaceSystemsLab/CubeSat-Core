@@ -10,7 +10,7 @@
 #define CUBESAT_CORE_INCLUDE_SUBSYSTEM_SERVER_H
 
 // Project headers
-#include "subsystem/settings.h"
+#include "settings.h"
 
 // Standard C libraries
 #include <pthread.h>

@@ -11,8 +11,8 @@
 #define CUBESAT_CORE_INCLUDE_SUBSYSTEM_SERVERS_FILESYSTEM_H
 
 // Project headers
-#include "subsystem/server_container.h"
-#include "ipc/client_api.h"
+#include "server_container.h"
+#include "client_api.h" 
 
 extern ServerContainer filesystem_server;
 

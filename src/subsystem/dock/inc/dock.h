@@ -2,9 +2,9 @@
 #define CUBESAT_CORE_INCLUDE_SUBSYSTEM_DOCK_DOCK_H
 
 // Project headers
-#include "subsystem/server_container.h"
-#include "subsystem/servers/template.h"
-#include "subsystem/servers/twin.h"
+#include "server_container.h"
+#include "template.h"
+#include "twin.h"
 
 // Standard C libraries 
 #include <pthread.h>

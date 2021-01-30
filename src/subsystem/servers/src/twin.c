@@ -1,4 +1,4 @@
-#include "subsystem/servers/twin.h"
+#include "twin.h"
 
 void * twin_server_start() { 
   printf("Starting twin!\n");
