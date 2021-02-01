@@ -191,14 +191,9 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
       break;
     }
 
-    // Wait read block delay 
-    nanosleep(&READ_BLOCK_DELAY, NULL);
-
     // Update time elapsed 
     time(&current);
     time_elapsed = current - start;
-
-    fprintf(stdout, "time_elapsed = %ld\n", time_elapsed);
   }
 
   // Remove dib 
@@ -537,6 +532,9 @@ int ipc_refresh_src(char src[NAME_LEN]) {
   memset(qsend_dest, 0, NAME_LEN);
   memset(qsend_msg, 0, MAX_MSG_LEN);
   qsend_msg_len = -1;
+
+  // Add delay if continuously refreshing 
+  nanosleep(&READ_BLOCK_DELAY, NULL);
 
   // done
   return 0;
