@@ -14,7 +14,7 @@ void* filesystem_server_start();
 void  filesystem_server_stop();
 
 // Server container 
-ServerContainer filesystem_server = {
+SubsystemModule filesystem_server = {
   .start  = filesystem_server_start,
   .stop   = filesystem_server_stop,
 };

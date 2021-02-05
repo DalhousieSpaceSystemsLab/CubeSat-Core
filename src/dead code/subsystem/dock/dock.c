@@ -9,11 +9,11 @@
 #include "subsystem/dock.h"
 
 // Private methods 
-static int stop_server(ServerContainer* server);
+static int stop_server(SubsystemModule* server);
 static void* monitor_server(void* args);
 
 // Start all server containers
-int dock_start(ServerContainer* servers, size_t servers_len) {
+int dock_start(SubsystemModule* servers, size_t servers_len) {
   // Ensure servers pointer is not null 
   if(servers == NULL) {
     fprintf(stderr, "servers pointer cannot be null : ");
@@ -49,7 +49,7 @@ int dock_start(ServerContainer* servers, size_t servers_len) {
 }
 
 // Stop all server containers
-int dock_stop(ServerContainer* servers, size_t servers_len) {
+int dock_stop(SubsystemModule* servers, size_t servers_len) {
   // Shutdown all servers 
   for(int x = 0; x < servers_len; x++) {
     if(stop_server(&servers[x]) != 0) {
@@ -63,7 +63,7 @@ int dock_stop(ServerContainer* servers, size_t servers_len) {
 }
 
 // Stop execution of server and run stop function associated to it 
-static int stop_server(ServerContainer* server) {
+static int stop_server(SubsystemModule* server) {
   // Check if server pointer non null 
   if(server == NULL) {
     fprintf(stderr, "cannot use null pointer to server : ");
@@ -94,8 +94,8 @@ static int stop_server(ServerContainer* server) {
  * of designated server's 'start()' method 
  */
 static void* monitor_server(void* args) {
-  // Convert void pointer args to ServerContainer 
-  ServerContainer* server = (ServerContainer *) args;
+  // Convert void pointer args to SubsystemModule 
+  SubsystemModule* server = (SubsystemModule *) args;
 
   // Check if tid is initialized 
   if(server->tid == -1) {

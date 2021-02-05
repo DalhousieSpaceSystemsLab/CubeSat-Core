@@ -1,7 +1,7 @@
-#include "server_container.h"
+#include "subsystem_module.h"
 #include <signal.h>
 #include <pthread.h>
 #include <stdio.h>
 #include <unistd.h>
 
-extern ServerContainer twin_server;
+extern SubsystemModule twin_server;

@@ -22,7 +22,7 @@ void  template_server_stop();
  * Once defined, declare it as an extern variable in the header you wish to 
  * dedicate to add your server to the subsystem dock.
  */
-ServerContainer template_server = {
+SubsystemModule template_server = {
     .start = template_server_start,
     .stop  = template_server_stop,
 };

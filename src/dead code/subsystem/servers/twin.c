@@ -13,7 +13,7 @@ void twin_server_stop() {
   fflush(stdout);
 }
 
-ServerContainer twin_server = {
+SubsystemModule twin_server = {
   .start = twin_server_start,
   .stop = twin_server_stop,
 };
