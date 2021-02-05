@@ -7,39 +7,44 @@
  */
 
 // Subsystem server container
-#include "server_container.h"
+#include "subsystem_module.h"
 
 // Dock library
 #include "dock.h"
 
-// Subsystem servers
+// Subsystem modules
 #include "template.h"
 #include "twin.h"
+#include "filesystem.h"
+#include "payload.h"
 
 // Standard C libraries
 #include <signal.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 // Interrupt signal routine handler
 void isr(int sig);
 
 // Global pointer to server container array
-static ServerContainer* servers_ptr = NULL;
-static int servers_len = 0;
+static SubsystemModule* modules_ptr = NULL;
+static int modules_len = 0;
 
 int main() {
   // Create list of server containers
-  ServerContainer servers[] = {
-      template_server,
-      twin_server,
+  SubsystemModule modules[] = {
+      // template_server,
+      // twin_server,
+      filesystem_server,
+      payload_server,
   };
-  servers_len = sizeof(servers) / sizeof(ServerContainer);
+  modules_len = sizeof(modules) / sizeof(SubsystemModule);
 
   // Update global pointer to server container array
-  servers_ptr = servers;
+  modules_ptr = modules;
 
   // Start dock
-  if (dock_start(servers, servers_len) != 0) {
+  if (dock_start(modules, modules_len) != 0) {
     fprintf(stderr, "dock_start() failed\n");
     return -1;
   }
@@ -58,8 +63,8 @@ int main() {
 
 // Interrupt signal routine handler
 void isr(int sig) {
-  // Check if servers_ptr null 
-  if(servers_ptr == NULL) {
+  // Check if modules_ptr null 
+  if(modules_ptr == NULL) {
     fprintf(stdout, "\nNothing to do. Exiting!\n");
     exit(0);
   }
@@ -67,7 +72,7 @@ void isr(int sig) {
   switch (sig) {
     case SIGINT:
       fprintf(stdout, "\nStopping dock daemon...\n");
-      dock_stop(servers_ptr, servers_len);
+      dock_stop(modules_ptr, modules_len);
       fprintf(stdout, "Done!\n");
       exit(0);
       break;

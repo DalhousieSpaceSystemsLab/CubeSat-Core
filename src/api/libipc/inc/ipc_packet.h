@@ -9,7 +9,7 @@
 #ifndef CUBESAT_CORE_INCLUDE_IPC_PACKET_H
 #define CUBESAT_CORE_INCLUDE_IPC_PACKET_H
 
-#include "settings.h"
+#include "ipc_settings.h"
 #include <stddef.h>
 #include <string.h>
 #include <stdbool.h>

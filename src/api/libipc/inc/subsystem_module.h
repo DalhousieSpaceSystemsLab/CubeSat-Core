@@ -10,7 +10,7 @@
 #define CUBESAT_CORE_INCLUDE_SUBSYSTEM_MODULE_H
 
 // Project headers
-#include "settings.h"
+#include "ipc_settings.h"
 
 // Standard C libraries
 #include <pthread.h>

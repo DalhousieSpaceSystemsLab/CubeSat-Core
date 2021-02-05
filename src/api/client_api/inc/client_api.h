@@ -10,7 +10,7 @@
 #define CUBESAT_CORE_INCLUDE_IPC_CLIENT_API_H
 
 // Project headers
-#include "settings.h"
+#include "ipc_settings.h"
 #include "client_t.h"
 #include "msg_req_dib.h"
 #include "util/immut.h"

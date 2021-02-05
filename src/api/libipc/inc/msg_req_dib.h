@@ -10,7 +10,7 @@
 #define CUBESAT_CORE_INCLUDE_IPC_MSG_REQ_DIB_H
 
 // Project headers 
-#include "settings.h"
+#include "ipc_settings.h"
 
 // Standard C libraries 
 #include <stdlib.h>
