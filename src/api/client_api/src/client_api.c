@@ -34,7 +34,7 @@ static int ipc_write(char dest[NAME_LEN], char *msg, size_t msg_len, int flags);
 static int ipc_read(char src_out[NAME_LEN], char *buffer, size_t buffer_len);     // wraps read() function with custom packetizing
 
 // Initialize client API and connect to IPC daemon.
-int ipc_connect(char name[NAME_LEN]) {
+int ipc_connect(const char name[NAME_LEN]) {
   // Initialize client placeholder for self
   self = client_t_new();
 

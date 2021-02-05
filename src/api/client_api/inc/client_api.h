@@ -34,7 +34,7 @@ enum {
 };
 
 // Client API
-int ipc_connect(char name[NAME_LEN]);                                                            // Initialize client side IPC interface
+int ipc_connect(const char name[NAME_LEN]);                                                      // Initialize client side IPC interface
 int ipc_send(char dest[NAME_LEN], char * msg, size_t msg_len);                                   // Send message to another process
 int ipc_send_json(char dest[NAME_LEN], json_t *json, size_t json_len);                           // Sends key-value pair to another process
 int ipc_recv(char src[NAME_LEN], char * buffer, size_t buffer_len);                              // Receive message from another process (blocks)
