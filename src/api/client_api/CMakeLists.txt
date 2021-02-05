@@ -134,14 +134,14 @@ endforeach(lang ${${LIB}_languages})
 # SPECIAL AND PROJECT SPECIFIC OPTIONS
 ################################################################################
 
-target_compile_options(${LIB} PUBLIC "-g")
+target_compile_options(${LIB} PRIVATE "-g")
 
 
 
 ################################################################################
 # LINK AGAINST THE NECESSARY LIBRARIES 
 ################################################################################
-target_link_libraries(${LIB} PUBLIC LIB_IPC)
+target_link_libraries(${LIB} PRIVATE LIB_IPC)
 
 #Link against pthread
 find_package(Threads REQUIRED)

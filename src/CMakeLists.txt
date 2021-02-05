@@ -194,7 +194,6 @@ add_subdirectory(subsystem/servers)
 # executable targets after, and link against necessary dependencies
 add_subdirectory(ipcd)
 add_subdirectory(client)
-#add_subdirectory(msnclient) # can't get this damn thing to build... SO MANY ERRORS IN THE SOURCE CODE...
 add_subdirectory(subsystem/dock)
 
 # TARGET_COMPILE_OPTIONS(${BIN_TEST}

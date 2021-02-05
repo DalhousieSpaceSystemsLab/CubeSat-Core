@@ -141,7 +141,8 @@ target_compile_options(${LIB} PUBLIC "-g")
 ################################################################################
 # LINK AGAINST THE NECESSARY LIBRARIES 
 ################################################################################
-target_link_libraries(${LIB} PUBLIC CLIENT_API)
+target_link_libraries(${LIB} PRIVATE LIB_IPC)
+target_link_libraries(${LIB} PRIVATE CLIENT_API)
 
 #Link against pthread
 find_package(Threads REQUIRED)

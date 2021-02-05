@@ -151,7 +151,6 @@ target_compile_options(${LIB} PUBLIC "-g")
 # LINK AGAINST THE NECESSARY LIBRARIES 
 ################################################################################
 
-
 ######################################
 # EXAMPLE OF LINKINAG AGAINST PTHREAD
 ######################################

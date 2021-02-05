@@ -17,11 +17,11 @@
 #include <stddef.h>
 
 // Subsystem server container type
-typedef struct server_container {
-  void* (*start)();
-  void (*stop)();
-  pthread_t tid;
+typedef struct subsystem_module {
+  int (*start)(void*);
+  int (*stop)(void*);
+  int pid;
   pthread_t mtid;
-} ServerContainer;
+} SubsystemModule;
 
 #endif  // END OF CUBESAT_CORE_INCLUDE_SUBSYSTEM_SERVER_H
