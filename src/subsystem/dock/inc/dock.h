@@ -1,17 +1,33 @@
 #ifndef CUBESAT_CORE_INCLUDE_SUBSYSTEM_DOCK_DOCK_H
 #define CUBESAT_CORE_INCLUDE_SUBSYSTEM_DOCK_DOCK_H
 
+// Feature test macros
+#define _GNU_SOURCE
+
 // Project headers
-#include "server_container.h"
-#include "template.h"
-#include "twin.h"
+#include "dock_settings.h"
+#include "subsystem_module.h"
 
 // Standard C libraries 
 #include <pthread.h>
 #include <errno.h>
+#include <stdio.h>
+#include <sched.h>
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <time.h>
+#include <stdbool.h>
 
-// Public methods
-int dock_start(ServerContainer* servers, size_t servers_len);  // Start running dock and all server instances
-int dock_stop(ServerContainer * servers, size_t servers_len);  // Stop dock and all server instances
+////////////////////
+// Public methods //
+////////////////////
+
+// Start running dock and all server instances
+int dock_start(SubsystemModule* modules, size_t modules_len, char stacks[MAX_NUM_MODULES][MODULE_STACK_SIZE]);
+
+// Stop dock and all server instances
+int dock_stop(SubsystemModule* modules, size_t modules_len, char stacks[MAX_NUM_MODULES][MODULE_STACK_SIZE]);
 
 #endif

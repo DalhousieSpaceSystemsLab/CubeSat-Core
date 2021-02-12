@@ -4,56 +4,67 @@
  * purpose: act as a containerized executable platform for subsystem servers 
  * author: alex amellal 
  * 
+ * TODO:
+ *  - Rename header files to be unique (given rekt folder structure)
+ *    duplicate dibs error to appear. Must not be removing dibs.
+ *  - Make sure stack is large enough (edit stack size at startup)
+ *  - Add timeout to stop_server function (around the wait() method)
+ * 
  */
 
 #include "dock.h"
 
-// Private methods 
-static int stop_server(ServerContainer* server);
-static void* monitor_server(void* args);
+// Stops module by running module.stop()
+// Uses provided stack as context for executing the stop method.
+static int stop_module(SubsystemModule* module);
+
+// Starts module by running module.run() and monitors process.
+// Process will be restarted in case of exit.
+static void* run_module(void* args);
+
+// Attempts to stop process using interrupt signal within timeout
+// If timeout exceeded and process has not terminated, SIGKILL is sent.
+static void fstop(pid_t pid, int sec_timeout, struct timespec retry_delay);
 
 // Start all server containers
-int dock_start(ServerContainer* servers, size_t servers_len) {
-  // Ensure servers pointer is not null 
-  if(servers == NULL) {
-    fprintf(stderr, "servers pointer cannot be null : ");
+int dock_start(SubsystemModule* modules, size_t modules_len, char stacks[MAX_NUM_MODULES][MODULE_STACK_SIZE]) {
+  // Ensure modules pointer is not null 
+  if(modules == NULL) {
+    fprintf(stderr, "modules pointer cannot be null : ");
     return -1;
   }
 
   // Ensure length is a non-zero positive value 
-  if(servers_len <= 0) {
-    fprintf(stderr, "servers array length must be a non-zero positive value : ");
+  if(modules_len <= 0) {
+    fprintf(stderr, "modules array length must be a non-zero positive value : ");
     return -1;
   }
   
   // Initialize containers
-  for (int x = 0; x < servers_len; x++) {
-    // Initialize server TIDs to blank value 
-    servers[x].tid = -1;
-    servers[x].mtid = -1;
-
-    // Create start thread 
-    if((errno = pthread_create(&servers[x].tid, NULL, servers[x].start, NULL)) != 0) {
-      perror("pthread_create() failed");
-      return -1;
-    }
+  for (int x = 0; x < modules_len; x++) {
+    // Initialize module 
+    modules[x].pid = -1;
+    modules[x].mtid = -1;
+    modules[x].stack = stacks[x];
 
     // Start monitoring server 
-    if((errno = pthread_create(&servers[x].mtid, NULL, monitor_server, (void *) &servers[x])) != 0) {
-      perror("pthread_create() failed");
+    if(pthread_create(&modules[x].mtid, NULL, run_module, &modules[x]) < 0) {
+      perror("failed to pthred_create module monitor");
       return -1;
     }
+
+    nanosleep(&MODULE_START_DELAY, NULL);
   }
 
   return 0;
 }
 
 // Stop all server containers
-int dock_stop(ServerContainer* servers, size_t servers_len) {
-  // Shutdown all servers 
-  for(int x = 0; x < servers_len; x++) {
-    if(stop_server(&servers[x]) != 0) {
-      fprintf(stderr, "stop_server() failed : ");
+int dock_stop(SubsystemModule* modules, size_t modules_len, char stacks[MAX_NUM_MODULES][MODULE_STACK_SIZE]) {
+  // Shutdown all modules & monitors
+  for(int x = 0; x < modules_len; x++) {
+    if(stop_module(&modules[x]) != 0) {
+      fprintf(stderr, "stop_module() failed : ");
       return -1;
     }
   }
@@ -63,28 +74,36 @@ int dock_stop(ServerContainer* servers, size_t servers_len) {
 }
 
 // Stop execution of server and run stop function associated to it 
-static int stop_server(ServerContainer* server) {
-  // Check if server pointer non null 
-  if(server == NULL) {
-    fprintf(stderr, "cannot use null pointer to server : ");
+static int stop_module(SubsystemModule* module) {
+  // Check if module pointer non null 
+  if(module == NULL) {
+    fprintf(stderr, "cannot use null pointer to module : ");
     return -1;
   }
 
-  // Check if tid is initialized 
-  if(server->tid == -1) {
-    fprintf(stdout, "server not running. NOT STOPPING.\n");
-    return 0;
+  // Check if pid is initialized 
+  if(module->pid == -1) {
+    fprintf(stdout, "module not running. NOT STOPPING.\n");
+    return -1;
   }
 
-  // Cancel start thread 
-  pthread_cancel(server->tid);
+  // Interrupt start process 
+  fstop(module->pid, MODULE_INT_TIMEOUT, MODULE_REINT_DELAY);
 
-  // Reset tid value for server 
-  server->tid = -1;
+  // Reset pid value for module 
+  module->pid = -1;
 
-  // Run stop function 
-  server->stop();
-  
+  // Run stop function within process stack
+  pid_t stop_pid = -1;
+  if((stop_pid = clone(module->stop, &module->stack[MODULE_STACK_SIZE], SIGCHLD, NULL)) < 0) {
+    perror("failed to clone() stop process");
+  }
+
+  fstop(stop_pid, MODULE_INT_TIMEOUT, MODULE_REINT_DELAY);
+
+  // DEBUG 
+  printf("successfully stopped module\n");
+
   // done
   return 0;
 }
@@ -93,33 +112,59 @@ static int stop_server(ServerContainer* server) {
  * Thread which continuously monitors for successful or erroneous exit 
  * of designated server's 'start()' method 
  */
-static void* monitor_server(void* args) {
-  // Convert void pointer args to ServerContainer 
-  ServerContainer* server = (ServerContainer *) args;
-
-  // Check if tid is initialized 
-  if(server->tid == -1) {
-    fprintf(stderr, "server container tid is not initialized. NOT MONITORING\n");
-    return NULL;
-  }
+static void* run_module(void* args) {
+  // Convert void pointer args to SubsystemModule 
+  SubsystemModule* module = (SubsystemModule *) args;
 
   for(;;) {
-    // Wait on thread to join 
-    pthread_join(server->tid, NULL);
-
-    // Reset server tid 
-    server->tid = -1;
-
-    // Stop server 
-    if(stop_server(server) != 0) {
-      fprintf(stderr, "stop_server() failed\n");
-      return NULL;
+    // Create start process
+    if((module->pid = clone(module->start, &module->stack[MODULE_STACK_SIZE], SIGCHLD, NULL)) < 0) {
+      perror("failed to clone() start process");
+      pthread_exit(NULL);
     }
 
-    // Restart server 
-    if((errno = pthread_create(&server->tid, NULL, server->start, NULL)) != 0) {
-      perror("pthread_create() failed");
-      return NULL;
+    // Wait on process to terminate 
+    int status = -1;
+    waitpid(module->pid, &status, 0);
+
+    // Check if process was terminated by a signal 
+    if(WIFSIGNALED(status)) {
+      // DEBUG 
+      printf("process terminated by signal!\n");
+      // Stop monitoring 
+      pthread_exit(NULL);
+    }
+
+    // Stop module 
+    if(stop_module(module) != 0) {
+      fprintf(stderr, "stop_module() failed\n");
+      pthread_exit(NULL);
     }
   }
+}
+
+// Attempts to stop process using interrupt signal within timeout
+// If timeout exceeded and process has not terminated, SIGKILL is sent.
+static void fstop(pid_t pid, int sec_timeout, struct timespec retry_delay) {
+  bool pexited = false, psigterm = false;
+  time_t start, current, time_elapsed = 0;
+  time(&start);
+  while(time_elapsed < sec_timeout) {
+    kill(pid, SIGINT);
+    int stat;
+    waitpid(pid, &stat, WNOHANG);
+
+    pexited = WIFEXITED(stat);
+    psigterm = WIFSIGNALED(stat);
+    if(pexited || psigterm)
+      break;
+
+    nanosleep(&retry_delay, NULL);
+    time(&current);
+    time_elapsed = current - start;
+  }
+
+  // Check to see if start process needs to be force stopped 
+  if(!(pexited || psigterm)) {}
+    kill(pid, SIGKILL); 
 }

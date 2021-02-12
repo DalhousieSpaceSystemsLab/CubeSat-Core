@@ -29,8 +29,13 @@
 #include <stdbool.h>
 
 enum {
-  IPC_QRECV_MSG,
+  IPC_QRECV_MSG = 0,
   IPC_QRECV_RECV
+};
+
+enum {
+  EIPCREAD = -512,
+  EIPCPACKET
 };
 
 // Client API

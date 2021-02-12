@@ -197,7 +197,7 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
   }
 
   // Remove dib 
-  MsgReqDib_remove(dest, dibs, MAX_NUM_DIBS);
+  MsgReqDib_remove(dest, recv_dibs, MAX_NUM_DIBS);
 
   // Check if receipt confirmation arrived before timeout 
   if(!recvd) {
@@ -248,8 +248,10 @@ static int ipc_read(char src_out[NAME_LEN], char *buffer, size_t buffer_len) {
     // Make sure read really failed (and didnt try to block)
     if(!(errno == EWOULDBLOCK || errno == EAGAIN)) {
       perror("read() failed");
-      return -1;
-    } else return -1;
+      return EIPCREAD;
+    } else {
+      return EIPCREAD;
+    }
   }
 
   // Parse data into packets
@@ -263,13 +265,13 @@ static int ipc_read(char src_out[NAME_LEN], char *buffer, size_t buffer_len) {
     // Catch parsing errors
     if(overflow_len < 0) {
       fprintf(stderr, "ipc_packet_parse() failed : ");
-      return -1;
+      return EIPCPACKET;
     }
 
     // Add parsed packet to queue
     if(ipc_packet_add(packets, MAX_NUM_PACKETS, next_packet) < 0) {
       fprintf(stderr, "ipc_packet_add() failed : ");
-      return -1;
+      return EIPCPACKET;
     }
 
     // Check for overflow
@@ -454,8 +456,10 @@ int ipc_refresh_src(char src[NAME_LEN]) {
   // Run single non-blocking read from IPC 
   // if((bytes_read = read(self.conn.rx, msg_raw, MAX_MSG_LEN)) < 0) {
   if((msg_len = ipc_read(name, msg, MAX_MSG_LEN)) < 0) {
-    // Make sure read really failed (and didnt try to block)
-    if(!(errno == EWOULDBLOCK || errno == EAGAIN)) {
+    if(msg_len == EIPCPACKET) {
+      fprintf(stderr, "ipc_read() failed, packet error : ");
+      return -1;
+    } else if(!(errno == EWOULDBLOCK || errno == EAGAIN)) {
       perror("read() failed");
       return -1;
     }

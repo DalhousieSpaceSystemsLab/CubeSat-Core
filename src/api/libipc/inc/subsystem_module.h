@@ -22,7 +22,7 @@ typedef struct subsystem_module {
   int (*stop)(void*);
   pid_t pid;
   pthread_t mtid;
-  int index;
+  char* stack;
 } SubsystemModule;
 
 #endif  // END OF CUBESAT_CORE_INCLUDE_SUBSYSTEM_MODULE_H

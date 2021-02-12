@@ -6,6 +6,9 @@
  *
  */
 
+// Macros
+#define _XOPEN_SOURCE
+
 // Subsystem server container
 #include "subsystem_module.h"
 
@@ -13,8 +16,8 @@
 #include "dock.h"
 
 // Subsystem modules
-#include "template.h"
-#include "twin.h"
+// #include "template.h"
+// #include "twin.h"
 #include "filesystem.h"
 #include "payload.h"
 
@@ -29,6 +32,7 @@ void isr(int sig);
 // Global pointer to server container array
 static SubsystemModule* modules_ptr = NULL;
 static int modules_len = 0;
+static char stacks[MAX_NUM_MODULES][MODULE_STACK_SIZE];
 
 int main() {
   // Create list of server containers
@@ -44,18 +48,23 @@ int main() {
   modules_ptr = modules;
 
   // Start dock
-  if (dock_start(modules, modules_len) != 0) {
+  if (dock_start(modules, modules_len, stacks) != 0) {
     fprintf(stderr, "dock_start() failed\n");
     return -1;
   }
 
-  // Wait for interrupt
-  fprintf(stdout, "Press [CTRL-C] to stop dock\n");
-  signal(SIGINT, isr);
+  // Listen for interrupt
+  struct sigaction sa = {
+    .sa_handler = isr
+  };
+  sigaction(SIGINT, &sa, NULL);
 
-  for (;;) {
-    sleep(1);
-  }
+  // Quit on [ENTER]
+  char quitc[3];
+  fprintf(stdout, "Press [ENTER] to stop dock\n");
+  fgets(quitc, 3, stdin);
+
+  dock_stop(modules, modules_len, stacks);
 
   // done
   return 0;
@@ -64,7 +73,7 @@ int main() {
 // Interrupt signal routine handler
 void isr(int sig) {
   // Check if modules_ptr null 
-  if(modules_ptr == NULL) {
+  if(modules_ptr == NULL || stacks == NULL) {
     fprintf(stdout, "\nNothing to do. Exiting!\n");
     exit(0);
   }
@@ -72,7 +81,7 @@ void isr(int sig) {
   switch (sig) {
     case SIGINT:
       fprintf(stdout, "\nStopping dock daemon...\n");
-      dock_stop(modules_ptr, modules_len);
+      dock_stop(modules_ptr, modules_len, stacks);
       fprintf(stdout, "Done!\n");
       exit(0);
       break;

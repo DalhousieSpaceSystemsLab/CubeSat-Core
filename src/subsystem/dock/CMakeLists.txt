@@ -158,8 +158,8 @@ endif(BUILD_EXAMPLES)
 ################################################################################
 # LINK AGAINST THE NECESSARY TARGETS
 ################################################################################
-target_link_libraries(${EXE} PRIVATE SUBSYS_SERVERS)
-target_link_libraries(${EXE} PRIVATE LIB_IPC)
+target_link_libraries(${EXE} PUBLIC SUBSYS_SERVERS)
+target_link_libraries(${EXE} PUBLIC LIB_IPC)
 
 
 ######################################

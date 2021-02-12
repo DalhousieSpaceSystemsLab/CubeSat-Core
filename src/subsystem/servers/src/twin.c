@@ -1,6 +1,6 @@
 #include "twin.h"
 
-void * twin_server_start() { 
+int twin_server_start(void* data) { 
   printf("Starting twin!\n");
   for(int x = 0; x < 4; x++) {
     printf("running twin...\n");
@@ -8,12 +8,12 @@ void * twin_server_start() {
   }
 }
 
-void twin_server_stop() {
+int twin_server_stop(void* data) {
   printf("Stopping twin!\n");
   fflush(stdout);
 }
 
-ServerContainer twin_server = {
+SubsystemModule twin_server = {
   .start = twin_server_start,
   .stop = twin_server_stop,
 };

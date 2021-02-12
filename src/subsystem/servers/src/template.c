@@ -9,8 +9,8 @@
 #include "template.h"
 
 // Public server control methods 
-void* template_server_start();
-void  template_server_stop();
+int template_server_start(void*);
+int template_server_stop(void*);
 
 /**
  * This is where you define your subsystem server container.
@@ -22,12 +22,12 @@ void  template_server_stop();
  * Once defined, declare it as an extern variable in the header you wish to 
  * dedicate to add your server to the subsystem dock.
  */
-ServerContainer template_server = {
+SubsystemModule template_server = {
     .start = template_server_start,
     .stop  = template_server_stop,
 };
 
-void* template_server_start() {
+int template_server_start(void* data) {
   /**
    * All code needed to start your server goes here.
    * 
@@ -49,7 +49,7 @@ void* template_server_start() {
   }
 }
 
-void template_server_stop() {
+int template_server_stop(void* data) {
   /**
    * All code needed to properly shutdown your server goes here.
    * 
