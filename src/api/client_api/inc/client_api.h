@@ -38,16 +38,38 @@ enum {
   EIPCPACKET
 };
 
-// Client API
-int ipc_connect(const char name[NAME_LEN]);                                                      // Initialize client side IPC interface
-int ipc_send(char dest[NAME_LEN], char * msg, size_t msg_len);                                   // Send message to another process
-int ipc_send_json(char dest[NAME_LEN], json_t *json, size_t json_len);                           // Sends key-value pair to another process
-int ipc_recv(char src[NAME_LEN], char * buffer, size_t buffer_len);                              // Receive message from another process (blocks)
-int ipc_qsend(char dest[NAME_LEN], char * msg, size_t msg_len);                                  // Adds outgoing message to send queue
-int ipc_qrecv(char src[NAME_LEN], void (*callback)(char*, size_t, void*), void* data, int flags); // Adds incoming message request to recv queue
-int ipc_refresh();                                                                        // Simultaneously reads/writes all queued data
-int ipc_refresh_src(char src[NAME_LEN]);                                                  // Simultaneously reads/writes queued data for specific source 
-int ipc_split(char* msg, size_t msg_len, char* cmd_out, char* args_out[MAX_ARG_LEN]);     // Extracts IPC message command and arguments
-int ipc_disconnect();                                                                     // Close client side IPC interface
+////////////////
+// Client API //
+////////////////
+
+// Initialize client side IPC interface
+int ipc_connect(const char name[NAME_LEN]);                                                      
+
+// Send message to another process
+int ipc_send(char dest[NAME_LEN], char * msg, size_t msg_len);
+
+// Sends key-value pair to another process
+int ipc_send_json(char dest[NAME_LEN], json_t *json, size_t json_len);
+
+// Receive message from another process (blocks)
+int ipc_recv(char src[NAME_LEN], char * buffer, size_t buffer_len);
+
+// Adds outgoing message to send queue
+int ipc_qsend(char dest[NAME_LEN], char * msg, size_t msg_len);
+
+// Adds incoming message request to recv queue
+int ipc_qrecv(char src[NAME_LEN], void (*callback)(char*, size_t, void*), void* data, int flags); 
+
+// Simultaneously reads/writes all queued data
+int ipc_refresh();
+
+// Simultaneously reads/writes queued data for specific source 
+int ipc_refresh_src(char src[NAME_LEN]);
+
+// Extracts IPC message command and arguments
+int ipc_split(char* msg, size_t msg_len, char* cmd_out, char* args_out[MAX_ARG_LEN]);
+
+// Close client side IPC interface
+int ipc_disconnect();
 
 #endif /* end of include guard: CUBESAT_CORE_INCLUDE_IPC_CLIENT_API_H */
