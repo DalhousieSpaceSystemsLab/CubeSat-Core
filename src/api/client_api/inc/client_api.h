@@ -47,6 +47,7 @@ int ipc_qsend(char dest[NAME_LEN], char * msg, size_t msg_len);                 
 int ipc_qrecv(char src[NAME_LEN], void (*callback)(char*, size_t, void*), void* data, int flags); // Adds incoming message request to recv queue
 int ipc_refresh();                                                                        // Simultaneously reads/writes all queued data
 int ipc_refresh_src(char src[NAME_LEN]);                                                  // Simultaneously reads/writes queued data for specific source 
+int ipc_split(char* msg, size_t msg_len, char* cmd_out, char* args_out[MAX_ARG_LEN]);     // Extracts IPC message command and arguments
 int ipc_disconnect();                                                                     // Close client side IPC interface
 
 #endif /* end of include guard: CUBESAT_CORE_INCLUDE_IPC_CLIENT_API_H */
