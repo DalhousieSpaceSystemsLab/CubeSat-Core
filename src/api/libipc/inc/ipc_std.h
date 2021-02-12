@@ -73,7 +73,8 @@ struct ipc {
     struct fls {
       const char* name;
       struct cmd_fls {
-        const char* save;
+        const char* fsend;
+        const char* fsend_list;
       } cmd;
     } fls;
   } core;

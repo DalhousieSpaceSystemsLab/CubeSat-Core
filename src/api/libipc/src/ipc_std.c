@@ -20,7 +20,8 @@ struct ipc ipc = {
     .fls = {
       .name = "fls",
       .cmd = {
-        .save = "save 0x12345"
+        .fsend = "fsend",
+        .fsend_list = "fsend_list"
       }
     }
   }
