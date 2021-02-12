@@ -1,5 +1,5 @@
 /**
- * filesystem.h 
+ * filesystem_module.h 
  * 
  * purpose: Stores, retrieves and organizes files on the 
  *          satellite's filesystem.

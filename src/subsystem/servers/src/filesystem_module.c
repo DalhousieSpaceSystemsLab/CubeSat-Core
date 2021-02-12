@@ -7,7 +7,7 @@
  * 
  */
 
-#include "filesystem.h"
+#include "filesystem_module.h"
 #include "client_api.h"
 
 // Public server control methods 

@@ -7,7 +7,7 @@
  * 
  */
 
-#include "subsystem/servers/filesystem.h"
+#include "subsystem/servers/filesystem_module.h"
 
 // Public server control methods 
 void* filesystem_server_start();
