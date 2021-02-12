@@ -26,9 +26,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-// Interrupt signal routine handler
-void isr(int sig);
-
 // Global pointer to server container array
 static SubsystemModule* modules_ptr = NULL;
 static int modules_len = 0;
@@ -53,12 +50,6 @@ int main() {
     return -1;
   }
 
-  // Listen for interrupt
-  struct sigaction sa = {
-    .sa_handler = isr
-  };
-  sigaction(SIGINT, &sa, NULL);
-
   // Quit on [ENTER]
   char quitc[3];
   fprintf(stdout, "Press [ENTER] to stop dock\n");
@@ -68,22 +59,4 @@ int main() {
 
   // done
   return 0;
-}
-
-// Interrupt signal routine handler
-void isr(int sig) {
-  // Check if modules_ptr null 
-  if(modules_ptr == NULL || stacks == NULL) {
-    fprintf(stdout, "\nNothing to do. Exiting!\n");
-    exit(0);
-  }
-
-  switch (sig) {
-    case SIGINT:
-      fprintf(stdout, "\nStopping dock daemon...\n");
-      dock_stop(modules_ptr, modules_len, stacks);
-      fprintf(stdout, "Done!\n");
-      exit(0);
-      break;
-  };
 }
