@@ -16,10 +16,10 @@
 #include "dock.h"
 
 // Subsystem modules
-// #include "template.h"
+// #include "template_module.h"
 // #include "twin.h"
 #include "filesystem_module.h"
-#include "payload.h"
+#include "payload_module.h"
 
 // Standard C libraries
 #include <signal.h>

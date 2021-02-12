@@ -1,5 +1,5 @@
 /**
- * payload.h
+ * payload_module.h
  * 
  * purpose: handles operations related to the payload susbystem
  * author:  alex amellal

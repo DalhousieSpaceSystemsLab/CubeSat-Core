@@ -13,7 +13,7 @@
 #include "subsystem/dock.h"
 
 // Subsystem servers
-#include "subsystem/servers/template.h"
+#include "subsystem/servers/template_module.h"
 #include "subsystem/servers/twin.h"
 
 // Standard C libraries

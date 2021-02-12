@@ -6,7 +6,7 @@
  * 
  */
 
-#include "subsystem/servers/template.h"
+#include "subsystem/servers/template_module.h"
 
 // Public server control methods 
 void* template_server_start();

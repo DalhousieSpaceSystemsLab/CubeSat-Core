@@ -1,5 +1,5 @@
 /**
- * template.h
+ * template_module.h
  * 
  * purpose: demonstrate configuration of a subsystem server 
  * author: alex amellal 

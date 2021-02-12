@@ -6,7 +6,7 @@
  * 
  */
 
-#include "payload.h"
+#include "payload_module.h"
 #include "client_api.h"
 
 int payload_server_start(void*);
