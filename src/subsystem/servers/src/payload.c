@@ -13,24 +13,12 @@ int payload_server_start(void*);
 int payload_server_stop(void*);
 static void process_general_msg(char *msg, size_t msg_len, void * data);
 
-// Interrrupt handler
-void payload_isr(int signal) {
-  printf("interrupting payload...\n");
-  printf("done!");
-}
-
 SubsystemModule payload_server = {
   .start = payload_server_start,
   .stop = payload_server_stop
 };
 
 int payload_server_start(void* data) {
-  // Set interrupt handler 
-  struct sigaction sa = {
-    .sa_handler = payload_isr
-  };
-  sigaction(SIGINT, &sa, NULL);
-
   // Connect to the IPC 
   if(ipc_connect(ipc.pay.name) != 0) {
     fprintf(stderr, "[pay] failed to connect to the IPC\n");

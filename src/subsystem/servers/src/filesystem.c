@@ -17,12 +17,6 @@ int filesystem_server_stop(void*);
 // Callback methods 
 static void process_general_msg(char *msg, size_t msg_len, void * data);
 
-// Interrrupt handler
-void filesystem_isr(int signal) {
-  printf("interrupting filesystem...\n");
-  printf("done!");
-}
-
 // Server container 
 SubsystemModule filesystem_server = {
   .start  = filesystem_server_start,
@@ -31,12 +25,6 @@ SubsystemModule filesystem_server = {
 
 // Start filesystem server 
 int filesystem_server_start(void* data) {
-  // Set interrupt handler 
-  struct sigaction sa = {
-    .sa_handler = filesystem_isr
-  };
-  sigaction(SIGINT, &sa, NULL);
-
   // Connect to the IPC
   if(ipc_connect(ipc.core.fls.name) != 0) {
     fprintf(stderr, "[fls] ipc_connect() failed : filesystem_server_start() failed\n");
