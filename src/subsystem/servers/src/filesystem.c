@@ -15,7 +15,7 @@ int filesystem_server_start(void*);
 int filesystem_server_stop(void*);
 
 // Callback methods 
-static void process_general_msg(char *msg, size_t msg_len, void * data);
+static void cb_general(char *msg, size_t msg_len, void * data);
 
 // Server container 
 SubsystemModule filesystem_server = {
@@ -32,7 +32,7 @@ int filesystem_server_start(void* data) {
   }
 
   // Create listener for general requests 
-  if(ipc_qrecv("*", process_general_msg, NULL, IPC_QRECV_MSG) < 0) {
+  if(ipc_qrecv("*", cb_general, NULL, IPC_QRECV_MSG) < 0) {
     fprintf(stderr, "[fls] ipc_qrecv(\"*\") failed\n");
     return 0;
   }
@@ -50,7 +50,7 @@ int filesystem_server_stop(void* data) {
   ipc_disconnect();
 }
 
-static void process_general_msg(char *msg, size_t msg_len, void * data) {
+static void cb_general(char *msg, size_t msg_len, void * data) {
   // Save request 
   if(strncmp(msg, ipc.core.fls.cmd.save, msg_len) == 0) {
     printf("[fls] saving file...\n");
