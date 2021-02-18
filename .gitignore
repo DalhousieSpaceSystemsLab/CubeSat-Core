@@ -32,3 +32,4 @@ build/test
 build/client_old
 *.out.*
 build/*
+docs

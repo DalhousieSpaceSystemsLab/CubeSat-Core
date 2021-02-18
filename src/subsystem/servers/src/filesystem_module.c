@@ -19,7 +19,6 @@ static void cb_general(char *msg, size_t msg_len, void * data);
 
 // Module functions 
 
-
 // Server container 
 SubsystemModule filesystem_server = {
   .start  = filesystem_server_start,
@@ -54,11 +53,5 @@ int filesystem_server_stop(void* data) {
 }
 
 static void cb_general(char *msg, size_t msg_len, void * data) {
-  // Save request 
-  if(strncmp(msg, ipc.core.fls.cmd.save, msg_len) == 0) {
-    printf("[fls] saving file...\n");
-    printf("[fls] done!\n");
-  } else {
-    printf("[fls] misc message: %.*s\n", msg_len, msg);
-  }
+  
 }

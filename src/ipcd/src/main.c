@@ -6,6 +6,20 @@
 *
 */
 
+/**
+ * @mainpage Welcome to the LORIS core software documentation
+ * 
+ * @section ipc Inter-Process Communication (IPC) System
+ * In order to provide a neutral means of communication between all of the different processes
+ * and subsystems on the satellite, the IPC system was created. 
+ * 
+ * @subsection ipc_client Client API
+ * Rather than creating a custom implemention for message passing and handling for every process,
+ * a general purpose API for the IPC system was created. 
+ * 
+ *  
+ */
+
 // Project Headers
 #include "ipcd.h"
 
