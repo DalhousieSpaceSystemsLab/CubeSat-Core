@@ -35,7 +35,7 @@ https://nvie.com/posts/a-successful-git-branching-model/?
 
 build – Output executables (“targets”). The suffix `_d` indicates debug version.
 <!-- data – Files used by the main executable. -->
-<!-- doc – Project’s documentation, possibly auto-generated. -->
+docs – Project’s documentation, auto-generated.
 <!-- deps – Subdirectories with external dependencies like libraries. -->
 <!-- obj – Binary objects created during compilation. -->
 src – Source files of the project with subdirectories if needed.
@@ -45,7 +45,7 @@ include - Project header file.
 LICENSE – Describes how this project can be used and distributed.
 README.md – General information about the project in Markdown format.
 
-## Building the Project (NEW)
+## Building the Project
 
 In a terminal, run:
 ```
@@ -57,44 +57,7 @@ And watch the magic happen :) You'll find the compiled binaries in the `build/` 
 
 ## Code Documentation 
 
-### Inter-Process Communication (IPC) system
-#### Client API
-`int ipc_connect(char name[3])`:
-* Purpose
-  * Initialize the client side IPC interface and connect to the IPC daemon
-  * Necessary to run before using any other IPC related functions
-* Arguments
-  * `name`: 3 character name used to register you on the IPC network
-* Returns
-  * On success, 0 is returned
-  * On error, -1 is returned
-
-`int ipc_send(char dest[3], char * msg, size_t msg_len)`:
-* Purpose
-  * Send message to another process registered on the IPC network
-* Arguments
-  * `dest`: 3 character name of message recipient
-  * `msg`: character array pointing to message desired to be sent 
-  * `msg_len`: length of message pointed by `msg`
-* Returns
-  * On success, 0 is returned
-  * On error, -1 is returned
-
-`int ipc_recv(char src[3], char * buffer, size_t buffer_len)`:
-* Purpose
-  * Receive an incoming message from the IPC network
-* Arguments
-  * `src`: filter incoming message from IPC network. 
-         use '*' to receive message from any sender.
-  * `buffer`: points to array where incoming message will be stored upon receit.
-  * `buffer_len`: maximum length of data which can be received and copied into `buffer`
-* Returns
-  * On success, the number of bytes copied into buffer is returned
-  * On error, -1 is returned
-
-`int ipc_disconnect()`:
-* Purpose
-  * Disconnect from the IPC network
-* Returns
-  * On success, 0 is returned
-  * On error, -1 is returned
+You may find the code documentation at http://cubesat.alexamellal.com . If you wish, you can generate the documentation yourself by running:
+```sh 
+doxygen Doxyfile
+```
