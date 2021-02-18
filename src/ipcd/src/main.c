@@ -17,7 +17,9 @@
  * Rather than creating a custom implemention for message passing and handling for every process,
  * a general purpose API for the IPC system was created. 
  * 
- *  
+ * The details on how to use the API are found in client_api.h.
+ *
+ * Any example can be found in CLIENT_API_EXAMPLES.md in how to use them.
  */
 
 // Project Headers
