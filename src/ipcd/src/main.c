@@ -19,7 +19,7 @@
  * 
  * The details on how to use the API are found in client_api.h.
  *
- * Any example can be found in CLIENT_API_EXAMPLES.md in how to use them.
+ * Examples can be found in <a href="http://cubesat.alexamellal.com/md_src_api_libipc_examples_CLIENT_API_EXAMPLES.html">CLIENT_API_EXAMPLES.md</a>.
  */
 
 // Project Headers

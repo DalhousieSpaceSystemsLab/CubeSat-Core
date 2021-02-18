@@ -7,7 +7,7 @@ This page is dedicated to documenting example use cases of the IPC client API.
 Before any API commands can be used, you must first include the `client_api.h` header. 
 
 ```C
-#include "client_api.h
+#include "client_api.h"
 ```
 
 This header is self-contained; so you don't need to worry about the other header it needs. However, attempting to compile this code on any platform besides linux will probably give you a headache. 
@@ -16,16 +16,16 @@ If you do not have this header, clone the core software repo from https://github
 
 ## Connecting to the IPC daemon 
 
-As a client, you cannot participate on the IPC network without connecting to a daemon (server). See <to be made> to see how to set up the daemon.
+As a client, you cannot participate on the IPC network without connecting to an IPC daemon (server). See <to be made> to see how to set up the daemon.
 
 ```C
 #include "client_api.h"
 
 int main() {
-  ipc_connect("pay");
+  ipc_connect("pay"); // <-- Connect to the IPC daemon & register name
 
-  // API commands here
+  // All IPC commands go here...
 
-  ipc_disconnect();
+  ipc_disconnect(); // <-- Disconnect gracefully from the IPC daemon
 }
 ```
