@@ -7,6 +7,9 @@
  * 
  * @copyright Dalhousie Space Systems Lab (c) 2021
  * 
+ * TODO:
+ *  - change ipc_refresh_src dibs mechanism to prioritize dibs with specific sources over wildcard. for
+ *    the time being, if a wildcard dib is setup before a specific dib, the wildcard dib will always win.
  */
 
 #ifndef CUBESAT_CORE_INCLUDE_IPC_CLIENT_API_H
@@ -125,7 +128,11 @@ int ipc_refresh_src(char src[NAME_LEN]);
  */
 int ipc_args(char* msg, size_t msg_len, char* args_out[MAX_ARG_LEN], size_t max_args);
 
-// Close client side IPC interface
+/**
+ * @brief Close client side IPC interface
+ * 
+ * @return 0 
+ */
 int ipc_disconnect();
 
 #endif /* end of include guard: CUBESAT_CORE_INCLUDE_IPC_CLIENT_API_H */
