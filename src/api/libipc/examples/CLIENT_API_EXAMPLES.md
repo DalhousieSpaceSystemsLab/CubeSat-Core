@@ -4,6 +4,19 @@ This page is dedicated to documenting example use cases of the IPC client API.
 
 ## Getting started 
 
+A handy script was created to make compiling and exporting the required headers and libraries easier.
+
+In the root directory of the repo, run `sh export_client.sh`. A new folder titled `EXPORT_CLIENT` will be created and populated with the required headers and libraries.
+
+## Setting up Cmake
+
+If you happen to be using cmake, the following snippet may be useful in getting started:
+
+```Cmake 
+
+
+## Including the client API header
+
 Before any API commands can be used, you must first include the `client_api.h` header. 
 
 ```C
