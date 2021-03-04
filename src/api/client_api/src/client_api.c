@@ -544,6 +544,24 @@ int ipc_refresh_src(char src[NAME_LEN]) {
   return 0;
 }
 
+// Extracts IPC message command and arguments
+int ipc_args(char* msg, size_t msg_len, char* args_out[MAX_ARG_LEN], size_t max_args) {
+  int argc = 0;
+  int argx = 0;
+  for(int x = 0; x < msg_len && argc < max_args; x++) {
+    if(msg[x] == ' ') {
+      argc++;
+      argx = 0;
+      continue;
+    } else {
+      args_out[argc][argx] = msg[x];
+      argx++;
+    }
+  }
+
+  return argc;
+}
+
 // Disconnect from IPC daemon and close client side interface
 int ipc_disconnect() {
   // Send disconnect signal to IPC
