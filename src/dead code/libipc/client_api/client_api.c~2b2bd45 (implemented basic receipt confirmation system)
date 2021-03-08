@@ -8,7 +8,7 @@
 
 // Project headers
 #define _POSIX_C_SOURCE 199309L
-#include "client_api.h"
+#include "ipc/client_api.h"
 
 // Private variables
 static client_t self;               // self-referential placeholder for this client
@@ -129,48 +129,31 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
     return 0;
   }
 
-  // TODO:
-  // - Receipt confirmation timeout lasts forever...fix me
-
-  // Create placeholder for receipt confirmation
-  char recv_conf[MAX_MSG_LEN];
-  bool recvd = false;
-
-  // Listen for incoming receipt confirmation 
-  if(ipc_qrecv(dest, cb_recv_conf, recv_conf, 0) != 0) {
-    fprintf(stderr, "ipc_qrecv() failed : ");
-    return -1;
-  }
-
-  // Refresh message queue until timeout exceeded 
-  clock_t start = clock();
-  int time_elapsed = 0;
-  for(int x = 0; time_elapsed < RECV_TIMEOUT; x++) {
-    // Refresh message queue 
-    if(ipc_refresh_src(dest) != 0) {
-      fprintf(stderr, "ipc_refresh_src() failed : ");
-      return -1;
-    }
-
-    // Check receipt confirmation placeholder 
-    if(strncmp(recv_conf, RECV_CONF, strlen(RECV_CONF)) == 0) {
-      recvd = true;
+  // Wait for receipt confirmation 
+  char recv_conf_msg[MAX_MSG_LEN];
+  int time_el = 0;
+  for(time_el = 0; time_el < RECV_TIMEOUT; time_el++) {
+    // Check if read fails 
+    if(read(self.conn.rx, recv_conf_msg, MAX_MSG_LEN) <= 0) {
+      // Check if read should have blocked 
+      if(errno == EWOULDBLOCK || errno == EAGAIN) {
+        // Wait & try again
+        sleep(READ_BLOCK_DELAY);
+        continue;
+      } else {
+        // Something actually went wrong 
+        perror("read() failed");
+        return -1;
+      }
+    } else {
+      // read succeeded, get out of loop 
       break;
     }
-
-    // Wait read block delay 
-    nanosleep(&READ_BLOCK_DELAY, NULL);
-
-    // Update time elapsed 
-    time_elapsed = (clock() - start) / CLOCKS_PER_SEC;
   }
 
-  // Remove dib 
-  MsgReqDib_remove(dest, dibs, MAX_NUM_DIBS);
-
-  // Check if receipt confirmation arrived before timeout 
-  if(!recvd) {
-    fprintf(stderr, "failed to get receipt confirmation before timeout : ");
+  // Check if receipt confirmation timeout exceeded 
+  if(time_el >= RECV_TIMEOUT) {
+    fprintf(stderr, "ipc_send receipt confirmation timed out : ");
     return -1;
   }
 
@@ -280,8 +263,14 @@ int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len) {
     }
   }
 
-  // done 
-  return 0;
+  // Send receipt confirmation
+  if(ipc_send(name, RECV_CONF, strlen(RECV_CONF)) != 0) {
+    fprintf(stderr, "ipc_send() failed : ");
+    return -1;
+  }
+
+  // done
+  return bytes_copied;
 }
 
 // Adds outgoing message to send queue
@@ -312,7 +301,7 @@ int ipc_qsend(char dest[NAME_LEN], char *msg, size_t msg_len) {
 }
 
 // Adds incoming message request to recv queue
-int ipc_qrecv(char src[NAME_LEN], void (*callback)(char*, size_t, void*), void* data, int flags) {
+int ipc_qrecv(char src[NAME_LEN], void (*callback)(char*, size_t, void*), void* data) {
   // Check for preexisting dibs on src
   if(MsgReqDib_exists(src, dibs, MAX_NUM_DIBS)) {
     fprintf(stderr, "preexisting dibs on src (%.*s) : ", NAME_LEN, src);

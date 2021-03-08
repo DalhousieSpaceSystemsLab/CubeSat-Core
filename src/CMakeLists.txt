@@ -62,15 +62,15 @@ execute_process(
     COMMAND "sync"
 )
 
-if(BUILD_TESTING)
-    enable_testing()
-    include(CTest)
-    if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test)
-        add_subdirectory(test)
-    elseif(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
-        add_subdirectory(tests)
-    endif()
-endif()
+# if(BUILD_TESTING)
+#     enable_testing()
+#     include(CTest)
+#     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test)
+#         add_subdirectory(test)
+#     elseif(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+#         add_subdirectory(tests)
+#     endif()
+# endif()
 
 set(CMAKE_C_COMPILER_NAME gcc)
 set(CMAKE_ASM_COMPILER_NAME gcc)
@@ -192,7 +192,6 @@ add_subdirectory(api/client_api)
 
 # executable targets after, and link against necessary dependencies
 add_subdirectory(ipcd)
-add_subdirectory(subsys_server)
 add_subdirectory(client)
 #add_subdirectory(msnclient) # can't get this damn thing to build... SO MANY ERRORS IN THE SOURCE CODE...
 

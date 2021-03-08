@@ -8,7 +8,7 @@
 
 // Project headers
 #define _POSIX_C_SOURCE 199309L
-#include "client_api.h"
+#include "ipc/client_api.h"
 
 // Private variables
 static client_t self;               // self-referential placeholder for this client
@@ -137,7 +137,7 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
   bool recvd = false;
 
   // Listen for incoming receipt confirmation 
-  if(ipc_qrecv(dest, cb_recv_conf, recv_conf, 0) != 0) {
+  if(ipc_qrecv(dest, cb_recv_conf, recv_conf) != 0) {
     fprintf(stderr, "ipc_qrecv() failed : ");
     return -1;
   }
@@ -312,7 +312,7 @@ int ipc_qsend(char dest[NAME_LEN], char *msg, size_t msg_len) {
 }
 
 // Adds incoming message request to recv queue
-int ipc_qrecv(char src[NAME_LEN], void (*callback)(char*, size_t, void*), void* data, int flags) {
+int ipc_qrecv(char src[NAME_LEN], void (*callback)(char*, size_t, void*), void* data) {
   // Check for preexisting dibs on src
   if(MsgReqDib_exists(src, dibs, MAX_NUM_DIBS)) {
     fprintf(stderr, "preexisting dibs on src (%.*s) : ", NAME_LEN, src);
