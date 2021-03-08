@@ -13,7 +13,7 @@ int payload_server_start(void*);
 int payload_server_stop(void*);
 static void process_general_msg(char *msg, size_t msg_len, void * data);
 
-SubsystemModule payload_server = {
+SubsystemModule payload_module = {
   .start = payload_server_start,
   .stop = payload_server_stop
 };

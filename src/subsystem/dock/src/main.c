@@ -36,8 +36,8 @@ int main() {
   SubsystemModule modules[] = {
       // template_server,
       // twin_server,
-      filesystem_server,
-      payload_server,
+      filesystem_module,
+      payload_module,
   };
   modules_len = sizeof(modules) / sizeof(SubsystemModule);
 

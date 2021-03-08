@@ -22,6 +22,6 @@
 #include <signal.h>
 
 // Subsystem module
-extern SubsystemModule filesystem_server;
+extern SubsystemModule filesystem_module;
 
 #endif 

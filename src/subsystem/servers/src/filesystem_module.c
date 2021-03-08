@@ -20,7 +20,7 @@ static void cb_general(char *msg, size_t msg_len, void * data);
 // Module functions 
 
 // Server container 
-SubsystemModule filesystem_server = {
+SubsystemModule filesystem_module = {
   .start  = filesystem_server_start,
   .stop   = filesystem_server_stop,
 };

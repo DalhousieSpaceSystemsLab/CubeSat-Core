@@ -21,6 +21,6 @@
 #include <signal.h>
 
 // Server container
-extern SubsystemModule payload_server;
+extern SubsystemModule payload_module;
 
 #endif 
