@@ -12,7 +12,7 @@ option(BUILD_EXAMPLES "[ON/OFF] Build examples in addition to library" ON)
 #  PROJECT INIT
 ################################################################################
 project(
-    CLIENT_API
+    SUBSYS_SERVERS
     VERSION 1.0
     DESCRIPTION "CLIENT CREATION API LIBRARY FOR IPC"
     LANGUAGES C CXX
@@ -134,14 +134,15 @@ endforeach(lang ${${LIB}_languages})
 # SPECIAL AND PROJECT SPECIFIC OPTIONS
 ################################################################################
 
-target_compile_options(${LIB} PRIVATE "-g")
+target_compile_options(${LIB} PUBLIC "-g")
 
 
 
 ################################################################################
 # LINK AGAINST THE NECESSARY LIBRARIES 
 ################################################################################
-target_link_libraries(${LIB} PRIVATE LIB_IPC)
+target_link_libraries(${LIB} PUBLIC LIB_IPC)
+target_link_libraries(${LIB} PUBLIC CLIENT_API)
 
 #Link against pthread
 find_package(Threads REQUIRED)
@@ -189,20 +190,3 @@ if(BUILD_EXAMPLES)
         add_subdirectory(example)
     endif()
 endif(BUILD_EXAMPLES)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

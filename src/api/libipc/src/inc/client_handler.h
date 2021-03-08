@@ -16,7 +16,7 @@ extern "C"
 
 
 // Project Headers
-#include "settings.h"
+#include "ipc_settings.h"
 #include "client_t.h"
 
 // Standard C Libraries

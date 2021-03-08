@@ -1,5 +1,5 @@
 /**
- * filesystem.h 
+ * filesystem_module.h 
  * 
  * purpose: Stores, retrieves and organizes files on the 
  *          satellite's filesystem.
@@ -10,10 +10,18 @@
 #ifndef CUBESAT_CORE_INCLUDE_SUBSYSTEM_SERVERS_FILESYSTEM_H
 #define CUBESAT_CORE_INCLUDE_SUBSYSTEM_SERVERS_FILESYSTEM_H
 
-// Project headers
-#include "subsystem/server_container.h"
-#include "ipc/client_api.h"
+// Macros 
+#define _XOPEN_SOURCE
 
-extern ServerContainer filesystem_server;
+// Project headers
+#include "subsystem_module.h"
+#include "ipc_std.h"
+
+// Standard C libraries 
+#include <string.h>
+#include <signal.h>
+
+// Subsystem module
+extern SubsystemModule filesystem_server;
 
 #endif 

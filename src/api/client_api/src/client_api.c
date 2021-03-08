@@ -34,7 +34,7 @@ static int ipc_write(char dest[NAME_LEN], char *msg, size_t msg_len, int flags);
 static int ipc_read(char src_out[NAME_LEN], char *buffer, size_t buffer_len);     // wraps read() function with custom packetizing
 
 // Initialize client API and connect to IPC daemon.
-int ipc_connect(char name[NAME_LEN]) {
+int ipc_connect(const char name[NAME_LEN]) {
   // Initialize client placeholder for self
   self = client_t_new();
 
@@ -191,18 +191,13 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
       break;
     }
 
-    // Wait read block delay 
-    nanosleep(&READ_BLOCK_DELAY, NULL);
-
     // Update time elapsed 
     time(&current);
     time_elapsed = current - start;
-
-    fprintf(stdout, "time_elapsed = %ld\n", time_elapsed);
   }
 
   // Remove dib 
-  MsgReqDib_remove(dest, dibs, MAX_NUM_DIBS);
+  MsgReqDib_remove(dest, recv_dibs, MAX_NUM_DIBS);
 
   // Check if receipt confirmation arrived before timeout 
   if(!recvd) {
@@ -253,8 +248,10 @@ static int ipc_read(char src_out[NAME_LEN], char *buffer, size_t buffer_len) {
     // Make sure read really failed (and didnt try to block)
     if(!(errno == EWOULDBLOCK || errno == EAGAIN)) {
       perror("read() failed");
-      return -1;
-    } else return -1;
+      return EIPCREAD;
+    } else {
+      return EIPCREAD;
+    }
   }
 
   // Parse data into packets
@@ -268,13 +265,13 @@ static int ipc_read(char src_out[NAME_LEN], char *buffer, size_t buffer_len) {
     // Catch parsing errors
     if(overflow_len < 0) {
       fprintf(stderr, "ipc_packet_parse() failed : ");
-      return -1;
+      return EIPCPACKET;
     }
 
     // Add parsed packet to queue
     if(ipc_packet_add(packets, MAX_NUM_PACKETS, next_packet) < 0) {
       fprintf(stderr, "ipc_packet_add() failed : ");
-      return -1;
+      return EIPCPACKET;
     }
 
     // Check for overflow
@@ -459,8 +456,10 @@ int ipc_refresh_src(char src[NAME_LEN]) {
   // Run single non-blocking read from IPC 
   // if((bytes_read = read(self.conn.rx, msg_raw, MAX_MSG_LEN)) < 0) {
   if((msg_len = ipc_read(name, msg, MAX_MSG_LEN)) < 0) {
-    // Make sure read really failed (and didnt try to block)
-    if(!(errno == EWOULDBLOCK || errno == EAGAIN)) {
+    if(msg_len == EIPCPACKET) {
+      fprintf(stderr, "ipc_read() failed, packet error : ");
+      return -1;
+    } else if(!(errno == EWOULDBLOCK || errno == EAGAIN)) {
       perror("read() failed");
       return -1;
     }
@@ -538,8 +537,29 @@ int ipc_refresh_src(char src[NAME_LEN]) {
   memset(qsend_msg, 0, MAX_MSG_LEN);
   qsend_msg_len = -1;
 
+  // Add delay if continuously refreshing 
+  nanosleep(&READ_BLOCK_DELAY, NULL);
+
   // done
   return 0;
+}
+
+// Extracts IPC message command and arguments
+int ipc_args(char* msg, size_t msg_len, char* args_out[MAX_ARG_LEN], size_t max_args) {
+  int argc = 0;
+  int argx = 0;
+  for(int x = 0; x < msg_len && argc < max_args; x++) {
+    if(msg[x] == ' ') {
+      argc++;
+      argx = 0;
+      continue;
+    } else {
+      args_out[argc][argx] = msg[x];
+      argx++;
+    }
+  }
+
+  return argc;
 }
 
 // Disconnect from IPC daemon and close client side interface

@@ -16,7 +16,7 @@ extern "C"
 #endif /* Start C linkage */
 
 // Settings 
-#include "settings.h"
+#include "ipc_settings.h"
 
 // Connection type
 #include "conn_t.h"

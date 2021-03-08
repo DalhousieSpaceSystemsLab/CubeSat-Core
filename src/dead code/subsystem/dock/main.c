@@ -7,13 +7,13 @@
  */
 
 // Subsystem server container
-#include "subsystem/server_container.h"
+#include "subsystem/subsystem_module.h"
 
 // Dock library
 #include "subsystem/dock.h"
 
 // Subsystem servers
-#include "subsystem/servers/template.h"
+#include "subsystem/servers/template_module.h"
 #include "subsystem/servers/twin.h"
 
 // Standard C libraries
@@ -24,16 +24,16 @@
 void isr(int sig);
 
 // Global pointer to server container array
-static ServerContainer* servers_ptr = NULL;
+static SubsystemModule* servers_ptr = NULL;
 static int servers_len = 0;
 
 int main() {
   // Create list of server containers
-  ServerContainer servers[] = {
+  SubsystemModule servers[] = {
       template_server,
       twin_server,
   };
-  servers_len = sizeof(servers) / sizeof(ServerContainer);
+  servers_len = sizeof(servers) / sizeof(SubsystemModule);
 
   // Update global pointer to server container array
   servers_ptr = servers;

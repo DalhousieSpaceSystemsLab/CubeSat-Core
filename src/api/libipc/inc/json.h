@@ -10,7 +10,7 @@
 #define CUBESAT_CORE_INCLUDE_IPC_JSON_H
 
 // Project headers
-#include "settings.h"
+#include "ipc_settings.h"
 
 // Standard C libraries 
 #include <stdio.h>

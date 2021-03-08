@@ -1,5 +1,5 @@
 /**
- * template.h
+ * template_module.h
  * 
  * purpose: demonstrate configuration of a subsystem server 
  * author: alex amellal 
@@ -10,7 +10,7 @@
 #define CUBESAT_CORE_INCLUDE_SUBSYSTEM_SERVERS_TEMPLATE_H
 
 // Project headers
-#include "subsystem/server_container.h"
+#include "subsystem_module.h"
 
 // Feature test macros 
 #define _XOPEN_SOURCE 700
@@ -22,6 +22,6 @@
 #include <stdio.h>
 #include <unistd.h>
 
-extern ServerContainer template_server;
+extern SubsystemModule template_server;
 
 #endif  // End of CUBESAT_CORE_INCLUDE_SUBSYSTEM_SERVERS_TEMPLATE_H guard

@@ -158,6 +158,7 @@ endif(BUILD_EXAMPLES)
 ################################################################################
 # LINK AGAINST THE NECESSARY TARGETS
 ################################################################################
+target_link_libraries(${EXE} PRIVATE LIB_IPC)
 target_link_libraries(${EXE} PRIVATE CLIENT_API)
 
 

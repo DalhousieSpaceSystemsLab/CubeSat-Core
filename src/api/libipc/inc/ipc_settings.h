@@ -13,11 +13,12 @@
 #define MAX_NUM_CLI         16
 #define MAX_MSG_LEN         128
 #define NAME_LEN            3
+#define MAX_ARG_LEN         MAX_MSG_LEN - NAME_LEN - 1
 #define READ_BLOCK_DELAY    (struct timespec) { .tv_sec = 0, .tv_nsec = 100000000 }
 #define ROUTER_CHECK_DELAY  1000000 // in nanoseconds
 #define DISCONNECT_SIG      "DISCONNECT"
 #define RECV_CONF           "OK"
-#define RECV_TIMEOUT        30
+#define RECV_TIMEOUT        3
 #define MAX_NUM_DIBS        MAX_NUM_CLI
 #define REFEED_DELAY        READ_BLOCK_DELAY
 #define MAX_NUM_PACKETS     16
