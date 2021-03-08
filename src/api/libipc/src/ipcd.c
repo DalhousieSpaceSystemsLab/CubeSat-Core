@@ -171,9 +171,16 @@ static void *start_routing_client(void *params) {
 
     // Wait for request from client
     int bytes_read = -1;
-    if ((bytes_read = read(client.conn.tx, msg, MAX_PACKET_LEN)) <=
-        0) {  // read() failed
-      if (bytes_read == 0) fprintf(stderr, "actually read 0 bytes\n");
+    if ((bytes_read = read(client.conn.tx, msg, MAX_PACKET_LEN)) <= 0) {
+      // Exactly 0 bytes read. Disconnect client.
+      if (bytes_read == 0) {
+        fprintf(stderr, "read 0 bytes from client [%.*s]. disconnecting...\n",
+                NAME_LEN, client.name);
+        disconnect_client((client_t *)params);
+        fprintf(stderr, "done!\n");
+        pthread_exit(NULL);
+      }
+
       fprintf(stderr, "read() failed : start_routing_client() failed\n");
 
       // Disconnect client from network
