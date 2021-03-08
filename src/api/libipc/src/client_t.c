@@ -1,10 +1,10 @@
 /*
-* client_t.c
-*
-*   purpose:  defines standardized methods for the client type.
-*   author:   alex amellal
-*
-*/
+ * client_t.c
+ *
+ *   purpose:  defines standardized methods for the client type.
+ *   author:   alex amellal
+ *
+ */
 
 // Client type
 #include "client_t.h"

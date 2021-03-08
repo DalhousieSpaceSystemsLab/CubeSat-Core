@@ -1,28 +1,15 @@
 /**
  * std.c
- * 
- * purpose: provide standard data structures and values for all ipc-related matters.
- * author:  alex amellal
- * 
+ *
+ * purpose: provide standard data structures and values for all ipc-related
+ * matters. author:  alex amellal
+ *
  */
 
 #include "ipc_std.h"
 
 struct ipc ipc = {
-  .pay = {
-    .name = "pay",
-    .cmd = {
-      .take_pic = "0x12345"
-    }
-  },
+    .pay = {.name = "pay", .cmd = {.take_pic = "0x12345"}},
 
-  .core = {
-    .fls = {
-      .name = "fls",
-      .cmd = {
-        .fsend = "fsend",
-        .fsend_list = "fsend_list"
-      }
-    }
-  }
-};
+    .core = {.fls = {.name = "fls",
+                     .cmd = {.fsend = "fsend", .fsend_list = "fsend_list"}}}};

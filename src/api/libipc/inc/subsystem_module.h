@@ -1,10 +1,10 @@
 /**
-* subsystem_module.h
-*
-*   purpose: provide a modular placeholder for subsystem servers (container)
-*   author: alex amellal
-*
-*/
+ * subsystem_module.h
+ *
+ *   purpose: provide a modular placeholder for subsystem servers (container)
+ *   author: alex amellal
+ *
+ */
 
 #ifndef CUBESAT_CORE_INCLUDE_SUBSYSTEM_MODULE_H
 #define CUBESAT_CORE_INCLUDE_SUBSYSTEM_MODULE_H
@@ -31,6 +31,6 @@ typedef struct subsystem_module {
 
 #ifdef __cplusplus
 }
-#endif 
+#endif
 
 #endif  // END OF CUBESAT_CORE_INCLUDE_SUBSYSTEM_MODULE_H

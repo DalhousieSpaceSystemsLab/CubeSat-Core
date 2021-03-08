@@ -1,9 +1,9 @@
 /**
  * template_module.h
- * 
- * purpose: demonstrate configuration of a subsystem server 
- * author: alex amellal 
- * 
+ *
+ * purpose: demonstrate configuration of a subsystem server
+ * author: alex amellal
+ *
  */
 
 #ifndef CUBESAT_CORE_INCLUDE_SUBSYSTEM_SERVERS_TEMPLATE_H
@@ -12,10 +12,10 @@
 // Project headers
 #include "subsystem_module.h"
 
-// Feature test macros 
+// Feature test macros
 #define _XOPEN_SOURCE 700
 
-// Standard C libraries 
+// Standard C libraries
 #include <pthread.h>
 #include <signal.h>
 

@@ -1,11 +1,10 @@
 /**
  * std.h
- * 
- * purpose: provide standard data structures and values for all ipc-related matters.
- * author:  alex amellal
- * 
+ *
+ * purpose: provide standard data structures and values for all ipc-related
+ * matters. author:  alex amellal
+ *
  */
-
 
 #ifndef CUBESAT_CORE_INCLUDE_IPC_STD_H
 #define CUBESAT_CORE_INCLUDE_IPC_STD_H
@@ -15,7 +14,7 @@ extern "C" {
 #endif
 
 /**
- * The IPC struct exists to provide standard values for 
+ * The IPC struct exists to provide standard values for
  * subsystems and core software servers.
  */
 struct ipc {
@@ -31,7 +30,6 @@ struct ipc {
   struct trx {
     const char* name;
     struct cmd_trx {
-
     } cmd;
   } trx;
 
@@ -39,7 +37,6 @@ struct ipc {
   struct acs {
     const char* name;
     struct cmd_acs {
-
     } cmd;
   } acs;
 
@@ -47,7 +44,6 @@ struct ipc {
   struct ecs {
     const char* name;
     struct cmd_ecs {
-
     } cmd;
   } ecs;
   // Core software
@@ -56,24 +52,21 @@ struct ipc {
     struct msn {
       const char* name;
       struct cmd_msn {
-
       } cmd;
     } msn;
     // Commands
     struct cmd {
       const char* name;
       struct cmd_cmd {
-
       } cmd;
     } cmd;
     // Logging
     struct log {
       const char* name;
       struct cmd_log {
-
       } cmd;
     } log;
-    // File system 
+    // File system
     struct fls {
       const char* name;
       struct cmd_fls {
@@ -90,4 +83,4 @@ extern struct ipc ipc;
 }
 #endif
 
-#endif // End of CUBESAT_CORE_INCLUDE_IPC_STD_H header guard
+#endif  // End of CUBESAT_CORE_INCLUDE_IPC_STD_H header guard
