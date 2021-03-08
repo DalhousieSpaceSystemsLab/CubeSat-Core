@@ -177,7 +177,6 @@ static void *start_routing_client(void *params) {
         fprintf(stderr, "read 0 bytes from client [%.*s]. disconnecting...\n",
                 NAME_LEN, client.name);
         disconnect_client((client_t *)params);
-        fprintf(stderr, "done!\n");
         pthread_exit(NULL);
       }
 
