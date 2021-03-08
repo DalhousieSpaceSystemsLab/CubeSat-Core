@@ -9,6 +9,10 @@
 #ifndef CUBESAT_CORE_INCLUDE_IPC_PACKET_H
 #define CUBESAT_CORE_INCLUDE_IPC_PACKET_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "ipc_settings.h"
 #include <stddef.h>
 #include <string.h>
@@ -71,5 +75,9 @@ int ipc_packet_parse(char *data, size_t data_len, ipc_packet_t *packet_out, char
 // Exports packet contents into string buffers 
 // RETURN length of msg 
 int ipc_packet_export(ipc_packet_t packet, char src_out[NAME_LEN], char *buffer, size_t buffer_len);
+
+#ifdef __cplusplus
+}
+#endif 
 
 #endif // End of header guard

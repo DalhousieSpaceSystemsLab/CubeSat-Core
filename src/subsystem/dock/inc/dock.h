@@ -1,6 +1,10 @@
 #ifndef CUBESAT_CORE_INCLUDE_SUBSYSTEM_DOCK_DOCK_H
 #define CUBESAT_CORE_INCLUDE_SUBSYSTEM_DOCK_DOCK_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Feature test macros
 #define _GNU_SOURCE
 
@@ -29,5 +33,9 @@ int dock_start(SubsystemModule* modules, size_t modules_len, char stacks[MAX_NUM
 
 // Stop dock and all server instances
 int dock_stop(SubsystemModule* modules, size_t modules_len, char stacks[MAX_NUM_MODULES][MODULE_STACK_SIZE]);
+
+#ifdef __cplusplus
+}
+#endif 
 
 #endif

@@ -15,6 +15,10 @@
 #ifndef CUBESAT_CORE_INCLUDE_IPC_CLIENT_API_H
 #define CUBESAT_CORE_INCLUDE_IPC_CLIENT_API_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Project headers
 #include "ipc_settings.h"
 #include "client_t.h"
@@ -134,5 +138,9 @@ int ipc_args(char* msg, size_t msg_len, char* args_out[MAX_ARG_LEN], size_t max_
  * @return 0 
  */
 int ipc_disconnect();
+
+#ifdef __cplusplus
+}
+#endif 
 
 #endif /* end of include guard: CUBESAT_CORE_INCLUDE_IPC_CLIENT_API_H */

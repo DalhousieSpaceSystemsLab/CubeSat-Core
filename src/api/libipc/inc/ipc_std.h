@@ -10,6 +10,10 @@
 #ifndef CUBESAT_CORE_INCLUDE_IPC_STD_H
 #define CUBESAT_CORE_INCLUDE_IPC_STD_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * The IPC struct exists to provide standard values for 
  * subsystems and core software servers.
@@ -81,5 +85,9 @@ struct ipc {
 };
 
 extern struct ipc ipc;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // End of CUBESAT_CORE_INCLUDE_IPC_STD_H header guard

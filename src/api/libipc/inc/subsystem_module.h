@@ -9,6 +9,10 @@
 #ifndef CUBESAT_CORE_INCLUDE_SUBSYSTEM_MODULE_H
 #define CUBESAT_CORE_INCLUDE_SUBSYSTEM_MODULE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Project headers
 #include "ipc_settings.h"
 
@@ -24,5 +28,9 @@ typedef struct subsystem_module {
   pthread_t mtid;
   char* stack;
 } SubsystemModule;
+
+#ifdef __cplusplus
+}
+#endif 
 
 #endif  // END OF CUBESAT_CORE_INCLUDE_SUBSYSTEM_MODULE_H

@@ -9,6 +9,10 @@
 #ifndef CUBESAT_CORE_INCLUDE_IPC_JSON_H
 #define CUBESAT_CORE_INCLUDE_IPC_JSON_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Project headers
 #include "ipc_settings.h"
 
@@ -39,5 +43,9 @@ bool json_test(char *json, size_t json_len);
 // RETURN true/false if JSON valid or not
 // NOTE: This function uses <n> key-value pair limit to test parsing.
 bool json_ntest(char *json, size_t json_len, size_t n);
+
+#ifdef __cplusplus
+}
+#endif 
 
 #endif // End of CUBESAT_CORE_INCLUDE_IPC_JSON_H header guard

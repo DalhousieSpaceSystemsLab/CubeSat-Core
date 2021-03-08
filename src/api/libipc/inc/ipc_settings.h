@@ -9,6 +9,10 @@
 #ifndef CUBESAT_CORE_INCLUDE_IPC_SETTINGS_H
 #define CUBESAT_CORE_INCLUDE_IPC_SETTINGS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // IPC
 #define MAX_NUM_CLI         16
 #define MAX_MSG_LEN         128
@@ -29,5 +33,9 @@
 #define JSON_VAL_LEN        32
 #define JSON_TEST_LEN       32
 #define JSMN_TOK_OFF        3
+
+#ifdef __cplusplus
+}
+#endif 
 
 #endif /* end of include guard: CUBESAT_CORE_INCLUDE_IPC_SETTINGS_H */

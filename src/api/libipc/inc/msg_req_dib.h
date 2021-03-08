@@ -9,6 +9,10 @@
 #ifndef CUBESAT_CORE_INCLUDE_IPC_MSG_REQ_DIB_H
 #define CUBESAT_CORE_INCLUDE_IPC_MSG_REQ_DIB_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Project headers 
 #include "ipc_settings.h"
 
@@ -31,5 +35,9 @@ MsgReqDib MsgReqDib_set(char name[NAME_LEN], void (*callback)(char*, size_t, voi
 int       MsgReqDib_add(MsgReqDib element, MsgReqDib * array, size_t array_len);                  // Appends or overwrites dib into dib array
 bool      MsgReqDib_exists(char name[NAME_LEN], MsgReqDib *array, size_t array_len);              // Checks in array for preexisting dibs
 int       MsgReqDib_remove(char name[NAME_LEN], MsgReqDib *array, size_t array_len);              // Removes a dib from an array of dibs
+
+#ifdef __cplusplus
+}
+#endif 
 
 #endif 

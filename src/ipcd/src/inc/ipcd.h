@@ -9,6 +9,10 @@
 #ifndef CUBESAT_CORE_INCLUDE_IPC_IPCD_H
 #define CUBESAT_CORE_INCLUDE_IPC_IPCD_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Project headers
 #include "client_t.h"
 #include "ipc_settings.h"
@@ -31,5 +35,9 @@ int ipcd_close();  // Shutdown the IPC daemon
 
 // Debug
 int ipcd_print_clients();  // Prints the list of clients
+
+#ifdef __cplusplus
+}
+#endif 
 
 #endif  // end of CUBESAT_CORE_INCLUDE_IPC_IPCD_H header guard.
