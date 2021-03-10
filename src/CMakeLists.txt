@@ -189,12 +189,12 @@ endif(NOT COMMAND _add_library)
 # dependencies come first
 add_subdirectory(api/libipc)
 add_subdirectory(api/client_api)
-add_subdirectory(subsystem/servers)
+add_subdirectory(modules)
 
 # executable targets after, and link against necessary dependencies
 add_subdirectory(ipcd)
 add_subdirectory(client)
-add_subdirectory(subsystem/dock)
+add_subdirectory(dock)
 
 # TARGET_COMPILE_OPTIONS(${BIN_TEST}
 #   BEFORE PUBLIC "-g"

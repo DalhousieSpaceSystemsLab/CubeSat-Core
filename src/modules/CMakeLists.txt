@@ -12,7 +12,7 @@ option(BUILD_EXAMPLES "[ON/OFF] Build examples in addition to library" ON)
 #  PROJECT INIT
 ################################################################################
 project(
-    SUBSYS_SERVERS
+    MODULES
     VERSION 1.0
     DESCRIPTION "CLIENT CREATION API LIBRARY FOR IPC"
     LANGUAGES C CXX
