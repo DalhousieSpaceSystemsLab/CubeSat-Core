@@ -13,6 +13,11 @@
  * In order to provide a neutral means of communication between all of the
  * different processes and subsystems on the satellite, the IPC system was
  * created.
+ * 
+ * @subsection ipc_daemon IPC Daemon
+ * Before doing any work with the IPC system, an instance of the IPC daemon must be running in the background.
+ * 
+ * A guide on how to setup the daemon with some use cases can be found in <a href="http://cubesat.alexamellal.com/md_src_api_libipc_examples_IPC_DAEMON_EXAMPLES.html">IPC_DAEMON_EXAMPLES.md</a>
  *
  * @subsection ipc_client Client API
  * Rather than creating a custom implemention for message passing and handling
