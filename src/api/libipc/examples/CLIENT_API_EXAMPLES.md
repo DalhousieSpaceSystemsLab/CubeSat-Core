@@ -13,6 +13,7 @@ In the root directory of the repo, run `sh export_client.sh`. A new folder title
 If you happen to be using cmake, the following snippet may be useful in getting started:
 
 ```Cmake 
+```
 
 
 ## Including the client API header
