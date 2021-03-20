@@ -580,12 +580,24 @@ int ipc_args(char *msg, size_t msg_len, char *args_out[MAX_ARG_LEN],
              size_t max_args) {
   int argc = 0;
   int argx = 0;
+
+  // If message contains JSON, treat as one argument
+  if (json_test(msg, msg_len)) {
+    strncpy(args_out[argc], msg, msg_len < MAX_ARG_LEN ? msg_len : MAX_ARG_LEN);
+    return 1;
+  }
+
   for (int x = 0; x < msg_len && argc < max_args; x++) {
     if (msg[x] == ' ') {
       argc++;
       argx = 0;
       continue;
     } else {
+      // Trigger new arg condition on next iteration if arg full
+      if (argx >= MAX_ARG_LEN) {
+        msg[x + 1] = ' ';
+        continue;
+      }
       args_out[argc][argx] = msg[x];
       argx++;
     }
