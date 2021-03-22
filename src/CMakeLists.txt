@@ -194,6 +194,7 @@ add_subdirectory(modules)
 # executable targets after, and link against necessary dependencies
 add_subdirectory(ipcd)
 add_subdirectory(client)
+add_subdirectory(client_cpp)
 add_subdirectory(dock)
 
 # TARGET_COMPILE_OPTIONS(${BIN_TEST}

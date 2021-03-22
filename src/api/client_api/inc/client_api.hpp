@@ -16,9 +16,11 @@
 #include "client_api.h"
 
 // Standard C++ libraries
+#include <exception>
 #include <string>
 
 // Standard C++ classes
+using std::exception;
 using std::string;
 
 // Dalhousie Namespace
@@ -72,6 +74,34 @@ void recv(string src, void (*callback)(string, void*));
  *
  */
 void disconnect();
+
+namespace exception {
+class InvalidDest : public exception {
+ public:
+  const char* what() const throw() {
+    return "Destination name must be NAME_LEN characters long";
+  }
+};
+
+class InvalidSrc : public exception {
+ public:
+  const char* what() const throw() {
+    return "Source name be NAME_LEN characters long or wildcard (*)";
+  }
+};
+
+class InvalidMsg : public exception {
+ public:
+  const char* what() const throw() {
+    return "Message must be less than MAX_MSG_LEN characters long";
+  }
+};
+
+class IPCAPI : public exception {
+ public:
+  const char* what() const throw() { return "Unknown IPC API error : "; }
+};
+}  // namespace exception
 
 }  // namespace ipc
 }  // namespace dss
