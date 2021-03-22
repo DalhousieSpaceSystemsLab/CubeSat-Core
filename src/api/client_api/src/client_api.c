@@ -591,6 +591,10 @@ int ipc_args(char *msg, size_t msg_len, char args_out[][MAX_ARG_LEN],
     for (int msgx = 0; msgx < msg_len && argc < max_args; msgx++) {
       // Move to next argument if whitespace encountered
       if (msg[msgx] == ' ') {
+        // Add null termination character
+        args_out[argc][argx] = '\0';
+
+        // Move counters to new argument
         argc++;
         argx = 0;
         continue;
