@@ -578,32 +578,40 @@ int ipc_refresh_src(char src[NAME_LEN]) {
 // Extracts IPC message command and arguments
 int ipc_args(char *msg, size_t msg_len, char args_out[][MAX_ARG_LEN],
              size_t max_args) {
+  // Create placeholders for parsing
   int argc = 0;
   int argx = 0;
 
-  // If message contains JSON, treat as one argument
+  // Check if message contains JSON
   if (json_test(msg, msg_len)) {
+    // Treat entire message as one argument
     strncpy(args_out[argc], msg, msg_len < MAX_ARG_LEN ? msg_len : MAX_ARG_LEN);
-    return 1;
-  }
-
-  for (int x = 0; x < msg_len && argc < max_args; x++) {
-    if (msg[x] == ' ') {
-      argc++;
-      argx = 0;
-      continue;
-    } else {
-      // Trigger new arg condition on next iteration if arg full
-      if (argx >= MAX_ARG_LEN) {
-        msg[x + 1] = ' ';
+    argc = 1;
+  } else {
+    for (int msgx = 0; msgx < msg_len && argc < max_args; msgx++) {
+      // Move to next argument if whitespace encountered
+      if (msg[msgx] == ' ') {
+        argc++;
+        argx = 0;
         continue;
+      } else {
+        // Otherwise add sequential characters to current argument
+        args_out[argc][argx] = msg[msgx];
+        argx++;
+
+        // If argument full of characters, force new argument trigger on next
+        // iteration
+        if (argx >= MAX_ARG_LEN) {
+          msg[msgx + 1] = ' ';
+          continue;
+        }
       }
-      args_out[argc][argx] = msg[x];
-      argx++;
     }
   }
 
-  return argc;
+  // done
+  // return argc+1 unless max_args exceeded (meaning last arg was not added)
+  return argc <= max_args ? argc + 1 : max_args;
 }
 
 // Disconnect from IPC daemon and close client side interface
