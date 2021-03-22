@@ -62,17 +62,8 @@ namespace async {
  * @param callback Function to pass message to for processing.
  * @param data (Optional) Additional data for callback method.
  */
-void recv(string src, void (*callback)(string, void*));
-
-/**
- * @brief Creates asynchronous background listener for incoming messages (with
- * callback).
- *
- * @param src	Incoming message source to monitor ("*" for wildcard)
- * @param callback Function to pass message to for processing.
- * @param data (Optional) Additional data for callback method.
- */
 void recv(string src, void (*callback)(string, void*), void* data);
+void recv(string src, void (*callback)(string, void*));
 
 }  // namespace async
 
