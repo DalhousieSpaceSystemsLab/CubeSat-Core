@@ -144,7 +144,7 @@ bool json_test(char *json, size_t json_len) {
   json_t kv_pairs[JSON_TEST_LEN];
 
   // Try
-  if (json_parse(json, json_len, kv_pairs, JSON_TEST_LEN) < 0) {
+  if (json_parse(json, json_len, kv_pairs, JSON_TEST_LEN) <= 0) {
     return false;
   }
 
