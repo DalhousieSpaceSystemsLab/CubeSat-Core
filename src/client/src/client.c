@@ -363,12 +363,12 @@ static void cb_read(char* msg, size_t msg_len, void* data) {
     return;
   }
 
-  // char args[10][MAX_ARG_LEN];
-  // int argc = ipc_args(msg, msg_len, (char**)args, 10);
+  char args[10][MAX_ARG_LEN];
+  int argc = ipc_args(msg, msg_len, args, 10);
 
   // Print message
-  // printf("Number of args = %d\n");
-  // for (int x = 0; x < argc; x++) printf("arg[%d] = %s, ");
-  // printf("\n");
+  printf("Number of args = %d\n", argc);
+  for (int x = 0; x < argc; x++) printf("arg[%d] = %s, ", x, args[x]);
+  printf("\n");
   printf("Incoming message: %.*s\n", msg_len, msg);
 }
