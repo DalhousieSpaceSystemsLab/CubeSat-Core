@@ -17,6 +17,7 @@
 
 // Standard C++ libraries
 #include <exception>
+#include <functional>
 #include <string>
 
 // Standard C++ classes
@@ -64,8 +65,15 @@ namespace async {
  * @param callback Function to pass message to for processing.
  * @param data (Optional) Additional data for callback method.
  */
-void recv(string src, void (*callback)(string, void*), void* data);
-void recv(string src, void (*callback)(string, void*));
+void createListener(string src, std::function<void(string, void*)> callback,
+                    void* data);
+void createListener(string src, std::function<void(string, void*)> callback);
+
+/**
+ * @brief Refreshes all background listeners for incoming messages.
+ *
+ */
+void refresh();
 
 }  // namespace async
 
@@ -75,7 +83,7 @@ void recv(string src, void (*callback)(string, void*));
  */
 void disconnect();
 
-namespace exception {
+namespace exceptions {
 class InvalidDest : public exception {
  public:
   const char* what() const throw() {
@@ -101,7 +109,7 @@ class IPCAPI : public exception {
  public:
   const char* what() const throw() { return "Unknown IPC API error : "; }
 };
-}  // namespace exception
+}  // namespace exceptions
 
 }  // namespace ipc
 }  // namespace dss

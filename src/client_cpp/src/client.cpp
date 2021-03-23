@@ -30,7 +30,9 @@ int main() {
   try {
     ipc::connect("alx");
 
-    ipc::async::recv("*");
+    ipc::async::createListener("*", [](string msg, void* data) {
+      cout << "This is callback message: " << msg << endl;
+    });
 
     ipc::disconnect();
   } catch (std::exception& e) {

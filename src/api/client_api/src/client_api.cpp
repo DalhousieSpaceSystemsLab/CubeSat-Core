@@ -58,5 +58,10 @@ string dss::ipc::recv(string src) {
   return string(msg);
 }
 
+void dss::ipc::async::createListener(
+    string src, std::function<void(string, void*)> callback) {
+  callback("this is message", NULL);
+}
+
 // Gracefully disconnect from the IPC.
 void dss::ipc::disconnect() { ipc_disconnect(); }
