@@ -27,12 +27,17 @@ void cb_read(string msg, void* data) {
 }
 
 int main() {
+  int a = 5;
   try {
     ipc::connect("alx");
 
-    ipc::async::createListener("*", [](string msg, void* data) {
+    ipc::async::createListener("*", [](string msg) {
       cout << "This is callback message: " << msg << endl;
     });
+
+    for (;;) {
+      ipc::async::refresh();
+    }
 
     ipc::disconnect();
   } catch (std::exception& e) {

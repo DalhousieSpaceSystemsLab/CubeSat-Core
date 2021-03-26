@@ -14,13 +14,17 @@
 
 // Project headers
 #include "client_api.h"
+#include "f_c2cpp.hpp"
 
 // Standard C++ libraries
 #include <exception>
 #include <functional>
+#include <iostream>
 #include <string>
 
 // Standard C++ classes
+using std::cout;
+using std::endl;
 using std::exception;
 using std::string;
 
@@ -67,13 +71,20 @@ namespace async {
  */
 void createListener(string src, std::function<void(string, void*)> callback,
                     void* data);
-void createListener(string src, std::function<void(string, void*)> callback);
+void createListener(string src, std::function<void(string)> callback);
 
 /**
  * @brief Refreshes all background listeners for incoming messages.
  *
  */
 void refresh();
+
+/**
+ * @brief Refreshes specific background listener for incoming messages.
+ *
+ * @param src Incoming message source which the listener was binded to.
+ */
+void refreshListener(string src);
 
 }  // namespace async
 
@@ -105,9 +116,23 @@ class InvalidMsg : public exception {
   }
 };
 
+class CreateListener : public exception {
+ public:
+  const char* what() const throw() {
+    return "Failed to create incoming message listener";
+  }
+};
+
+class Refresh : public exception {
+ public:
+  const char* what() const throw() {
+    return "Failed to async refresh incoming message listeners";
+  }
+};
+
 class IPCAPI : public exception {
  public:
-  const char* what() const throw() { return "Unknown IPC API error : "; }
+  const char* what() const throw() { return "Underlying IPC API error"; }
 };
 }  // namespace exceptions
 

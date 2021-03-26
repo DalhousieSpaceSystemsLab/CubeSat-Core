@@ -12,12 +12,6 @@
 // Project headers
 #include "client_api.hpp"
 
-// Standard C++ libraries
-#include <iostream>
-
-using std::cout;
-using std::endl;
-
 // Connect to IPC daemon. Must be run before any IPC operations will work.
 void dss::ipc::connect(string name) {
   if (ipc_connect(name.c_str()) < 0) {
@@ -44,8 +38,7 @@ void dss::ipc::send(string dest, string msg) {
 // Receive incoming message from IPC.
 string dss::ipc::recv(string src) {
   if (src.size() != NAME_LEN && src != "*") {
-    cout << "Destination name must be " << NAME_LEN << "characters long"
-         << endl;
+    cout << "Source name must be " << NAME_LEN << "characters long" << endl;
     throw dss::ipc::exceptions::InvalidSrc();
   }
 
@@ -59,8 +52,55 @@ string dss::ipc::recv(string src) {
 }
 
 void dss::ipc::async::createListener(
-    string src, std::function<void(string, void*)> callback) {
-  callback("this is message", NULL);
+    string src, std::function<void(string, void*)> callback, void* data) {
+  // Check if source valid
+  if (src.size() != NAME_LEN && src != "*") {
+    cout << "Source name must be " << NAME_LEN << "characters long" << endl;
+    throw dss::ipc::exceptions::InvalidSrc();
+  }
+
+  // Use fC2CPP to convert into C compatible format
+  fC2CPP helper = fC2CPP(callback);
+
+  // Assign background listener using qrecv
+  if (ipc_qrecv((char*)src.c_str(), helper.run, data, IPC_QRECV_MSG) < 0) {
+    throw dss::ipc::exceptions::CreateListener();
+  }
+}
+
+void dss::ipc::async::createListener(string src,
+                                     std::function<void(string)> callback) {
+  // Check if source valid
+  if (src.size() != NAME_LEN && src != "*") {
+    cout << "Source name must be " << NAME_LEN << "characters long" << endl;
+    throw dss::ipc::exceptions::InvalidSrc();
+  }
+
+  // Use fC2CPP to convert into C compatible format
+  fC2CPP helper = fC2CPP(callback);
+
+  // Assign background listener using qrecv
+  if (ipc_qrecv((char*)src.c_str(), helper.run, NULL, IPC_QRECV_MSG) < 0) {
+    throw dss::ipc::exceptions::CreateListener();
+  }
+}
+
+void dss::ipc::async::refresh() {
+  if (ipc_refresh() < 0) {
+    throw dss::ipc::exceptions::Refresh();
+  }
+}
+
+void dss::ipc::async::refreshListener(string src) {
+  // Check if source valid
+  if (src.size() != NAME_LEN && src != "*") {
+    cout << "Source name must be " << NAME_LEN << "characters long" << endl;
+    throw dss::ipc::exceptions::InvalidSrc();
+  }
+
+  if (ipc_refresh_src((char*)src.c_str()) < 0) {
+    throw dss::ipc::exceptions::Refresh();
+  }
 }
 
 // Gracefully disconnect from the IPC.
