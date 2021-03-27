@@ -10,7 +10,9 @@
 #define CUBESAT_CORE_INCLUDE_SUBSYSTEM_SERVER_PAYLOAD
 
 // Macros
+#ifndef _XOPEN_SOURCE
 #define _XOPEN_SOURCE
+#endif
 
 // Project headers
 #include "ipc_std.h"

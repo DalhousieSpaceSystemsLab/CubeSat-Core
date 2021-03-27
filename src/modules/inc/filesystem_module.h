@@ -11,7 +11,9 @@
 #define CUBESAT_CORE_INCLUDE_SUBSYSTEM_SERVERS_FILESYSTEM_H
 
 // Macros
+#ifndef _XOPEN_SOURCE
 #define _XOPEN_SOURCE
+#endif
 
 // Project headers
 #include "ipc_std.h"

@@ -6,7 +6,9 @@ extern "C" {
 #endif
 
 // Feature test macros
+#ifndef _GNU_SOURCE
 #define _GNU_SOURCE
+#endif
 
 // Project headers
 #include "dock_settings.h"

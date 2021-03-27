@@ -1,7 +1,7 @@
 /**
  * subsystem_module.h
  *
- *   purpose: provide a modular placeholder for subsystem servers (container)
+ *   purpose: provide a modular placeholder for subsystem modules (container)
  *   author: alex amellal
  *
  */
