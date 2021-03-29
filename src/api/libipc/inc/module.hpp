@@ -17,6 +17,7 @@
 #include <pthread.h>
 
 // Standard C++ libraries
+#include <functional>
 #include <iostream>
 
 // Standard C++ classes
@@ -31,9 +32,18 @@ class Module {
   pthread_t mtid;
   char* stack;
 
-  virtual int start(void* data);
-  virtual int stop(void* data);
+  virtual void start();
+  virtual void stop();
 };
+
+// struct Module {
+//   pid_t pid;
+//   pthread_t mtid;
+//   char* stack;
+
+//   static int start(void* data);
+//   static int stop(void* data);
+// };
 
 }  // namespace dss
 

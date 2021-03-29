@@ -12,18 +12,14 @@
 // Project headers
 #include "module.hpp"
 
-int dss::Module::start(void* data) {
+void dss::Module::start() {
   cout << "Default start method is running for this module... Did you override "
           "the start method yet?"
        << endl;
-
-  return 0;
 }
 
-int dss::Module::stop(void* data) {
+void dss::Module::stop() {
   cout << "Default stop method is running for this module... Did you override "
           "the stop method yet?"
        << endl;
-
-  return 0;
 }
