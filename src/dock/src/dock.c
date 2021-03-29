@@ -26,6 +26,8 @@ static void* run_module(void* args);
 // If timeout exceeded and process has not terminated, SIGKILL is sent.
 static void fstop(pid_t pid, int sec_timeout, struct timespec retry_delay);
 
+static int twaitpid(pid_t pid, int* status, int timeout);
+
 // Start all server containers
 int dock_start(SubsystemModule* modules, size_t modules_len,
                char stacks[MAX_NUM_MODULES][MODULE_STACK_SIZE]) {
@@ -103,7 +105,12 @@ static int stop_module(SubsystemModule* module) {
     perror("failed to clone() stop process");
   }
 
-  fstop(stop_pid, MODULE_INT_TIMEOUT, MODULE_REINT_DELAY);
+  // Wait for stop process to finish
+  if (twaitpid(stop_pid, NULL, MODULE_STOP_TIMEOUT) == 0) {
+    // Process did not stop on its own in time.
+    // Force stop process using term/kill signals.
+    fstop(stop_pid, MODULE_INT_TIMEOUT, MODULE_REINT_DELAY);
+  }
 
   // DEBUG
   printf("successfully stopped module\n");
@@ -181,7 +188,7 @@ static void fstop(pid_t pid, int sec_timeout, struct timespec retry_delay) {
  * @param status If not NULL, exit status of process will be stored here.
  * @param timeout Max time spent waiting for process to stop in seconds.
  */
-static void twaitpid(pid_t pid, int* status, int timeout) {
+static int twaitpid(pid_t pid, int* status, int timeout) {
   // Create plceholders for time trackers
   time_t start, current, time_elapsed = 0;
 
@@ -198,7 +205,11 @@ static void twaitpid(pid_t pid, int* status, int timeout) {
       continue;
     } else {
       // Process has exited, we can stop
-      break;
+      return 1;
     }
   }
+
+  // done
+  // process did not exit
+  return 0;
 }
