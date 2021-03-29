@@ -181,7 +181,7 @@ static void fstop(pid_t pid, int sec_timeout, struct timespec retry_delay) {
  * @param status If not NULL, exit status of process will be stored here.
  * @param timeout Max time spent waiting for process to stop in seconds.
  */
-static void twaitpid(pit_t pid, int* status, int timeout) {
+static void twaitpid(pid_t pid, int* status, int timeout) {
   // Create plceholders for time trackers
   time_t start, current, time_elapsed = 0;
 
