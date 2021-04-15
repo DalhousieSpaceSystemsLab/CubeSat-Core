@@ -310,9 +310,9 @@ int ipcd_init() {
                                       .sun_path = "./socket.socket"};
   const socklen_t address_len = sizeof(address);
 
-  // Check if socket file missing
-  if (access(address.sun_path, F_OK) != 0) {
-    // Create file
+  // Check if socket file missing 
+  if(access(address.sun_path, F_OK) != 0) {
+    // Create file 
     system("mkfifo socket.socket");
   }
 
