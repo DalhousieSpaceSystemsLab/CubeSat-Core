@@ -11,5 +11,8 @@
 struct ipc ipc = {
     .pay = {.name = "pay", .cmd = {.take_pic = "0x12345"}},
 
-    .core = {.fls = {.name = "fls",
-                     .cmd = {.fsend = "fsend", .fsend_list = "fsend_list"}}}};
+    .core = {
+        .fls = {.name = "fls",
+                .cmd = {.fsend = "fsend", .fsend_list = "fsend_list"}},
+        .msn = {.name = "msn"},
+    }};
