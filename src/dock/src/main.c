@@ -9,16 +9,13 @@
 // Macros
 #define _XOPEN_SOURCE
 
-// Subsystem server container
+// Project headers
+#include "dock.h"
+#include "modutil.h"
 #include "subsystem_module.h"
 
-// Dock library
-#include "dock.h"
-
 // Subsystem modules
-// #include "template_module.h"
-// #include "twin.h"
-#include "filesystem_module.h"
+#include "mission_module.h"
 #include "payload_module.h"
 
 // Standard C libraries
@@ -34,10 +31,8 @@ static char stacks[MAX_NUM_MODULES][MODULE_STACK_SIZE];
 int main() {
   // Create list of server containers
   SubsystemModule modules[] = {
-      // template_server,
-      // twin_server,
-      filesystem_module,
-      payload_module,
+      payload,
+      mission,
   };
   modules_len = sizeof(modules) / sizeof(SubsystemModule);
 
