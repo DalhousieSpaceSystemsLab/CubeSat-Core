@@ -15,6 +15,7 @@ extern "C" {
 
 // Project headers
 #include "ipc_settings.h"
+#include "ipc_std.h"
 
 // Standard C libraries
 #include <pthread.h>
@@ -29,9 +30,13 @@ typedef struct subsystem_module {
   char* stack;
 } SubsystemModule;
 
-// Module maker macro
+// Module maker macros
 #define NEW_DOCK_MODULE(name) extern SubsystemModule name;
-#define DOCK_MODULE(name) SubsystemModule name
+#define EXPORT_MODULE(name)                             \
+  SubsystemModule name = {.start = start_module_##name, \
+                          .stop = stop_module_##name};
+#define START_MODULE(name) int start_module_##name(void* data)
+#define STOP_MODULE(name) int stop_module_##name(void* data)
 
 #ifdef __cplusplus
 }
