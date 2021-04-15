@@ -31,6 +31,7 @@ typedef struct subsystem_module {
 
 // Module maker macro
 #define NEW_DOCK_MODULE(name) extern SubsystemModule name;
+#define DOCK_MODULE(name) SubsystemModule name
 
 #ifdef __cplusplus
 }
