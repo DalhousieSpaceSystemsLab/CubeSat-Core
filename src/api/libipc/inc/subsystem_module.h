@@ -29,6 +29,9 @@ typedef struct subsystem_module {
   char* stack;
 } SubsystemModule;
 
+// Module maker macro
+#define NEW_DOCK_MODULE(name) extern SubsystemModule name;
+
 #ifdef __cplusplus
 }
 #endif
