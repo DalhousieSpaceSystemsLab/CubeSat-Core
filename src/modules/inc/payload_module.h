@@ -15,14 +15,12 @@
 #endif
 
 // Project headers
-#include "ipc_std.h"
 #include "subsystem_module.h"
 
 // Standard C libraries
 #include <signal.h>
 #include <string.h>
 
-// Server container
-extern SubsystemModule payload_module;
+NEW_DOCK_MODULE(payload)
 
 #endif

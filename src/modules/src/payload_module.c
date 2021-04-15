@@ -9,14 +9,17 @@
 #include "payload_module.h"
 #include "client_api.h"
 
-int payload_server_start(void*);
-int payload_server_stop(void*);
-static void process_general_msg(char* msg, size_t msg_len, void* data);
+static void process_general_msg(char* msg, size_t msg_len, void* data) {
+  // Take pic
+  if (strncmp(msg, ipc.pay.cmd.take_pic, msg_len) == 0) {
+    printf("[pay] taking picture...\n");
+    printf("[pay] done!\n");
+  } else {
+    printf("[pay] misc message incoming: %.*s\n", msg_len, msg);
+  }
+}
 
-SubsystemModule payload_module = {.start = payload_server_start,
-                                  .stop = payload_server_stop};
-
-int payload_server_start(void* data) {
+START_MODULE(payload) {
   // Connect to the IPC
   if (ipc_connect(ipc.pay.name) != 0) {
     fprintf(stderr, "[pay] failed to connect to the IPC\n");
@@ -38,17 +41,9 @@ int payload_server_start(void* data) {
   }
 }
 
-int payload_server_stop(void* data) {
+STOP_MODULE(payload) {
   // Disconnect from the IPC
   ipc_disconnect();
 }
 
-static void process_general_msg(char* msg, size_t msg_len, void* data) {
-  // Take pic
-  if (strncmp(msg, ipc.pay.cmd.take_pic, msg_len) == 0) {
-    printf("[pay] taking picture...\n");
-    printf("[pay] done!\n");
-  } else {
-    printf("[pay] misc message incoming: %.*s\n", msg_len, msg);
-  }
-}
+EXPORT_MODULE(payload)
