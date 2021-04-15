@@ -21,6 +21,6 @@
 #include <signal.h>
 #include <string.h>
 
-NEW_DOCK_MODULE(payload)
+NEW_DOCK_MODULE(payload);
 
 #endif
