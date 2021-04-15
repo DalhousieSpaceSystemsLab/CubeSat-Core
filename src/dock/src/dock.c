@@ -33,14 +33,13 @@ int dock_start(SubsystemModule* modules, size_t modules_len,
                char stacks[MAX_NUM_MODULES][MODULE_STACK_SIZE]) {
   // Ensure modules pointer is not null
   if (modules == NULL) {
-    fprintf(stderr, "modules pointer cannot be null : ");
+    dockerr("modules pointer cannot be null : ");
     return -1;
   }
 
   // Ensure length is a non-zero positive value
   if (modules_len <= 0) {
-    fprintf(stderr,
-            "modules array length must be a non-zero positive value : ");
+    dockerr("modules array length must be a non-zero positive value : ");
     return -1;
   }
 
@@ -69,7 +68,7 @@ int dock_stop(SubsystemModule* modules, size_t modules_len,
   // Shutdown all modules & monitors
   for (int x = 0; x < modules_len; x++) {
     if (stop_module(&modules[x]) != 0) {
-      fprintf(stderr, "stop_module() failed : ");
+      dockerr("stop_module() failed : ");
       return -1;
     }
   }
@@ -82,7 +81,7 @@ int dock_stop(SubsystemModule* modules, size_t modules_len,
 static int stop_module(SubsystemModule* module) {
   // Check if module pointer non null
   if (module == NULL) {
-    fprintf(stderr, "cannot use null pointer to module : ");
+    dockerr("cannot use null pointer to module : ");
     return -1;
   }
 
@@ -113,7 +112,7 @@ static int stop_module(SubsystemModule* module) {
   }
 
   // DEBUG
-  printf("successfully stopped module\n");
+  dockprintf("successfully stopped module\n");
 
   // done
   return 0;
@@ -142,14 +141,14 @@ static void* run_module(void* args) {
     // Check if process was terminated by a signal
     if (WIFSIGNALED(status)) {
       // DEBUG
-      printf("process terminated by signal!\n");
+      dockprintf("process terminated by signal!\n");
       // Stop monitoring
       pthread_exit(NULL);
     }
 
     // Stop module
     if (stop_module(module) != 0) {
-      fprintf(stderr, "stop_module() failed\n");
+      dockerr("stop_module() failed\n");
       pthread_exit(NULL);
     }
   }
