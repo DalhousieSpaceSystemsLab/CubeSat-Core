@@ -224,6 +224,11 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
   return 0;
 }
 
+// Send command to destination
+int ipc_send_cmd(const char *dest, const char *cmd) {
+  return ipc_send((char *)dest, (char *)cmd, strlen(cmd));
+}
+
 // Sends key-value pair to another process
 int ipc_send_json(char dest[NAME_LEN], json_t *json, size_t json_len) {
   // Convert JSON struct into string

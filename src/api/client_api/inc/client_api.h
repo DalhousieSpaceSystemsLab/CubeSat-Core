@@ -69,6 +69,15 @@ int ipc_connect(const char name[NAME_LEN]);
 int ipc_send(char dest[NAME_LEN], char* msg, size_t msg_len);
 
 /**
+ * @brief Send command from IPC_STD to another process
+ *
+ * @param dest ipc...name of destination
+ * @param cmd ipc.name.cmd...
+ * @return Number of bytes sent. ERROR < 0
+ */
+int ipc_send_cmd(const char* dest, const char* cmd);
+
+/**
  * @brief Sends key-value pair to another process
  *
  * @param dest Name of destination process
