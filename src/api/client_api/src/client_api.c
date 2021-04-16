@@ -439,7 +439,7 @@ int ipc_qsend(char dest[NAME_LEN], char *msg, size_t msg_len) {
 }
 
 // Adds incoming message request to recv queue
-int ipc_qrecv(char src[NAME_LEN], void (*callback)(char *, size_t, void *),
+int ipc_qrecv(char src[NAME_LEN], int (*callback)(char *, size_t, void *),
               void *data, int flags) {
   // Set which dibs array to refer to
   MsgReqDib *dibs_array;
@@ -473,7 +473,7 @@ int ipc_qrecv(char src[NAME_LEN], void (*callback)(char *, size_t, void *),
 
 // Creates background listener for incoming messages
 int ipc_create_listener(char src[NAME_LEN],
-                        void (*callback)(char *, size_t, void *), void *data) {
+                        int (*callback)(char *, size_t, void *), void *data) {
   return ipc_qrecv(src, callback, data, IPC_QRECV_MSG);
 }
 

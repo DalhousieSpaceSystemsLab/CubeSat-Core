@@ -114,7 +114,7 @@ int ipc_qsend(char dest[NAME_LEN], char* msg, size_t msg_len);
  * IPC_QRECV_MSG)
  * @return 0 = OK, ERROR < 0
  */
-int ipc_qrecv(char src[NAME_LEN], void (*callback)(char*, size_t, void*),
+int ipc_qrecv(char src[NAME_LEN], int (*callback)(char*, size_t, void*),
               void* data, int flags);
 
 /**
@@ -130,7 +130,7 @@ int ipc_qrecv(char src[NAME_LEN], void (*callback)(char*, size_t, void*),
  * @return 0 = OK, ERROR < 0
  */
 int ipc_create_listener(char src[NAME_LEN],
-                        void (*callback)(char*, size_t, void*), void* data);
+                        int (*callback)(char*, size_t, void*), void* data);
 
 /**
  * @brief Refreshes all background message listeners and triggers callback if

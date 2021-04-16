@@ -20,7 +20,7 @@
 void isr(int sig);
 
 // Callbacks for async communication
-static void cb_read(char* msg, size_t msg_len, void* data);
+static int cb_read(char* msg, size_t msg_len, void* data);
 
 int main(int argc, char* argv[]) {
   // Check argc
@@ -347,7 +347,7 @@ void isr(int sig) {
 }
 
 // Callback for async communication
-static void cb_read(char* msg, size_t msg_len, void* data) {
+static int cb_read(char* msg, size_t msg_len, void* data) {
   // Check if incoming message is a key-value pair
   if (json_test(msg, msg_len)) {
     int max_kv = 5;
@@ -355,12 +355,12 @@ static void cb_read(char* msg, size_t msg_len, void* data) {
     int kv_parsed = 0;
     if ((kv_parsed = json_parse(msg, msg_len, json, max_kv)) < 0) {
       fprintf(stderr, "json_parse() failed\n");
-      return;
+      return -1;
     }
     for (int x = 0; x < kv_parsed; x++) {
       printf("[pair %d] %s : %s\n", x, json[x].key, json[x].val);
     }
-    return;
+    return -1;
   }
 
   char args[10][MAX_ARG_LEN];
