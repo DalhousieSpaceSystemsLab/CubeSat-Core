@@ -102,7 +102,7 @@ int ipc_qsend(char dest[NAME_LEN], char* msg, size_t msg_len);
 
 /**
  * @brief Creates a background listener for incoming messages from source (with
- * callback function)
+ * callback function) (low level version; see ipc_create_listener)
  *
  * @param src Background listener message source filter (from who will the
  * messages be handled by callback?). Use "*"" for any source.
@@ -116,6 +116,21 @@ int ipc_qsend(char dest[NAME_LEN], char* msg, size_t msg_len);
  */
 int ipc_qrecv(char src[NAME_LEN], void (*callback)(char*, size_t, void*),
               void* data, int flags);
+
+/**
+ * @brief Creates a background listener for incoming messages from source (with
+ * callback function). Equivalent to ipc_qrecv(...) with IPC_QRECV_MSG flags.
+ *
+ ** @param src Background listener message source filter (from who will the
+ * messages be handled by callback?). Use "*"" for any source.
+ * @param callback Pointer to callback function (see callback function
+ * requirements)
+ * @param data Data to be passed to callback function upon execution/triggering
+ * (set to NULL if no data needs to be passed)
+ * @return 0 = OK, ERROR < 0
+ */
+int ipc_create_listener(char src[NAME_LEN],
+                        void (*callback)(char*, size_t, void*), void* data);
 
 /**
  * @brief Refreshes all background message listeners and triggers callback if

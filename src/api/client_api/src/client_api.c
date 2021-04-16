@@ -471,6 +471,12 @@ int ipc_qrecv(char src[NAME_LEN], void (*callback)(char *, size_t, void *),
   return 0;
 }
 
+// Creates background listener for incoming messages
+int ipc_create_listener(char src[NAME_LEN],
+                        void (*callback)(char *, size_t, void *), void *data) {
+  return ipc_qrecv(src, callback, data, IPC_QRECV_MSG);
+}
+
 // Simultaneously reads/writes all queued data
 int ipc_refresh() { return ipc_refresh_src("*"); }
 
