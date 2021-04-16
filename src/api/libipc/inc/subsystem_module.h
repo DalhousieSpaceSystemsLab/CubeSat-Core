@@ -38,6 +38,7 @@ typedef struct subsystem_module {
                           .stop = stop_module_##name}
 #define START_MODULE(name) int start_module_##name(void* data)
 #define STOP_MODULE(name) int stop_module_##name(void* data)
+#define CALLBACK(name) static int name(char* msg, size_t msg_len, void* data)
 
 #ifdef __cplusplus
 }
