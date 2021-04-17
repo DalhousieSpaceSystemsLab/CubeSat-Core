@@ -15,7 +15,7 @@ int filesystem_server_start(void*);
 int filesystem_server_stop(void*);
 
 // Callback methods
-static void cb_general(char* msg, size_t msg_len, void* data);
+static int cb_general(char* msg, size_t msg_len, void* data);
 
 // Module functions
 
@@ -53,4 +53,4 @@ int filesystem_server_stop(void* data) {
   ipc_disconnect();
 }
 
-static void cb_general(char* msg, size_t msg_len, void* data) {}
+static int cb_general(char* msg, size_t msg_len, void* data) {}

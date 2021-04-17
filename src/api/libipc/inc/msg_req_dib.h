@@ -25,7 +25,7 @@ extern "C" {
 // Message Request 'Dib' type
 typedef struct msg_req_dib {
   char name[NAME_LEN];
-  void (*callback)(char*, size_t, void*);
+  int (*callback)(char*, size_t, void*);
   void* data;
 } MsgReqDib;
 
@@ -36,7 +36,7 @@ MsgReqDib MsgReqDib_new();
 
 // Returns initialized dib
 MsgReqDib MsgReqDib_set(char name[NAME_LEN],
-                        void (*callback)(char*, size_t, void*), void* data);
+                        int (*callback)(char*, size_t, void*), void* data);
 
 // Appends or overwrites dib into dib array
 int MsgReqDib_add(MsgReqDib element, MsgReqDib* array, size_t array_len);
