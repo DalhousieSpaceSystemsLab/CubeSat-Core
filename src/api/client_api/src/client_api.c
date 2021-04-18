@@ -426,6 +426,7 @@ int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len) {
   for (;;) {
     if (ipc_refresh() < 0) {
       fprintf(stderr, "failed to refresh incoming messages : ");
+      ipc_remove_listener(src);
       return -1;
     }
 
@@ -435,8 +436,14 @@ int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len) {
     }
   }
 
+  // Remove listener
+  if (ipc_remove_listener(src) < 0) {
+    fprintf(stderr, "failed to remove listener for ipc_recv : ");
+    return -1;
+  }
+
   // done
-  return 0;
+  return strlen(msg);
 }
 
 // Adds outgoing message to send queue
