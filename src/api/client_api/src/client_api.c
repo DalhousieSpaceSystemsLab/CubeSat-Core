@@ -545,9 +545,6 @@ int ipc_refresh_src(char src[NAME_LEN]) {
 
   // Check if message was received from IPC
   if (msg_len > 0) {
-    // Create placeholder to track whether incoming message was claimed
-    bool msg_was_claimed = false;
-
     // Check if incoming message is a receipt conf
     MsgReqDib *dibs_array;
     if (strncmp(msg, RECV_CONF, strlen(RECV_CONF)) == 0) {
@@ -586,20 +583,9 @@ int ipc_refresh_src(char src[NAME_LEN]) {
             }
           }
 
-          // Set message as claimed
-          msg_was_claimed = true;
-
           // done
           break;
         }
-      }
-    }
-
-    // Could not claim incoming message. Refeed into ipc
-    if (!msg_was_claimed) {
-      if (ipc_write(name, msg, msg_len, IPC_WRITE_REFEED) < msg_len) {
-        perror("ipc_write() failed");
-        return -1;
       }
     }
   }
