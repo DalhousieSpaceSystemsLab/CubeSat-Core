@@ -134,6 +134,14 @@ int ipc_create_listener(char src[NAME_LEN],
                         int (*callback)(char*, size_t, void*), void* data);
 
 /**
+ * @brief Removes background listener(s) with matching source name.
+ *
+ * @param src Background listener source filter target.
+ * @return 0 = OK, ERROR < 0
+ */
+int ipc_remove_listener(char src[NAME_LEN]);
+
+/**
  * @brief Refreshes all background message listeners and triggers callback if
  * applicable. See ipc_qrecv(). Equivalent to ipc_refresh_src("*").
  *

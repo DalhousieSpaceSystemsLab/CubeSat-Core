@@ -505,6 +505,12 @@ int ipc_create_listener(char src[NAME_LEN],
   return ipc_qrecv(src, callback, data, IPC_QRECV_MSG);
 }
 
+// Removes background listener(s) with matching source name.
+int ipc_remove_listener(char src[NAME_LEN]) {
+  // Remove dibs
+  return MsgReqDib_remove(src, dibs, MAX_NUM_DIBS);
+}
+
 // Simultaneously reads/writes all queued data
 int ipc_refresh() { return ipc_refresh_src("*"); }
 
