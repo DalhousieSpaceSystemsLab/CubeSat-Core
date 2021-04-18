@@ -30,6 +30,13 @@ typedef struct msg_req_dib {
   pthread_t tid;
 } MsgReqDib;
 
+// Packaged callback arguments type
+typedef struct dib_callback_args {
+  char* msg;
+  size_t msg_len;
+  void* data;
+} DibCallbackArgs;
+
 // Standardized functions for message request dib //
 
 // Returns blank dib
