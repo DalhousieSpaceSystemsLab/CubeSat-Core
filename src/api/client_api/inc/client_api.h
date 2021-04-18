@@ -25,6 +25,7 @@ extern "C" {
 #include "ipc_packet.h"
 #include "ipc_settings.h"
 #include "json.h"
+#include "modutil.h"
 #include "msg_req_dib.h"
 #include "util/immut.h"
 
