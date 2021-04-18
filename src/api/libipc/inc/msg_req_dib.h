@@ -27,6 +27,7 @@ typedef struct msg_req_dib {
   char name[NAME_LEN];
   int (*callback)(char*, size_t, void*);
   void* data;
+  pthread_t tid;
 } MsgReqDib;
 
 // Standardized functions for message request dib //
@@ -43,6 +44,10 @@ int MsgReqDib_add(MsgReqDib element, MsgReqDib* array, size_t array_len);
 
 // Checks in array for preexisting dibs
 bool MsgReqDib_exists(char name[NAME_LEN], MsgReqDib* array, size_t array_len);
+
+// Checks if callback for dib is running
+bool MsgReqDib_is_running(char name[NAME_LEN], MsgReqDib* array,
+                          size_t array_len);
 
 // Removes a dib from an array of dibs
 int MsgReqDib_remove(char name[NAME_LEN], MsgReqDib* array, size_t array_len);
