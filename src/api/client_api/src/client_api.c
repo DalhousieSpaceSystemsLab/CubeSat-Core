@@ -118,17 +118,9 @@ static int ipc_write(char dest[NAME_LEN], char *msg, size_t msg_len,
   int cursor = 0;
   int total_bytes_written = 0;
 
-  // Check if sending message to self
-  int data_out_len = 0;
-  if (flags == IPC_WRITE_REFEED) {
-    // Format outgoing data
-    data_out_len =
-        sprintf(data_out, "%.*s* <%.*s>", NAME_LEN, dest, msg_len, msg);
-  } else {
-    // Format outgoing data
-    data_out_len =
-        sprintf(data_out, "%.*s <%.*s>", NAME_LEN, dest, msg_len, msg);
-  }
+  // Format outgoing data
+  int data_out_len =
+      sprintf(data_out, "%.*s <%.*s>", NAME_LEN, dest, msg_len, msg);
 
   // Write data to the IPC
   int bytes_written = 0;
