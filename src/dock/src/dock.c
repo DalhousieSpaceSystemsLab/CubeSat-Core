@@ -141,7 +141,7 @@ static void* run_module(void* args) {
     // Check if process was terminated by a signal
     if (WIFSIGNALED(status)) {
       // DEBUG
-      dockprintf("process terminated by signal!\n");
+      dockprintf("process terminated by signal! sig = %d\n", WTERMSIG(status));
       // Stop monitoring
       pthread_exit(NULL);
     }
