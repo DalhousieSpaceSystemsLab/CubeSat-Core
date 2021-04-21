@@ -17,8 +17,6 @@ CALLBACK(general) {
   } else {
     modprintf("misc message incoming: %.*s\n", msg_len, msg);
   }
-
-  OK(ipc_send_cmd(ipc.core.msn.name, "waddup"))
 }
 
 START_MODULE(payload) {

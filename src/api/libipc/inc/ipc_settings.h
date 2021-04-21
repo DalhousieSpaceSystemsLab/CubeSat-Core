@@ -28,6 +28,7 @@ extern "C" {
 #define REFEED_DELAY READ_BLOCK_DELAY
 #define MAX_NUM_PACKETS 16
 #define MAX_PACKET_LEN MAX_MSG_LEN + 5
+#define MAX_DIB_STACK 1024
 
 // JSON
 #define JSON_KEY_LEN 32

@@ -11,13 +11,13 @@
 
 // Returns blank dib
 MsgReqDib MsgReqDib_new() {
-  return (MsgReqDib){.name = {0, 0, 0}, .callback = NULL, .tid = -1};
+  return (MsgReqDib){.name = {0, 0, 0}, .callback = NULL, .pid = -1};
 }
 
 // Returns initialized dib
 MsgReqDib MsgReqDib_set(char name[NAME_LEN],
                         int (*callback)(char *, size_t, void *), void *data) {
-  MsgReqDib dib = {.callback = callback, .data = data, .tid = -1};
+  MsgReqDib dib = {.callback = callback, .data = data, .pid = -1};
   strncpy(dib.name, name, NAME_LEN);
 
   // done
@@ -81,11 +81,18 @@ bool MsgReqDib_exists(char name[NAME_LEN], MsgReqDib *array, size_t array_len) {
 
 // Checks if callback for dib is running
 bool MsgReqDib_is_running(MsgReqDib dib) {
-  if (dib.tid == -1) {
+  if (dib.pid == -1) {
     return false;
   } else {
     return true;
   }
+}
+
+// Cleans up and stops dib callback
+int MsgReqDib_stop_callback(MsgReqDib *dib) {
+  dib->pid = -1;
+  memset(dib->stack, 0, MAX_DIB_STACK);
+  return 0;
 }
 
 // Removes a dib from an array of dibs

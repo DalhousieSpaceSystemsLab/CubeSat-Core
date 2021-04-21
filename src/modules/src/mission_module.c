@@ -8,11 +8,11 @@ START_MODULE(mission) {
   OK(ipc_qrecv("*", general, NULL, IPC_QRECV_MSG))
 
   // Send payload the command every 5 seconds
+  modprintf("Sending message to payload module...");
+  ipc_send_cmd(ipc.pay.name, ipc.pay.cmd.take_pic);
+  modprintf("Done!");
   for (;;) {
-    modprintf("Sending message to payload module...");
-    OK(ipc_send_cmd(ipc.pay.name, ipc.pay.cmd.take_pic))
-    sleep(5);
-    modprintf("Done!");
+    OK(ipc_refresh())
   }
 }
 

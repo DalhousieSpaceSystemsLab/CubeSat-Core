@@ -30,6 +30,9 @@ static ipc_packet_t packets[MAX_NUM_PACKETS];  // Incoming packet queue
 // Callback which is used by ipc_recv
 static int cb_recv(char *, size_t, void *);
 
+// Thread wrapper for callback methods
+static int cb_thread(void *data);
+
 /////////////////////
 // Private methods //
 /////////////////////
@@ -561,8 +564,29 @@ int ipc_refresh_src(char src[NAME_LEN]) {
           (dib_wildcard && src_filter_wildcard)) {
         // Check for valid callback
         if (dibs_array[x].callback != NULL) {
-          // Run callback and pass message as parameter
-          (dibs_array[x].callback)(msg, msg_len, dibs_array[x].data);
+          // Check if dib callback currently running
+          if (MsgReqDib_is_running(dibs_array[x])) {
+            // Wait for the dib to stop
+            int status;
+            waitpid(dibs_array[x].pid, &status, 0);
+
+            // Check if callback failed to terminate
+            if (!WIFEXITED(status) && !WIFSIGNALED(status)) {
+              // Go to the next dib
+              continue;
+            }
+
+            // Reset dib callback
+            MsgReqDib_stop_callback(&dibs_array[x]);
+          }
+
+          // Run callback on new thread
+          DibCallbackArgs args = {.callback = dibs_array[x].callback,
+                                  .msg = msg,
+                                  .msg_len = msg_len,
+                                  .data = dibs_array[x].data};
+          dibs_array[x].pid =
+              clone(cb_thread, dibs_array[x].stack, SIGCHLD, (void *)&args);
 
           // Make sure message is NOT a receipt confirmation
           if (strncmp(msg, RECV_CONF, msg_len) != 0) {
@@ -664,4 +688,15 @@ int ipc_disconnect() {
 static int cb_recv(char *msg, size_t msg_len, void *data) {
   // Copy incoming message into data
   strncpy((char *)data, msg, msg_len);
+}
+
+// Thread wrapper for callback methods
+static int cb_thread(void *data) {
+  // Extract args from void pointer
+  DibCallbackArgs args = *((DibCallbackArgs *)data);
+
+  // Run callback
+  args.callback(args.msg, args.msg_len, args.data);
+
+  return 0;
 }

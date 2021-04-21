@@ -17,6 +17,7 @@ extern "C" {
 #include "ipc_settings.h"
 
 // Standard C libraries
+#include <pthread.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,11 +28,13 @@ typedef struct msg_req_dib {
   char name[NAME_LEN];
   int (*callback)(char*, size_t, void*);
   void* data;
-  pthread_t tid;
+  pid_t pid;
+  char stack[MAX_DIB_STACK];
 } MsgReqDib;
 
 // Packaged callback arguments type
 typedef struct dib_callback_args {
+  int (*callback)(char*, size_t, void*);
   char* msg;
   size_t msg_len;
   void* data;
@@ -53,8 +56,10 @@ int MsgReqDib_add(MsgReqDib element, MsgReqDib* array, size_t array_len);
 bool MsgReqDib_exists(char name[NAME_LEN], MsgReqDib* array, size_t array_len);
 
 // Checks if callback for dib is running
-bool MsgReqDib_is_running(char name[NAME_LEN], MsgReqDib* array,
-                          size_t array_len);
+bool MsgReqDib_is_running(MsgReqDib dib);
+
+// Cleans up and stops dib callback
+int MsgReqDib_stop_callback(MsgReqDib* dib);
 
 // Removes a dib from an array of dibs
 int MsgReqDib_remove(char name[NAME_LEN], MsgReqDib* array, size_t array_len);
