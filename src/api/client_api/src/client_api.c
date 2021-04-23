@@ -165,6 +165,9 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
     return -1;
   }
 
+  // DEBUG
+  printf("[%.3s] Just sent %.*s to %.3s\n", self.name, msg_len, msg, dest);
+
   /**
    * If sending receipt confirmation, do not wait for another
    * confirmation.
@@ -177,15 +180,24 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
     return 0;
   }
 
+  // Create shared memory space
+  shm_open("/recv_conf", O_CREAT | O_EXCL | O_RDWR, );
+
   // Create placeholder for receipt confirmation
   char recv_conf[MAX_MSG_LEN];
   bool recvd = false;
+
+  // DEBUG
+  printf("[%.3s] recv_conf address = %p\n", self.name, recv_conf);
 
   // Listen for incoming receipt confirmation
   if (ipc_qrecv(dest, cb_recv, recv_conf, IPC_QRECV_RECV) != 0) {
     fprintf(stderr, "ipc_qrecv() failed : ");
     return -1;
   }
+
+  // DEBUG
+  printf("[%.3s] Just created dib for recv conf\n", self.name);
 
   // Initialize time placeholders for timeout
   time_t start, current, time_elapsed = 0;
@@ -194,7 +206,7 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
   // Refresh message queue until timeout exceeded
   for (int x = 0; time_elapsed < RECV_TIMEOUT; x++) {
     // Refresh message queue
-    if (ipc_refresh_src(dest) != 0) {
+    if (ipc_refresh() != 0) {
       fprintf(stderr, "ipc_refresh_src() failed : ");
       return -1;
     }
@@ -208,6 +220,11 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
     // Update time elapsed
     time(&current);
     time_elapsed = current - start;
+
+    // DEBUG
+    printf("[%.3s] Time elapsed = %d, recv_conf={ ", self.name, time_elapsed);
+    for (int x = 0; x < 5; x++) printf("%c, ", recv_conf[x]);
+    printf("}\n");
   }
 
   // Remove dib
@@ -540,11 +557,20 @@ int ipc_refresh_src(char src[NAME_LEN]) {
 
   // Check if message was received from IPC
   if (msg_len > 0) {
+    // DEBUG
+    printf("[%.*s] Got message: %.*s\n", NAME_LEN, self.name, msg_len, msg);
+
     // Check if incoming message is a receipt conf
     MsgReqDib *dibs_array;
     if (strncmp(msg, RECV_CONF, strlen(RECV_CONF)) == 0) {
+      // DEBUG
+      // printf("[%.3s] Setting dibs_array to recv_dibs\n", self.name);
+
       dibs_array = recv_dibs;
     } else {
+      // DEBUG
+      // printf("[%.3s] Setting dibs_array to normal dibs\n", self.name);
+
       dibs_array = dibs;
     }
 
@@ -562,16 +588,29 @@ int ipc_refresh_src(char src[NAME_LEN]) {
       if ((dib_matches_msg_src && dib_matches_src_filter) ||
           (dib_matches_msg_src && src_filter_wildcard) ||
           (dib_wildcard && src_filter_wildcard)) {
+        // DEBUG
+        printf("[%.3s] Claimed message: %.*s\n", self.name, msg_len, msg);
+
         // Check for valid callback
         if (dibs_array[x].callback != NULL) {
+          // DEBUG
+          printf("[%.3s] Valid callback: %.*s\n", self.name, msg_len, msg);
+
           // Check if dib callback currently running
           if (MsgReqDib_is_running(dibs_array[x])) {
+            // DEBUG
+            printf("[%.3s] Dib callback is already running: %.*s\n", self.name,
+                   msg_len, msg);
+
             // Wait for the dib to stop
             int status;
             waitpid(dibs_array[x].pid, &status, 0);
 
             // Check if callback failed to terminate
             if (!WIFEXITED(status) && !WIFSIGNALED(status)) {
+              // DEBUG
+              printf("[%.3s] Callback failed to terminate with msg: %.*s\n",
+                     self.name, msg_len, msg);
               // Go to the next dib
               continue;
             }
@@ -580,16 +619,29 @@ int ipc_refresh_src(char src[NAME_LEN]) {
             MsgReqDib_stop_callback(&dibs_array[x]);
           }
 
+          // DEBUG
+          printf(
+              "[%.3s] about to run callback for message from %.3s in dib %.3s",
+              self.name, name, dibs_array[x].name);
+
           // Run callback on new thread
           DibCallbackArgs args = {.callback = dibs_array[x].callback,
                                   .msg = msg,
                                   .msg_len = msg_len,
                                   .data = dibs_array[x].data};
-          dibs_array[x].pid =
-              clone(cb_thread, dibs_array[x].stack, SIGCHLD, (void *)&args);
+          if (dibs_array[x].pid =
+                  clone(cb_thread, &dibs_array[x].stack[MAX_DIB_STACK], SIGCHLD,
+                        (void *)&args) < 0) {
+            fprintf(stderr, "failed to created thread for dib callback : ");
+            perror("");
+            return -1;
+          }
 
           // Make sure message is NOT a receipt confirmation
           if (strncmp(msg, RECV_CONF, msg_len) != 0) {
+            // DEBUG
+            sleep(1);
+
             // Send receipt confirmation
             if (ipc_send(name, RECV_CONF, strlen(RECV_CONF)) != 0) {
               fprintf(
@@ -686,14 +738,25 @@ int ipc_disconnect() {
 
 // Callback for ipc_recv
 static int cb_recv(char *msg, size_t msg_len, void *data) {
+  // DEBUG
+  printf("[%.3s] (cb_recv): msg = %.*s, data = %p\n", self.name, msg_len, msg,
+         data);
+
   // Copy incoming message into data
   strncpy((char *)data, msg, msg_len);
+
+  return 0;
 }
 
 // Thread wrapper for callback methods
 static int cb_thread(void *data) {
   // Extract args from void pointer
   DibCallbackArgs args = *((DibCallbackArgs *)data);
+
+  // DEBUG
+  printf(
+      "[%.3s] (cb_thread): args.msg = %.*s, args.msg_len = %d, args.data = %p",
+      self.name, args.msg_len, args.msg, args.msg_len, args.data);
 
   // Run callback
   args.callback(args.msg, args.msg_len, args.data);
