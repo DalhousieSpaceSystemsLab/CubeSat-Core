@@ -5,30 +5,26 @@ cmake_minimum_required(VERSION 3.18)
 #  OPTIONS GO HERE
 ################################################################################
 option(BUILD_TESTING "[ON/OFF] Build tests in addition to library" OFF)
-option(BUILD_EXAMPLES "[ON/OFF] Build examples in addition to library" ON)
+option(BUILD_EXAMPLES "[ON/OFF] Build examlples in addition to library" ON)
 
 
 ################################################################################
 #  PROJECT INIT
 ################################################################################
 project(
-    IPC_CLIENT
+    SERVER_ENGINE
     VERSION 1.0
-    DESCRIPTION "IPC CLIENT CREATION EXECUTABLE"
+    DESCRIPTION "OBC PROCESS SERVER -> HARDWARE COMMUNICATION ENGINE LIBRARY"
     LANGUAGES C CXX
 )
-set(EXE "${PROJECT_NAME}") # this is PROJECT_NAME, NOT CMAKE_PROJECT_NAME
-message("CONFIGURING TARGET : ${EXE}")
+set(LIB "${PROJECT_NAME}") # this is PROJECT_NAME, NOT CMAKE_PROJECT_NAME
+message("CONFIGURING TARGET : ${LIB}")
 
-if(TARGET ${EXE})
-    message(FATAL_ERROR "Target ${EXE} already exists in this project!")
+if(TARGET ${LIB})
+    message(FATAL_ERROR "Target ${LIB} already exists in this project!")
 else()
-    add_executable(${EXE})
-endif(TARGET ${EXE})
-
-
-
-
+    add_library(${LIB})
+endif(TARGET ${LIB})
 
 
 ################################################################################
@@ -52,12 +48,11 @@ else()
 endif(NOT CMAKE_BUILD_TYPE)
 
 
-
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-    target_compile_options(${EXE} PUBLIC "-Wall")
-    target_compile_options(${EXE} PUBLIC "-Wextra")
-    target_compile_options(${EXE} PUBLIC "-Wshadow")
+    target_compile_options(${LIB} PUBLIC "-Wall")
+    target_compile_options(${LIB} PUBLIC "-Wextra")
+    target_compile_options(${LIB} PUBLIC "-Wshadow")
     set(BUILD_TESTING ON CACHE BOOL "" FORCE)
     set(BUILD_EXAMPLES ON CACHE BOOL "" FORCE)
 endif(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
@@ -67,67 +62,102 @@ endif(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 # DETECT SOURCES RECURSIVELY FROM src FOLDER AND ADD TO BUILD TARGET
 ################################################################################
 
-get_property(${EXE}_languages GLOBAL PROPERTY ENABLED_LANGUAGES)
-foreach(lang ${${EXE}_languages})
+get_property(${LIB}_languages GLOBAL PROPERTY ENABLED_LANGUAGES)
+foreach(lang ${${LIB}_languages})
     if(${lang} STREQUAL CXX)
-        file(GLOB_RECURSE ${EXE}_${lang}_sources "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
+        file(GLOB_RECURSE ${LIB}_${lang}_sources "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
     elseif(${lang} STREQUAL C)
-        file(GLOB_RECURSE ${EXE}_${lang}_sources "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
+        file(GLOB_RECURSE ${LIB}_${lang}_sources "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
     elseif(${lang} STREQUAL ASM)
-        file(GLOB_RECURSE ${EXE}_${lang}_sources "${CMAKE_CURRENT_SOURCE_DIR}/src/*.asm")
+        file(GLOB_RECURSE ${LIB}_${lang}_sources "${CMAKE_CURRENT_SOURCE_DIR}/src/*.asm")
     else()
         # language not supported
     endif()
-    target_sources(${EXE} PRIVATE ${${EXE}_${lang}_sources})
-endforeach(lang ${${EXE}_languages})
-
+    target_sources(${LIB} PRIVATE ${${LIB}_${lang}_sources})
+endforeach(lang ${${LIB}_languages})
 
 
 ################################################################################
 # DETECT PRIVATE HEADERS RECURSIVELY FROM src FOLDER
 ################################################################################
-foreach(lang ${${EXE}_languages})
+foreach(lang ${${LIB}_languages})
     if(${lang} STREQUAL CXX)
-        file(GLOB_RECURSE ${EXE}_${lang}_private_headers "${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp")
+        file(GLOB_RECURSE ${LIB}_${lang}_private_headers "${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp")
     elseif(${lang} STREQUAL C)
-        file(GLOB_RECURSE ${EXE}_${lang}_private_headers "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h")
+        file(GLOB_RECURSE ${LIB}_${lang}_private_headers "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h")
     elseif(${lang} STREQUAL ASM)
     
     else()
         # language not supported
     endif()
 
-    set(${EXE}_${lang}_private_include_directories "")
-    foreach(hdr ${${EXE}_${lang}_private_headers})
+    set(${LIB}_${lang}_private_include_directories "")
+    foreach(hdr ${${LIB}_${lang}_private_headers})
         get_filename_component(hdr_dir ${hdr} DIRECTORY)
-        list(APPEND ${EXE}_${lang}_private_include_directories ${hdr_dir})
-    endforeach(hdr ${${EXE}_${lang}_private_headers})
-    list(REMOVE_DUPLICATES ${EXE}_${lang}_private_include_directories)
-    target_include_directories(${EXE} PRIVATE ${${EXE}_${lang}_private_include_directories})
-endforeach(lang ${${EXE}_languages})
+        list(APPEND ${LIB}_${lang}_private_include_directories ${hdr_dir})
+    endforeach(hdr ${${LIB}_${lang}_private_headers})
+    list(REMOVE_DUPLICATES ${LIB}_${lang}_private_include_directories)
+    target_include_directories(${LIB} PRIVATE ${${LIB}_${lang}_private_include_directories})
+endforeach(lang ${${LIB}_languages})
 
 ################################################################################
 # DETECT PUBLIC HEADERS RECURSIVELY FROM inc FOLDER
 ################################################################################
-foreach(lang ${${EXE}_languages})
+foreach(lang ${${LIB}_languages})
     if(lang STREQUAL CXX)
-        file(GLOB_RECURSE ${EXE}_${lang}_public_headers "${CMAKE_CURRENT_SOURCE_DIR}/inc/*.hpp")
+        file(GLOB_RECURSE ${LIB}_${lang}_public_headers "${CMAKE_CURRENT_SOURCE_DIR}/inc/*.hpp")
     elseif(lang STREQUAL C)
-        file(GLOB_RECURSE ${EXE}_${lang}_public_headers "${CMAKE_CURRENT_SOURCE_DIR}/inc/*.h")
+        file(GLOB_RECURSE ${LIB}_${lang}_public_headers "${CMAKE_CURRENT_SOURCE_DIR}/inc/*.h")
     elseif(lang STREQUAL ASM)
     
     else()
         # language not supported
     endif()
 
-    set(${EXE}_${lang}_public_include_directories "")
-    foreach(hdr ${${EXE}_${lang}_public_headers})
+    set(${LIB}_${lang}_public_include_directories "")
+    foreach(hdr ${${LIB}_${lang}_public_headers})
         get_filename_component(hdr_dir ${hdr} DIRECTORY)
-        list(APPEND ${EXE}_${lang}_public_include_directories ${hdr_dir})
-    endforeach(hdr ${${EXE}_${lang}_public_headers})
-    list(REMOVE_DUPLICATES ${EXE}_${lang}_public_include_directories)
-    target_include_directories(${EXE} PUBLIC ${${EXE}_${lang}_public_include_directories})
-endforeach(lang ${${EXE}_languages})
+        list(APPEND ${LIB}_${lang}_public_include_directories ${hdr_dir})
+    endforeach(hdr ${${LIB}_${lang}_public_headers})
+    list(REMOVE_DUPLICATES ${LIB}_${lang}_public_include_directories)
+    target_include_directories(${LIB} PUBLIC ${${LIB}_${lang}_public_include_directories})
+endforeach(lang ${${LIB}_languages})
+
+
+################################################################################
+# SPECIAL AND PROJECT SPECIFIC OPTIONS
+################################################################################
+
+
+
+
+
+################################################################################
+# LINK AGAINST THE NECESSARY LIBRARIES 
+################################################################################
+target_link_libraries(${LIB} PUBLIC LIB_IPC)
+
+#Link against pthread
+find_package(Threads REQUIRED)
+if(Threads_FOUND) 
+    if(WIN32)
+        if(CMAKE_USE_WIN32_THREADS_INIT)
+            target_link_libraries(${LIB} PUBLIC pthread)
+            target_compile_options(${LIB} PUBLIC "-lpthread")
+        else()
+            message(FATAL_ERROR "BLAHHH ")
+        endif()
+    elseif(UNIX)
+        if(CMAKE_USE_PTHREADS_INIT)
+            target_link_libraries(${LIB} PUBLIC pthread)
+            target_compile_options(${LIB} PUBLIC "-lpthread")
+        else()
+            message(FATAL_ERROR "BLAHHH ")
+        endif()
+    endif()
+else()
+    message(FATAL_ERROR "No threading libraries have been found. Aborting!")
+endif()
 
 ################################################################################
 # TEST CONFIGURATION
@@ -155,38 +185,7 @@ if(BUILD_EXAMPLES)
 endif(BUILD_EXAMPLES)
 
 
-################################################################################
-# LINK AGAINST THE NECESSARY TARGETS
-################################################################################
-target_link_libraries(${EXE} PRIVATE LIB_IPC)
-target_link_libraries(${EXE} PRIVATE CLIENT_API)
 
-
-
-######################################
-# EXAMPLE OF LINKINAG AGAINST PTHREAD
-######################################
-
-#   find_package(Threads REQUIRED)
-#   if(Threads_FOUND) 
-#       if(WIN32)
-#           if(CMAKE_USE_WIN32_THREADS_INIT)
-#               target_link_libraries(${EXE} PUBLIC pthread)
-#               target_compile_options(${EXE} PUBLIC "-lpthread")
-#           else()
-#               message(FATAL_ERROR "BLAHHH ")
-#           endif()
-#       elseif(UNIX)
-#           if(CMAKE_USE_PTHREADS_INIT)
-#               target_link_libraries(${EXE} PUBLIC pthread)
-#               target_compile_options(${EXE} PUBLIC "-lpthread")
-#           else()
-#               message(FATAL_ERROR "BLAHHH ")
-#           endif()
-#       endif()
-#   else()
-#       message(FATAL_ERROR "No threading libraries have been found. Aborting!")
-#   endif()
 
 
 

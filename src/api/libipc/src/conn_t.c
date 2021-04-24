@@ -1,11 +1,11 @@
 /*
-* conn_t.c
-*
-*   purpose:  provides standardized functions for 2 connection sockets
-*             to enable asynchronous two-way communication.
-*   author:   alex amellal
-*
-*/
+ * conn_t.c
+ *
+ *   purpose:  provides standardized functions for 2 connection sockets
+ *             to enable asynchronous two-way communication.
+ *   author:   alex amellal
+ *
+ */
 
 // Connection type
 #include "conn_t.h"
@@ -13,9 +13,7 @@
 // Returns initialized client_t
 conn_t conn_t_new() {
   // Create placeholder for connection
-  conn_t conn = {
-      .rx = -1,
-      .tx = -1};
+  conn_t conn = {.rx = -1, .tx = -1};
 
   return conn;
 }

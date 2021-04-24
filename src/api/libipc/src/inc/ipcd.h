@@ -18,8 +18,9 @@ extern "C"
 
 // Project headers
 #include "client_t.h"
-#include "settings.h"
+#include "ipc_settings.h"
 #include "immut.h"
+#include "ipc_packet.h"
 
 // Standard C libraries
 #include <errno.h>

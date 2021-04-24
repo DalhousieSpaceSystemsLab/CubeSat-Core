@@ -12,9 +12,9 @@ option(BUILD_EXAMPLES "[ON/OFF] Build examples in addition to library" ON)
 #  PROJECT INIT
 ################################################################################
 project(
-    IPC_CLIENT
+    DOCK
     VERSION 1.0
-    DESCRIPTION "IPC CLIENT CREATION EXECUTABLE"
+    DESCRIPTION "PROCESS DOCK DAEMON"
     LANGUAGES C CXX
 )
 set(EXE "${PROJECT_NAME}") # this is PROJECT_NAME, NOT CMAKE_PROJECT_NAME
@@ -158,9 +158,8 @@ endif(BUILD_EXAMPLES)
 ################################################################################
 # LINK AGAINST THE NECESSARY TARGETS
 ################################################################################
-target_link_libraries(${EXE} PRIVATE LIB_IPC)
-target_link_libraries(${EXE} PRIVATE CLIENT_API)
-
+target_link_libraries(${EXE} PUBLIC MODULES)
+target_link_libraries(${EXE} PUBLIC LIB_IPC)
 
 
 ######################################
@@ -187,17 +186,4 @@ target_link_libraries(${EXE} PRIVATE CLIENT_API)
 #   else()
 #       message(FATAL_ERROR "No threading libraries have been found. Aborting!")
 #   endif()
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -1,14 +1,24 @@
 /**
 * ipcd.c
 *
-*   purpose: act a middleman between processes to complete communication requests
+*   purpose: act a middleman between processes to complete communication
+requests
 *   author: alex amellal
 *
-* TODO: Add disconnect_client function to standardize the disconnection process
+*   TODO:
+    - C++ wrappers -- may be worth prioritizing other things
+    - Queue multiple messages
+    - Setup unit testing with new functions
+
+    BUGS:
+    - Re-feeding messages into IPC eventually erases message. Why?
+*
 */
 
 // Project headers
 #include "ipcd.h"
+
+#define LOG_TRAFFIC 1
 
 ///////////////////////
 //  Local Variables  //
@@ -18,92 +28,18 @@
 static client_t clients[MAX_NUM_CLI];
 
 // Placeholder for incoming connection socket
-static int sock_       = -1;
+static int sock_ = -1;
 static immut(int) sock = &sock_;
 
 //////////////////////
-//  static Methods //
+//  Static Methods //
 //////////////////////
 
-// Thread which routes messages for an individual client
-static void *start_routing_client(void *params) {
-  // Create placeholder for client parameter
-  client_t client = *((client_t *)params);
-
-  for (;;) {
-    // Create placeholder for incoming message
-    char msg[MAX_MSG_LEN];
-
-    // Check if rx/tx sockets ready
-    if (conn_t_stat(client.conn) == -1) {  // connection is not ready
-      // Wait a second before trying again
-      sleep(1);
-      continue;
-    }
-
-    // Wait for request from client
-    int bytes_read = -1;
-    if ((bytes_read = read(client.conn.tx, msg, MAX_MSG_LEN)) <= 0) {  // read() failed
-      if (bytes_read == 0) fprintf(stderr, "actually read 0 bytes\n");
-      perror("read() failed : start_routing_client() failed\n");
-      pthread_exit(NULL);
-    }
-
-    // Check length of incoming message
-    if (bytes_read <= NAME_LEN) {  // name or message missing
-      fprintf(stdout, "message received without name or message. SKIPPING\n");
-      continue;
-    }
-
-    // Check if disconnect signal sent
-    if (strncmp(msg, DISCONNECT_SIG, bytes_read) == 0) {  // disconnect signal sent
-      // Close client
-      client_t_close((client_t *)params);
-
-      // Stop thread
-      pthread_exit(NULL);
-    }
-
-    // Create placeholder for destination name
-    char name[NAME_LEN];
-
-    // Extract destination name from message
-    for (int x = 0; x < NAME_LEN; x++) {
-      name[x] = msg[x];
-    }
-
-    // Look for destination client in clients array
-    for (int x = 0; x < MAX_NUM_CLI; x++) {
-      // Check if destination name matches another client's name
-      if (strncmp(clients[x].name, name, 3) == 0) {  // name matches
-        // Create placeholder for formatted message
-        char fmt_msg[MAX_MSG_LEN];
-
-        // Copy source client name into formatted message
-        strncpy(fmt_msg, client.name, 3);
-
-        // Add space between source client name and message
-        fmt_msg[NAME_LEN] = ' ';
-
-        // Copy rest of message into formatted message
-        for (int y = NAME_LEN + 1; y < bytes_read; y++) fmt_msg[y] = msg[y];
-
-        // Calculate formatted message length
-        int fmt_msg_len = bytes_read;
-
-        // Send message to destination client
-        if (write(clients[x].conn.rx, fmt_msg, fmt_msg_len) < fmt_msg_len) {  // write() failed
-          perror("write() failed : start_routing_client() failed");
-          pthread_exit(NULL);
-        }
-      }
-    }
-
-#ifdef DEBUG
-    break;
-#endif
-  }
-}
+static void *start_accepting(void *debug);
+static void *start_routing_client(void *params);
+static void disconnect_client(client_t *client);
+static void log_traffic(char src[NAME_LEN], char dest[NAME_LEN],
+                        char msg[MAX_PACKET_LEN], size_t msg_len);
 
 // Thread which processes incoming client connections
 static void *start_accepting(void *debug) {
@@ -165,7 +101,8 @@ static void *start_accepting(void *debug) {
 
       // Check if no vacant placeholders found
       if (vacant_index == -1) {  // failed to add client
-        fprintf(stderr, "start_accepting() : no vacant clients in array found.\n");
+        fprintf(stderr,
+                "start_accepting() : no vacant clients in array found.\n");
         pthread_exit(NULL);
       }
     }
@@ -186,13 +123,16 @@ static void *start_accepting(void *debug) {
 
       // Start routing client
       pthread_t thread_start_routing_client;
-      if ((errno = pthread_create(&thread_start_routing_client, NULL, start_routing_client, &clients[index])) != 0) {  // pthread_create() failed
+      if ((errno = pthread_create(&thread_start_routing_client, NULL,
+                                  start_routing_client, &clients[index])) !=
+          0) {  // pthread_create() failed
         perror("pthread_create() failed");
         pthread_exit(NULL);
       }
 
       // Detach thread
-      if ((errno = pthread_detach(thread_start_routing_client)) != 0) {  // pthread_detach() failed
+      if ((errno = pthread_detach(thread_start_routing_client)) !=
+          0) {  // pthread_detach() failed
         perror("pthread_detach() failed");
         pthread_exit(NULL);
       }
@@ -203,13 +143,149 @@ static void *start_accepting(void *debug) {
 
     // Invalid index returned. Unknown error.
     else {
-      fprintf(stderr, "registered client index value is invalid. unknown problem\n");
+      fprintf(stderr,
+              "registered client index value is invalid. unknown problem\n");
       pthread_exit(NULL);
     }
 
     // Client is ready
     continue;
   }
+}
+
+// Thread which routes messages for an individual client
+static void *start_routing_client(void *params) {
+  // Create placeholder for client parameter
+  client_t client = *((client_t *)params);
+
+  for (;;) {
+    // Create placeholder for incoming message
+    char msg[MAX_PACKET_LEN];
+
+    // Check if rx/tx sockets ready
+    if (conn_t_stat(client.conn) == -1) {  // connection is not ready
+      // Wait a second before trying again
+      sleep(1);
+      continue;
+    }
+
+    // Wait for request from client
+    int bytes_read = -1;
+    if ((bytes_read = read(client.conn.tx, msg, MAX_PACKET_LEN)) <= 0) {
+      // Exactly 0 bytes read. Disconnect client.
+      if (bytes_read == 0) {
+        fprintf(stderr, "read 0 bytes from client [%.*s]. disconnecting...\n",
+                NAME_LEN, client.name);
+        disconnect_client((client_t *)params);
+        pthread_exit(NULL);
+      }
+
+      fprintf(stderr, "read() failed : start_routing_client() failed\n");
+
+      // Disconnect client from network
+      disconnect_client((client_t *)params);
+
+      // Kill client router thread
+      pthread_exit(NULL);
+    }
+
+    // Check length of incoming message
+    if (bytes_read <= NAME_LEN) {  // name or message missing
+      fprintf(stdout, "message received without name or message. SKIPPING\n");
+      continue;
+    }
+
+    // Check if disconnect signal sent
+    if (strncmp(msg, DISCONNECT_SIG, bytes_read) ==
+        0) {  // disconnect signal sent
+      // Close client
+      client_t_close((client_t *)params);
+
+      // Stop thread
+      pthread_exit(NULL);
+    }
+
+    // Create placeholder for destination name
+    char name[NAME_LEN];
+
+    // Extract destination name from message
+    for (int x = 0; x < NAME_LEN; x++) {
+      name[x] = msg[x];
+    }
+
+    // Check for return-to-sender marker
+    if (bytes_read >= NAME_LEN + 1 && msg[NAME_LEN] == '*') {
+      /**
+       * Simply return message to sender as if it was sent by dest name
+       */
+      // Remove return-to-sender marker
+      msg[NAME_LEN] = ' ';
+
+      // Return message to sender
+      if (write(client.conn.rx, msg, bytes_read) < bytes_read) {
+        perror("write() failed : start_routing_client() failed");
+        pthread_exit(NULL);
+      }
+
+      // Log traffic
+      log_traffic(client.name, client.name, msg, bytes_read);
+
+      // Continue to next request
+      continue;
+    }
+
+    // Look for destination client in clients array
+    for (int x = 0; x < MAX_NUM_CLI; x++) {
+      // Check if destination name matches another client's name
+      if (strncmp(clients[x].name, name, 3) == 0) {  // name matches
+        // Create placeholder for formatted message
+        char fmt_msg[MAX_PACKET_LEN];
+
+        // Copy source client name into formatted message
+        strncpy(fmt_msg, client.name, 3);
+
+        // Add space between source client name and message
+        fmt_msg[NAME_LEN] = ' ';
+
+        // Copy rest of message into formatted message
+        for (int y = NAME_LEN + 1; y < bytes_read; y++) fmt_msg[y] = msg[y];
+
+        // Calculate formatted message length
+        int fmt_msg_len = bytes_read;
+
+        // Send message to destination client
+        if (write(clients[x].conn.rx, fmt_msg, fmt_msg_len) <
+            fmt_msg_len) {  // write() failed
+          perror("write() failed : start_routing_client() failed");
+          pthread_exit(NULL);
+        }
+
+        // Traffic Debug
+        if (LOG_TRAFFIC)
+          log_traffic(client.name, clients[x].name, msg, bytes_read);
+      }
+    }
+
+// Only run contents of loop once if debugging
+#ifdef DEBUG
+    break;
+#endif
+  }
+}
+
+/**
+ * Disconnect client from IPC network.
+ *
+ * Closes associated sockets and clears placeholder.
+ */
+void disconnect_client(client_t *client) {
+  // Close connections
+  conn_t_close(&client->conn);
+
+  // Replace client with vacant placeholder
+  *client = client_t_new();
+
+  // done
 }
 
 /////////////////////
@@ -230,9 +306,8 @@ int ipcd_init() {
   }
 
   // Create placeholders for socket address
-  const struct sockaddr_un address = {
-      .sun_family = AF_UNIX,
-      .sun_path   = "./socket.socket"};
+  const struct sockaddr_un address = {.sun_family = AF_UNIX,
+                                      .sun_path = "./socket.socket"};
   const socklen_t address_len = sizeof(address);
 
   // Check if socket file missing 
@@ -248,7 +323,8 @@ int ipcd_init() {
   }
 
   // Bind socket to fd at specified address
-  if (bind(val(sock), (struct sockaddr *)&address, address_len) == -1) {  // bind() failed
+  if (bind(val(sock), (struct sockaddr *)&address, address_len) ==
+      -1) {  // bind() failed
     perror("bind() failed");
     return -1;
   }
@@ -261,13 +337,15 @@ int ipcd_init() {
 
   // Start accepting clients
   pthread_t thread_start_accepting;
-  if ((errno = pthread_create(&thread_start_accepting, NULL, start_accepting, 0)) != 0) {  // pthread_create() failed
+  if ((errno = pthread_create(&thread_start_accepting, NULL, start_accepting,
+                              0)) != 0) {  // pthread_create() failed
     perror("pthread_create() failed");
     return -1;
   }
 
   // Detach thread
-  if ((errno = pthread_detach(thread_start_accepting)) != 0) {  // pthread_detach() failed
+  if ((errno = pthread_detach(thread_start_accepting)) !=
+      0) {  // pthread_detach() failed
     perror("pthread_detach() failed");
     return -1;
   }
@@ -300,4 +378,32 @@ int ipcd_print_clients() {
 
   // done
   return 0;
+}
+
+static void log_traffic(char src[NAME_LEN], char dest[NAME_LEN],
+                        char msg[MAX_PACKET_LEN], size_t msg_len) {
+  // Get current time
+  time_t current_time = time(NULL);
+  struct tm *lt = localtime(&current_time);
+
+  // Extract nameless message
+  char msg_nameless[MAX_PACKET_LEN];
+  strncpy(msg_nameless, &msg[NAME_LEN + 1], MAX_PACKET_LEN - (NAME_LEN + 1));
+
+  // Remove newline character and delimiters from nameless message
+  for (int x = 0; x < MAX_PACKET_LEN; x++) {
+    if (msg_nameless[x] == '\n') {
+      msg_nameless[x] = 0;
+    }
+
+    // Remove delimiters
+    if (msg_nameless[x] == '<' || msg_nameless[x] == '>') {
+      msg_nameless[x] = ' ';
+    }
+  }
+
+  // Print message trace
+  printf("(%.02d:%.02d:%.02d) [%.*s] ===> [%.*s] (%.*s)\n", lt->tm_hour,
+         lt->tm_min, lt->tm_sec, NAME_LEN, src, NAME_LEN, dest,
+         msg_len - (NAME_LEN + 1), msg_nameless);
 }
