@@ -38,14 +38,15 @@ build – Output executables (“targets”). The suffix `_d` indicates debug ve
 docs – Project’s documentation, auto-generated.
 <!-- deps – Subdirectories with external dependencies like libraries. -->
 <!-- obj – Binary objects created during compilation. -->
-src – Source files of the project with subdirectories if needed.
-|- api - Standard IPC library and IPC client library.
-|- client - Binary for client testing.
-|- dock - Binary for the dock (runs all of the modules).
+src – Source files of the project with subdirectories if needed.\
+|- api - Standard IPC library and IPC client library.\
+|- client - Binary for client testing.\
+|- dock - Binary for the dock (runs all of the modules).\
 |- modules - Contains source code and headers for dock modules.
-*ALL SUBDIRECTORIES*
-inc - Contains public `.h` or `.hpp` files.
-src - Contains `.c` or `.cpp` files.
+
+*ALL SUBDIRECTORIES*\
+inc - Contains public `.h` or `.hpp` files.\
+src - Contains `.c` or `.cpp` files.\
 |- inc - Contains private `.h` or `.hpp` files.
 
 <!-- test – Source files of tests. -->
