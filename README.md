@@ -39,7 +39,15 @@ docs – Project’s documentation, auto-generated.
 <!-- deps – Subdirectories with external dependencies like libraries. -->
 <!-- obj – Binary objects created during compilation. -->
 src – Source files of the project with subdirectories if needed.
-include - Project header file.
+|- api - Standard IPC library and IPC client library.
+|- client - Binary for client testing.
+|- dock - Binary for the dock (runs all of the modules).
+|- modules - Contains source code and headers for dock modules.
+*ALL SUBDIRECTORIES*
+inc - Contains public `.h` or `.hpp` files.
+src - Contains `.c` or `.cpp` files.
+|- inc - Contains private `.h` or `.hpp` files.
+
 <!-- test – Source files of tests. -->
 .gitignore – Prevents adding binary and temporary files to the git repository.
 LICENSE – Describes how this project can be used and distributed.
