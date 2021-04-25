@@ -19,6 +19,9 @@ CALLBACK(general) {
   }
 
   OK(ipc_send(ipc.core.msn.name, "waddup", strlen("waddup")))
+
+  // done
+  STOP_CALLBACK;
 }
 
 START_MODULE(payload) {
@@ -37,6 +40,7 @@ START_MODULE(payload) {
 STOP_MODULE(payload) {
   // Disconnect from the IPC
   ipc_disconnect();
+  modprintf("disconnecting payload\n");
 }
 
 EXPORT_MODULE(payload);
