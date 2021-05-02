@@ -1,6 +1,6 @@
 #include "mission_module.h"
 
-CALLBACK(general) {
+CALLBACK(mission_general) {
   modprintf("incoming message: %.*s\n", msg_len, msg);
 
   // done
@@ -10,13 +10,12 @@ CALLBACK(general) {
 START_MODULE(mission) {
   OK(ipc_connect(ipc.core.msn.name))
 
-  OK(ipc_qrecv("*", general, NULL, IPC_QRECV_MSG))
+  OK(ipc_qrecv("*", mission_general, NULL, IPC_QRECV_MSG))
+
+  ipc_send_cmd(ipc.pay.name, ipc.pay.cmd.take_pic);
 
   // Send payload the command every 5 seconds
   for (;;) {
-    modprintf("Sending message to payload module...");
-    ipc_send_cmd(ipc.pay.name, ipc.pay.cmd.take_pic);
-    modprintf("Done!");
     OK(ipc_refresh())
     sleep(3);
   }

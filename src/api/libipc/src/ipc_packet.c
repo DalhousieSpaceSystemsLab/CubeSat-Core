@@ -83,11 +83,11 @@ ipc_packet_t ipc_packet_pop(ipc_packet_t *queue, size_t queue_len) {
     if (!ipc_packet_blank(queue[x])) {
       packet = queue[x];
       break;
-      }
+    }
   }
 
   // Clear last packet
-      queue[queue_len - 1] = ipc_packet_new();
+  queue[queue_len - 1] = ipc_packet_new();
 
   // Move everything up the queue
   for (int x = 0; x < queue_len - 1; x++) {

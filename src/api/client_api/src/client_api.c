@@ -177,34 +177,8 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
     return 0;
   }
 
-  // Create shared memory space name
-  char shm_name[2 * NAME_LEN + 2] = {'/'};
-  strncpy(&shm_name[1], self.name, NAME_LEN);
-  strncpy(&shm_name[NAME_LEN + 1], dest, NAME_LEN);
-
-  // Create shared memory space
-  int shm_fd;
-  if ((shm_fd = shm_open(shm_name, O_CREAT | O_EXCL | O_RDWR,
-                         S_IRWXU | S_IRWXG)) < 0) {
-    fprintf(stderr, "failed to created shared memory segment (shm_open()) : ");
-    perror("");
-    return -1;
-  }
-
-  // Set shared memory size
-  if (ftruncate(shm_fd, MAX_MSG_LEN) < 0) {
-    fprintf(stderr, "failed to ftruncate shared memory : ");
-    perror("");
-    return -1;
-  }
-
-  // Allocate shared memory
-  char *recv_conf;
-  if ((recv_conf = (char *)mmap(NULL, MAX_MSG_LEN, PROT_READ | PROT_WRITE,
-                                MAP_SHARED, shm_fd, 0)) < 0) {
-    fprintf(stderr, "failed to allocate shared memory using mmap : ");
-    return -1;
-  }
+  // Create placeholder for receipt confirmation
+  char recv_conf[MAX_MSG_LEN];
 
   // Listen for incoming receipt confirmation
   if (ipc_qrecv(dest, cb_recv, recv_conf, IPC_QRECV_RECV) != 0) {
@@ -238,12 +212,6 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
 
   // Remove dib
   MsgReqDib_remove(dest, recv_dibs, MAX_NUM_DIBS);
-
-  // Detach shared memory segment
-  if (shm_unlink(shm_name) < 0) {
-    fprintf(stderr, "failed to unlink shared memory segment (shm_unlink()) : ");
-    return -1;
-  }
 
   // Check if receipt confirmation arrived before timeout
   if (!recvd) {
@@ -504,45 +472,19 @@ int ipc_refresh_src(char src[NAME_LEN]) {
           (dib_wildcard && src_filter_wildcard)) {
         // Check for valid callback
         if (dibs_array[x].callback != NULL) {
-          // Check if dib callback currently running
-          if (MsgReqDib_is_running(dibs_array[x])) {
-            // Wait for the dib to stop
-            int status;
-            waitpid(dibs_array[x].pid, &status, 0);
-
-            // Check if callback failed to terminate
-            if (!WIFEXITED(status) && !WIFSIGNALED(status)) {
-              // Go to the next dib
-              continue;
-            }
-
-            // Reset dib callback
-            MsgReqDib_stop_callback(&dibs_array[x]);
-          }
-
-          // Run callback on new thread
-          DibCallbackArgs args = {.callback = dibs_array[x].callback,
-                                  .msg = msg,
-                                  .msg_len = msg_len,
-                                  .data = dibs_array[x].data};
-          if (dibs_array[x].pid =
-                  clone(cb_thread, &dibs_array[x].stack[MAX_DIB_STACK], SIGCHLD,
-                        (void *)&args) < 0) {
-            fprintf(stderr, "failed to created thread for dib callback : ");
-            perror("");
-            return -1;
-          }
-
           // Make sure message is NOT a receipt confirmation
           if (strncmp(msg, RECV_CONF, msg_len) != 0) {
             // Send receipt confirmation
             if (ipc_send(name, RECV_CONF, strlen(RECV_CONF)) != 0) {
-              fprintf(
-                  stderr,
-                  "failed to send receipt confirmation : ipc_send() failed : ");
+              fprintf(stderr,
+                      "failed to send receipt confirmation : ipc_send() "
+                      "failed : ");
               return -1;
             }
           }
+
+          // Run callback
+          dibs_array[x].callback(msg, msg_len, dibs_array[x].data);
 
           // done
           break;
@@ -590,10 +532,6 @@ int ipc_args(char *msg, size_t msg_len, char args_out[][MAX_ARG_LEN],
     for (int msgx = 0; msgx < msg_len && argc < max_args; msgx++) {
       // Move to next argument if whitespace encountered
       if (msg[msgx] == ' ') {
-        // Add null termination character
-        args_out[argc][argx] = '\0';
-
-        // Move counters to new argument
         argc++;
         argx = 0;
         continue;

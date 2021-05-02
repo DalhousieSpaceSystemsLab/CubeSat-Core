@@ -9,7 +9,7 @@
 #include "payload_module.h"
 #include "client_api.h"
 
-CALLBACK(general) {
+CALLBACK(payload_general) {
   // Take pic
   if (strncmp(msg, ipc.pay.cmd.take_pic, msg_len) == 0) {
     modprintf("taking picture...\n");
@@ -29,7 +29,7 @@ START_MODULE(payload) {
   OK(ipc_connect(ipc.pay.name))
 
   // Create listener for general requests
-  OK(ipc_qrecv("*", general, NULL, IPC_QRECV_MSG))
+  OK(ipc_qrecv("*", payload_general, NULL, IPC_QRECV_MSG))
 
   // Keep refreshing incoming messages
   for (;;) {
