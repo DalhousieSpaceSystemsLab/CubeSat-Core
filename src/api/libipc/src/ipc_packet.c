@@ -75,17 +75,23 @@ ipc_packet_t ipc_packet_pop(ipc_packet_t *queue, size_t queue_len) {
   // Check if no packets waiting (nothing to pop)
   if (!ipc_packet_waiting(queue, queue_len)) return ipc_packet_new();
 
+  // Create placeholder for packet to pop
   ipc_packet_t packet = ipc_packet_new();
+
+  // Find first non-blank packet
   for (int x = 0; x < queue_len; x++) {
     if (!ipc_packet_blank(queue[x])) {
       packet = queue[x];
-      for (int y = x; y < queue_len - 1; y++) {
-        queue[x] = queue[x + 1];
+      break;
       }
+  }
+
+  // Clear last packet
       queue[queue_len - 1] = ipc_packet_new();
 
-      break;
-    }
+  // Move everything up the queue
+  for (int x = 0; x < queue_len - 1; x++) {
+    queue[x] = queue[x + 1];
   }
 
   // done
