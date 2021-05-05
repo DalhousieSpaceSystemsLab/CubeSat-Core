@@ -26,7 +26,6 @@
 // Global pointer to server container array
 static SubsystemModule* modules_ptr = NULL;
 static int modules_len = 0;
-static char stacks[MAX_NUM_MODULES][MODULE_STACK_SIZE];
 
 int main() {
   // Create list of server containers
@@ -40,7 +39,7 @@ int main() {
   modules_ptr = modules;
 
   // Start dock
-  if (dock_start(modules, modules_len, stacks) != 0) {
+  if (dock_start(modules, modules_len) != 0) {
     fprintf(stderr, "dock_start() failed\n");
     return -1;
   }
@@ -50,7 +49,7 @@ int main() {
   fprintf(stdout, "Press [ENTER] to stop dock\n");
   fgets(quitc, 3, stdin);
 
-  dock_stop(modules, modules_len, stacks);
+  dock_stop(modules, modules_len);
 
   // done
   return 0;
