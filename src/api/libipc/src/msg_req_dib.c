@@ -79,6 +79,26 @@ bool MsgReqDib_exists(char name[NAME_LEN], MsgReqDib *array, size_t array_len) {
   return msg_has_dibs;
 }
 
+// Checks in array for exact match of preexisting dib
+bool MsgReqDib_exists_exact(char name[NAME_LEN],
+                            int (*callback)(char *, size_t, void *),
+                            MsgReqDib *array, size_t array_len) {
+  // Search for existing dibs
+  bool msg_has_dibs = false;
+  for (int x = 0; x < array_len; x++) {
+    // Check if name and callback matches dib in question
+    if (strncmp(array[x].name, name, NAME_LEN) == 0 &&
+        array[x].callback == callback) {
+      // Matching dib found, stop looking
+      msg_has_dibs = true;
+      break;
+    }
+  }
+
+  // done
+  return msg_has_dibs;
+}
+
 // Checks if callback for dib is running
 bool MsgReqDib_is_running(MsgReqDib dib) {
   if (dib.pid == -1) {

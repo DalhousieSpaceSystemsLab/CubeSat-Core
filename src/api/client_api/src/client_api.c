@@ -388,6 +388,12 @@ int ipc_qrecv(char src[NAME_LEN], int (*callback)(char *, size_t, void *),
 
   // Check for preexisting dibs on src
   if (MsgReqDib_exists(src, dibs_array, MAX_NUM_DIBS)) {
+    // Check if exact match already exists
+    if (MsgReqDib_exists_exact(src, callback, dibs_array, MAX_NUM_DIBS)) {
+      // nothing to do
+      return 0;
+    }
+
     fprintf(stderr, "preexisting dibs on src (%.*s) : ", NAME_LEN, src);
     return -1;
   }
