@@ -12,12 +12,11 @@ START_MODULE(mission) {
 
   OK(ipc_qrecv("*", mission_general, NULL, IPC_QRECV_MSG))
 
-  ipc_send_cmd(ipc.pay.name, ipc.pay.cmd.take_pic);
-
   // Send payload the command every 5 seconds
   for (;;) {
+    ipc_send_cmd(ipc.pay.name, ipc.pay.cmd.take_pic);
     OK(ipc_refresh())
-    sleep(3);
+    // sleep(3);
   }
 }
 

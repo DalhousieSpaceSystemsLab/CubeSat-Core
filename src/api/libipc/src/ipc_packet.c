@@ -18,6 +18,16 @@ ipc_packet_t ipc_packet_new() {
   return packet;
 }
 
+// Creates a packet with provided values
+ipc_packet_t ipc_packet_set(char addr[NAME_LEN], char msg[MAX_MSG_LEN],
+                            size_t msg_len) {
+  ipc_packet_t packet = ipc_packet_new();
+  strncpy(packet.addr, addr, NAME_LEN);
+  strncpy(packet.msg, msg, msg_len);
+  packet.msg_len = msg_len;
+  return packet;
+}
+
 // Tests if packet is blank or not
 // RETURN true/false
 bool ipc_packet_blank(ipc_packet_t packet) {

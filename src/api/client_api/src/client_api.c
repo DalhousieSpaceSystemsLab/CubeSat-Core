@@ -194,7 +194,7 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
   bool recvd = false;
   for (int x = 0; time_elapsed < RECV_TIMEOUT; x++) {
     // Refresh message queue
-    if (ipc_refresh() != 0) {
+    if (ipc_refresh_src("*", IPC_REFRESH_RECV) != 0) {
       fprintf(stderr, "ipc_refresh_src() failed : ");
       return -1;
     }
@@ -428,10 +428,10 @@ int ipc_remove_listener(char src[NAME_LEN]) {
 }
 
 // Simultaneously reads/writes all queued data
-int ipc_refresh() { return ipc_refresh_src("*"); }
+int ipc_refresh() { return ipc_refresh_src("*", IPC_REFRESH_MSG); }
 
 // Simultaneously reads/writes queued data for specific source
-int ipc_refresh_src(char src[NAME_LEN]) {
+int ipc_refresh_src(char src[NAME_LEN], int flags) {
   //--- QRECV ---//
 
   // Create placeholder for incoming message from ipc
@@ -454,9 +454,9 @@ int ipc_refresh_src(char src[NAME_LEN]) {
 
   // Check if message was received from IPC
   if (msg_len > 0) {
-    // Check if incoming message is a receipt conf
+    // Check if flag is for message or receipt conf
     MsgReqDib *dibs_array;
-    if (strncmp(msg, RECV_CONF, strlen(RECV_CONF)) == 0) {
+    if (flags == IPC_REFRESH_RECV) {
       dibs_array = recv_dibs;
     } else {
       dibs_array = dibs;
@@ -494,6 +494,13 @@ int ipc_refresh_src(char src[NAME_LEN]) {
 
           // done
           break;
+        }
+      } else {
+        // Message was not claimed. Add to queue.
+        if (ipc_packet_add(packets, MAX_NUM_PACKETS,
+                           ipc_packet_set(name, msg, msg_len)) < 0) {
+          fprintf(stderr, "failed to add unclaimed message to queue : ");
+          return -1;
         }
       }
     }

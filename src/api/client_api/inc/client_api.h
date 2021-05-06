@@ -167,7 +167,7 @@ int ipc_refresh();
  * for all background listeners.
  * @return 0 = OK, ERROR < 0
  */
-int ipc_refresh_src(char src[NAME_LEN]);
+int ipc_refresh_src(char src[NAME_LEN], int flags);
 
 /**
  * @brief Extracts IPC message command and arguments

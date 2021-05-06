@@ -30,6 +30,9 @@ extern "C" {
 #define MAX_PACKET_LEN MAX_MSG_LEN + 5
 #define MAX_DIB_STACK 1024
 
+// Flags
+enum { IPC_REFRESH_MSG = 0, IPC_REFRESH_RECV };
+
 // JSON
 #define JSON_KEY_LEN 32
 #define JSON_VAL_LEN 32

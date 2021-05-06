@@ -44,6 +44,10 @@ typedef struct IPCPacket {
 // RETURN packet
 ipc_packet_t ipc_packet_new();
 
+// Creates a packet with provided values
+ipc_packet_t ipc_packet_set(char addr[NAME_LEN], char msg[MAX_MSG_LEN],
+                            size_t msg_len);
+
 // Tests if packet is blank or not
 // RETURN true/false
 bool ipc_packet_blank(ipc_packet_t packet);
