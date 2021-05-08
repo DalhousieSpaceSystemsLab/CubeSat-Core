@@ -156,6 +156,12 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
     return -1;
   }
 
+  // Ignore message from self
+  if (strncmp(dest, self.name, NAME_LEN) == 0) {
+    // nothing to do
+    return 0;
+  }
+
   // Write message to ipc
   // if (write(self.conn.tx, msg_final, msg_final_len) < msg_final_len) {  //
   // write() failed
@@ -454,6 +460,12 @@ int ipc_refresh_src(char src[NAME_LEN], int flags) {
 
   // Check if message was received from IPC
   if (msg_len > 0) {
+    // Ignore message from self
+    if (strncmp(name, self.name, NAME_LEN) == 0) {
+      // nothing to do
+      return 0;
+    }
+
     // Check if flag is for message or receipt conf
     MsgReqDib *dibs_array;
     if (flags == IPC_REFRESH_RECV) {
