@@ -31,7 +31,11 @@ extern "C" {
 #define MAX_DIB_STACK 1024
 
 // Flags
-enum { IPC_REFRESH_MSG = 0, IPC_REFRESH_RECV };
+enum {
+  IPC_REFRESH_MSG = 0,
+  IPC_REFRESH_RECV = (1 << 0),
+  IPC_REFRESH_FLUSH = (1 << 1),
+};
 
 // JSON
 #define JSON_KEY_LEN 32
