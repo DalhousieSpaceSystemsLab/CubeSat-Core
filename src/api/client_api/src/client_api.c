@@ -201,7 +201,7 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
   bool recvd = false;
   for (int x = 0; time_elapsed < RECV_TIMEOUT; x++) {
     // Refresh message queue
-    if (ipc_refresh_src("*", IPC_REFRESH_RECV) != 0) {
+    if (ipc_refresh_src("*", IPC_REFRESH_RECV | IPC_REFRESH_FLUSH) != 0) {
       fprintf(stderr, "ipc_refresh_src() failed : ");
       return -1;
     }
@@ -470,6 +470,18 @@ int ipc_refresh_src(char src[NAME_LEN], int flags) {
     // Run single non-blocking read from IPC
     // if((bytes_read = read(self.conn.rx, msg_raw, MAX_MSG_LEN)) < 0) {
     int read_flag = (n_flush - n_reads == 1) ? IPC_READ_FNEW : IPC_READ_DEFAULT;
+    // DEBUG
+    printf("[%.3s] Number of waiting packets: %d\n", self.name,
+           ipc_packet_n_waiting(packets, MAX_NUM_PACKETS));
+    if (ipc_packet_n_waiting(packets, MAX_NUM_PACKETS) == 15) {
+      printf("Packets: ");
+      for (int x = 0; x < MAX_NUM_PACKETS; x++) {
+        printf("{ .addr = %.3s, .msg = %.*s }, ", packets[x].addr,
+               packets[x].msg_len, packets[x].msg);
+      }
+      printf("\n\n");
+    }
+
     if ((msg_len = ipc_read(name, msg, MAX_MSG_LEN, read_flag)) < 0) {
       if (msg_len == EIPCPACKET) {
         fprintf(stderr, "ipc_read() failed, packet error : ");
