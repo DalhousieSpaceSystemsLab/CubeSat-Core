@@ -454,15 +454,8 @@ int ipc_refresh_src(char src[NAME_LEN], int flags) {
   // Check if flushing packet queue
   int n_flush = 1;
   if (flags & IPC_REFRESH_FLUSH) {
-    // DEBUG
-    // printf("[%.3s] IPC_REFRESH_FLUSH flag detected\n", self.name);
-
     // Set number of packets to flush
     n_flush += ipc_packet_n_waiting(packets, MAX_NUM_PACKETS);
-
-    // DEBUG
-    // printf("[%.3s] %d packets will be flushed or read\n", self.name,
-    // n_flush);
   }
 
   // Repeat read as many times are necessary
@@ -470,18 +463,6 @@ int ipc_refresh_src(char src[NAME_LEN], int flags) {
     // Run single non-blocking read from IPC
     // if((bytes_read = read(self.conn.rx, msg_raw, MAX_MSG_LEN)) < 0) {
     int read_flag = (n_flush - n_reads == 1) ? IPC_READ_FNEW : IPC_READ_DEFAULT;
-    // DEBUG
-    printf("[%.3s] Number of waiting packets: %d\n", self.name,
-           ipc_packet_n_waiting(packets, MAX_NUM_PACKETS));
-    if (ipc_packet_n_waiting(packets, MAX_NUM_PACKETS) == 15) {
-      printf("Packets: ");
-      for (int x = 0; x < MAX_NUM_PACKETS; x++) {
-        printf("{ .addr = %.3s, .msg = %.*s }, ", packets[x].addr,
-               packets[x].msg_len, packets[x].msg);
-      }
-      printf("\n\n");
-    }
-
     if ((msg_len = ipc_read(name, msg, MAX_MSG_LEN, read_flag)) < 0) {
       if (msg_len == EIPCPACKET) {
         fprintf(stderr, "ipc_read() failed, packet error : ");
@@ -526,15 +507,6 @@ int ipc_refresh_src(char src[NAME_LEN], int flags) {
         bool dib_rules_met = (dib_matches_msg_src && dib_matches_src_filter) ||
                              (dib_matches_msg_src && src_filter_wildcard) ||
                              (dib_wildcard && src_filter_wildcard);
-        // bool flag_rules_met = (flags & IPC_REFRESH_RECV && msg_is_ok) ||
-        //                       !(flags & IPC_REFRESH_RECV);
-
-        // DEBUG
-        // printf(
-        //     "[%.3s] msg_is_ok = %d\nflags & IPC_REFRESH_MSG = %d\nflags & "
-        //     "IPC_REFRESH_RECV = %d\n",
-        //     self.name, msg_is_ok, flags & IPC_REFRESH_MSG,
-        //     flags & IPC_REFRESH_RECV);
 
         // Check if dib corresponds to dibs rules and src filter
         if (dib_rules_met) {
