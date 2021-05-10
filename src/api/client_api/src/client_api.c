@@ -480,7 +480,7 @@ int ipc_refresh_src(char src[NAME_LEN], int flags) {
       // Ignore message from self
       if (strncmp(name, self.name, NAME_LEN) == 0) {
         // nothing to do
-        return 0;
+        continue;
       }
 
       // Check if flag is for message or receipt conf
