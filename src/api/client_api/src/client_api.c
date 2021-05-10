@@ -455,10 +455,10 @@ int ipc_refresh_src(char src[NAME_LEN], int flags) {
     printf("[%.3s] IPC_REFRESH_FLUSH flag detected\n", self.name);
 
     // Set number of packets to flush
-    n_flush = ipc_packet_n_waiting(packets, MAX_NUM_PACKETS);
+    n_flush += ipc_packet_n_waiting(packets, MAX_NUM_PACKETS);
 
     // DEBUG
-    printf("[%.3s] %d packets will be flushed\n", self.name, n_flush);
+    printf("[%.3s] %d packets will be flushed or read\n", self.name, n_flush);
   }
 
   // Repeat read as many times are necessary
