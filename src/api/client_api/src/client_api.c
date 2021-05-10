@@ -41,7 +41,8 @@ static int cb_thread(void *data);
 static int ipc_write(char dest[NAME_LEN], char *msg, size_t msg_len, int flags);
 
 // wraps read() function with custom packetizing
-static int ipc_read(char src_out[NAME_LEN], char *buffer, size_t buffer_len);
+static int ipc_read(char src_out[NAME_LEN], char *buffer, size_t buffer_len,
+                    int flags);
 
 // Initialize client API and connect to IPC daemon.
 int ipc_connect(const char name[NAME_LEN]) {
@@ -251,9 +252,11 @@ int ipc_send_json(char dest[NAME_LEN], json_t *json, size_t json_len) {
 
 // Wraps read() function with custom packetizing
 // RETURN number of bytes read from IPC
-static int ipc_read(char src_out[NAME_LEN], char *buffer, size_t buffer_len) {
+static int ipc_read(char src_out[NAME_LEN], char *buffer, size_t buffer_len,
+                    int flags) {
   // Check if any packets waiting in queue
-  if (ipc_packet_waiting(packets, MAX_NUM_PACKETS)) {
+  if (ipc_packet_waiting(packets, MAX_NUM_PACKETS) &&
+      flags == IPC_READ_DEFAULT) {
     // Pop packet from queue
     ipc_packet_t packet = ipc_packet_pop(packets, MAX_NUM_PACKETS);
 
@@ -452,20 +455,22 @@ int ipc_refresh_src(char src[NAME_LEN], int flags) {
   int n_flush = 1;
   if (flags & IPC_REFRESH_FLUSH) {
     // DEBUG
-    printf("[%.3s] IPC_REFRESH_FLUSH flag detected\n", self.name);
+    // printf("[%.3s] IPC_REFRESH_FLUSH flag detected\n", self.name);
 
     // Set number of packets to flush
     n_flush += ipc_packet_n_waiting(packets, MAX_NUM_PACKETS);
 
     // DEBUG
-    printf("[%.3s] %d packets will be flushed or read\n", self.name, n_flush);
+    // printf("[%.3s] %d packets will be flushed or read\n", self.name,
+    // n_flush);
   }
 
   // Repeat read as many times are necessary
   for (int n_reads = 0; n_reads < n_flush; n_reads++) {
     // Run single non-blocking read from IPC
     // if((bytes_read = read(self.conn.rx, msg_raw, MAX_MSG_LEN)) < 0) {
-    if ((msg_len = ipc_read(name, msg, MAX_MSG_LEN)) < 0) {
+    int read_flag = (n_flush - n_reads == 1) ? IPC_READ_FNEW : IPC_READ_DEFAULT;
+    if ((msg_len = ipc_read(name, msg, MAX_MSG_LEN, read_flag)) < 0) {
       if (msg_len == EIPCPACKET) {
         fprintf(stderr, "ipc_read() failed, packet error : ");
         return -1;
@@ -483,15 +488,19 @@ int ipc_refresh_src(char src[NAME_LEN], int flags) {
         continue;
       }
 
-      // Check if flag is for message or receipt conf
+      // Check if message is receipt conf
+      bool msg_is_ok = strncmp(msg, RECV_CONF, strlen(RECV_CONF)) == 0;
+
+      // Set apropriate dibs array
       MsgReqDib *dibs_array;
-      if (flags & IPC_REFRESH_RECV) {
+      if (flags & IPC_REFRESH_RECV || msg_is_ok) {
         dibs_array = recv_dibs;
       } else {
         dibs_array = dibs;
       }
 
       // Look for corresponding dibs in dibs array
+      bool msg_claimed = false;
       for (int x = 0; x < MAX_NUM_DIBS; x++) {
         // Create placeholders for conditions of correspondance
         bool dib_matches_msg_src =
@@ -501,10 +510,25 @@ int ipc_refresh_src(char src[NAME_LEN], int flags) {
         bool src_filter_wildcard = strncmp(src, "*", 1) == 0;
         bool dib_wildcard = strncmp(dibs_array[x].name, "*", 1) == 0;
 
+        // Combine dib conditions into one variable
+        bool dib_rules_met = (dib_matches_msg_src && dib_matches_src_filter) ||
+                             (dib_matches_msg_src && src_filter_wildcard) ||
+                             (dib_wildcard && src_filter_wildcard);
+        // bool flag_rules_met = (flags & IPC_REFRESH_RECV && msg_is_ok) ||
+        //                       !(flags & IPC_REFRESH_RECV);
+
+        // DEBUG
+        // printf(
+        //     "[%.3s] msg_is_ok = %d\nflags & IPC_REFRESH_MSG = %d\nflags & "
+        //     "IPC_REFRESH_RECV = %d\n",
+        //     self.name, msg_is_ok, flags & IPC_REFRESH_MSG,
+        //     flags & IPC_REFRESH_RECV);
+
         // Check if dib corresponds to dibs rules and src filter
-        if ((dib_matches_msg_src && dib_matches_src_filter) ||
-            (dib_matches_msg_src && src_filter_wildcard) ||
-            (dib_wildcard && src_filter_wildcard)) {
+        if (dib_rules_met) {
+          // Set message as claimed
+          msg_claimed = true;
+
           // Check for valid callback
           if (dibs_array[x].callback != NULL) {
             // Make sure message is NOT a receipt confirmation
@@ -524,13 +548,16 @@ int ipc_refresh_src(char src[NAME_LEN], int flags) {
             // done
             break;
           }
-        } else {
-          // Message was not claimed. Add to queue.
-          if (ipc_packet_add(packets, MAX_NUM_PACKETS,
-                             ipc_packet_set(name, msg, msg_len)) < 0) {
-            fprintf(stderr, "failed to add unclaimed message to queue : ");
-            return -1;
-          }
+        }
+      }
+
+      // Check if message went unclaimed
+      if (!msg_claimed) {
+        // Message was not claimed. Add to queue.
+        if (ipc_packet_add(packets, MAX_NUM_PACKETS,
+                           ipc_packet_set(name, msg, msg_len)) < 0) {
+          fprintf(stderr, "failed to add unclaimed message to queue : ");
+          return -1;
         }
       }
     }

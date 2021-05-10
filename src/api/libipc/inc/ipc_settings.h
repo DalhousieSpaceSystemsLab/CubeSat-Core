@@ -37,6 +37,11 @@ enum {
   IPC_REFRESH_FLUSH = (1 << 2),
 };
 
+enum {
+  IPC_READ_DEFAULT = (1 << 0),
+  IPC_READ_FNEW = (1 << 1),
+};
+
 // JSON
 #define JSON_KEY_LEN 32
 #define JSON_VAL_LEN 32
