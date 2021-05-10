@@ -434,7 +434,9 @@ int ipc_remove_listener(char src[NAME_LEN]) {
 }
 
 // Simultaneously reads/writes all queued data
-int ipc_refresh() { return ipc_refresh_src("*", IPC_REFRESH_MSG); }
+int ipc_refresh() {
+  return ipc_refresh_src("*", IPC_REFRESH_MSG | IPC_REFRESH_FLUSH);
+}
 
 // Simultaneously reads/writes queued data for specific source
 int ipc_refresh_src(char src[NAME_LEN], int flags) {
@@ -446,73 +448,89 @@ int ipc_refresh_src(char src[NAME_LEN], int flags) {
   char msg[MAX_MSG_LEN];
   int msg_len = -1;
 
-  // Run single non-blocking read from IPC
-  // if((bytes_read = read(self.conn.rx, msg_raw, MAX_MSG_LEN)) < 0) {
-  if ((msg_len = ipc_read(name, msg, MAX_MSG_LEN)) < 0) {
-    if (msg_len == EIPCPACKET) {
-      fprintf(stderr, "ipc_read() failed, packet error : ");
-      return -1;
-    } else if (!(errno == EWOULDBLOCK || errno == EAGAIN)) {
-      perror("read() failed");
-      return -1;
-    }
+  // Check if flushing packet queue
+  int n_flush = 1;
+  if (flags & IPC_REFRESH_FLUSH) {
+    // DEBUG
+    printf("[%.3s] IPC_REFRESH_FLUSH flag detected\n", self.name);
+
+    // Set number of packets to flush
+    n_flush = ipc_packet_n_waiting(packets, MAX_NUM_PACKETS);
+
+    // DEBUG
+    printf("[%.3s] %d packets will be flushed\n", self.name, n_flush);
   }
 
-  // Check if message was received from IPC
-  if (msg_len > 0) {
-    // Ignore message from self
-    if (strncmp(name, self.name, NAME_LEN) == 0) {
-      // nothing to do
-      return 0;
+  // Repeat read as many times are necessary
+  for (int n_reads = 0; n_reads < n_flush; n_reads++) {
+    // Run single non-blocking read from IPC
+    // if((bytes_read = read(self.conn.rx, msg_raw, MAX_MSG_LEN)) < 0) {
+    if ((msg_len = ipc_read(name, msg, MAX_MSG_LEN)) < 0) {
+      if (msg_len == EIPCPACKET) {
+        fprintf(stderr, "ipc_read() failed, packet error : ");
+        return -1;
+      } else if (!(errno == EWOULDBLOCK || errno == EAGAIN)) {
+        perror("read() failed");
+        return -1;
+      }
     }
 
-    // Check if flag is for message or receipt conf
-    MsgReqDib *dibs_array;
-    if (flags == IPC_REFRESH_RECV) {
-      dibs_array = recv_dibs;
-    } else {
-      dibs_array = dibs;
-    }
+    // Check if message was received from IPC
+    if (msg_len > 0) {
+      // Ignore message from self
+      if (strncmp(name, self.name, NAME_LEN) == 0) {
+        // nothing to do
+        return 0;
+      }
 
-    // Look for corresponding dibs in dibs array
-    for (int x = 0; x < MAX_NUM_DIBS; x++) {
-      // Create placeholders for conditions of correspondance
-      bool dib_matches_msg_src =
-          strncmp(name, dibs_array[x].name, NAME_LEN) == 0;
-      bool dib_matches_src_filter =
-          strncmp(src, dibs_array[x].name, NAME_LEN) == 0;
-      bool src_filter_wildcard = strncmp(src, "*", 1) == 0;
-      bool dib_wildcard = strncmp(dibs_array[x].name, "*", 1) == 0;
-
-      // Check if dib corresponds to dibs rules and src filter
-      if ((dib_matches_msg_src && dib_matches_src_filter) ||
-          (dib_matches_msg_src && src_filter_wildcard) ||
-          (dib_wildcard && src_filter_wildcard)) {
-        // Check for valid callback
-        if (dibs_array[x].callback != NULL) {
-          // Make sure message is NOT a receipt confirmation
-          if (strncmp(msg, RECV_CONF, msg_len) != 0) {
-            // Send receipt confirmation
-            if (ipc_send(name, RECV_CONF, strlen(RECV_CONF)) != 0) {
-              fprintf(stderr,
-                      "failed to send receipt confirmation : ipc_send() "
-                      "failed : ");
-              return -1;
-            }
-          }
-
-          // Run callback
-          dibs_array[x].callback(msg, msg_len, dibs_array[x].data);
-
-          // done
-          break;
-        }
+      // Check if flag is for message or receipt conf
+      MsgReqDib *dibs_array;
+      if (flags & IPC_REFRESH_RECV) {
+        dibs_array = recv_dibs;
       } else {
-        // Message was not claimed. Add to queue.
-        if (ipc_packet_add(packets, MAX_NUM_PACKETS,
-                           ipc_packet_set(name, msg, msg_len)) < 0) {
-          fprintf(stderr, "failed to add unclaimed message to queue : ");
-          return -1;
+        dibs_array = dibs;
+      }
+
+      // Look for corresponding dibs in dibs array
+      for (int x = 0; x < MAX_NUM_DIBS; x++) {
+        // Create placeholders for conditions of correspondance
+        bool dib_matches_msg_src =
+            strncmp(name, dibs_array[x].name, NAME_LEN) == 0;
+        bool dib_matches_src_filter =
+            strncmp(src, dibs_array[x].name, NAME_LEN) == 0;
+        bool src_filter_wildcard = strncmp(src, "*", 1) == 0;
+        bool dib_wildcard = strncmp(dibs_array[x].name, "*", 1) == 0;
+
+        // Check if dib corresponds to dibs rules and src filter
+        if ((dib_matches_msg_src && dib_matches_src_filter) ||
+            (dib_matches_msg_src && src_filter_wildcard) ||
+            (dib_wildcard && src_filter_wildcard)) {
+          // Check for valid callback
+          if (dibs_array[x].callback != NULL) {
+            // Make sure message is NOT a receipt confirmation
+            if (strncmp(msg, RECV_CONF, msg_len) != 0) {
+              // Send receipt confirmation
+              if (ipc_send(name, RECV_CONF, strlen(RECV_CONF)) != 0) {
+                fprintf(stderr,
+                        "failed to send receipt confirmation : ipc_send() "
+                        "failed : ");
+                return -1;
+              }
+            }
+
+            // Run callback
+            dibs_array[x].callback(msg, msg_len, dibs_array[x].data);
+
+            // done
+            break;
+          }
+        } else {
+          // Message was not claimed. Add to queue.
+          if (ipc_packet_add(packets, MAX_NUM_PACKETS,
+                             ipc_packet_set(name, msg, msg_len)) < 0) {
+            fprintf(stderr, "failed to add unclaimed message to queue : ");
+            return -1;
+          }
         }
       }
     }

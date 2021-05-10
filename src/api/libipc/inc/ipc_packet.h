@@ -63,6 +63,10 @@ void ipc_packet_rm(ipc_packet_t *queue, size_t queue_len, int index);
 // RETURN true/false on whether at least one packet is waiting
 bool ipc_packet_waiting(ipc_packet_t *queue, size_t queue_len);
 
+// Returns number of packets waiting in queue
+// RETURN number or -1 in case of error.
+int ipc_packet_n_waiting(ipc_packet_t *queue, size_t queue_len);
+
 // Take the top packet from the queue and move the rest up one
 // RETURN top packet (if exists) otherwise returns blank packet.
 // NOTE: it is a good idea to check ipc_packet_waiting before popping.
