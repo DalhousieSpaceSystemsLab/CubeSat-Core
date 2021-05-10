@@ -32,9 +32,9 @@ extern "C" {
 
 // Flags
 enum {
-  IPC_REFRESH_MSG = 0,
-  IPC_REFRESH_RECV = (1 << 0),
-  IPC_REFRESH_FLUSH = (1 << 1),
+  IPC_REFRESH_MSG = (1 << 0),
+  IPC_REFRESH_RECV = (1 << 1),
+  IPC_REFRESH_FLUSH = (1 << 2),
 };
 
 // JSON
