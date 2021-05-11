@@ -18,6 +18,16 @@ ipc_packet_t ipc_packet_new() {
   return packet;
 }
 
+// Creates a packet with provided values
+ipc_packet_t ipc_packet_set(char addr[NAME_LEN], char msg[MAX_MSG_LEN],
+                            size_t msg_len) {
+  ipc_packet_t packet = ipc_packet_new();
+  strncpy(packet.addr, addr, NAME_LEN);
+  strncpy(packet.msg, msg, msg_len);
+  packet.msg_len = msg_len;
+  return packet;
+}
+
 // Tests if packet is blank or not
 // RETURN true/false
 bool ipc_packet_blank(ipc_packet_t packet) {
@@ -68,6 +78,19 @@ bool ipc_packet_waiting(ipc_packet_t *queue, size_t queue_len) {
   return false;
 }
 
+// Returns number of packets waiting in queue
+// RETURN number or -1 in case of error.
+int ipc_packet_n_waiting(ipc_packet_t *queue, size_t queue_len) {
+  int n = 0;
+  for (int x = 0; x < queue_len; x++) {
+    if (!ipc_packet_blank(queue[x])) {
+      n++;
+    }
+  }
+
+  return n;
+}
+
 // Take the top packet from the queue and move the rest up one
 // RETURN top packet (if exists) otherwise returns blank packet.
 // NOTE: it is a good idea to check ipc_packet_waiting before popping.
@@ -75,17 +98,23 @@ ipc_packet_t ipc_packet_pop(ipc_packet_t *queue, size_t queue_len) {
   // Check if no packets waiting (nothing to pop)
   if (!ipc_packet_waiting(queue, queue_len)) return ipc_packet_new();
 
+  // Create placeholder for packet to pop
   ipc_packet_t packet = ipc_packet_new();
+
+  // Find first non-blank packet
   for (int x = 0; x < queue_len; x++) {
     if (!ipc_packet_blank(queue[x])) {
       packet = queue[x];
-      for (int y = x; y < queue_len - 1; y++) {
-        queue[x] = queue[x + 1];
-      }
-      queue[queue_len - 1] = ipc_packet_new();
-
       break;
     }
+  }
+
+  // Clear last packet
+  queue[queue_len - 1] = ipc_packet_new();
+
+  // Move everything up the queue
+  for (int x = 0; x < queue_len - 1; x++) {
+    queue[x] = queue[x + 1];
   }
 
   // done

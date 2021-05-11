@@ -14,6 +14,9 @@
 
 #include "dock.h"
 
+// Contains addresses of module memory stacks
+static char* stacks[MAX_NUM_MODULES];
+
 // Stops module by running module.stop()
 // Uses provided stack as context for executing the stop method.
 static int stop_module(SubsystemModule* module);
@@ -26,11 +29,11 @@ static void* run_module(void* args);
 // If timeout exceeded and process has not terminated, SIGKILL is sent.
 static void fstop(pid_t pid, int sec_timeout, struct timespec retry_delay);
 
+// Wrapper for waitpid with timeout
 static int twaitpid(pid_t pid, int* status, int timeout);
 
 // Start all server containers
-int dock_start(SubsystemModule* modules, size_t modules_len,
-               char stacks[MAX_NUM_MODULES][MODULE_STACK_SIZE]) {
+int dock_start(SubsystemModule* modules, size_t modules_len) {
   // Ensure modules pointer is not null
   if (modules == NULL) {
     dockerr("modules pointer cannot be null : ");
@@ -45,6 +48,12 @@ int dock_start(SubsystemModule* modules, size_t modules_len,
 
   // Initialize containers
   for (int x = 0; x < modules_len; x++) {
+    // Allocate memory for stack
+    if ((stacks[x] = (char*)malloc(MODULE_STACK_SIZE)) == NULL) {
+      dockerr("failed to malloc() memory for stacks\n");
+      return -1;
+    }
+
     // Initialize module
     modules[x].pid = -1;
     modules[x].mtid = -1;
@@ -63,14 +72,17 @@ int dock_start(SubsystemModule* modules, size_t modules_len,
 }
 
 // Stop all server containers
-int dock_stop(SubsystemModule* modules, size_t modules_len,
-              char stacks[MAX_NUM_MODULES][MODULE_STACK_SIZE]) {
+int dock_stop(SubsystemModule* modules, size_t modules_len) {
   // Shutdown all modules & monitors
   for (int x = 0; x < modules_len; x++) {
+    // Stop module
     if (stop_module(&modules[x]) != 0) {
       dockerr("stop_module() failed : ");
       return -1;
     }
+
+    // Free stack
+    free(modules[x].stack);
   }
 
   // done
@@ -110,6 +122,9 @@ static int stop_module(SubsystemModule* module) {
     // Force stop process using term/kill signals.
     fstop(stop_pid, MODULE_INT_TIMEOUT, MODULE_REINT_DELAY);
   }
+
+  // Clear stack
+  memset(module->stack, 0, MODULE_STACK_SIZE);
 
   // DEBUG
   dockprintf("successfully stopped module\n");

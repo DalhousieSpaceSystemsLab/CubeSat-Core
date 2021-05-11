@@ -55,6 +55,11 @@ int MsgReqDib_add(MsgReqDib element, MsgReqDib* array, size_t array_len);
 // Checks in array for preexisting dibs
 bool MsgReqDib_exists(char name[NAME_LEN], MsgReqDib* array, size_t array_len);
 
+// Checks in array for exact match of preexisting dib
+bool MsgReqDib_exists_exact(char name[NAME_LEN],
+                            int (*callback)(char*, size_t, void*),
+                            MsgReqDib* array, size_t array_len);
+
 // Checks if callback for dib is running
 bool MsgReqDib_is_running(MsgReqDib dib);
 

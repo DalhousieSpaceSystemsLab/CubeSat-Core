@@ -31,6 +31,9 @@ static client_t clients[MAX_NUM_CLI];
 static int sock_ = -1;
 static immut(int) sock = &sock_;
 
+// Placeholder for incoming packets
+static ipc_packet_t packets[MAX_NUM_PACKETS];
+
 //////////////////////
 //  Static Methods //
 //////////////////////
@@ -160,7 +163,9 @@ static void *start_routing_client(void *params) {
 
   for (;;) {
     // Create placeholder for incoming message
-    char msg[MAX_PACKET_LEN];
+    char name[NAME_LEN];
+    char msg[MAX_MSG_LEN];
+    int msg_len = 0;
 
     // Check if rx/tx sockets ready
     if (conn_t_stat(client.conn) == -1) {  // connection is not ready
@@ -169,67 +174,91 @@ static void *start_routing_client(void *params) {
       continue;
     }
 
-    // Wait for request from client
-    int bytes_read = -1;
-    if ((bytes_read = read(client.conn.tx, msg, MAX_PACKET_LEN)) <= 0) {
-      // Exactly 0 bytes read. Disconnect client.
-      if (bytes_read == 0) {
-        fprintf(stderr, "read 0 bytes from client [%.*s]. disconnecting...\n",
-                NAME_LEN, client.name);
+    // Check if any packets waiting in queue
+    if (!ipc_packet_waiting(packets, MAX_NUM_PACKETS)) {
+      // Wait for request from client
+      char incoming_data[MAX_PACKET_LEN];
+      int bytes_read = -1;
+      if ((bytes_read = read(client.conn.tx, incoming_data, MAX_PACKET_LEN)) <=
+          0) {
+        // Exactly 0 bytes read. Disconnect client.
+        if (bytes_read == 0) {
+          fprintf(stderr, "read 0 bytes from client [%.*s]. disconnecting...\n",
+                  NAME_LEN, client.name);
+          disconnect_client((client_t *)params);
+          pthread_exit(NULL);
+        }
+
+        fprintf(stderr, "read() failed : start_routing_client() failed\n");
+
+        // Disconnect client from network
         disconnect_client((client_t *)params);
+
+        // Kill client router thread
         pthread_exit(NULL);
       }
 
-      fprintf(stderr, "read() failed : start_routing_client() failed\n");
+      // Check length of incoming message
+      if (bytes_read <= NAME_LEN) {  // name or message missing
+        fprintf(stdout, "message received without name or message. SKIPPING\n");
+        continue;
+      }
 
-      // Disconnect client from network
-      disconnect_client((client_t *)params);
+      // Check if disconnect signal sent
+      if (strncmp(msg, DISCONNECT_SIG, bytes_read) ==
+          0) {  // disconnect signal sent
+        // Close client
+        client_t_close((client_t *)params);
 
-      // Kill client router thread
-      pthread_exit(NULL);
-    }
-
-    // Check length of incoming message
-    if (bytes_read <= NAME_LEN) {  // name or message missing
-      fprintf(stdout, "message received without name or message. SKIPPING\n");
-      continue;
-    }
-
-    // Check if disconnect signal sent
-    if (strncmp(msg, DISCONNECT_SIG, bytes_read) ==
-        0) {  // disconnect signal sent
-      // Close client
-      client_t_close((client_t *)params);
-
-      // Stop thread
-      pthread_exit(NULL);
-    }
-
-    // Create placeholder for destination name
-    char name[NAME_LEN];
-
-    // Extract destination name from message
-    for (int x = 0; x < NAME_LEN; x++) {
-      name[x] = msg[x];
-    }
-
-    // Check for return-to-sender marker
-    if (bytes_read >= NAME_LEN + 1 && msg[NAME_LEN] == '*') {
-      /**
-       * Simply return message to sender as if it was sent by dest name
-       */
-      // Remove return-to-sender marker
-      msg[NAME_LEN] = ' ';
-
-      // Return message to sender
-      if (write(client.conn.rx, msg, bytes_read) < bytes_read) {
-        perror("write() failed : start_routing_client() failed");
+        // Stop thread
         pthread_exit(NULL);
       }
 
-      // Log traffic
-      log_traffic(client.name, client.name, msg, bytes_read);
+      // Parse incoming data into packets
+      ipc_packet_t next_packet;
+      char overflow[MAX_PACKET_LEN];
+      int overflow_len = -1;
+      bool skip = false;
+      for (int x = 0; x < MAX_NUM_PACKETS; x++) {
+        overflow_len =
+            ipc_packet_parse(incoming_data, bytes_read, &next_packet, overflow);
 
+        // Catch parsing errors
+        if (overflow_len < 0) {
+          // Continue to next request
+          fprintf(
+              stderr,
+              "ipc_packet_parse() failed for client %.*s. SKIPPING PACKET.\n",
+              NAME_LEN, client.name);
+          skip = true;
+          break;
+        }
+
+        // Add parsed packet to queue
+        ipc_packet_add(packets, MAX_NUM_PACKETS, next_packet);
+
+        // Check for overflow
+        if (overflow_len) {
+          // Replace original data with overflow
+          strncpy(incoming_data, overflow, overflow_len);
+          bytes_read = overflow_len;
+          continue;
+        } else {
+          break;
+        }
+      }
+
+      if (skip) continue;
+    }
+
+    // Pop packet from queue
+    ipc_packet_t packet = ipc_packet_pop(packets, MAX_NUM_PACKETS);
+
+    // Check if packet blank
+    if (!ipc_packet_blank(packet)) {
+      // Export packet into message
+      msg_len = ipc_packet_export(packet, name, msg, MAX_MSG_LEN);
+    } else {
       // Continue to next request
       continue;
     }
@@ -237,32 +266,22 @@ static void *start_routing_client(void *params) {
     // Look for destination client in clients array
     for (int x = 0; x < MAX_NUM_CLI; x++) {
       // Check if destination name matches another client's name
-      if (strncmp(clients[x].name, name, 3) == 0) {  // name matches
-        // Create placeholder for formatted message
-        char fmt_msg[MAX_PACKET_LEN];
-
-        // Copy source client name into formatted message
-        strncpy(fmt_msg, client.name, 3);
-
-        // Add space between source client name and message
-        fmt_msg[NAME_LEN] = ' ';
-
-        // Copy rest of message into formatted message
-        for (int y = NAME_LEN + 1; y < bytes_read; y++) fmt_msg[y] = msg[y];
-
-        // Calculate formatted message length
-        int fmt_msg_len = bytes_read;
+      if (strncmp(clients[x].name, name, NAME_LEN) == 0) {  // name matches
+        // Format outgoing packet
+        char outgoing_msg[MAX_PACKET_LEN];
+        int outgoing_len = sprintf(outgoing_msg, "%.*s <%.*s>", NAME_LEN,
+                                   client.name, msg_len, msg);
 
         // Send message to destination client
-        if (write(clients[x].conn.rx, fmt_msg, fmt_msg_len) <
-            fmt_msg_len) {  // write() failed
+        if (write(clients[x].conn.rx, outgoing_msg, outgoing_len) <
+            outgoing_len) {  // write() failed
           perror("write() failed : start_routing_client() failed");
           pthread_exit(NULL);
         }
 
         // Traffic Debug
         if (LOG_TRAFFIC)
-          log_traffic(client.name, clients[x].name, msg, bytes_read);
+          log_traffic(client.name, clients[x].name, msg, msg_len);
       }
     }
 
@@ -310,9 +329,9 @@ int ipcd_init() {
                                       .sun_path = "./socket.socket"};
   const socklen_t address_len = sizeof(address);
 
-  // Check if socket file missing 
-  if(access(address.sun_path, F_OK) != 0) {
-    // Create file 
+  // Check if socket file missing
+  if (access(address.sun_path, F_OK) != 0) {
+    // Create file
     system("mkfifo socket.socket");
   }
 
@@ -386,24 +405,7 @@ static void log_traffic(char src[NAME_LEN], char dest[NAME_LEN],
   time_t current_time = time(NULL);
   struct tm *lt = localtime(&current_time);
 
-  // Extract nameless message
-  char msg_nameless[MAX_PACKET_LEN];
-  strncpy(msg_nameless, &msg[NAME_LEN + 1], MAX_PACKET_LEN - (NAME_LEN + 1));
-
-  // Remove newline character and delimiters from nameless message
-  for (int x = 0; x < MAX_PACKET_LEN; x++) {
-    if (msg_nameless[x] == '\n') {
-      msg_nameless[x] = 0;
-    }
-
-    // Remove delimiters
-    if (msg_nameless[x] == '<' || msg_nameless[x] == '>') {
-      msg_nameless[x] = ' ';
-    }
-  }
-
   // Print message trace
   printf("(%.02d:%.02d:%.02d) [%.*s] ===> [%.*s] (%.*s)\n", lt->tm_hour,
-         lt->tm_min, lt->tm_sec, NAME_LEN, src, NAME_LEN, dest,
-         msg_len - (NAME_LEN + 1), msg_nameless);
+         lt->tm_min, lt->tm_sec, NAME_LEN, src, NAME_LEN, dest, msg_len, msg);
 }

@@ -44,6 +44,10 @@ typedef struct IPCPacket {
 // RETURN packet
 ipc_packet_t ipc_packet_new();
 
+// Creates a packet with provided values
+ipc_packet_t ipc_packet_set(char addr[NAME_LEN], char msg[MAX_MSG_LEN],
+                            size_t msg_len);
+
 // Tests if packet is blank or not
 // RETURN true/false
 bool ipc_packet_blank(ipc_packet_t packet);
@@ -58,6 +62,10 @@ void ipc_packet_rm(ipc_packet_t *queue, size_t queue_len, int index);
 // Tests to see if queue empty
 // RETURN true/false on whether at least one packet is waiting
 bool ipc_packet_waiting(ipc_packet_t *queue, size_t queue_len);
+
+// Returns number of packets waiting in queue
+// RETURN number or -1 in case of error.
+int ipc_packet_n_waiting(ipc_packet_t *queue, size_t queue_len);
 
 // Take the top packet from the queue and move the rest up one
 // RETURN top packet (if exists) otherwise returns blank packet.

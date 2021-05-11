@@ -41,7 +41,8 @@ static int cb_thread(void *data);
 static int ipc_write(char dest[NAME_LEN], char *msg, size_t msg_len, int flags);
 
 // wraps read() function with custom packetizing
-static int ipc_read(char src_out[NAME_LEN], char *buffer, size_t buffer_len);
+static int ipc_read(char src_out[NAME_LEN], char *buffer, size_t buffer_len,
+                    int flags);
 
 // Initialize client API and connect to IPC daemon.
 int ipc_connect(const char name[NAME_LEN]) {
@@ -156,6 +157,12 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
     return -1;
   }
 
+  // Ignore message from self
+  if (strncmp(dest, self.name, NAME_LEN) == 0) {
+    // nothing to do
+    return 0;
+  }
+
   // Write message to ipc
   // if (write(self.conn.tx, msg_final, msg_final_len) < msg_final_len) {  //
   // write() failed
@@ -177,34 +184,8 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
     return 0;
   }
 
-  // Create shared memory space name
-  char shm_name[2 * NAME_LEN + 2] = {'/'};
-  strncpy(&shm_name[1], self.name, NAME_LEN);
-  strncpy(&shm_name[NAME_LEN + 1], dest, NAME_LEN);
-
-  // Create shared memory space
-  int shm_fd;
-  if ((shm_fd = shm_open(shm_name, O_CREAT | O_EXCL | O_RDWR,
-                         S_IRWXU | S_IRWXG)) < 0) {
-    fprintf(stderr, "failed to created shared memory segment (shm_open()) : ");
-    perror("");
-    return -1;
-  }
-
-  // Set shared memory size
-  if (ftruncate(shm_fd, MAX_MSG_LEN) < 0) {
-    fprintf(stderr, "failed to ftruncate shared memory : ");
-    perror("");
-    return -1;
-  }
-
-  // Allocate shared memory
-  char *recv_conf;
-  if ((recv_conf = (char *)mmap(NULL, MAX_MSG_LEN, PROT_READ | PROT_WRITE,
-                                MAP_SHARED, shm_fd, 0)) < 0) {
-    fprintf(stderr, "failed to allocate shared memory using mmap : ");
-    return -1;
-  }
+  // Create placeholder for receipt confirmation
+  char recv_conf[MAX_MSG_LEN];
 
   // Listen for incoming receipt confirmation
   if (ipc_qrecv(dest, cb_recv, recv_conf, IPC_QRECV_RECV) != 0) {
@@ -220,7 +201,7 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
   bool recvd = false;
   for (int x = 0; time_elapsed < RECV_TIMEOUT; x++) {
     // Refresh message queue
-    if (ipc_refresh() != 0) {
+    if (ipc_refresh_src("*", IPC_REFRESH_RECV | IPC_REFRESH_FLUSH) != 0) {
       fprintf(stderr, "ipc_refresh_src() failed : ");
       return -1;
     }
@@ -238,12 +219,6 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
 
   // Remove dib
   MsgReqDib_remove(dest, recv_dibs, MAX_NUM_DIBS);
-
-  // Detach shared memory segment
-  if (shm_unlink(shm_name) < 0) {
-    fprintf(stderr, "failed to unlink shared memory segment (shm_unlink()) : ");
-    return -1;
-  }
 
   // Check if receipt confirmation arrived before timeout
   if (!recvd) {
@@ -277,9 +252,11 @@ int ipc_send_json(char dest[NAME_LEN], json_t *json, size_t json_len) {
 
 // Wraps read() function with custom packetizing
 // RETURN number of bytes read from IPC
-static int ipc_read(char src_out[NAME_LEN], char *buffer, size_t buffer_len) {
+static int ipc_read(char src_out[NAME_LEN], char *buffer, size_t buffer_len,
+                    int flags) {
   // Check if any packets waiting in queue
-  if (ipc_packet_waiting(packets, MAX_NUM_PACKETS)) {
+  if (ipc_packet_waiting(packets, MAX_NUM_PACKETS) &&
+      flags == IPC_READ_DEFAULT) {
     // Pop packet from queue
     ipc_packet_t packet = ipc_packet_pop(packets, MAX_NUM_PACKETS);
 
@@ -420,6 +397,12 @@ int ipc_qrecv(char src[NAME_LEN], int (*callback)(char *, size_t, void *),
 
   // Check for preexisting dibs on src
   if (MsgReqDib_exists(src, dibs_array, MAX_NUM_DIBS)) {
+    // Check if exact match already exists
+    if (MsgReqDib_exists_exact(src, callback, dibs_array, MAX_NUM_DIBS)) {
+      // nothing to do
+      return 0;
+    }
+
     fprintf(stderr, "preexisting dibs on src (%.*s) : ", NAME_LEN, src);
     return -1;
   }
@@ -454,10 +437,12 @@ int ipc_remove_listener(char src[NAME_LEN]) {
 }
 
 // Simultaneously reads/writes all queued data
-int ipc_refresh() { return ipc_refresh_src("*"); }
+int ipc_refresh() {
+  return ipc_refresh_src("*", IPC_REFRESH_MSG | IPC_REFRESH_FLUSH);
+}
 
 // Simultaneously reads/writes queued data for specific source
-int ipc_refresh_src(char src[NAME_LEN]) {
+int ipc_refresh_src(char src[NAME_LEN], int flags) {
   //--- QRECV ---//
 
   // Create placeholder for incoming message from ipc
@@ -466,86 +451,97 @@ int ipc_refresh_src(char src[NAME_LEN]) {
   char msg[MAX_MSG_LEN];
   int msg_len = -1;
 
-  // Run single non-blocking read from IPC
-  // if((bytes_read = read(self.conn.rx, msg_raw, MAX_MSG_LEN)) < 0) {
-  if ((msg_len = ipc_read(name, msg, MAX_MSG_LEN)) < 0) {
-    if (msg_len == EIPCPACKET) {
-      fprintf(stderr, "ipc_read() failed, packet error : ");
-      return -1;
-    } else if (!(errno == EWOULDBLOCK || errno == EAGAIN)) {
-      perror("read() failed");
-      return -1;
-    }
+  // Check if flushing packet queue
+  int n_flush = 1;
+  if (flags & IPC_REFRESH_FLUSH) {
+    // Set number of packets to flush
+    n_flush += ipc_packet_n_waiting(packets, MAX_NUM_PACKETS);
   }
 
-  // Check if message was received from IPC
-  if (msg_len > 0) {
-    // Check if incoming message is a receipt conf
-    MsgReqDib *dibs_array;
-    if (strncmp(msg, RECV_CONF, strlen(RECV_CONF)) == 0) {
-      dibs_array = recv_dibs;
-    } else {
-      dibs_array = dibs;
+  // Repeat read as many times are necessary
+  for (int n_reads = 0; n_reads < n_flush; n_reads++) {
+    // Run single non-blocking read from IPC
+    // if((bytes_read = read(self.conn.rx, msg_raw, MAX_MSG_LEN)) < 0) {
+    int read_flag = (n_flush - n_reads == 1) ? IPC_READ_FNEW : IPC_READ_DEFAULT;
+    if ((msg_len = ipc_read(name, msg, MAX_MSG_LEN, read_flag)) < 0) {
+      if (msg_len == EIPCPACKET) {
+        fprintf(stderr, "ipc_read() failed, packet error : ");
+        return -1;
+      } else if (!(errno == EWOULDBLOCK || errno == EAGAIN)) {
+        perror("read() failed");
+        return -1;
+      }
     }
 
-    // Look for corresponding dibs in dibs array
-    for (int x = 0; x < MAX_NUM_DIBS; x++) {
-      // Create placeholders for conditions of correspondance
-      bool dib_matches_msg_src =
-          strncmp(name, dibs_array[x].name, NAME_LEN) == 0;
-      bool dib_matches_src_filter =
-          strncmp(src, dibs_array[x].name, NAME_LEN) == 0;
-      bool src_filter_wildcard = strncmp(src, "*", 1) == 0;
-      bool dib_wildcard = strncmp(dibs_array[x].name, "*", 1) == 0;
+    // Check if message was received from IPC
+    if (msg_len > 0) {
+      // Ignore message from self
+      if (strncmp(name, self.name, NAME_LEN) == 0) {
+        // nothing to do
+        continue;
+      }
 
-      // Check if dib corresponds to dibs rules and src filter
-      if ((dib_matches_msg_src && dib_matches_src_filter) ||
-          (dib_matches_msg_src && src_filter_wildcard) ||
-          (dib_wildcard && src_filter_wildcard)) {
-        // Check for valid callback
-        if (dibs_array[x].callback != NULL) {
-          // Check if dib callback currently running
-          if (MsgReqDib_is_running(dibs_array[x])) {
-            // Wait for the dib to stop
-            int status;
-            waitpid(dibs_array[x].pid, &status, 0);
+      // Check if message is receipt conf
+      bool msg_is_ok = strncmp(msg, RECV_CONF, strlen(RECV_CONF)) == 0;
 
-            // Check if callback failed to terminate
-            if (!WIFEXITED(status) && !WIFSIGNALED(status)) {
-              // Go to the next dib
-              continue;
+      // Set apropriate dibs array
+      MsgReqDib *dibs_array;
+      if (flags & IPC_REFRESH_RECV || msg_is_ok) {
+        dibs_array = recv_dibs;
+      } else {
+        dibs_array = dibs;
+      }
+
+      // Look for corresponding dibs in dibs array
+      bool msg_claimed = false;
+      for (int x = 0; x < MAX_NUM_DIBS; x++) {
+        // Create placeholders for conditions of correspondance
+        bool dib_matches_msg_src =
+            strncmp(name, dibs_array[x].name, NAME_LEN) == 0;
+        bool dib_matches_src_filter =
+            strncmp(src, dibs_array[x].name, NAME_LEN) == 0;
+        bool src_filter_wildcard = strncmp(src, "*", 1) == 0;
+        bool dib_wildcard = strncmp(dibs_array[x].name, "*", 1) == 0;
+
+        // Combine dib conditions into one variable
+        bool dib_rules_met = (dib_matches_msg_src && dib_matches_src_filter) ||
+                             (dib_matches_msg_src && src_filter_wildcard) ||
+                             (dib_wildcard && src_filter_wildcard);
+
+        // Check if dib corresponds to dibs rules and src filter
+        if (dib_rules_met) {
+          // Set message as claimed
+          msg_claimed = true;
+
+          // Check for valid callback
+          if (dibs_array[x].callback != NULL) {
+            // Make sure message is NOT a receipt confirmation
+            if (strncmp(msg, RECV_CONF, msg_len) != 0) {
+              // Send receipt confirmation
+              if (ipc_send(name, RECV_CONF, strlen(RECV_CONF)) != 0) {
+                fprintf(stderr,
+                        "failed to send receipt confirmation : ipc_send() "
+                        "failed : ");
+                return -1;
+              }
             }
 
-            // Reset dib callback
-            MsgReqDib_stop_callback(&dibs_array[x]);
-          }
+            // Run callback
+            dibs_array[x].callback(msg, msg_len, dibs_array[x].data);
 
-          // Run callback on new thread
-          DibCallbackArgs args = {.callback = dibs_array[x].callback,
-                                  .msg = msg,
-                                  .msg_len = msg_len,
-                                  .data = dibs_array[x].data};
-          if (dibs_array[x].pid =
-                  clone(cb_thread, &dibs_array[x].stack[MAX_DIB_STACK], SIGCHLD,
-                        (void *)&args) < 0) {
-            fprintf(stderr, "failed to created thread for dib callback : ");
-            perror("");
-            return -1;
+            // done
+            break;
           }
+        }
+      }
 
-          // Make sure message is NOT a receipt confirmation
-          if (strncmp(msg, RECV_CONF, msg_len) != 0) {
-            // Send receipt confirmation
-            if (ipc_send(name, RECV_CONF, strlen(RECV_CONF)) != 0) {
-              fprintf(
-                  stderr,
-                  "failed to send receipt confirmation : ipc_send() failed : ");
-              return -1;
-            }
-          }
-
-          // done
-          break;
+      // Check if message went unclaimed
+      if (!msg_claimed) {
+        // Message was not claimed. Add to queue.
+        if (ipc_packet_add(packets, MAX_NUM_PACKETS,
+                           ipc_packet_set(name, msg, msg_len)) < 0) {
+          fprintf(stderr, "failed to add unclaimed message to queue : ");
+          return -1;
         }
       }
     }
@@ -590,10 +586,6 @@ int ipc_args(char *msg, size_t msg_len, char args_out[][MAX_ARG_LEN],
     for (int msgx = 0; msgx < msg_len && argc < max_args; msgx++) {
       // Move to next argument if whitespace encountered
       if (msg[msgx] == ' ') {
-        // Add null termination character
-        args_out[argc][argx] = '\0';
-
-        // Move counters to new argument
         argc++;
         argx = 0;
         continue;
