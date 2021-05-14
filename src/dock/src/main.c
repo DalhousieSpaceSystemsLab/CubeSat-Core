@@ -12,7 +12,7 @@
 // Project headers
 #include "dock.h"
 #include "modutil.h"
-#include "subsystem_module.h"
+#include "subsysmod.h"
 
 // Subsystem modules
 #include "mission_module.h"

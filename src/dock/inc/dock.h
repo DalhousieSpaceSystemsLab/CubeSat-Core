@@ -12,7 +12,7 @@ extern "C" {
 
 // Project headers
 #include "dock_settings.h"
-#include "subsystem_module.h"
+#include "subsysmod.h"
 
 // Standard C libraries
 #include <errno.h>

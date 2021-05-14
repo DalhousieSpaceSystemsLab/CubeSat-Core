@@ -17,7 +17,7 @@
 
 // Project headers
 #include "ipc_std.h"
-#include "subsystem_module.h"
+#include "subsysmod.h"
 
 // Standard C libraries
 #include <signal.h>
