@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.18)
 ################################################################################
 #  OPTIONS GO HERE
 ################################################################################
-option(BUILD_TESTING "[ON/OFF] Build tests in addition to library" OFF)
+option(BUILD_TESTING "[ON/OFF] Build tests in addition to library" ON)
 option(BUILD_EXAMPLES "[ON/OFF] Build examples in addition to library" ON)
 
 
