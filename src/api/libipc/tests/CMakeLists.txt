@@ -30,7 +30,7 @@ foreach(lang ${${LIB}_languages})
             target_link_libraries(${test_target} PRIVATE ${LIB})
             add_test(
                 NAME ${test_target}
-                COMMAND valgrind ${CMAKE_CURRENT_BINARY_DIR}/${test_target}
+                COMMAND valgrind ${CMAKE_CURRENT_BINARY_DIR}/${test_target}${CMAKE_EXECUTABLE_SUFFIX}
                 --build-generator "${CMAKE_GENERATOR}"
                 --test-command "${CMAKE_CTEST_COMMAND}"
                 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
