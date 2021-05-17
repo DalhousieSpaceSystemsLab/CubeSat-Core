@@ -34,3 +34,5 @@ build/client_old
 build/*
 docs
 valgrind
+bin/**
+Testing/**
