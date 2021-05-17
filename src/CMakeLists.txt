@@ -99,6 +99,7 @@ function(add_executable exe)
     _add_executable(${exe} ${ARGN})
 
     #[[
+
     if(CMAKE_RUNTIME_OUTPUT_DIRECTORY)
         set(meta_dir "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/metadata")
     else()
@@ -112,6 +113,12 @@ function(add_executable exe)
     if(NOT EXISTS "${meta_dir}/${exe}")
         file(MAKE_DIRECTORY "${meta_dir}/${exe}")
     endif(NOT EXISTS "${meta_dir}/${exe}")
+
+    #]]
+
+
+    # modify this part for post-build commands (such as generating an elf file)
+    #[[
 
     set(exe_full "${exe}${CMAKE_EXECUTABLE_SUFFIX}")
     set(exe_hex "${exe}.hex")
@@ -150,7 +157,6 @@ function(add_executable exe)
         COMMENT "Generating lss file from ${exe} using ${CMAKE_OBJDUMP}"
         COMMAND ${CMAKE_OBJDUMP} -xh "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${exe_full}" > "${meta_dir}/${exe}/${exe}.lss"
     )
-
     #]]
     
 endfunction(add_executable exe)
