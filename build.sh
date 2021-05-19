@@ -35,7 +35,7 @@ BUILD_BOTH() {
 
 # Current only testing x86 version
 RUN_TEST() {
-  ctest --test-dir $PARENT_BUILD_DIR/$PC_BUILD_DIR --rerun-failed --output-on-failure
+  ctest --test-dir $PARENT_BUILD_DIR/$PC_BUILD_DIR
 }
 
 # Check if check submodule missing
