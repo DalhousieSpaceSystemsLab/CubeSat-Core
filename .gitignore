@@ -36,3 +36,4 @@ docs
 valgrind
 bin/**
 Testing/**
+dot/**
