@@ -45,7 +45,7 @@ int client_t_close(client_t* client) {
   conn_t_close(&client->conn);
 
   // Wipe name entry clean
-  memset(client->name, 0, 3);
+  memset(client->name, 0, NAME_LEN);
 
   // done
   return 0;
