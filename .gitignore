@@ -17,6 +17,7 @@
 /.metadata/
 
 *.cmake
+!toolchain.cmake
 CMakeCache.txt
 Makefile
 CMakeFiles
