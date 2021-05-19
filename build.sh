@@ -6,6 +6,7 @@ ARM_BUILD_DIR="arm"
 CLEAN_COMMAND="clean"
 TEST_COMMAND="test"
 RUN_TEST_COMMAND="run_test"
+CHECK_SUBMODULE_DIR="src/check/.git"
 
 CONFIG_PC() {
   [ ! -d "$PC_BUILD_DIR" ] && cmake src -B $PARENT_BUILD_DIR/$PC_BUILD_DIR
@@ -36,6 +37,9 @@ BUILD_BOTH() {
 RUN_TEST() {
   ctest --test-dir $PARENT_BUILD_DIR/$PC_BUILD_DIR
 }
+
+# Check if check submodule missing
+[ ! -d "$CHECK_SUBMODULE_DIR" ] && git submodule update --init --recursive
 
 # Check number of arguments
 if [ $# -eq 0 ]; then
