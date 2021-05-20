@@ -202,6 +202,7 @@ endif(NOT COMMAND _add_library)
 # dependencies come first
 add_subdirectory(api/libipc)
 add_subdirectory(api/client_api)
+add_subdirectory(SPI_Camera_ARM)
 add_subdirectory(modules)
 
 # executable targets after, and link against necessary dependencies
