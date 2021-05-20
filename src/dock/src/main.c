@@ -15,6 +15,7 @@
 #include "subsysmod.h"
 
 // Subsystem modules
+#include "gps_module.h"
 #include "mission_module.h"
 #include "payload_module.h"
 
@@ -31,6 +32,7 @@ int main() {
   // Create list of server containers
   SubsystemModule modules[] = {
       payload,
+      gps,
       mission,
   };
   modules_len = sizeof(modules) / sizeof(SubsystemModule);
