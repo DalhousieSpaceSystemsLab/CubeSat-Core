@@ -14,7 +14,7 @@ CALLBACK(payload_general) {
     modprintf("taking picture...\n");
 
     char **argv = NULL;
-    main_f(0, argv);
+    // main_f(0, argv);
 
     modprintf("done!\n");
   } else {
