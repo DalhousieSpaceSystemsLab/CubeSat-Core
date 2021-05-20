@@ -13,7 +13,8 @@ CALLBACK(payload_general) {
   if (strncmp(msg, ipc.pay.cmd.take_pic, msg_len) == 0) {
     modprintf("taking picture...\n");
 
-    main_f(0, "");
+    char **argv = NULL;
+    main_f(0, argv);
 
     modprintf("done!\n");
   } else {
