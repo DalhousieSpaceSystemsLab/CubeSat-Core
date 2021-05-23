@@ -28,7 +28,16 @@ void* gen_gps_coord(void* rec_gps) {
   }
 }
 
-CALLBACK(gps_general) { STOP_CALLBACK; }
+CALLBACK(gps_general) {
+  /* Assume message is coming from the mission server */
+
+  // Check if requesting GPS coordinates
+  if (strncmp(msg, ipc.gps.cmd.get_cur_pos, strlen(msg)) == 0) {
+    // Return GPS coordinates
+    OK(ipc_send(ipc.core.msn.name, gps_coord_output, strlen(gps_coord_output)));
+  }
+  STOP_CALLBACK;
+}
 
 START_MODULE(gps) {
   // Setup background listener
