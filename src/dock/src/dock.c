@@ -29,9 +29,6 @@ static void* run_module(void* args);
 // If timeout exceeded and process has not terminated, SIGKILL is sent.
 static void fstop(pid_t pid, int sec_timeout, struct timespec retry_delay);
 
-// Wrapper for waitpid with timeout
-static int twaitpid(pid_t pid, int* status, int timeout);
-
 // Start all server containers
 int dock_start(SubsystemModule* modules, size_t modules_len) {
   // Ensure modules pointer is not null
