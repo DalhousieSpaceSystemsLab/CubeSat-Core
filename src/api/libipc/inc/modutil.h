@@ -15,6 +15,9 @@
 // Standard C libraries
 #include <stdarg.h>
 #include <stdio.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 /**
  * @brief Wrapper for printf which outputs a message to stdout while identifying
@@ -39,4 +42,6 @@ void modfprintf(const char* func_name, FILE* stream, const char* msg, ...);
     return -1;                    \
   }
 
+// Timeout
+int twaitpid(pid_t pid, int* status, int timeout);
 #endif
