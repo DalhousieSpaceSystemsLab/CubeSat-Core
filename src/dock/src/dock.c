@@ -188,6 +188,6 @@ static void fstop(pid_t pid, int sec_timeout, struct timespec retry_delay) {
 
   // Check to see if start process needs to be force stopped
   if (!(pexited || psigterm)) {
+    kill(pid, SIGKILL);
   }
-  kill(pid, SIGKILL);
 }
