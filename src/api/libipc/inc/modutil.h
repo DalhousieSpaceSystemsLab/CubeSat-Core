@@ -79,16 +79,16 @@ int twaitpid(pid_t pid, int* status, int timeout);
     }                                            \
   }
 
-#define FTIMEOUT(_func, _wait)                      \
-  {                                                 \
-    pid_t child_stat = fork();                      \
-    if (child_stat == 0) {                          \
-      _func;                                        \
-    } else {                                        \
-      if (twaitpid(child_stat, NULL, _wait)) {      \
-        fstop(pid, FSTOP_TIMEOUT, FSTOP_ATT_DELAY); \
-      }                                             \
-    }                                               \
+#define FTIMEOUT(_func, _wait)                             \
+  {                                                        \
+    pid_t child_stat = fork();                             \
+    if (child_stat == 0) {                                 \
+      _func;                                               \
+    } else {                                               \
+      if (twaitpid(child_stat, NULL, _wait)) {             \
+        fstop(child_stat, FSTOP_TIMEOUT, FSTOP_ATT_DELAY); \
+      }                                                    \
+    }                                                      \
   }
 
 #endif
