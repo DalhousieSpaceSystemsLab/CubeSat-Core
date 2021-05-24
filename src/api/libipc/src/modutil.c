@@ -68,8 +68,14 @@ int twaitpid(pid_t pid, int* status, int timeout) {
   return 0;
 }
 
-// Attempts to stop process using interrupt signal within timeout
-// If timeout exceeded and process has not terminated, SIGKILL is sent.
+/**
+ * @brief Attempts to stop process using interrupt signal within timeout.
+ * If timeout exceeded and process has not terminated, SIGKILL is sent.
+ *
+ * @param pid PID of process to stop.
+ * @param sec_timeout Timeout given to process until sending SIGKILL
+ * @param retry_delay Delay between waitpid attempts
+ */
 static void fstop(pid_t pid, int sec_timeout, struct timespec retry_delay) {
   bool pexited = false, psigterm = false;
   time_t start, current, time_elapsed = 0;
