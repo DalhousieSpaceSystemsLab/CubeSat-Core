@@ -22,6 +22,11 @@
 #include <time.h>
 #include <unistd.h>
 
+// CONSTS
+#define FSTOP_TIMEOUT 1
+#define FSTOP_ATT_DELAY \
+  (struct timespec) { .tv_sec = 0, .tv_nsec = 100000000l }
+
 /**
  * @brief Wrapper for printf which outputs a message to stdout while identifying
  * the module calling it.
@@ -42,12 +47,48 @@ void modfprintf(const char* func_name, FILE* stream, const char* msg, ...);
 // If timeout exceeded and process has not terminated, SIGKILL is sent.
 static void fstop(pid_t pid, int sec_timeout, struct timespec retry_delay);
 
+/**
+ * @brief Macro used to check return value of function call.
+ * If the return value is less than 0, it will output and error using
+ * moderr with the function name, and return -1 to the parent.
+ *
+ */
 #define OK(func)                  \
   if (func < 0) {                 \
     moderr("%s failed\n", #func); \
     return -1;                    \
   }
 
-// Timeout
+/**
+ * @brief Implements timeout feature in waitpid method
+ *
+ * @param pid Process ID of process in question
+ * @param status If not NULL, exit status of process will be stored here.
+ * @param timeout Max time spent waiting for process to stop in seconds.
+ *
+ * @return 0 = process did exit, 1 = process timed out OR error
+ */
 int twaitpid(pid_t pid, int* status, int timeout);
+#define TIMEOUT(func, wait)                        \
+  {                                                \
+    pid_t child_stat = fork();                     \
+    if (child_stat == 0) {                         \
+      func;                                        \
+    } else {                                       \
+      twaitpid(child_stat, NULL, timeout) ? 1 : 0; \
+    }                                              \
+  }
+
+#define FTIMEOUT(func, wait)                        \
+  {                                                 \
+    pid_t child_stat = fork();                      \
+    if (child_stat == 0) {                          \
+      func;                                         \
+    } else {                                        \
+      if (twaitpid(child_stat, NULL, timeout)) {    \
+        fstop(pid, FSTOP_TIMEOUT, FSTOP_ATT_DELAY); \
+      }                                             \
+    }                                               \
+  }
+
 #endif
