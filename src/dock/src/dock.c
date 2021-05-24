@@ -25,10 +25,6 @@ static int stop_module(SubsystemModule* module);
 // Process will be restarted in case of exit.
 static void* run_module(void* args);
 
-// Attempts to stop process using interrupt signal within timeout
-// If timeout exceeded and process has not terminated, SIGKILL is sent.
-static void fstop(pid_t pid, int sec_timeout, struct timespec retry_delay);
-
 // Start all server containers
 int dock_start(SubsystemModule* modules, size_t modules_len) {
   // Ensure modules pointer is not null
@@ -163,31 +159,5 @@ static void* run_module(void* args) {
       dockerr("stop_module() failed\n");
       pthread_exit(NULL);
     }
-  }
-}
-
-// Attempts to stop process using interrupt signal within timeout
-// If timeout exceeded and process has not terminated, SIGKILL is sent.
-static void fstop(pid_t pid, int sec_timeout, struct timespec retry_delay) {
-  bool pexited = false, psigterm = false;
-  time_t start, current, time_elapsed = 0;
-  time(&start);
-  while (time_elapsed < sec_timeout) {
-    kill(pid, SIGINT);
-    int stat;
-    waitpid(pid, &stat, WNOHANG);
-
-    pexited = WIFEXITED(stat);
-    psigterm = WIFSIGNALED(stat);
-    if (pexited || psigterm) break;
-
-    nanosleep(&retry_delay, NULL);
-    time(&current);
-    time_elapsed = current - start;
-  }
-
-  // Check to see if start process needs to be force stopped
-  if (!(pexited || psigterm)) {
-    kill(pid, SIGKILL);
   }
 }

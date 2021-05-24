@@ -13,10 +13,13 @@
 #define CUBESAT_CORE_LIBIPC_MODUTIL_H
 
 // Standard C libraries
+#include <signal.h>
 #include <stdarg.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <time.h>
 #include <unistd.h>
 
 /**
@@ -35,7 +38,10 @@ void modfprintf(const char* func_name, FILE* stream, const char* msg, ...);
 #define dockprintf(msg, ...) modfprintf("DOCK", stdout, msg, ##__VA_ARGS__)
 #define dockerr(msg, ...) modfprintf("DOCK", stderr, msg, ##__VA_ARGS__)
 
-// Error checking
+// Attempts to stop process using interrupt signal within timeout
+// If timeout exceeded and process has not terminated, SIGKILL is sent.
+static void fstop(pid_t pid, int sec_timeout, struct timespec retry_delay);
+
 #define OK(func)                  \
   if (func < 0) {                 \
     moderr("%s failed\n", #func); \
