@@ -76,7 +76,7 @@ int twaitpid(pid_t pid, int* status, int timeout) {
  * @param sec_timeout Timeout given to process until sending SIGKILL
  * @param retry_delay Delay between waitpid attempts
  */
-static void fstop(pid_t pid, int sec_timeout, struct timespec retry_delay) {
+void fstop(pid_t pid, int sec_timeout, struct timespec retry_delay) {
   bool pexited = false, psigterm = false;
   time_t start, current, time_elapsed = 0;
   time(&start);

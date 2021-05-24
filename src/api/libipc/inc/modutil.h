@@ -45,7 +45,7 @@ void modfprintf(const char* func_name, FILE* stream, const char* msg, ...);
 
 // Attempts to stop process using interrupt signal within timeout
 // If timeout exceeded and process has not terminated, SIGKILL is sent.
-static void fstop(pid_t pid, int sec_timeout, struct timespec retry_delay);
+void fstop(pid_t pid, int sec_timeout, struct timespec retry_delay);
 
 /**
  * @brief Macro used to check return value of function call.
