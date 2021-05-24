@@ -69,23 +69,23 @@ void fstop(pid_t pid, int sec_timeout, struct timespec retry_delay);
  * @return 0 = process did exit, 1 = process timed out OR error
  */
 int twaitpid(pid_t pid, int* status, int timeout);
-#define TIMEOUT(func, wait)                        \
-  {                                                \
-    pid_t child_stat = fork();                     \
-    if (child_stat == 0) {                         \
-      func;                                        \
-    } else {                                       \
-      twaitpid(child_stat, NULL, timeout) ? 1 : 0; \
-    }                                              \
+#define TIMEOUT(_func, _wait)                    \
+  {                                              \
+    pid_t child_stat = fork();                   \
+    if (child_stat == 0) {                       \
+      _func;                                     \
+    } else {                                     \
+      twaitpid(child_stat, NULL, _wait) ? 1 : 0; \
+    }                                            \
   }
 
-#define FTIMEOUT(func, wait)                        \
+#define FTIMEOUT(_func, _wait)                      \
   {                                                 \
     pid_t child_stat = fork();                      \
     if (child_stat == 0) {                          \
-      func;                                         \
+      _func;                                        \
     } else {                                        \
-      if (twaitpid(child_stat, NULL, timeout)) {    \
+      if (twaitpid(child_stat, NULL, _wait)) {      \
         fstop(pid, FSTOP_TIMEOUT, FSTOP_ATT_DELAY); \
       }                                             \
     }                                               \
