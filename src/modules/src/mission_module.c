@@ -17,17 +17,14 @@ START_MODULE(mission) {
     // Get GPS coordinate
     OK(ipc_send_cmd(ipc.gps.name, ipc.gps.cmd.get_cur_pos));
 
-    // Read GPS coordinate
+    // Read GPS coordinate with timeout
     char gps_coor[MAX_MSG_LEN];
-    int bytes_read = ipc_recv(ipc.gps.name, gps_coor, MAX_MSG_LEN);
+    int bytes_read = 0;
+    ipc_recv(ipc.gps.name, gps_coor, MAX_MSG_LEN, 3);
     OK(bytes_read);
 
     // DEBUG
-    printf("%s\n", gps_coor);
-
-    // ipc_send_cmd(ipc.pay.name, ipc.pay.cmd.take_pic);
-    OK(ipc_refresh())
-    sleep(1);
+    if (strlen(gps_coor) > 0) printf("%s\n", gps_coor);
   }
 }
 
