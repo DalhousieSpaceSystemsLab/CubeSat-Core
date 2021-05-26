@@ -74,6 +74,7 @@ int twaitpid(pid_t pid, int* status, int timeout);
     pid_t child_stat = fork();                   \
     if (child_stat == 0) {                       \
       _func;                                     \
+      _exit(0);                                  \
     } else {                                     \
       twaitpid(child_stat, NULL, _wait) ? 1 : 0; \
     }                                            \
@@ -84,6 +85,7 @@ int twaitpid(pid_t pid, int* status, int timeout);
     pid_t child_stat = fork();                             \
     if (child_stat == 0) {                                 \
       _func;                                               \
+      _exit(0);                                            \
     } else {                                               \
       if (twaitpid(child_stat, NULL, _wait)) {             \
         fstop(child_stat, FSTOP_TIMEOUT, FSTOP_ATT_DELAY); \
