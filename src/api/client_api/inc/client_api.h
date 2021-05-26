@@ -106,7 +106,7 @@ int ipc_send_json(char dest[NAME_LEN], json_t* json, size_t json_len);
  * @param buffer_len Size of message output buffer in bytes
  * @return number of bytes copied into output buffer
  */
-int ipc_recv(char src[NAME_LEN], char* buffer, size_t buffer_len);
+int ipc_recv(char src[NAME_LEN], char* buffer, size_t buffer_len, int timeout);
 
 /// Deprecated function
 int ipc_qsend(char dest[NAME_LEN], char* msg, size_t msg_len);
