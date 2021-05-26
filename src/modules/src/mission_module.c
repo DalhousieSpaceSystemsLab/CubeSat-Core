@@ -20,7 +20,7 @@ START_MODULE(mission) {
     // Read GPS coordinate with timeout
     char gps_coor[MAX_MSG_LEN];
     int bytes_read = 0;
-    ipc_recv(ipc.gps.name, gps_coor, MAX_MSG_LEN, 3);
+    IF_TIMEOUT(ipc_recv(ipc.gps.name, gps_coor, MAX_MSG_LEN, 3), continue);
     OK(bytes_read);
 
     // DEBUG

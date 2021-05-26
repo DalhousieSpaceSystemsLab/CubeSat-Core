@@ -361,6 +361,7 @@ int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len, int timeout) {
   }
 
   // done
+  RETURN_IF_TIMEOUT();
   return strlen(msg);
 }
 
