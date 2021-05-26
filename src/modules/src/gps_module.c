@@ -1,6 +1,6 @@
 #include "gps_module.h"
 
-char gps_coord_output[50];
+char gps_coord_output[50] = {'t', 'e', 's', 't'};
 
 void* gen_gps_coord(void* rec_gps) {
   int i = 0;
@@ -40,6 +40,9 @@ CALLBACK(gps_general) {
 }
 
 START_MODULE(gps) {
+  // Connect to the IPC
+  OK(ipc_connect(ipc.gps.name));
+
   // Setup background listener
   modprintf("Setting up background listener\n");
   OK(ipc_create_listener("*", gps_general, NULL));
