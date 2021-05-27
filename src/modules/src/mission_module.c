@@ -23,7 +23,8 @@ START_MODULE(mission) {
     // Read GPS coordinate with timeout
     char gps_coor[MAX_MSG_LEN];
     int bytes_read = 0;
-    IF_TIMEOUT(bytes_read = ipc_recv(ipc.gps.name, gps_coor, MAX_MSG_LEN, 3),
+    IF_TIMEOUT(bytes_read =
+                   ipc_recv(ipc.gps.name, gps_coor, MAX_MSG_LEN, RECV_TIMEOUT),
                continue);
     OK(bytes_read);
     gps_coor[bytes_read] = '\0';
@@ -54,6 +55,9 @@ START_MODULE(mission) {
       // Send message to payload
       OK(ipc_send_cmd(ipc.pay.name, ipc.pay.cmd.take_pic));
     }
+
+    // Refresh background listeners
+    OK(ipc_refresh());
   }
 }
 
