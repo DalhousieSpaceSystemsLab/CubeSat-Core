@@ -1,49 +1,60 @@
 # IPC client API examples
-
 This page is dedicated to documenting example use cases of the IPC client API.
 
 ## Getting started 
-
 A handy script was created to make compiling and exporting the required headers and libraries easier.
 
-In the root directory of the repo, run `sh export_client.sh`. A new folder titled `EXPORT_CLIENT` will be created and populated with the required headers and libraries.
+A guide on how to use it and get set up in your project can be found in [EXPORTING.md](/md_src_EXPORTING.html)
 
-## Setting up Cmake
+## Assumptions 
+Brief overvivew at some of the assumptions made in this guide.
 
-If you happen to be using cmake, the following snippet may be useful in getting started:
+### 1. You're making or planning to make a module
+Creating modules is an important part of the core software. As almost everything on the OBC is intended to run as a module on the dock.
 
-```Cmake 
+For this reason, this guide assumes you will (at some point) be trying to create a module, so the examples are given within that context. However, implementing these methods in your own project will be very similar. 
+
+The main difference would be that the macros would not be available to you unless you link the `libLIB_IPC.a` library and include the `subsysmod.h` and `modutil.h` headers. Totally doable, maybe send me a message to get set up.
+
+Otherwise, you can ignore the macros and make your own equivalents. Most of them are pretty simple and can be replaced with `if` statements or normal methods like `printf()`.
+
+### 2. You've learned about some of the macros 
+There's a handy guide on the core software macros in [MACROS.md](/md_src_MACROS.html). They will be used in the following examples to make things cleaner, so it may help you understand this guide to have a quick look at.
+
+Even if you are not planning on using them, the guide will help you figure out what the simple equivalents would be.
+
+## Including the necessary headers 
+For any of the IPC or core software methods to work, the necessary headers must be present. 
+
+If you are working on a module and intend to use the full package, you may include subsysmod.h by doing the following:
+```C
+#include "subsysmod.h"
 ```
+Simple as that.
 
-
-## Including the client API header
-
-Before any API commands can be used, you must first include the `client_api.h` header. 
-
+Otherwise, if you are implementing the IPC client in a separate project and do not want to use the additional macros, the client_api.h should do. 
+It may be imported like so:
 ```C
 #include "client_api.h"
 ```
 
-This header is self-contained; so you don't need to worry about the other header it needs. However, attempting to compile this code on any platform besides linux will probably give you a headache. 
-
-If you do not have this header, clone the core software repo from https://github.com/DalhousieSpaceSystemsLab/CubeSat-Core and run the `export_client.sh` shell script. This should compile all of the required libraries and put all of the required headers together.
+Your exact configuration may vary, so feel free to adjust the header path accordingly.
 
 ## Connecting to the IPC daemon 
-
-As a client, you cannot participate on the IPC network without connecting to an IPC daemon (server). See <to be made> to see how to set up the daemon.
+As a client, you cannot participate on the IPC network without connecting to an IPC daemon (server). See [IPC_DAEMON_EXAMPLES.md](/md_src_api_libipc_examples_IPC_DAEMON_EXAMPLES.html) to see how to set up the daemon.
 
 To do this, simply run ipc_connect(). A successful return indicates that the client API has been initialized and actively connected to the daemon. 
 
 ```C
-#include "client_api.h"
+...
 
-int main() {
-  ipc_connect("pay"); // <-- Connect to the IPC daemon & register name
+ipc_connect("pay"); // <-- Connect to the IPC daemon & register name
 
-  // All IPC commands go here...
+// All IPC commands go here...
 
-  ipc_disconnect(); // <-- Disconnect gracefully from the IPC daemon
-}
+ipc_disconnect(); // <-- Disconnect gracefully from the IPC daemon
+
+...
 ```
 
 When all is said and done, and participation on the IPC network is no longer desired, running the ipc_disconnect() function gracefully terminates the connection to the IPC daemon. It is possible to omit this, but the daemon won't be happy.
@@ -52,45 +63,50 @@ When all is said and done, and participation on the IPC network is no longer des
 
 Something to note before moving forward: almost all of the functions in the API return useful values. They usually say a thing or two about how execution went.
 
-The expected etiquette for the usage of these API calls involves wrapping an `if()` statement around the call. Sometimes this may involve storing the return value as well.
+The expected etiquette for the usage of these API calls involves wrapping it with `OK()`, one of the useful macros mentioned earlier.
 
 ```C
-#include "client_api.h"
+...
 
-int main() {  
-  if(ipc_connect("pay") < 0) {                        // <--- Wrap ipc_connect() with if statement
-    printf("error: could not connect to the IPC\n");  // <--- Log error in case something goes wrong
-    return -1;                                        // <--- Quit program with error code
-  }
+OK(ipc_connect("pay"));   // <-- Runs ipc_connect() and checks return value
 
-  ipc_disconnect();                                   // <--- Only ever returns 0, no point in checking
-}
+...
 ```
+Or equivalently,
+```C
+...
+
+if(ipc_connect("pay") < 0) {                        // <-- Wrap ipc_connect() with if statement
+  printf("error: could not connect to the IPC\n");  // <-- Log error in case something goes wrong
+  return -1;                                        // <-- Quit program with error code
+}
+
+...
+```
+From now on, we will be sticking to the `OK()` macro for error checking.
 
 ## Sending messages to other processes 
 
 Sending messages via IPC is straightforward. Using the ipc_send() function, you must specify the destination, the message and the message length in bytes:
 
 ```C
-int main() {
-  ...
-  char msg[] = "hey what's up";
-  ipc_send("pwr", msg, strlen(msg));
-  ...
-}
+...
+
+char msg[] = "hey what's up";
+ipc_send("pwr", msg, strlen(msg));
+
+...
 ```
 
 Here is the same example, but this time we catch the return value:
 
 ```C
-int main() {
-  ...
-  char msg[] = "hey what's up";
-  if(ipc_send("pwr", msg, strlen(msg)) < 0) {
-    printf("failed to send message to pwr\n");
-    return -1;
-  }
-  ...
+...
+
+char msg[] = "hey what's up";
+OK(ipc_send("pwr", msg, strlen(msg)));
+
+...
 }
 ```
 ### Receipt confirmations
@@ -98,6 +114,8 @@ int main() {
 Now, the ipc_send() function has a built-in receipt confirmation handler. It expects to receive a confirmation from the destination process that the message was received within a specific timeout (see RECV_TIMEOUT in ipc_settings.h). If no receipt confirmation is received in time, the method will return an error value (-1).
 
 So, if ipc_send() terminates in error, it is not necessarily a technical error. It may just be that the destination client is 1) not connected or 2) busy and not responding. In either case, it is considered to be a failed transmission.
+
+The timeout for receipt confirmations in defined in `ipc_settings.h` under `RECV_TIMEOUT`.
 
 **NOTE**: All receipt confirmation functionality is built-in and automated by the API; you'll never need to worry about sending or receiving confirmations.
 
@@ -108,12 +126,12 @@ So, if ipc_send() terminates in error, it is not necessarily a technical error. 
 In its simplest iteration, receiving a single message from another process requires a buffer array which will be populated by the incoming message. Using the ipc_recv() function:
 
 ```C
-int main() {
-  ...
-  char incoming_msg[100];
-  ipc_recv("*", incoming_msg, 100);
-  ...
-}
+...
+
+char incoming_msg[100];
+ipc_recv("*", incoming_msg, 100, NO_TIMEOUT);
+
+...
 ```
 
 Given that we are not trying to send a message to another process, it may seem odd that there is a parameter for a process name. Even stranger is the * character.
@@ -123,21 +141,18 @@ As useful as it is to send messages to a specific destination, there may be situ
 Here is the same example, but this time we catch the return value:
 
 ```C
-int main() {
-  ...
+...
+
   char incoming_msg[100];
   int bytes_recvd = 0;
-  if((bytes_recvd = ipc_recv("*", incoming_msg, 100)) < 0) {
-    printf("failed to receive message from IPC\n");
-    return -1;
-  }
-  ...
-}
+  OK(bytes_recvd = ipc_recv("*", incoming_msg, 100, NO_TIMEOUT));
+
+...
 ```
 
 The ipc_recv() function is among the methods whose return value is best stored. In the example above, `bytes_recvd` keeps track of how many bytes were copied into the `incoming_msg` buffer. This tells you exactly how long the incoming message is.
 
-**NOTE:** ipc_recv() is a blocking type method; meaning it will wait and stay stuck until a valid message is received. Not ideal for concurrent message handling. Read on to see the solution.
+**NOTE:** ipc_recv() is a blocking type method; meaning it will wait and stay stuck until a valid message is received OR the timeout is exceeded (in seconds). Not ideal for concurrent message handling. Read on to see the solution.
 
 ### Recurring, concurrent and background message reception
 
@@ -151,104 +166,159 @@ Well we can do just that.
 
 The first thing to do is create the function which will be handling the incoming messages.
 
-As long as the return type and the arguments match `void (char*, size_t, void*)`, the function can run any code and be called anything (as long as the name is unique).
+As long as the return type and the arguments match `int (char*, size_t, void*)`, the function can run any code and be called anything (as long as the name is unique).
+
+Luckily there's a macro for that: `CALLBACK(name)`.
 
 Here is an example:
 
 ```C
-void cb_general_msg(char* msg, size_t msg_len, void* data) {
-  // general message handling goes here...
+...
+
+CALLBACK(general) {
+  // do stuff with incoming message
 }
 
-int main() {
-  ...
-}
+...
+
 ```
 
-The first function parameter `char* msg` is a pointer to the incoming message, `size_t msg_len` is the length of the message stored at `msg`, and `void* data` is a custom pointer that you can setup (more on this later). 
+Although invisible when using the macro, there are 3 function parameters that are automatically passed to the callback function. They are:
+- `char* msg` ==> pointer to the incoming message, 
+- `size_t msg_len` ==> length of the message stored at `msg`, 
+- `void* data` ==> custom pointer that you can setup (more on this later). 
+
+An example use case of these parameters:
+
+```C
+...
+
+CALLBACK(general) {
+  modprintf("Incoming message: %s\n", msg);   // <-- char* msg
+  modprintf("Message length: %d\n", msg_len); // <-- size_t msg_len
+  modprintf("Data pointer: %p\n", data);      // <-- void* data (may be NULL)
+}
+
+...
+```
 
 #### Creating the incoming message listener 
 
-Using ipc_qrecv(), we can setup the message listener which will be responsible for routing incoming messages to our callback function.
+Using `ipc_create_listener()`, we can setup the message listener which will be responsible for routing incoming messages to our callback function.
 
 Here is an example:
 
 ```C
-int main() {
+...
+
+CALLBACK(general) {
+  // do stuff with incoming message
+}
+
+START_MODULE(my_module) {
   ...
-  ipc_qrecv("*", cb_general_msg, NULL);
+
+  OK(ipc_create_listener("*", general, NULL));
+
   ...
 }
-```
 
-This tells the API to route incoming messages from any source to the `cb_general_msg` function whenever refreshed.
+...
 
-We may setup a second listener for messages only coming from the power module:
+
+This tells the API to route incoming messages from any source (`"*"`) to the `my_callback` callback whenever refreshed.
+
+We may setup a second listener which only listens for messages from a single source; say from the power module:
 
 ```C
-void cb_general_msg(char* msg, size_t msg_len, void* data){
-  // general message handling goes here...
+...
+
+CALLBACK(general) {
+  // do stuff with general incoming messages
 }
 
-void cb_power_msg(char* msg, size_t msg_len, void* data) {
-  // power message handling goes here...
+CALLBACK(power) {
+  // do stuff with incoming messages from power
 }
 
-int main() {
+START_MODULE(my_module) {
   ...
-    ipc_qrecv("*", cb_general_msg, NULL);
-    ipc_qrecv("pwr", cb_power_msg, NULL);
+
+  OK(ipc_create_listener("*", general, NULL));
+  OK(ipc_create_listener("pwr", power, NULL));
+  
   ...
 }
-}
+
+...
 ```
 
-We now have 2 concurrent message listeners. Any messages coming in from the power module are prioritized to the `cb_power_msg` handler. Otherwise, messages go to the `cb_general_msg`.
+We now have 2 concurrent message listeners. Any messages coming in from the power module are prioritized to the `power` callback. Otherwise, messages go to `general`.
 
 ##### The data field 
 
-In a few situations, it is valuable to provide some data or a pointer to the callback function. Suppose we wanted the `cb_power_msg` to know the current status of our module. 
+In a few situations, it is valuable to provide some data or a pointer to the callback function. Suppose we wanted the `power` callback to know the current status of our module. 
 
 All you would need to do is provide a pointer to the value in the data field like so:
 
 ```C
-int main() {
+...
+
+START_MODULE(my_module) {
   ...
+
   int status = 5;
-  ipc_qrecv("*", cb_general_msg, NULL);
-  ipc_qrecv("pwr", cb_power_msg, &status);
+
+  OK(ipc_create_listener("*", general, NULL));    // <-- We keep the data pointer NULL; nothing special.
+  OK(ipc_create_listener("pwr", power, &status)); // <-- We pass a pointer to the status
+  
   ...
 }
+
+...
 ```
 
-Now the `cb_power_msg` has access to the `status` variable. Using it in the callback method would look something like this:
+Now the `power` callback has access to the `status` variable using the `data` pointer. Using it in the callback method would look something like this:
 
 ```C
 ...
-void cb_power_msg(char* msg, size_t msg_len, void* data) {
-  int status = *((int*) data);
+
+CALLBACK(power) {
+  ...
+
+  // Store status locally 
+  int status = *((int*) data); //<-- Weird pointer trick to get an int out of a void*.
+
+  // Do something with status...
+
+  ...
 }
+
 ...
 ```
 
-**NOTE**: Be mindful of the scope of data passed along the `*data` field. It may or may not exist by the time you try to read from/to it. NULL `data` values are also accepted, so it could be something worth checking.
+**NOTE**: Be mindful of the scope of data passed along the `*data` field. It may or may not exist by the time you try to read from/to it. NULL `data` values are also accepted, so it is something worth checking.
 
 #### Refreshing the incoming message listeners
 
-Once you have setup your callbacks and listeners setup, they are required to be refreshed in order for incoming messages to be actively routed to them. 
+Once you have your callbacks and listeners setup, they are required to be refreshed for incoming messages to be actively routed to them. 
 
-The reason for this is basically that messages coming in from the IPC sit in a 'pending' state until they are claimed by ipc_recv() or ipc_refresh(). 
-
-Here is an example of a for loop which continuously refreshes message listeners:
+Here is an example of a `for` loop which continuously refreshes message listeners:
 
 ```C
-int main() {
+...
+
+START_MODULE(my_module) {
   ...
+
   for(;;) {
-    ipc_refresh();
+    OK(ipc_refresh());
   }
+
   ...
 }
+
+...
 ```
 
 That's it. Anytime a message is received from another process, it will be routed to the respective handler function.
@@ -256,58 +326,34 @@ That's it. Anytime a message is received from another process, it will be routed
 Here is a complete example of setting up listeners and refreshing:
 
 ```C
-#include "client_api.h"
+// my_module.c
 
-void cb_general_msg(char* msg, size_t msg_len, void* data){
-  // general message handling goes here...
+#include "subsysmod.h"
+
+CALLBACK(general) {
+  // do stuff with general incoming messages
 }
 
-void cb_power_msg(char* msg, size_t msg_len, void* data) {
-  int status = *((int*) data);
+CALLBACK(power) {
+  // Store status locally 
+  int status = *((int*) data); //<-- Weird pointer trick to get an int out of a void*.
 }
 
-int main() {
-  if(ipc_connect("pay") < 0) {
-    printf("failed to connect to the ipc\n");
-    return -1;
-  }
+START_MODULE(my_module) {
+  OK(ipc_connect("pay"));                         // <-- Connect to the IPC
 
-  if(ipc_qrecv("*", cb_general_msg, NULL) < 0) {
-    printf("failed to create message listener\n");
-    return -1;
-  }
-  
-  int status = 5;
-  if(ipc_qrecv("pwr", cb_power_msg, &status) < 0) {
-    printf("failed to create message listener\n");
-    return -1;
-  }
+  int status = 5;                                 // <-- Create status variable
+
+  OK(ipc_create_listener("*", general, NULL));    // <-- We keep the data pointer NULL; nothing special.
+  OK(ipc_create_listener("pwr", power, &status)); // <-- We pass a pointer to the status
 
   for(;;) {
-    ipc_refresh();
+    OK(ipc_refresh());                                // <-- Keep refreshing for incoming messages
   }
 
   return 0;
 }
 ```
-
-#### Refreshing specific message listeners
-
-This may not happen often, but if ever you wish to only actively route messages from a specific source (ignoring any other messages or handlers), you may do so using the ipc_refresh_src() method:
-
-```C
-int main() {
-  ...
-  for(;;) {
-    ipc_refresh_src("pwr");
-  }
-  ...
-}
-```
-
-The example above would only refresh the listener for the `pwr` listener we created earlier. This would be the case regardless of the number or presence of other listeners. 
-
-**NOTE**: Calling `ipc_refresh()` is equivalent to `ipc_refresh_src("*")`. 
 
 ## Issues, comments or questions 
 
