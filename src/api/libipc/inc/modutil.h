@@ -79,9 +79,9 @@ int twaitpid(pid_t pid, int* status, int timeout);
   }
 #define NO_TIMEOUT 0
 #define TIMEOUT_OCCURED -111
-#define IF_TIMEOUT(func, action) \
-  if (func == TIMEOUT_OCCURED) { \
-    action;                      \
+#define IF_TIMEOUT(func, action)   \
+  if ((func) == TIMEOUT_OCCURED) { \
+    action;                        \
   }
 #define RETURN_IF_TIMEOUT() \
   if (_timed_out) return TIMEOUT_OCCURED;
