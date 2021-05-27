@@ -209,6 +209,7 @@ add_subdirectory(modules)
 add_subdirectory(ipcd)
 add_subdirectory(client)
 add_subdirectory(dock)
+add_subdirectory(isodock)
 
 # TARGET_COMPILE_OPTIONS(${BIN_TEST}
 #   BEFORE PUBLIC "-g"
