@@ -172,6 +172,9 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
     return -1;
   }
 
+  // Allow for cool-down
+  nanosleep(&READ_BLOCK_DELAY, NULL);
+
   /**
    * If sending receipt confirmation, do not wait for another
    * confirmation.
