@@ -7,7 +7,6 @@
  */
 
 #include "payload_module.h"
-#include "client_api.h"
 
 CALLBACK(payload_general) {
   // Take pic

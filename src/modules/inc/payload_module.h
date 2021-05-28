@@ -15,7 +15,7 @@
 #endif
 
 // Project headers
-#include "subsystem_module.h"
+#include "subsysmod.h"
 
 // Standard C libraries
 #include <signal.h>

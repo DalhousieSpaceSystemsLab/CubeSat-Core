@@ -20,17 +20,19 @@ foreach(lang ${${LIB}_languages})
         if(NOT TARGET ${test_target})
             add_executable(${test_target})
             target_sources(${test_target} PRIVATE ${src})
-        
+            
             if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-                target_compile_options(${test_target} PRIVATE "-Wall")
-                target_compile_options(${test_target} PRIVATE "-Wextra")
-                target_compile_options(${test_target} PRIVATE "-Wshadow")
+            target_compile_options(${test_target} PRIVATE "-Wall")
+            target_compile_options(${test_target} PRIVATE "-Wextra")
+            target_compile_options(${test_target} PRIVATE "-Wshadow")
             endif(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-
+            
             target_link_libraries(${test_target} PRIVATE ${LIB})
+            target_link_libraries(${test_target} PRIVATE "pthread")
+            target_link_libraries(${test_target} PRIVATE "check")
             add_test(
                 NAME ${test_target}
-                COMMAND valgrind ${CMAKE_CURRENT_BINARY_DIR}/${test_target}
+                COMMAND valgrind ${CMAKE_CURRENT_BINARY_DIR}/${test_target}${CMAKE_EXECUTABLE_SUFFIX}
                 --build-generator "${CMAKE_GENERATOR}"
                 --test-command "${CMAKE_CTEST_COMMAND}"
                 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}

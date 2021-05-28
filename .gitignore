@@ -17,6 +17,7 @@
 /.metadata/
 
 *.cmake
+!toolchain.cmake
 CMakeCache.txt
 Makefile
 CMakeFiles
@@ -34,3 +35,6 @@ build/client_old
 build/*
 docs
 valgrind
+bin/**
+Testing/**
+dot/**

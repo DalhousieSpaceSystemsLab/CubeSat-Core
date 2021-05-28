@@ -14,6 +14,7 @@ extern "C" {
 #endif
 
 // Project headers
+#include "client_api.h"
 #include "ipc_settings.h"
 #include "ipc_std.h"
 #include "modutil.h"

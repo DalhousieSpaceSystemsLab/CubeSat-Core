@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
-option(BUILD_TESTING "[ON/OFF] Option to build tests" OFF)
+option(BUILD_TESTING "[ON/OFF] Option to build tests" ON)
 option(CMAKE_VERBOSE_MAKEFILE "[ON/OFF] Option to emit makefile commands to stdout" OFF)
 
 project(
@@ -9,6 +9,9 @@ project(
     DESCRIPTION "IPC CORE API PROJECT"
     LANGUAGES C CXX
 )
+
+# Add check
+add_subdirectory(check)
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -62,15 +65,15 @@ execute_process(
     COMMAND "sync"
 )
 
-# if(BUILD_TESTING)
-#     enable_testing()
-#     include(CTest)
-#     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test)
-#         add_subdirectory(test)
-#     elseif(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
-#         add_subdirectory(tests)
-#     endif()
-# endif()
+if(BUILD_TESTING)
+    enable_testing()
+    include(CTest)
+    if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test)
+        add_subdirectory(test)
+    elseif(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+        add_subdirectory(tests)
+    endif()
+endif()
 
 set(CMAKE_C_COMPILER_NAME gcc)
 set(CMAKE_ASM_COMPILER_NAME gcc)
@@ -98,6 +101,8 @@ if(NOT COMMAND _add_executable)
 function(add_executable exe)
     _add_executable(${exe} ${ARGN})
 
+    #[[
+
     if(CMAKE_RUNTIME_OUTPUT_DIRECTORY)
         set(meta_dir "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/metadata")
     else()
@@ -111,6 +116,12 @@ function(add_executable exe)
     if(NOT EXISTS "${meta_dir}/${exe}")
         file(MAKE_DIRECTORY "${meta_dir}/${exe}")
     endif(NOT EXISTS "${meta_dir}/${exe}")
+
+    #]]
+
+
+    # modify this part for post-build commands (such as generating an elf file)
+    #[[
 
     set(exe_full "${exe}${CMAKE_EXECUTABLE_SUFFIX}")
     set(exe_hex "${exe}.hex")
@@ -149,6 +160,8 @@ function(add_executable exe)
         COMMENT "Generating lss file from ${exe} using ${CMAKE_OBJDUMP}"
         COMMAND ${CMAKE_OBJDUMP} -xh "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${exe_full}" > "${meta_dir}/${exe}/${exe}.lss"
     )
+    #]]
+    
 endfunction(add_executable exe)
 endif(NOT COMMAND _add_executable)
 

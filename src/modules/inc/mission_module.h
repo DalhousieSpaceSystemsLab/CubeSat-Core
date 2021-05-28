@@ -2,8 +2,7 @@
 #define CUBESAT_CORE_MODULES_MISSION_MODULE_H
 
 // Project headers
-#include "client_api.h"
-#include "subsystem_module.h"
+#include "subsysmod.h"
 
 // Standard C libraries
 #include <stdio.h>
