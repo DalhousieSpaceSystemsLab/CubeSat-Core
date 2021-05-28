@@ -162,6 +162,8 @@ target_link_libraries(${EXE} PUBLIC JTOK)
 target_link_libraries(${EXE} PUBLIC LIB_IPC)
 target_link_libraries(${EXE} PUBLIC CLIENT_API)
 
+# DEBUG 
+target_compile_options(${EXE} PUBLIC "-g")
 
 ######################################
 # EXAMPLE OF LINKINAG AGAINST PTHREAD

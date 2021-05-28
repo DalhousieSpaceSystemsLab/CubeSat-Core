@@ -32,6 +32,7 @@ extern "C" {
 #include "modutil.h"
 #include "msg_req_dib.h"
 #include "util/immut.h"
+#include "jtok.h"
 
 // Standard C Libraries
 #include <errno.h>

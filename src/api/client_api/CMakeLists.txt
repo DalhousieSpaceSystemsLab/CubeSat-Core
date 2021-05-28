@@ -141,7 +141,8 @@ target_link_libraries(${LIB} PUBLIC "rt")
 ################################################################################
 # LINK AGAINST THE NECESSARY LIBRARIES 
 ################################################################################
-target_link_libraries(${LIB} PRIVATE LIB_IPC)
+target_link_libraries(${LIB} PUBLIC LIB_IPC)
+target_link_libraries(${LIB} PUBLIC JTOK)
 
 #Link against pthread
 find_package(Threads REQUIRED)
