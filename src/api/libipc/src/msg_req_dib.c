@@ -52,6 +52,21 @@ int MsgReqDib_add(MsgReqDib element, MsgReqDib *array, size_t array_len) {
 
       // done
       return x;
+    } else {
+      // Check if occupied dib is wildcard
+      if (strncmp(array[x].name, "*", 1) == 0) {
+        // make sure array is large enough
+        if (x + 1 >= array_len) {
+          break;
+        }
+
+        // Move wildcard dib forward and replace it with new dib
+        array[x + 1] = array[x];
+        array[x] = element;
+
+        // done
+        return x;
+      }
     }
   }
 

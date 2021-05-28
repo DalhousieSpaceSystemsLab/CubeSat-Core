@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.16)
 ################################################################################
 #  OPTIONS GO HERE
 ################################################################################
-option(BUILD_TESTING "[ON/OFF] Build tests in addition to library" OFF)
+option(BUILD_TESTING "[ON/OFF] Build tests in addition to library" ON)
 option(BUILD_EXAMPLES "[ON/OFF] Build examples in addition to library" ON)
 
 
@@ -12,9 +12,9 @@ option(BUILD_EXAMPLES "[ON/OFF] Build examples in addition to library" ON)
 #  PROJECT INIT
 ################################################################################
 project(
-    CLIENT_API
+    LIB_SPI
     VERSION 1.0
-    DESCRIPTION "CLIENT CREATION API LIBRARY FOR IPC"
+    DESCRIPTION "PAYLOAD CAMERA CODE LIB"
     LANGUAGES C CXX
 )
 set(LIB "${PROJECT_NAME}") # this is PROJECT_NAME, NOT CMAKE_PROJECT_NAME
@@ -106,6 +106,15 @@ foreach(lang ${${LIB}_languages})
     target_include_directories(${LIB} PRIVATE ${${LIB}_${lang}_private_include_directories})
 endforeach(lang ${${LIB}_languages})
 
+#set(${LIB}_private_include_directories "")
+#foreach(hdr ${${LIB}_private_headers})
+#    get_filename_component(hdr_dir ${hdr} DIRECTORY)
+#    list(APPEND ${LIB}_private_include_directories ${hdr_dir})
+#endforeach(hdr ${${LIB}_private_headers})
+#list(REMOVE_DUPLICATES ${LIB}_private_include_directories)
+#target_include_directories(${LIB} PRIVATE ${${LIB}_private_include_directories})
+
+
 ################################################################################
 # DETECT PUBLIC HEADERS RECURSIVELY FROM inc FOLDER
 ################################################################################
@@ -134,36 +143,40 @@ endforeach(lang ${${LIB}_languages})
 # SPECIAL AND PROJECT SPECIFIC OPTIONS
 ################################################################################
 
+
 target_compile_options(${LIB} PUBLIC "-g")
-target_link_libraries(${LIB} PUBLIC "rt")
 
 
 ################################################################################
 # LINK AGAINST THE NECESSARY LIBRARIES 
 ################################################################################
-target_link_libraries(${LIB} PRIVATE LIB_IPC)
 
-#Link against pthread
-find_package(Threads REQUIRED)
-if(Threads_FOUND) 
-    if(WIN32)
-        if(CMAKE_USE_WIN32_THREADS_INIT)
-            target_link_libraries(${LIB} PUBLIC pthread)
-            target_compile_options(${LIB} PUBLIC "-lpthread")
-        else()
-            message(FATAL_ERROR "BLAHHH ")
-        endif()
-    elseif(UNIX)
-        if(CMAKE_USE_PTHREADS_INIT)
-            target_link_libraries(${LIB} PUBLIC pthread)
-            target_compile_options(${LIB} PUBLIC "-lpthread")
-        else()
-            message(FATAL_ERROR "BLAHHH ")
-        endif()
-    endif()
-else()
-    message(FATAL_ERROR "No threading libraries have been found. Aborting!")
-endif()
+target_link_libraries(${LIB} PUBLIC "pthread")
+
+######################################
+# EXAMPLE OF LINKINAG AGAINST PTHREAD
+######################################
+
+#   find_package(Threads REQUIRED)
+#   if(Threads_FOUND) 
+#       if(WIN32)
+#           if(CMAKE_USE_WIN32_THREADS_INIT)
+#               target_link_libraries(${LIB} PUBLIC pthread)
+#               target_compile_options(${LIB} PUBLIC "-lpthread")
+#           else()
+#               message(FATAL_ERROR "BLAHHH ")
+#           endif()
+#       elseif(UNIX)
+#           if(CMAKE_USE_PTHREADS_INIT)
+#               target_link_libraries(${LIB} PUBLIC pthread)
+#               target_compile_options(${LIB} PUBLIC "-lpthread")
+#           else()
+#               message(FATAL_ERROR "BLAHHH ")
+#           endif()
+#       endif()
+#   else()
+#       message(FATAL_ERROR "No threading libraries have been found. Aborting!")
+#   endif()
 
 ################################################################################
 # TEST CONFIGURATION

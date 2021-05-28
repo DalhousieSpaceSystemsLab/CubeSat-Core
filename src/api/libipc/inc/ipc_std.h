@@ -46,6 +46,15 @@ struct ipc {
     struct cmd_ecs {
     } cmd;
   } ecs;
+
+  // GPS
+  struct gps {
+    const char* name;
+    struct cmd_gps {
+      const char* get_cur_pos;
+    } cmd;
+  } gps;
+
   // Core software
   struct core {
     // Missions

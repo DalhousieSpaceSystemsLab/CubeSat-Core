@@ -15,6 +15,7 @@
 #endif
 
 // Project headers
+#include "ArducamDemo.h"
 #include "subsysmod.h"
 
 // Standard C libraries

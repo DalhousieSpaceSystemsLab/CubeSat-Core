@@ -12,6 +12,10 @@ CALLBACK(payload_general) {
   // Take pic
   if (strncmp(msg, ipc.pay.cmd.take_pic, msg_len) == 0) {
     modprintf("taking picture...\n");
+
+    char **argv = NULL;
+    // main_f(0, argv);
+
     modprintf("done!\n");
   } else {
     modprintf("misc message incoming: %.*s\n", msg_len, msg);

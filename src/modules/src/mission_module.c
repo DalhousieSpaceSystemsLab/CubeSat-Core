@@ -14,9 +14,17 @@ START_MODULE(mission) {
 
   // Send payload the command every 5 seconds
   for (;;) {
-    ipc_send_cmd(ipc.pay.name, ipc.pay.cmd.take_pic);
-    OK(ipc_refresh())
-    // sleep(3);
+    // Get GPS coordinate
+    OK(ipc_send_cmd(ipc.gps.name, ipc.gps.cmd.get_cur_pos));
+
+    // Read GPS coordinate with timeout
+    char gps_coor[MAX_MSG_LEN];
+    int bytes_read = 0;
+    IF_TIMEOUT(ipc_recv(ipc.gps.name, gps_coor, MAX_MSG_LEN, 3), continue);
+    OK(bytes_read);
+
+    // DEBUG
+    if (strlen(gps_coor) > 0) printf("%s\n", gps_coor);
   }
 }
 

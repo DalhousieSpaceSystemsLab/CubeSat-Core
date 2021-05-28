@@ -326,7 +326,7 @@ static int ipc_read(char src_out[NAME_LEN], char *buffer, size_t buffer_len,
 
 // Receive message from another process
 // Returns number of bytes of data copied into buffer.
-int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len) {
+int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len, int timeout) {
   // Create dib for source
   char msg[MAX_MSG_LEN] = {'\0'};
   if (ipc_create_listener(src, cb_recv, (void *)msg) < 0) {
@@ -335,6 +335,7 @@ int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len) {
   }
 
   // Refresh source until message is received
+  TIMEOUT_START();
   for (;;) {
     if (ipc_refresh() < 0) {
       fprintf(stderr, "failed to refresh incoming messages : ");
@@ -346,6 +347,11 @@ int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len) {
       strncpy(buf, msg, buf_len < strlen(msg) ? buf_len : strlen(msg));
       break;
     }
+
+    if (timeout) {
+      TIMEOUT_UPDATE();
+      TIMEOUT_IF(timeout, break);
+    }
   }
 
   // Remove listener
@@ -355,6 +361,7 @@ int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len) {
   }
 
   // done
+  RETURN_IF_TIMEOUT();
   return strlen(msg);
 }
 

@@ -17,6 +17,7 @@ requests
 
 // Project headers
 #include "ipcd.h"
+#include <stdarg.h>  // stdarg has to be included here for some reason
 
 #define LOG_TRAFFIC 1
 
@@ -43,6 +44,7 @@ static void *start_routing_client(void *params);
 static void disconnect_client(client_t *client);
 static void log_traffic(char src[NAME_LEN], char dest[NAME_LEN],
                         char msg[MAX_PACKET_LEN], size_t msg_len);
+static void ipcd_printf(const char *msg, ...);
 
 // Thread which processes incoming client connections
 static void *start_accepting(void *debug) {
@@ -183,8 +185,8 @@ static void *start_routing_client(void *params) {
           0) {
         // Exactly 0 bytes read. Disconnect client.
         if (bytes_read == 0) {
-          fprintf(stderr, "read 0 bytes from client [%.*s]. disconnecting...\n",
-                  NAME_LEN, client.name);
+          ipcd_printf("read 0 bytes from client [%.*s]. disconnecting...\n",
+                      NAME_LEN, client.name);
           disconnect_client((client_t *)params);
           pthread_exit(NULL);
         }
@@ -298,6 +300,9 @@ static void *start_routing_client(void *params) {
  * Closes associated sockets and clears placeholder.
  */
 void disconnect_client(client_t *client) {
+  // Log disconnection
+  ipcd_printf("Disconnected [%.*s] from IPC daemon.\n", NAME_LEN, client->name);
+
   // Close connections
   conn_t_close(&client->conn);
 
@@ -401,11 +406,29 @@ int ipcd_print_clients() {
 
 static void log_traffic(char src[NAME_LEN], char dest[NAME_LEN],
                         char msg[MAX_PACKET_LEN], size_t msg_len) {
+  // Print log
+  ipcd_printf("[%.*s] ===> [%.*s] (%.*s)\n", NAME_LEN, src, NAME_LEN, dest,
+              msg_len, msg);
+}
+
+static void ipcd_printf(const char *msg, ...) {
+  // Init variadic arg
+  va_list ap;
+  va_start(ap, msg);
+
   // Get current time
   time_t current_time = time(NULL);
   struct tm *lt = localtime(&current_time);
 
-  // Print message trace
-  printf("(%.02d:%.02d:%.02d) [%.*s] ===> [%.*s] (%.*s)\n", lt->tm_hour,
-         lt->tm_min, lt->tm_sec, NAME_LEN, src, NAME_LEN, dest, msg_len, msg);
+  // Print time
+  fprintf(stdout, "(%.02d:%.02d:%.02d) ", lt->tm_hour, lt->tm_min, lt->tm_sec);
+
+  // Print message
+  vfprintf(stdout, msg, ap);
+  // fprintf(stdout, "\n");
+
+  // Cleanup
+  va_end(ap);
+
+  // done
 }
