@@ -172,6 +172,9 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
     return -1;
   }
 
+  // Allow for cool-down
+  nanosleep(&READ_BLOCK_DELAY, NULL);
+
   /**
    * If sending receipt confirmation, do not wait for another
    * confirmation.
@@ -201,7 +204,7 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
   bool recvd = false;
   for (int x = 0; time_elapsed < RECV_TIMEOUT; x++) {
     // Refresh message queue
-    if (ipc_refresh_src("*", IPC_REFRESH_RECV | IPC_REFRESH_FLUSH) != 0) {
+    if (ipc_refresh_src(dest, IPC_REFRESH_RECV | IPC_REFRESH_FLUSH) != 0) {
       fprintf(stderr, "ipc_refresh_src() failed : ");
       return -1;
     }
@@ -337,7 +340,8 @@ int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len, int timeout) {
   // Refresh source until message is received
   TIMEOUT_START();
   for (;;) {
-    if (ipc_refresh() < 0) {
+    // if (ipc_refresh() < 0) {
+    if (ipc_refresh_src(src, IPC_REFRESH_MSG | IPC_REFRESH_FLUSH)) {
       fprintf(stderr, "failed to refresh incoming messages : ");
       ipc_remove_listener(src);
       return -1;

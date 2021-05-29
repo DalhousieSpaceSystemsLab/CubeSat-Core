@@ -200,6 +200,7 @@ endfunction(add_library lib)
 endif(NOT COMMAND _add_library)
 
 # dependencies come first
+add_subdirectory(JTOK)
 add_subdirectory(api/libipc)
 add_subdirectory(api/client_api)
 add_subdirectory(SPI_Camera_ARM)
@@ -209,6 +210,8 @@ add_subdirectory(modules)
 add_subdirectory(ipcd)
 add_subdirectory(client)
 add_subdirectory(dock)
+add_subdirectory(isodock)
+add_subdirectory(goofin)
 
 # TARGET_COMPILE_OPTIONS(${BIN_TEST}
 #   BEFORE PUBLIC "-g"

@@ -1,6 +1,6 @@
-[submodule "JTOK"]
-	path = JTOK
-	url = https://github.com/cmattatall/JTOK
 [submodule "src/check"]
 	path = src/check
 	url = https://github.com/libcheck/check.git
+[submodule "src/JTOK"]
+	path = src/JTOK
+	url = https://github.com/cmattatall/JTOK.git
