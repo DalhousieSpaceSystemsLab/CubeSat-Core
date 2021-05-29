@@ -1,8 +1,11 @@
 /**
- * subsystem_module.h
+ * @file subsysmod.h
+ * @author Alex Amellal (loris@alexamellal.com)
+ * @brief provide a modular placeholder for subsystem modules (container)
+ * @version 0.1
+ * @date 2021-05-27
  *
- *   purpose: provide a modular placeholder for subsystem modules (container)
- *   author: alex amellal
+ * @copyright Dalhousie Space Systems Lab (c) 2021
  *
  */
 

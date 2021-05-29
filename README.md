@@ -56,13 +56,7 @@ README.md – General information about the project in Markdown format.
 
 ## Building the Project
 
-In a terminal, run:
-```
-$ cd CubeSat-Core
-$ cmake src -B build
-$ cmake --build build
-```
-And watch the magic happen :) You'll find the compiled binaries in the `build/` directory.
+Have a look at [Compiling the repo](src/COMPILING.md) for instructions on how to compile the repo.
 
 ## Code Documentation 
 

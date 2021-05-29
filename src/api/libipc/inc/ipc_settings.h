@@ -1,8 +1,11 @@
-/*
- * settings.h
+/**
+ * @file ipc_settings.h
+ * @author Alex Amellal (loris@alexamellal.com)
+ * @brief Control default values used in program
+ * @version 0.1
+ * @date 2021-05-27
  *
- *   purpose: control default values used in program
- *   author: alex amellal
+ * @copyright Dalhousie Space Systems Lab (c) 2021
  *
  */
 

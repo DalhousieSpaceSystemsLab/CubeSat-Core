@@ -12,6 +12,7 @@ extern "C" {
 
 // Project headers
 #include "dock_settings.h"
+#include "modutil.h"
 #include "subsysmod.h"
 
 // Standard C libraries

@@ -1,11 +1,14 @@
 #!/bin/bash
-cmake src -B build 
-cmake --build build 
+
+# Run the build script
+./build.sh x86
+
+# Export contents to EXPORT_CLIENT
 mkdir EXPORT_CLIENT
-cp build/libCLIENT_API.a EXPORT_CLIENT 
-cp build/libLIB_IPC.a EXPORT_CLIENT
-mkdir EXPORT_CLIENT/include 
-cp src/api/client_api/inc/client_api.h EXPORT_CLIENT/include 
+cp bin/x86/libCLIENT_API.a EXPORT_CLIENT
+cp bin/x86/libLIB_IPC.a EXPORT_CLIENT
+mkdir EXPORT_CLIENT/include
+cp src/api/client_api/inc/client_api.h EXPORT_CLIENT/include
 cp -r src/api/libipc/inc/* EXPORT_CLIENT/include
 echo ""
 echo ""

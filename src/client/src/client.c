@@ -87,7 +87,7 @@ int main(int argc, char* argv[]) {
 
       // Read data
       int bytes_read = -1;
-      if ((bytes_read = ipc_recv("*", msg, MAX_MSG_LEN)) ==
+      if ((bytes_read = ipc_recv("*", msg, MAX_MSG_LEN, NO_TIMEOUT)) ==
           -1) {  // ipc_recv() failed
         fprintf(stderr, "ipc_recv() failed\n");
         return -1;

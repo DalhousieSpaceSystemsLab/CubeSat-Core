@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.16)
 
 
 ################################################################################
@@ -143,6 +143,7 @@ target_compile_options(${LIB} PUBLIC "-g")
 ################################################################################
 target_link_libraries(${LIB} PUBLIC LIB_IPC)
 target_link_libraries(${LIB} PUBLIC CLIENT_API)
+target_link_libraries(${LIB} PUBLIC LIB_SPI)
 
 #Link against pthread
 find_package(Threads REQUIRED)

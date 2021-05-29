@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.16)
 
 option(BUILD_TESTING "[ON/OFF] Option to build tests" ON)
 option(CMAKE_VERBOSE_MAKEFILE "[ON/OFF] Option to emit makefile commands to stdout" OFF)
@@ -58,7 +58,7 @@ execute_process(
     RESULT_VARIABLE GIT_SUBMODULE_UPDATE_FAILED
     OUTPUT_VARIABLE GIT_SUBMODULE_UPDATE_OUTPUT
     OUTPUT_STRIP_TRAILING_WHITESPACE
-    ECHO_OUTPUT_VARIABLE
+    #ECHO_OUTPUT_VARIABLE
     )
 
 execute_process(
@@ -200,14 +200,18 @@ endfunction(add_library lib)
 endif(NOT COMMAND _add_library)
 
 # dependencies come first
+add_subdirectory(JTOK)
 add_subdirectory(api/libipc)
 add_subdirectory(api/client_api)
+add_subdirectory(SPI_Camera_ARM)
 add_subdirectory(modules)
 
 # executable targets after, and link against necessary dependencies
 add_subdirectory(ipcd)
 add_subdirectory(client)
 add_subdirectory(dock)
+add_subdirectory(isodock)
+add_subdirectory(goofin)
 
 # TARGET_COMPILE_OPTIONS(${BIN_TEST}
 #   BEFORE PUBLIC "-g"
