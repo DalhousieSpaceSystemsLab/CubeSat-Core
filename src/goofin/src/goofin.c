@@ -9,22 +9,19 @@
  *
  */
 
-#include "jtok.h"
-
 #include <stdio.h>
+#include "subsysmod.h"
 
 int main() {
-  // Try parsing some JSON
-  int tkns_len = 10;
-  jtok_tkn_t tkns[10];
-  if (jtok_parse("{\"first_k\":\"first_val\", \"second_k\":\"second_val\"}",
-                 tkns, tkns_len) != JTOK_PARSE_STATUS_OK) {
-    printf("parsing error\n");
-    return -1;
-  }
+  const char* raw_msg = "0x13248972 gps -12.234876 3.1415926535";
+  char args[5][MAX_ARG_LEN];
+  int n_args;
+  OK((n_args = ipc_args(raw_msg, strlen(raw_msg), args, 5)));
 
-  for (int x = 0; x < tkns_len && tkns[x].type != JTOK_UNASSIGNED_TOKEN; x++) {
-    printf("tkns[%d] = %.*s\n", x, tkns[x].end - tkns[x].start, tkns[x].json + tkns[x].start);
+  printf("n_args = %d\n", n_args);
+
+  for (int x = 0; x < n_args; x++) {
+    printf("[arg%d] %s\n", x, args[x]);
   }
 
   return 0;
