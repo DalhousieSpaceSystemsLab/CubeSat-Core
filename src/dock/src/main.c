@@ -15,6 +15,7 @@
 #include "subsysmod.h"
 
 // Subsystem modules
+#include "command_module.h"
 #include "gps_module.h"
 #include "mission_module.h"
 #include "payload_module.h"
@@ -33,6 +34,7 @@ int main() {
   SubsystemModule modules[] = {
       payload,
       gps,
+      command,
       mission,
   };
   modules_len = sizeof(modules) / sizeof(SubsystemModule);

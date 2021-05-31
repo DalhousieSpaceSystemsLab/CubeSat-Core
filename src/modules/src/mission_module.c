@@ -56,6 +56,9 @@ START_MODULE(mission) {
       OK(ipc_send_cmd(ipc.pay.name, ipc.pay.cmd.take_pic));
     }
 
+    // DEBUG send message to command module
+    OK(ipc_send_cmd(ipc.core.cmd.name, ipc.core.cmd.cmd.take_picture));
+
     // Refresh background listeners
     OK(ipc_refresh());
   }
