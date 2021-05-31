@@ -57,7 +57,8 @@ START_MODULE(mission) {
     }
 
     // DEBUG send message to command module
-    OK(ipc_send_cmd(ipc.core.cmd.name, ipc.core.cmd.cmd.take_picture));
+    OK(ipc_send_cmd(ipc.core.cmd.name, "%s %d", ipc.core.cmd.cmd.take_picture,
+                    10));
 
     // Refresh background listeners
     OK(ipc_refresh());

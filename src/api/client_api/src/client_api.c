@@ -234,8 +234,21 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
 }
 
 // Send command to destination
-int ipc_send_cmd(const char *dest, const char *cmd) {
-  return ipc_send((char *)dest, (char *)cmd, strlen(cmd));
+int ipc_send_cmd(const char *dest, const char *cmd, ...) {
+  // Init variadic args
+  va_list va;
+  va_start(va, cmd);
+
+  // Create placeholder for formatted command
+  char fmt_cmd[MAX_MSG_LEN];
+
+  // Format command using vsprintf
+  int fmt_cmd_len = vsnprintf(fmt_cmd, MAX_MSG_LEN, cmd, va);
+
+  // End variadic args
+  va_end(va);
+
+  return ipc_send((char *)dest, fmt_cmd, fmt_cmd_len);
 }
 
 // Sends key-value pair to another process

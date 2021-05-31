@@ -29,16 +29,17 @@ extern "C" {
 #include "ipc_packet.h"
 #include "ipc_settings.h"
 #include "json.h"
+#include "jtok.h"
 #include "modutil.h"
 #include "msg_req_dib.h"
 #include "util/immut.h"
-#include "jtok.h"
 
 // Standard C Libraries
 #include <errno.h>
 #include <fcntl.h>
 #include <pthread.h>
 #include <sched.h>
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -81,13 +82,15 @@ int ipc_connect(const char name[NAME_LEN]);
 int ipc_send(char dest[NAME_LEN], char* msg, size_t msg_len);
 
 /**
- * @brief Send command from IPC_STD to another process
+ * @brief Send command to another process.
  *
  * @param dest ipc...name of destination
- * @param cmd ipc.name.cmd...
+ * @param cmd Command to send. Formatted exactly like printf() is with %s and
+ * %d, for example.
+ * @param ... Values for the formatted cmd
  * @return Number of bytes sent. ERROR < 0
  */
-int ipc_send_cmd(const char* dest, const char* cmd);
+int ipc_send_cmd(const char* dest, const char* cmd, ...);
 
 /**
  * @brief Sends key-value pair to another process
