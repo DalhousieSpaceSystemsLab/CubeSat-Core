@@ -665,7 +665,7 @@ int ipc_get_n_args(char *msg, size_t msg_len) {
 
 // Extracts IPC message command and arguments
 int ipc_get_args(char *msg, size_t msg_len, char args_out[][MAX_ARG_LEN],
-             size_t max_args) {
+                 size_t max_args) {
   // Create placeholders for parsing
   int argc = 0;
   int argx = 0;
@@ -696,6 +696,9 @@ int ipc_get_args(char *msg, size_t msg_len, char args_out[][MAX_ARG_LEN],
         }
       }
     }
+
+    // Add null-terminating character
+    args_out[argc][argx] = '\0';
   }
 
   // done
