@@ -93,6 +93,23 @@ int ipc_send(char dest[NAME_LEN], char* msg, size_t msg_len);
 int ipc_send_cmd(const char* dest, const char* cmd, ...);
 
 /**
+ * @brief Tests to see if a command with an arbitrary number of args matches
+ * what you expect.
+ *
+ * This method performs a lazy comparison. If the actual command contains more
+ * arguments than the expected format suggests, it turns a blind eye to the
+ * additional arguments.
+ *
+ * @param cmd Command (with arguments) to test.
+ * @param expected_fmt Expected command format exactly like printf is with %s
+ * and %d, for example.
+ * @param ... Values for the expected command
+ * @return true Command matches the format.
+ * @return false Command does not match the format.
+ */
+bool ipc_check_cmd(const char* cmd, const char* expected_fmt, ...);
+
+/**
  * @brief Sends key-value pair to another process
  *
  * @param dest Name of destination process
