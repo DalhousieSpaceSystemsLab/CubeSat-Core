@@ -651,6 +651,18 @@ int ipc_refresh_src(char src[NAME_LEN], int flags) {
   return 0;
 }
 
+// Count number of args in message
+int ipc_get_n_args(char *msg, size_t msg_len) {
+  int argc = 1;
+  for (int x = 0; x < msg_len; x++) {
+    if (msg[x] == ' ') {
+      argc++;
+    }
+  }
+
+  return argc;
+}
+
 // Extracts IPC message command and arguments
 int ipc_get_args(char *msg, size_t msg_len, char args_out[][MAX_ARG_LEN],
              size_t max_args) {

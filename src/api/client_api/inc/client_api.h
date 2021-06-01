@@ -191,6 +191,16 @@ int ipc_refresh();
 int ipc_refresh_src(char src[NAME_LEN], int flags);
 
 /**
+ * @brief Returns the number of args found in msg. Useful to run before
+ * ipc_get_args.
+ *
+ * @param msg Message containing arguments.
+ * @param msg_len Length of message
+ * @return Number of args found in msg.
+ */
+int ipc_get_n_args(char* msg, size_t msg_len);
+
+/**
  * @brief Extracts IPC message command and arguments
  *
  * @param msg Pointer to IPC message to extract.
