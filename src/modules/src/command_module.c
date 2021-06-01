@@ -26,7 +26,7 @@ START_MODULE(command) {
     int n_args;
     int max_n_args = 5;
     char args[max_n_args][MAX_ARG_LEN];
-    OK((n_args = ipc_args(cmd, bytes_recvd, args, max_n_args)));
+    OK((n_args = ipc_get_args(cmd, bytes_recvd, args, max_n_args)));
 
     // Print args received
     for (int x = 0; x < n_args; x++) {

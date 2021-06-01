@@ -595,7 +595,7 @@ int ipc_refresh_src(char src[NAME_LEN], int flags) {
 }
 
 // Extracts IPC message command and arguments
-int ipc_args(char *msg, size_t msg_len, char args_out[][MAX_ARG_LEN],
+int ipc_get_args(char *msg, size_t msg_len, char args_out[][MAX_ARG_LEN],
              size_t max_args) {
   // Create placeholders for parsing
   int argc = 0;

@@ -183,7 +183,7 @@ int ipc_refresh_src(char src[NAME_LEN], int flags);
  * @param max_args Maximum number of arguments args_out can take.
  * @return Number of args extracted into args_out. ERROR < 0
  */
-int ipc_args(char* msg, size_t msg_len, char args_out[][MAX_ARG_LEN],
+int ipc_get_args(char* msg, size_t msg_len, char args_out[][MAX_ARG_LEN],
              size_t max_args);
 
 /**
