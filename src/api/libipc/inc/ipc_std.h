@@ -61,6 +61,7 @@ struct ipc {
     struct msn {
       const char* name;
       struct cmd_msn {
+        const char* qmsn;
       } cmd;
     } msn;
     // Commands

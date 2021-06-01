@@ -18,7 +18,7 @@ struct ipc ipc = {
     .core =
         {
             .fls = {.name = "fls"},
-            .msn = {.name = "msn"},
+            .msn = {.name = "msn", .cmd = {.qmsn = "0x43092348"}},
             .cmd = {.name = "cmd", .cmd = {.take_picture = "0x3256489632"}},
             .log = {.name = "log"},
         },
