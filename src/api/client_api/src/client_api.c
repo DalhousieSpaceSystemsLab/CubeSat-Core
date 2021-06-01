@@ -418,7 +418,9 @@ int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len, int timeout) {
     }
 
     if (strlen(msg) > 0) {
-      strncpy(buf, msg, buf_len < strlen(msg) ? buf_len : strlen(msg));
+      int cpy_len = buf_len < strlen(msg) ? buf_len : strlen(msg);
+      strncpy(buf, msg, cpy_len);
+      buf[cpy_len] = '\0';
       break;
     }
 
@@ -722,6 +724,7 @@ int ipc_disconnect() {
 static int cb_recv(char *msg, size_t msg_len, void *data) {
   // Copy incoming message into data
   strncpy((char *)data, msg, msg_len);
+  ((char *)data)[msg_len] = '\0';
 
   return 0;
 }
