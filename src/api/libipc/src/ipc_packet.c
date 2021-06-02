@@ -240,5 +240,6 @@ int ipc_packet_export(ipc_packet_t packet, char src_out[NAME_LEN], char *buffer,
   int msg_len =
       packet.msg_len < max_buffer_len ? packet.msg_len : max_buffer_len;
   strncpy(buffer, packet.msg, msg_len);
+  buffer[msg_len] = '\0';
   return msg_len;
 }
