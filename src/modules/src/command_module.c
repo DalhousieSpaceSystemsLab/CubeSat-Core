@@ -42,6 +42,10 @@ START_MODULE(command) {
 
       modprintf("About to ask mission to take picture at coordinates %f, %f\n",
                 lattitude, longitude);
+
+      // Forward comand to the mission module
+      OK(ipc_send_cmd(ipc.core.msn.name, "%s %s %f %f", ipc.core.msn.cmd.qmsn,
+                      "gps", lattitude, longitude));
     } else if (ipc_check_cmd(cmd, "%s %s", ipc.core.cmd.cmd.take_picture,
                              "time")) {
       // Get args
@@ -56,6 +60,9 @@ START_MODULE(command) {
       }
 
       modprintf("About to ask mission to take picture at time %s\n", args[2]);
+      // Forward comand to the mission module
+      OK(ipc_send_cmd(ipc.core.msn.name, "%s %s %s", ipc.core.msn.cmd.qmsn,
+                      "time", "2021-06-03"));
     }
   }
 }
