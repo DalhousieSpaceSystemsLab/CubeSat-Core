@@ -1,7 +1,15 @@
 #include "mission_module.h"
 
-// Define GPS coordinate range
-float range[4] = {10.0f, 10.0f, 45.0f, 45.0f};
+/// Define GPS coordinate range
+static float range[4] = {10.0f, 10.0f, 45.0f, 45.0f};
+
+/// Mission queue
+static struct mission missions[MAX_NUM_MISSIONS];
+
+static int check_mission_queue() {
+  for (int x = 0; x < MAX_NUM_MISSIONS; x++) {
+  }
+}
 
 // Handle incoming messages from command module
 CALLBACK(command) {
