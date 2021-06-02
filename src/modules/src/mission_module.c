@@ -8,6 +8,39 @@ static struct mission missions[MAX_NUM_MISSIONS];
 
 static int check_mission_queue() {
   for (int x = 0; x < MAX_NUM_MISSIONS; x++) {
+    // Unassigned mission
+    if (missions[x].cond_type == MISSION_UNASSIGNED) {
+      continue;
+    } else if (missions[x].cond_type == MISSION_COND_GPS) {
+      // Get GPS coordinates
+      int gps_coor_len = 0;
+      char gps_coor[32];
+      OK((gps_coor_len = ipc_send_cmd(ipc.gps.name, ipc.gps.cmd.get_cur_pos)));
+      IF_TIMEOUT(ipc_recv(ipc.gps.name, gps_coor, 32, RECV_TIMEOUT), x--;
+                 continue);
+
+      // Convert into gps args
+      char args[2][MAX_ARG_LEN];
+      OK(ipc_get_args(gps_coor, gps_coor_len, args, 2));
+
+      // Convert into floats
+      float lattitude = atof(args[0]);
+      float longitude = atof(args[1]);
+
+      // Check if within range
+      if (missions[x].gps_coor_min[0] <= lattitude &&
+          lattitude <= missions[x].gps_coor_max[0] &&
+          missions[x].gps_coor_min[1] <= longitude &&
+          longitude <= missions[x].gps_coor_max[1]) {
+        // Send command to destination module
+        OK(ipc_send_cmd(missions[x].dest, missions[x].cmd));
+      }
+    } else if (missions[x].cond_type == MISSION_COND_TIME) {
+      // Add time mission to queue
+    } else {
+      // Skip
+      continue;
+    }
   }
 }
 
@@ -37,9 +70,8 @@ CALLBACK(command) {
         range[1] <= longitude && longitude <= range[3]) {
       modprintf("We are in range\n");
 
-      // Send message to payload
-      OK(ipc_send_cmd(ipc.pay.name, ipc.pay.cmd.take_pic));
-    }
+      // Add mission to queue
+        }
   } else {
     modprintf("wah wah didnt match\n");
   }
