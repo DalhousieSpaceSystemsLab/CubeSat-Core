@@ -71,7 +71,10 @@ CALLBACK(command) {
       modprintf("We are in range\n");
 
       // Add mission to queue
-        }
+
+      // Send command to payload
+      OK(ipc_send_cmd(ipc.pay.name, ipc.pay.cmd.take_pic));
+    }
   } else {
     modprintf("wah wah didnt match\n");
   }

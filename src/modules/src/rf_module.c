@@ -20,7 +20,7 @@ START_MODULE(rf) {
                     ipc.core.cmd.cmd.take_picture, "gps", 15.345845f,
                     20.458347f));
 
-    sleep(10);
+    sleep(1);
   }
 }
 
