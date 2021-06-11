@@ -21,8 +21,6 @@ CALLBACK(payload_general) {
     modprintf("misc message incoming: %.*s\n", msg_len, msg);
   }
 
-  OK(ipc_send(ipc.core.msn.name, "waddup", strlen("waddup")))
-
   // done
   STOP_CALLBACK;
 }

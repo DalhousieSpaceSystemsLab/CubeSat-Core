@@ -15,9 +15,11 @@
 #include "subsysmod.h"
 
 // Subsystem modules
+#include "command_module.h"
 #include "gps_module.h"
 #include "mission_module.h"
 #include "payload_module.h"
+#include "rf_module.h"
 
 // Standard C libraries
 #include <signal.h>
@@ -31,9 +33,7 @@ static int modules_len = 0;
 int main() {
   // Create list of server containers
   SubsystemModule modules[] = {
-      payload,
-      gps,
-      mission,
+      payload, gps, command, mission, rf,
   };
   modules_len = sizeof(modules) / sizeof(SubsystemModule);
 

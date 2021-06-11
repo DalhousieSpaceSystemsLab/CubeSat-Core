@@ -234,8 +234,78 @@ int ipc_send(char dest[NAME_LEN], char *msg, size_t msg_len) {
 }
 
 // Send command to destination
-int ipc_send_cmd(const char *dest, const char *cmd) {
-  return ipc_send((char *)dest, (char *)cmd, strlen(cmd));
+int ipc_send_cmd(const char *dest, const char *cmd, ...) {
+  // Init variadic args
+  va_list va;
+  va_start(va, cmd);
+
+  // Create placeholder for formatted command
+  char fmt_cmd[MAX_MSG_LEN];
+
+  // Format command using vsprintf
+  int fmt_cmd_len = vsnprintf(fmt_cmd, MAX_MSG_LEN, cmd, va);
+
+  // End variadic args
+  va_end(va);
+
+  return ipc_send((char *)dest, fmt_cmd, fmt_cmd_len);
+}
+
+// Check command
+bool ipc_check_cmd(const char *cmd, const char *expected_fmt, ...) {
+  // Check for null pointers
+  if (cmd == NULL || expected_fmt == NULL) {
+    fprintf(stderr, "cannot use null pointers : ");
+    return -1;
+  }
+
+  // Initialize variadic args
+  va_list va;
+  va_start(va, expected_fmt);
+
+  // Convert expected format into a string
+  char fmt_cmd[MAX_MSG_LEN];
+  int fmt_cmd_len;
+  if ((fmt_cmd_len = vsnprintf(fmt_cmd, MAX_MSG_LEN, expected_fmt, va)) < 0) {
+    fprintf(stderr, "vsnprintf() failed : ");
+    return -1;
+  }
+
+  // Count args
+  int expected_argc = ipc_get_n_args(fmt_cmd, fmt_cmd_len);
+  int cmd_argc = ipc_get_n_args(cmd, strlen(cmd));
+
+  // Split expected format into args
+  char expected_args[expected_argc][MAX_ARG_LEN];
+  if ((expected_argc = ipc_get_args(fmt_cmd, fmt_cmd_len, expected_args,
+                                    expected_argc)) < 0) {
+    fprintf(stderr, "ipc_get_args() failed for expected command : ");
+    return -1;
+  }
+
+  // Split real command into args
+  char cmd_args[cmd_argc][MAX_ARG_LEN];
+  if ((cmd_argc = ipc_get_args(cmd, strlen(cmd), cmd_args, cmd_argc)) < 0) {
+    fprintf(stderr, "ipc_get_args() failed for real command : ");
+    return -1;
+  }
+
+  // Lazy compare args
+  bool cmd_matches = false;
+  for (int x = 0; x < expected_argc; x++) {
+    if (strcmp(expected_args[x], cmd_args[x]) == 0) {
+      cmd_matches = true;
+    } else {
+      cmd_matches = false;
+      break;
+    }
+  }
+
+  // End variadic args
+  va_end(va);
+
+  // done
+  return cmd_matches;
 }
 
 // Sends key-value pair to another process
@@ -348,7 +418,9 @@ int ipc_recv(char src[NAME_LEN], char *buf, size_t buf_len, int timeout) {
     }
 
     if (strlen(msg) > 0) {
-      strncpy(buf, msg, buf_len < strlen(msg) ? buf_len : strlen(msg));
+      int cpy_len = buf_len < strlen(msg) ? buf_len : strlen(msg);
+      strncpy(buf, msg, cpy_len);
+      buf[cpy_len] = '\0';
       break;
     }
 
@@ -581,9 +653,21 @@ int ipc_refresh_src(char src[NAME_LEN], int flags) {
   return 0;
 }
 
+// Count number of args in message
+int ipc_get_n_args(char *msg, size_t msg_len) {
+  int argc = 1;
+  for (int x = 0; x < msg_len; x++) {
+    if (msg[x] == ' ') {
+      argc++;
+    }
+  }
+
+  return argc;
+}
+
 // Extracts IPC message command and arguments
-int ipc_args(char *msg, size_t msg_len, char args_out[][MAX_ARG_LEN],
-             size_t max_args) {
+int ipc_get_args(char *msg, size_t msg_len, char args_out[][MAX_ARG_LEN],
+                 size_t max_args) {
   // Create placeholders for parsing
   int argc = 0;
   int argx = 0;
@@ -597,6 +681,7 @@ int ipc_args(char *msg, size_t msg_len, char args_out[][MAX_ARG_LEN],
     for (int msgx = 0; msgx < msg_len && argc < max_args; msgx++) {
       // Move to next argument if whitespace encountered
       if (msg[msgx] == ' ') {
+        args_out[argc][argx] = '\0';  // null terminate arg
         argc++;
         argx = 0;
         continue;
@@ -613,6 +698,9 @@ int ipc_args(char *msg, size_t msg_len, char args_out[][MAX_ARG_LEN],
         }
       }
     }
+
+    // Add null-terminating character
+    args_out[argc][argx] = '\0';
   }
 
   // done
@@ -636,6 +724,7 @@ int ipc_disconnect() {
 static int cb_recv(char *msg, size_t msg_len, void *data) {
   // Copy incoming message into data
   strncpy((char *)data, msg, msg_len);
+  ((char *)data)[msg_len] = '\0';
 
   return 0;
 }

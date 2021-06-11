@@ -120,7 +120,7 @@ static int stop_module(SubsystemModule* module) {
   memset(module->stack, 0, MODULE_STACK_SIZE);
 
   // DEBUG
-  dockprintf("successfully stopped module\n");
+  dockprintf("successfully stopped module [%s]\n", module->nickname);
 
   // done
   return 0;
@@ -149,7 +149,8 @@ static void* run_module(void* args) {
     // Check if process was terminated by a signal
     if (WIFSIGNALED(status)) {
       // DEBUG
-      dockprintf("process terminated by signal! sig = %d\n", WTERMSIG(status));
+      dockprintf("module [%s] terminated by signal! sig = %d\n",
+                 module->nickname, WTERMSIG(status));
       // Stop monitoring
       pthread_exit(NULL);
     }

@@ -61,12 +61,14 @@ struct ipc {
     struct msn {
       const char* name;
       struct cmd_msn {
+        const char* qmsn;
       } cmd;
     } msn;
     // Commands
     struct cmd {
       const char* name;
       struct cmd_cmd {
+        const char* take_picture;
       } cmd;
     } cmd;
     // Logging
@@ -79,8 +81,6 @@ struct ipc {
     struct fls {
       const char* name;
       struct cmd_fls {
-        const char* fsend;
-        const char* fsend_list;
       } cmd;
     } fls;
   } core;

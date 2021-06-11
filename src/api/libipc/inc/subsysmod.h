@@ -33,13 +33,16 @@ typedef struct subsystem_module {
   pid_t pid;
   pthread_t mtid;
   char* stack;
+  const char* nickname;
 } SubsystemModule;
 
 // Module maker macros
 #define NEW_DOCK_MODULE(name) extern SubsystemModule name
 #define EXPORT_MODULE(name)                             \
   SubsystemModule name = {.start = start_module_##name, \
-                          .stop = stop_module_##name}
+                          .stop = stop_module_##name,   \
+                          .nickname = #name}
+
 #define START_MODULE(name) int start_module_##name(void* data)
 #define STOP_MODULE(name) int stop_module_##name(void* data)
 #define CALLBACK(name) static int name(char* msg, size_t msg_len, void* data)

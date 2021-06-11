@@ -364,7 +364,7 @@ static int cb_read(char* msg, size_t msg_len, void* data) {
   }
 
   char args[10][MAX_ARG_LEN];
-  int argc = ipc_args(msg, msg_len, args, 10);
+  int argc = ipc_get_args(msg, msg_len, args, 10);
 
   // Print message
   printf("Number of args = %d\n", argc);

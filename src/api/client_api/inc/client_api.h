@@ -29,16 +29,17 @@ extern "C" {
 #include "ipc_packet.h"
 #include "ipc_settings.h"
 #include "json.h"
+#include "jtok.h"
 #include "modutil.h"
 #include "msg_req_dib.h"
 #include "util/immut.h"
-#include "jtok.h"
 
 // Standard C Libraries
 #include <errno.h>
 #include <fcntl.h>
 #include <pthread.h>
 #include <sched.h>
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -81,13 +82,32 @@ int ipc_connect(const char name[NAME_LEN]);
 int ipc_send(char dest[NAME_LEN], char* msg, size_t msg_len);
 
 /**
- * @brief Send command from IPC_STD to another process
+ * @brief Send command to another process.
  *
  * @param dest ipc...name of destination
- * @param cmd ipc.name.cmd...
+ * @param cmd Command to send. Formatted exactly like printf() is with %s and
+ * %d, for example.
+ * @param ... Values for the formatted cmd
  * @return Number of bytes sent. ERROR < 0
  */
-int ipc_send_cmd(const char* dest, const char* cmd);
+int ipc_send_cmd(const char* dest, const char* cmd, ...);
+
+/**
+ * @brief Tests to see if a command with an arbitrary number of args matches
+ * what you expect.
+ *
+ * This method performs a lazy comparison. If the actual command contains more
+ * arguments than the expected format suggests, it turns a blind eye to the
+ * additional arguments.
+ *
+ * @param cmd Command (with arguments) to test.
+ * @param expected_fmt Expected command format exactly like printf is with %s
+ * and %d, for example.
+ * @param ... Values for the expected command
+ * @return true Command matches the format.
+ * @return false Command does not match the format.
+ */
+bool ipc_check_cmd(const char* cmd, const char* expected_fmt, ...);
 
 /**
  * @brief Sends key-value pair to another process
@@ -171,6 +191,16 @@ int ipc_refresh();
 int ipc_refresh_src(char src[NAME_LEN], int flags);
 
 /**
+ * @brief Returns the number of args found in msg. Useful to run before
+ * ipc_get_args.
+ *
+ * @param msg Message containing arguments.
+ * @param msg_len Length of message
+ * @return Number of args found in msg.
+ */
+int ipc_get_n_args(char* msg, size_t msg_len);
+
+/**
  * @brief Extracts IPC message command and arguments
  *
  * @param msg Pointer to IPC message to extract.
@@ -180,7 +210,7 @@ int ipc_refresh_src(char src[NAME_LEN], int flags);
  * @param max_args Maximum number of arguments args_out can take.
  * @return Number of args extracted into args_out. ERROR < 0
  */
-int ipc_args(char* msg, size_t msg_len, char args_out[][MAX_ARG_LEN],
+int ipc_get_args(char* msg, size_t msg_len, char args_out[][MAX_ARG_LEN],
              size_t max_args);
 
 /**
