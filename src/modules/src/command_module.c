@@ -30,22 +30,27 @@ START_MODULE(command) {
       OK(ipc_get_args(cmd, strlen(cmd), args, argc));
 
       // Check argc
-      if (argc != 4) {
+      if (argc != 6) {
         moderr("Invalid number of arguments. SKIPPING\n");
         continue;
       }
 
       // Get coordinate floats
-      float lattitude, longitude;
-      lattitude = atof(args[2]);
-      longitude = atof(args[3]);
+      float gps_min[2], gps_max[2];
+      gps_min[0] = atof(args[2]);
+      gps_min[1] = atof(args[3]);
+      gps_max[0] = atof(args[4]);
+      gps_max[1] = atof(args[5]);
 
-      modprintf("About to ask mission to take picture at coordinates %f, %f\n",
-                lattitude, longitude);
+      modprintf(
+          "About to ask mission to take picture at coordinates (min) %f, %f, "
+          "(max) %f, %f\n",
+          gps_min[0], gps_min[1], gps_max[0], gps_max[1]);
 
       // Forward comand to the mission module
-      OK(ipc_send_cmd(ipc.core.msn.name, "%s %s %f %f", ipc.core.msn.cmd.qmsn,
-                      "gps", lattitude, longitude));
+      OK(ipc_send_cmd(ipc.core.msn.name, "%s %s %f %f %f %f",
+                      ipc.core.msn.cmd.qmsn, "gps", gps_min[0], gps_min[1],
+                      gps_max[0], gps_max[1]));
     } else if (ipc_check_cmd(cmd, "%s %s", ipc.core.cmd.cmd.take_picture,
                              "time")) {
       // Get args

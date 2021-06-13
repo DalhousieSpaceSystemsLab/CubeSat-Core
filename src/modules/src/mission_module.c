@@ -4,9 +4,60 @@
 static float range[4] = {10.0f, 10.0f, 45.0f, 45.0f};
 
 /// Mission queue
-static struct mission missions[MAX_NUM_MISSIONS];
+static struct mission missions[MAX_NUM_MISSIONS] = {{0}};
 
-static int check_mission_queue() {
+/**
+ * @brief Add mission to queue
+ *
+ * @param msn
+ * @return index if set, -1 otherwise
+ */
+static int add_mission(struct mission mission_queue[static MAX_NUM_MISSIONS],
+                       struct mission msn) {
+  int index = -1;
+  for (int x = 0; x < MAX_NUM_MISSIONS; x++) {
+    if (mission_queue[x].cond_type == MISSION_UNASSIGNED) {
+      mission_queue[x] = msn;
+      if (x + 1 < MAX_NUM_MISSIONS) {
+        mission_queue[x + 1] = (struct mission){0};
+      }
+      index = x;
+      break;
+    }
+  }
+
+  return index;
+}
+
+/**
+ * @brief Deletes the mission in the n'th position of the mission queue
+ *
+ * @param index
+ * @param mission_queue
+ * @return int
+ */
+static int rm_mission(int index,
+                      struct mission mission_queue[static MAX_NUM_MISSIONS]) {
+  if (index < 0) {
+    return -1;
+  }
+
+  for (int x = index; (x + 1) < MAX_NUM_MISSIONS; x++) {
+    mission_queue[x] = mission_queue[x + 1];
+  }
+  mission_queue[MAX_NUM_MISSIONS - 1] = (struct mission){0};
+
+  return 0;
+}
+
+/**
+ * @brief Iterates though queued missions and checks to see if their conditions
+ * have been met
+ *
+ * @return int
+ */
+static int check_mission_queue(
+    struct mission mission_queue[static MAX_NUM_MISSIONS]) {
   for (int x = 0; x < MAX_NUM_MISSIONS; x++) {
     // Unassigned mission
     if (missions[x].cond_type == MISSION_UNASSIGNED) {
@@ -34,6 +85,9 @@ static int check_mission_queue() {
           longitude <= missions[x].gps_coor_max[1]) {
         // Send command to destination module
         OK(ipc_send_cmd(missions[x].dest, missions[x].cmd));
+
+        // Mission successfully executed, remove from queue
+        OK(rm_mission(x, missions));
       }
     } else if (missions[x].cond_type == MISSION_COND_TIME) {
       // Add time mission to queue
@@ -42,6 +96,9 @@ static int check_mission_queue() {
       continue;
     }
   }
+
+  // done
+  return 0;
 }
 
 // Handle incoming messages from command module
@@ -54,7 +111,7 @@ CALLBACK(command) {
   // Check command -- Queue mission with GPS conditions
   if (ipc_check_cmd(msg, "%s %s", ipc.core.msn.cmd.qmsn, "gps")) {
     // Check argc
-    if (argc != 4) {
+    if (argc != 6) {
       moderr(
           "Invalid number of arguments for qmsn with gps coordinates. "
           "SKIPPING\n");
@@ -62,19 +119,25 @@ CALLBACK(command) {
     }
 
     // Get lattitude and longitude
-    float lattitude = atof(args[2]);
-    float longitude = atof(args[3]);
+    float gps_min[2], gps_max[2];
+    gps_min[0] = atof(args[2]);
+    gps_min[1] = atof(args[3]);
+    gps_max[0] = atof(args[4]);
+    gps_max[1] = atof(args[5]);
 
-    // Check if in range
-    if (range[0] <= lattitude && lattitude <= range[2] &&
-        range[1] <= longitude && longitude <= range[3]) {
-      modprintf("We are in range\n");
+    // Add mission to queue
+    struct mission msn = {
+        .cond_type = MISSION_COND_GPS,
+        .gps_coor_min[0] = gps_min[0],
+        .gps_coor_min[1] = gps_min[1],
+        .gps_coor_max[0] = gps_max[0],
+        .gps_coor_max[1] = gps_max[1],
+        .dest = ipc.pay.name,
+        .cmd = ipc.pay.cmd.take_pic,
+    };
 
-      // Add mission to queue
+    OK(add_mission(missions, msn));
 
-      // Send command to payload
-      OK(ipc_send_cmd(ipc.pay.name, ipc.pay.cmd.take_pic));
-    }
   } else {
     modprintf("wah wah didnt match\n");
   }
@@ -96,9 +159,10 @@ START_MODULE(mission) {
   OK(ipc_create_listener(ipc.core.cmd.name, command, NULL));
   OK(ipc_create_listener("*", general, NULL));
 
-  // Refresh incoming messages
+  // Refresh incoming messages & check missions
   for (;;) {
     OK(ipc_refresh());
+    OK(check_mission_queue(missions));
   }
 }
 
