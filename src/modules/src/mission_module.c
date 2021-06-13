@@ -139,7 +139,8 @@ CALLBACK(command) {
         .cmd = ipc.pay.cmd.take_pic,
     };
 
-    OK(add_mission(missions, msn));
+    ON_FAIL(add_mission(missions, msn),
+            modprintf("Cannot add mission to queue. SKIPPING.\n"));
 
   } else {
     modprintf("wah wah didnt match\n");
