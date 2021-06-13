@@ -59,6 +59,9 @@ static int rm_mission(int index,
 static int check_mission_queue(
     struct mission mission_queue[static MAX_NUM_MISSIONS]) {
   for (int x = 0; x < MAX_NUM_MISSIONS; x++) {
+    // Check for incoming messages
+    OK(ipc_refresh());
+
     // Unassigned mission
     if (missions[x].cond_type == MISSION_UNASSIGNED) {
       continue;
@@ -161,8 +164,8 @@ START_MODULE(mission) {
 
   // Refresh incoming messages & check missions
   for (;;) {
-    OK(ipc_refresh());
     OK(check_mission_queue(missions));
+    OK(ipc_refresh());
   }
 }
 

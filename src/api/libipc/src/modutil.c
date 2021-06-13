@@ -24,6 +24,11 @@ void modfprintf(const char* func_name, FILE* stream, const char* msg, ...) {
     notif = '!';
   }
 
+  // Get current time
+  time_t current_time = time(NULL);
+  struct tm* lt = localtime(&current_time);
+
+  fprintf(stream, "(%.02d:%.02d:%.02d) ", lt->tm_hour, lt->tm_min, lt->tm_sec);
   fprintf(stream, "[%c](%s) ", notif, func_name);
   vfprintf(stream, msg, ap);
   fprintf(stream, "\n");
