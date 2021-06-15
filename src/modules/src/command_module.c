@@ -47,9 +47,10 @@ START_MODULE(command) {
           "(max) %f, %f\n",
           gps_min[0], gps_min[1], gps_max[0], gps_max[1]);
 
-      // Forward comand to the mission module
-      OK(ipc_send_cmd(ipc.core.msn.name, "%s %s %f %f %f %f",
-                      ipc.core.msn.cmd.qmsn, "gps", gps_min[0], gps_min[1],
+      // Forward command to the mission module
+      OK(ipc_send_cmd(ipc.core.msn.name, "%s %s %s %f %f %f %f",
+                      ipc.core.msn.cmd.qmsn, "gps",
+                      ipc.core.cmd.cmd.take_picture, gps_min[0], gps_min[1],
                       gps_max[0], gps_max[1]));
     } else if (ipc_check_cmd(cmd, "%s %s", ipc.core.cmd.cmd.take_picture,
                              "time")) {
