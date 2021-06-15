@@ -65,10 +65,12 @@ START_MODULE(command) {
         continue;
       }
 
-      modprintf("About to ask mission to take picture at time %s\n", args[2]);
-      // Forward comand to the mission module
-      OK(ipc_send_cmd(ipc.core.msn.name, "%s %s %s", ipc.core.msn.cmd.qmsn,
-                      "time", "2021-06-03"));
+      // Get time
+      time_t t = atol(args[2]);
+
+      // Forward to mission module
+      OK(ipc_send_cmd(ipc.core.msn.name, "%s %s %s %ld", ipc.core.msn.cmd.qmsn,
+                      "time", ipc.core.cmd.cmd.take_picture, t));
     }
   }
 }
