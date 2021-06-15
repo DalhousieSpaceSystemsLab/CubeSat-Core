@@ -123,7 +123,7 @@ CALLBACK(command) {
   // Check command -- Queue mission with GPS conditions
   if (ipc_check_cmd(msg, "%s", "gps")) {
     // Check argc
-    if (argc != 8) {
+    if (argc != 7) {
       moderr(
           "Invalid number of arguments for qmsn with gps coordinates. "
           "SKIPPING\n");
@@ -152,7 +152,7 @@ CALLBACK(command) {
 
   } else if (ipc_check_cmd(msg, "%s", "time")) {
     // Check args
-    if (argc != 5) {
+    if (argc != 4) {
       moderr(
           "Invalid number of arguments for qmsn with time. "
           "SKIPPING\n");
