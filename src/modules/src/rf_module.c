@@ -19,6 +19,7 @@ START_MODULE(rf) {
     OK(ipc_send_cmd(ipc.core.cmd.name, "%s %s %f %f %f %f",
                     ipc.core.cmd.cmd.take_picture, "gps", 0.0f, 0.0f, 60.0f,
                     60.0f));
+
     OK(ipc_refresh());
     sleep(60);
   }
