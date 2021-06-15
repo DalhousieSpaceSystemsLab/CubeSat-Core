@@ -121,7 +121,7 @@ CALLBACK(command) {
   OK(ipc_get_args(msg, msg_len, args, argc));
 
   // Check command -- Queue mission with GPS conditions
-  if (ipc_check_cmd(msg, "%s", "gps")) {
+  if (ipc_check_cmd(msg, "%s %s", ipc.core.msn.cmd.qmsn, "gps")) {
     // Check argc
     if (argc != 7) {
       moderr(
@@ -150,7 +150,7 @@ CALLBACK(command) {
     ON_FAIL(add_mission(missions, msn),
             moderr("Cannot add mission to queue. SKIPPING.\n"));
 
-  } else if (ipc_check_cmd(msg, "%s", "time")) {
+  } else if (ipc_check_cmd(msg, "%s %s", ipc.core.msn.cmd.qmsn, "time")) {
     // Check args
     if (argc != 4) {
       moderr(
