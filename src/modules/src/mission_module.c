@@ -112,9 +112,9 @@ CALLBACK(command) {
   OK(ipc_get_args(msg, msg_len, args, argc));
 
   // Check command -- Queue mission with GPS conditions
-  if (ipc_check_cmd(msg, "%s %s", ipc.core.msn.cmd.qmsn, "gps")) {
+  if (ipc_check_cmd(msg, "%s", "gps")) {
     // Check argc
-    if (argc != 6) {
+    if (argc != 7) {
       moderr(
           "Invalid number of arguments for qmsn with gps coordinates. "
           "SKIPPING\n");
@@ -123,10 +123,10 @@ CALLBACK(command) {
 
     // Get lattitude and longitude
     float gps_min[2], gps_max[2];
-    gps_min[0] = atof(args[2]);
-    gps_min[1] = atof(args[3]);
-    gps_max[0] = atof(args[4]);
-    gps_max[1] = atof(args[5]);
+    gps_min[0] = atof(args[4]);
+    gps_min[1] = atof(args[5]);
+    gps_max[0] = atof(args[6]);
+    gps_max[1] = atof(args[7]);
 
     // Add mission to queue
     struct mission msn = {
@@ -135,9 +135,9 @@ CALLBACK(command) {
         .gps_coor_min[1] = gps_min[1],
         .gps_coor_max[0] = gps_max[0],
         .gps_coor_max[1] = gps_max[1],
-        .dest = ipc.pay.name,
-        .cmd = ipc.pay.cmd.take_pic,
     };
+    strcpy(msn.dest, args[2]);
+    strcpy(msn.cmd, args[3]);
 
     ON_FAIL(add_mission(missions, msn),
             modprintf("Cannot add mission to queue. SKIPPING.\n"));
