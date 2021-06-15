@@ -22,55 +22,62 @@ START_MODULE(command) {
     IF_TIMEOUT((bytes_recvd = ipc_recv("*", cmd, MAX_MSG_LEN, NO_TIMEOUT)),
                continue);
 
+    // Get args
+    int argc = ipc_get_n_args(cmd, strlen(cmd));
+    char args[argc][MAX_ARG_LEN];
+    OK(ipc_get_args(cmd, strlen(cmd), args, argc));
+
     // Check command
-    if (ipc_check_cmd(cmd, "%s %s", ipc.core.cmd.cmd.take_picture, "gps")) {
-      // Get args
-      int argc = ipc_get_n_args(cmd, strlen(cmd));
-      char args[argc][MAX_ARG_LEN];
-      OK(ipc_get_args(cmd, strlen(cmd), args, argc));
-
+    if (ipc_check_cmd(cmd, "%s", ipc.core.cmd.cmd.take_picture)) {
       // Check argc
-      if (argc != 6) {
-        moderr("Invalid number of arguments. SKIPPING\n");
-        continue;
+      if (argc == 1) {
+        // Take picture NOW
+        OK(ipc_send_cmd(ipc.pay.name, ipc.pay.cmd.take_pic));
       }
 
-      // Get coordinate floats
-      float gps_min[2], gps_max[2];
-      gps_min[0] = atof(args[2]);
-      gps_min[1] = atof(args[3]);
-      gps_max[0] = atof(args[4]);
-      gps_max[1] = atof(args[5]);
+      // Check if GPS condition provided
+      if (ipc_check_cmd(cmd, "%s %s", ipc.core.cmd.cmd.take_picture, "gps")) {
+        // Check argc
+        if (argc != 6) {
+          moderr("Invalid number of arguments. SKIPPING\n");
+          continue;
+        }
 
-      modprintf(
-          "About to ask mission to take picture at coordinates (min) %f, %f, "
-          "(max) %f, %f\n",
-          gps_min[0], gps_min[1], gps_max[0], gps_max[1]);
+        // Get coordinate floats
+        float gps_min[2], gps_max[2];
+        gps_min[0] = atof(args[2]);
+        gps_min[1] = atof(args[3]);
+        gps_max[0] = atof(args[4]);
+        gps_max[1] = atof(args[5]);
 
-      // Forward command to the mission module
-      OK(ipc_send_cmd(ipc.core.msn.name, "%s %s %s %f %f %f %f",
-                      ipc.core.msn.cmd.qmsn, "gps",
-                      ipc.core.cmd.cmd.take_picture, gps_min[0], gps_min[1],
-                      gps_max[0], gps_max[1]));
-    } else if (ipc_check_cmd(cmd, "%s %s", ipc.core.cmd.cmd.take_picture,
-                             "time")) {
-      // Get args
-      int argc = ipc_get_n_args(cmd, strlen(cmd));
-      char args[argc][MAX_ARG_LEN];
-      OK(ipc_get_args(cmd, strlen(cmd), args, argc));
+        modprintf(
+            "About to ask mission to take picture at coordinates (min) %f, %f, "
+            "(max) %f, %f\n",
+            gps_min[0], gps_min[1], gps_max[0], gps_max[1]);
 
-      // Check argc
-      if (argc != 3) {
-        moderr("Invalid number of arguments. SKIPPING\n");
-        continue;
+        // Forward command to the mission module
+        OK(ipc_send_cmd(ipc.core.msn.name, "%s %s %s %f %f %f %f",
+                        ipc.core.msn.cmd.qmsn, "gps",
+                        ipc.core.cmd.cmd.take_picture, gps_min[0], gps_min[1],
+                        gps_max[0], gps_max[1]));
+
+        // Check if time condition provided
+      } else if (ipc_check_cmd(cmd, "%s %s", ipc.core.cmd.cmd.take_picture,
+                               "time")) {
+        // Check argc
+        if (argc != 3) {
+          moderr("Invalid number of arguments. SKIPPING\n");
+          continue;
+        }
+
+        // Get time
+        time_t t = atol(args[2]);
+
+        // Forward to mission module
+        OK(ipc_send_cmd(ipc.core.msn.name, "%s %s %s %ld",
+                        ipc.core.msn.cmd.qmsn, "time",
+                        ipc.core.cmd.cmd.take_picture, t));
       }
-
-      // Get time
-      time_t t = atol(args[2]);
-
-      // Forward to mission module
-      OK(ipc_send_cmd(ipc.core.msn.name, "%s %s %s %ld", ipc.core.msn.cmd.qmsn,
-                      "time", ipc.core.cmd.cmd.take_picture, t));
     }
   }
 }

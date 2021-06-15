@@ -21,7 +21,7 @@ START_MODULE(rf) {
                     60.0f));
 
     OK(ipc_send_cmd(ipc.core.cmd.name, "%s %s %ld",
-                    ipc.core.cmd.cmd.take_picture, "time", time(NULL) + 5));
+                    ipc.core.cmd.cmd.take_picture, "time", time(NULL) + 10));
 
     OK(ipc_refresh());
     sleep(60);
