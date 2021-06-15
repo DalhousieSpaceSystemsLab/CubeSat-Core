@@ -20,7 +20,6 @@ struct mission {
   float gps_coor_min[2];  // GPS coordinates if mission is gps type (lat, long)
   float gps_coor_max[2];  // GPS coordinates if mission is gps type (lat, long)
   time_t exe_time;        // C time if mission is time type
-  char dest[NAME_LEN];    // Destination module of the command
   char cmd[MAX_MSG_LEN];  // Command to be sent to dest
 };
 

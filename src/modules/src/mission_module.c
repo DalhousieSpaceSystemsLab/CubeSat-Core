@@ -86,8 +86,8 @@ static int check_mission_queue(
           lattitude <= missions[x].gps_coor_max[0] &&
           missions[x].gps_coor_min[1] <= longitude &&
           longitude <= missions[x].gps_coor_max[1]) {
-        // Send command to destination module
-        OK(ipc_send_cmd(missions[x].dest, missions[x].cmd));
+        // Send command to command module
+        OK(ipc_send_cmd(ipc.core.cmd.name, missions[x].cmd));
 
         // Mission successfully executed, remove from queue
         OK(rm_mission(x, missions));
@@ -97,8 +97,8 @@ static int check_mission_queue(
       time_t current_t = time(NULL);
 
       if (current_t >= mission_queue[x].exe_time) {
-        // Send command to destination module
-        OK(ipc_send_cmd(missions[x].dest, missions[x].cmd));
+        // Send command to command module
+        OK(ipc_send_cmd(ipc.core.cmd.name, missions[x].cmd));
 
         // Mission successfully executed, remove from queue
         OK(rm_mission(x, missions));
@@ -132,10 +132,10 @@ CALLBACK(command) {
 
     // Get lattitude and longitude
     float gps_min[2], gps_max[2];
-    gps_min[0] = atof(args[4]);
-    gps_min[1] = atof(args[5]);
-    gps_max[0] = atof(args[6]);
-    gps_max[1] = atof(args[7]);
+    gps_min[0] = atof(args[3]);
+    gps_min[1] = atof(args[4]);
+    gps_max[0] = atof(args[5]);
+    gps_max[1] = atof(args[6]);
 
     // Add mission to queue
     struct mission msn = {
@@ -145,8 +145,7 @@ CALLBACK(command) {
         .gps_coor_max[0] = gps_max[0],
         .gps_coor_max[1] = gps_max[1],
     };
-    strcpy(msn.dest, args[2]);
-    strcpy(msn.cmd, args[3]);
+    strcpy(msn.cmd, args[2]);
 
     ON_FAIL(add_mission(missions, msn),
             moderr("Cannot add mission to queue. SKIPPING.\n"));
@@ -161,15 +160,14 @@ CALLBACK(command) {
     }
 
     // Get time
-    time_t t = atol(args[4]);
+    time_t t = atol(args[3]);
 
     // Add mission to queue
     struct mission msn = {
         .cond_type = MISSION_COND_TIME,
         .exe_time = t,
     };
-    strcpy(msn.dest, args[2]);
-    strcpy(msn.cmd, args[3]);
+    strcpy(msn.cmd, args[2]);
 
     ON_FAIL(add_mission(missions, msn),
             moderr("Cannot add mission to the queue. SKIPPING.\n"));
