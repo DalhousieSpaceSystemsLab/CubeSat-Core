@@ -93,7 +93,16 @@ static int check_mission_queue(
         OK(rm_mission(x, missions));
       }
     } else if (missions[x].cond_type == MISSION_COND_TIME) {
-      // Add time mission to queue
+      // Check if current time matches or has passed
+      time_t current_t = time(NULL);
+
+      if (current_t >= mission_queue[x].exe_time) {
+        // Send command to destination module
+        OK(ipc_send_cmd(missions[x].dest, missions[x].cmd));
+
+        // Mission successfully executed, remove from queue
+        OK(rm_mission(x, missions));
+      }
     } else {
       // Skip
       continue;
@@ -114,7 +123,7 @@ CALLBACK(command) {
   // Check command -- Queue mission with GPS conditions
   if (ipc_check_cmd(msg, "%s", "gps")) {
     // Check argc
-    if (argc != 7) {
+    if (argc != 8) {
       moderr(
           "Invalid number of arguments for qmsn with gps coordinates. "
           "SKIPPING\n");
@@ -140,10 +149,32 @@ CALLBACK(command) {
     strcpy(msn.cmd, args[3]);
 
     ON_FAIL(add_mission(missions, msn),
-            modprintf("Cannot add mission to queue. SKIPPING.\n"));
+            moderr("Cannot add mission to queue. SKIPPING.\n"));
 
+  } else if (ipc_check_cmd(msg, "%s", "time")) {
+    // Check args
+    if (argc != 5) {
+      moderr(
+          "Invalid number of arguments for qmsn with time. "
+          "SKIPPING\n");
+      STOP_CALLBACK;
+    }
+
+    // Get time
+    time_t t = atol(args[4]);
+
+    // Add mission to queue
+    struct mission msn = {
+        .cond_type = MISSION_COND_TIME,
+        .exe_time = t,
+    };
+    strcpy(msn.dest, args[2]);
+    strcpy(msn.cmd, args[3]);
+
+    ON_FAIL(add_mission(missions, msn),
+            moderr("Cannot add mission to the queue. SKIPPING.\n"));
   } else {
-    modprintf("wah wah didnt match\n");
+    moderr("wah wah didnt match\n");
   }
 
   STOP_CALLBACK;
