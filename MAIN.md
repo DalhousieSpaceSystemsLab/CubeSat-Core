@@ -9,6 +9,9 @@ A guide on how to export the required headers and libraries to your own project 
 ## Handy macros 
 A set of useful macros were created to make using the core software nicer. You can have a look at them in [MACROS.md](/md_src_MACROS.html)
 
+## Making modules 
+A guide on how to make a module and add it to the Dock can be found in [MODULES.md](/md_src_MODULES.html).
+
 ## Inter-Process Communication (IPC) System
 In order to provide a neutral means of communication between all of the
 different processes and subsystems on the satellite, the IPC system was
