@@ -1,10 +1,23 @@
 # Compiling the repo
 
 ## Requirements 
+- Core software repo
 - GCC
 - arm-none-linux-gnueabihf-gcc (for cross-compiling) **OPTIONAL**
 - Cmake 
 - Unix shell (OS X or Linux)
+
+## Getting the core software repo 
+The core software repo may be found in [DalhousieSpaceSystemsLab/CubeSat-Core](https://github.com/DalhousieSpaceSystemsLab/CubeSat-Core). 
+
+To get started, go into your programming folder of choice and clone the repo:
+```
+git clone https://github.com/DalhousieSpaceSystemsLab/CubeSat-Core
+```
+
+Once cloned, you may enter the root directory using `cd CubeSat-Core`. 
+
+You are ready to start compiling.
 
 ## Using the build script 
 In the root directory of the repo, you should find a `build.sh` file. This guide assumes your terminal is also open in the root directory, so run the script from elsewhere at your own risk.
