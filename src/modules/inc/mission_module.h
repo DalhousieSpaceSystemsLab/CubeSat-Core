@@ -10,9 +10,15 @@
 
 /// Settings
 #define MAX_NUM_MISSIONS 10
+#define TIME_COND_MARGIN 30  // in seconds
 
 /// Mission execution condition types
-enum { MISSION_UNASSIGNED = 0, MISSION_COND_GPS, MISSION_COND_TIME };
+enum {
+  MISSION_UNASSIGNED = 0,
+  MISSION_COND_GPS,
+  MISSION_COND_TIME,
+  MISSION_COND_BOTH,
+};
 
 /// Mission struct
 struct mission {
