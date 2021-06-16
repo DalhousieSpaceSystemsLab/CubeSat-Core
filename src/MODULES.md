@@ -71,12 +71,12 @@ So one way to visualize this could be:
  ----------   ----------   ----------
 | module 1 | | module 2 | | module 3 |
 |  header  | |  header  | |  header  |
- ----------   ----------    ---------
+ ----------   ----------   ----------
      |            ||            |
  ----------   ----------   ----------
 | module 1 | | module 2 | | module 3 |
 |  source  | |  source  | |  source  |
- ----------   ----------    ---------
+ ----------   ----------   ----------
  ```
 
 ## Creating your first module 
