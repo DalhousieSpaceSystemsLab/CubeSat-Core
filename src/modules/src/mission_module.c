@@ -93,16 +93,39 @@ static int check_mission_queue(
         OK(rm_mission(x, missions));
       }
     } else if (missions[x].cond_type == MISSION_COND_TIME) {
-      // Check if current time matches or has passed
+      // Check if current time is within margin
       time_t current_t = time(NULL);
-
-      if (current_t >= mission_queue[x].exe_time) {
+      if (current_t > mission_queue[x].exe_time &&
+          current_t < mission_queue[x].exe_time + TIME_COND_MARGIN) {
         // Send command to command module
         OK(ipc_send_cmd(ipc.core.cmd.name, missions[x].cmd));
 
         // Mission successfully executed, remove from queue
         OK(rm_mission(x, missions));
       }
+
+      // Check if opporunity passed
+      if (current_t > mission_queue[x].exe_time + TIME_COND_MARGIN) {
+        // Remove mission
+        OK(rm_mission(x, mission_queue));
+      }
+    } else if (missions[x].cond_type == MISSION_COND_BOTH) {
+      // Placeholders for conditions
+      bool time_matches = false;
+      bool gps_matches = false;
+
+      // Check if current time is within margin
+      time_t current_t = time(NULL);
+      if (current_t > mission_queue[x].exe_time &&
+          current_t < mission_queue[x].exe_time + TIME_COND_MARGIN) {
+        time_matches = true;
+      }
+
+      // Get GPS coordinates
+      OK(ipc_send_cmd(ipc.gps.name, ipc.gps.cmd.get_cur_pos))
+
+      // Check if current coordinates are within margin
+
     } else {
       // Skip
       continue;
