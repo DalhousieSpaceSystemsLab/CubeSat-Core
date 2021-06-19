@@ -108,7 +108,7 @@ The resulting output would look something like this:
 [!](start_module_xxx) COULD NOT COMPLETE X, error number -1
 ```
 
-### Easy exception catcher 
+### The OK macro
 All functions in the core software are (currently) meant to return 0 or a positive value on success, and -1 on error. 
 
 The `OK()` macro was created to conveniently check the return value of some function call, and if it is less than 0, to print an error message and return -1.
@@ -121,6 +121,24 @@ OK(ipc_send("pay", "waddup", 6));
 
 OK(ipc_disconnect());
 ```
+
+### The ON_FAIL macro 
+Similarly to the `OK()` macro, the `ON_FAIL()` macro will wrap a function call with an `if` statement to test whether the return value is less than 0. However, it allows you to specify a custom action to take when a failure is detected. 
+
+An example of this would be as follows:
+```C
+ON_FAIL(func(), return -1);
+```
+
+Although initially they seem to be practically the same, there are a good number of use cases where `ON_FAIL()` is used instead of `OK()`. For example, if repeatedly running a function in a for loop, we may only want to break the loop rather than return the function entirely:
+
+```C
+for(;;) {
+  ON_FAIL(func(), break);
+}
+```
+
+This way, we are not forced to exit if `func()` fails the same way `OK()` would make us do.
 
 ### Function timeout handling 
 Timeouts can be useful to have built-in to functions, especially when everything needs to be automated.
