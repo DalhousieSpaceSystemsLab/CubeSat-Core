@@ -9,12 +9,12 @@ The advantages of subscribing to standardized coding practice include:
 - Prevention of common issues that are difficult to diagnose;
 - Simplifies code integration, testing and error handling;
 
-## Table of contents 
-1. [Automatic code formatting](#1-automatic-code-formatting)
-2. [Headers are special](#5-headers-are-special)
+## Quick summary
+1. [Use automatic code formatting](#1-automatic-code-formatting)
+2. [Treat headers like they're special](#5-headers-are-special)
 3. [Abolish global variables](#3-abolish-global-variables)
-4. [No more run & pray](#2-no-more-run--pray)
-5. [Away with malloc](#4-away-with-malloc)
+4. [No more run & pray; catch function return values](#2-no-more-run--pray)
+5. [Easy on the malloc](#4-away-with-malloc)
 
 ## 1. Automatic code formatting
 Starting off, there exist tools which will automatically format your code as you program. Notably is the clang-formatter, which has already been setup for the core software.

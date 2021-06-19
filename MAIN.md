@@ -1,5 +1,8 @@
 # LORIS Core Software documentation
 
+## LORIS C Standard Proposal
+A proposal to standardize some programming practices in C on the LORIS project can be found in [CSTANDARD.md](/md_src_CSTANDARD.html).
+
 ## Compiling the Core Software
 A guide on how to compile the repo for PC & ARM can be found in [COMPILING.md](/md_src_COMPILING.html).
 
