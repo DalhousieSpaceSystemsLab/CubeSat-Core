@@ -6,7 +6,7 @@ Modules are an important part of the core software, as they allow us to easily c
 Additionally, all subsystem software may be abstracted as a module, making it an ideal way to package every process which needs to run on the OBC (with a few exceptions).
 
 ## What you need 
-To get started making modules, you need a working version of the core software repo. A guide on how to do this may be found in [COMPILING.md](...).
+To get started making modules, you need a working version of the core software repo. A guide on how to do this may be found in [COMPILING.md](/md_src_COMPILING.html).
 
 ## Finding the modules directory 
 The core software repo is rather large, so it can be a bit of a mess to find your way around. 
