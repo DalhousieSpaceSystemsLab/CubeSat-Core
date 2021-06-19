@@ -11,10 +11,10 @@ The advantages of subscribing to standardized coding practice include:
 
 ## Table of contents 
 1. [Automatic code formatting](#1-automatic-code-formatting)
-2. [No more run & pray](#2-no-more-run--pray)
+2. [Headers are special](#5-headers-are-special)
 3. [Abolish global variables](#3-abolish-global-variables)
-4. [Away with malloc](#4-away-with-malloc)
-5. [Headers are special](#5-headers-are-special)
+4. [No more run & pray](#2-no-more-run--pray)
+5. [Away with malloc](#4-away-with-malloc)
 
 ## 1. Automatic code formatting
 Starting off, there exist tools which will automatically format your code as you program. Notably is the clang-formatter, which has already been setup for the core software.
@@ -64,74 +64,72 @@ struct human {
 
 It's a good idea to include comments next to the elements of a struct as it provides more context about their usage. What's less of a good idea is to spend tons of time aligning all of the comments as a formatter would do in 0.002 seconds. 
 
-## 2. No more run & pray 
-Although in the C++ world there is a built-in exception handling system, C does not offer such a thing. As such, the only way to know if a function was run successfully is to check the return value of the function (or in some cases, a dedicated error variable).
+## 2. Headers are special 
+The C compiler is flexible in allowing the programmer to configure their code in a multitude of ways. When it comes to header file configuration, taking a free-for-all approach can lead to issues down the software integration road.
 
-It is often tempting to skip this, especially when your code already works. But when something inevitably goes wrong, you are left in the dark.
+### Header guards 
+Header guards are an old but useful tool in preventing unintentional re-inlcuding of the same headers in your code.
 
-What's more, the environment the satellite will find itself in is completely isolated from us, the developers. 
-
-So for error handling to be thoroughly automated, every function call needs to be checked.
-
-### What it looks like 
-Other than in a few exceptional cases, every function call should look something like this:
+They typically look something like this:
 ```C
-if(foo() != 0) {
-  printf("foo did not work wah wah\n");
-  return -1;
-}
+// my_header.h 
+
+#ifndef MY_PROJECT_MY_HEADER_H
+#define MY_PROJECT_MY_HEADER_H
+
+// code goes here...
+
+#endif 
 ```
 
-Every function has a different way of announcing an error, so it will not look exactly like this. But the main jist of it is to wrap or 'catch' every function return value. 
+Basically what the `#ifndef` and `#define` are saying is that if `MY_PROJECT_MY_HEADER_H` has never been defined before, define it and use the code leading up to `#endif`. If it already has been defined before, skip everything. 
 
-### Need to keep the value
-In some cases, the return value is still needed after the function is run. When this happens, there are 2 ways the error can be caught:
-```C
-int bytes_read = read(something);
-if(bytes_read < 0) {
-  printf("failed to read\n");
-  return -1;
-}
+This effectively allows us to avoid the re-including of headers in the same source code, since any header with a header guard will be blank if it has delcared its own existence before.
 
-// OR 
-
-int bytes_read;
-if((bytes_read = read(something)) < 0) {
-  printf("failed to read\n");
-  return -1;
-}
-```
-
-The exact approach you take is up to you. In either case, the function call is not given the benefit of the doubt and the program does not continue without confirming a successful run.
-
-### Making it easier 
-It can quickly become cubersome to wrap a ton of `if` statements around every function call. Fortunately there are tricks to make this easier and more convenient. 
-
-As described in the [MACROS.md](/md_src_MACROS.html) article, there exist a couple macros which help us achieve this with much less clutter.
-
-#### The OK and ON_FAIL macros
-The `OK(function)` macro wraps the provided function call in an `if` statement which checks to see if the return value was less than 0:
-
-Similarly, the `ON_FAIL()` macro wraps a function call with an `if` statement to check if the return value is less than 0. Except it allows you to define a custom action in case of failure.
+### Delcarations ONLY
+Headers are primarly used to share references and definitions between source files. So, there shouldn't be a single variable assignment in a header file.
 
 ```C
-OK(func());
+// my_header.h 
 
-// OR 
+#ifndef MY_PROJECT_MY_HEADER_H
+#define MY_PROJECT_MY_HEADER_H
 
-ON_FAIL(func(), return -1);
+////////////////////////
+//  Global variables  //
+////////////////////////
 
-// EQUIVALENT TO 
+int x = 5;    // no 
+extern int x; // yes
 
-if (func() < 0) {                 
-  moderr("%s failed\n", #func); 
-  return -1;                    
-}
+/////////////////
+//  Functions  //
+/////////////////
+
+void func() {     // no
+  int x = 1 + 1;  // no
+}                 // no
+
+void func();      // yes
+
+//////////////////
+//  Data types  //
+//////////////////
+
+struct human alex = { // no
+  .age = 20,          // no
+  .height = 184.5,    // no
+  .name = "alex",     // no
+};                    // no
+
+struct human {      // yes
+  int age;          // yes
+  float height;     // yes
+  const char* name; // yes
+};
+
+#endif 
 ```
-
-As you can see, these options result in much less clutter without losing the advantage of checking every function call.
-
-More on this in [MACROS.md](/md_src_MACROS.html).
 
 ## 3. Abolish global variables 
 Global variables are very similar to pharmaceutical advertisements: happy people running in a field, problem-free. The simplest global variable can often solve a complex problem.
@@ -264,7 +262,78 @@ void set_busy_state(bool new_busy) {
 
 If the free-for-all approach is used, you are likely going to access/set the global variables in different ways every time. So using getters/setters helps to set a cap on how complicated interacting with the globals can become.
 
-## 4. Away with malloc
+## 4. No more run & pray 
+Although in the C++ world there is a built-in exception handling system, C does not offer such a thing. As such, the only way to know if a function was run successfully is to check the return value of the function (or in some cases, a dedicated error variable).
+
+It is often tempting to skip this, especially when your code already works. But when something inevitably goes wrong, you are left in the dark.
+
+What's more, the environment the satellite will find itself in is completely isolated from us, the developers. 
+
+So for error handling to be thoroughly automated, every function call needs to be checked.
+
+### What it looks like 
+Other than in a few exceptional cases, every function call should look something like this:
+```C
+if(foo() != 0) {
+  printf("foo did not work wah wah\n");
+  return -1;
+}
+```
+
+Every function has a different way of announcing an error, so it will not look exactly like this. But the main jist of it is to wrap or 'catch' every function return value. 
+
+### Need to keep the value
+In some cases, the return value is still needed after the function is run. When this happens, there are 2 ways the error can be caught:
+```C
+int bytes_read = read(something);
+if(bytes_read < 0) {
+  printf("failed to read\n");
+  return -1;
+}
+
+// OR 
+
+int bytes_read;
+if((bytes_read = read(something)) < 0) {
+  printf("failed to read\n");
+  return -1;
+}
+```
+
+The exact approach you take is up to you. In either case, the function call is not given the benefit of the doubt and the program does not continue without confirming a successful run.
+
+### Making it easier 
+It can quickly become cubersome to wrap a ton of `if` statements around every function call. Fortunately there are tricks to make this easier and more convenient. 
+
+As described in the [MACROS.md](/md_src_MACROS.html) article, there exist a couple macros which help us achieve this with much less clutter.
+
+#### The OK and ON_FAIL macros
+The `OK(function)` macro wraps the provided function call in an `if` statement which checks to see if the return value was less than 0:
+
+Similarly, the `ON_FAIL()` macro wraps a function call with an `if` statement to check if the return value is less than 0. Except it allows you to define a custom action in case of failure.
+
+```C
+OK(func());
+
+// OR 
+
+ON_FAIL(func(), return -1);
+
+// EQUIVALENT TO 
+
+if (func() < 0) {                 
+  moderr("%s failed\n", #func); 
+  return -1;                    
+}
+```
+
+As you can see, these options result in much less clutter without losing the advantage of checking every function call.
+
+More on this in [MACROS.md](/md_src_MACROS.html).
+
+
+
+## 5. Easy on the malloc
 Don't get me wrong, there are many advantages to using dynamic memory. Namely, the amount of allocated memory may be changed at any time, in much larger amounts and anywhere in the program.
 
 However, the situations which necessarily call for using `malloc()` are few and it is best avoided when possible.
@@ -298,73 +367,6 @@ The simplest way around this is to define a `MAX_ARRAY_SIZE` constant which is u
 
 int ages[MAX_NUM_AGES];
 float temperatures[MAX_NUM_TEMPS];
-```
-
-## 5. Headers are special 
-The C compiler is flexible in allowing the programmer to configure their code in a multitude of ways. When it comes to header file configuration, taking a free-for-all approach can lead to issues down the software integration road.
-
-### Header guards 
-Header guards are an old but useful tool in preventing unintentional re-inlcuding of the same headers in your code.
-
-They typically look something like this:
-```C
-// my_header.h 
-
-#ifndef MY_PROJECT_MY_HEADER_H
-#define MY_PROJECT_MY_HEADER_H
-
-// code goes here...
-
-#endif 
-```
-
-Basically what the `#ifndef` and `#define` are saying is that if `MY_PROJECT_MY_HEADER_H` has never been defined before, define it and use the code leading up to `#endif`. If it already has been defined before, skip everything. 
-
-This effectively allows us to avoid the re-including of headers in the same source code, since any header with a header guard will be blank if it has delcared its own existence before.
-
-### Delcarations ONLY
-Headers are primarly used to share references and definitions between source files. So, there shouldn't be a single variable assignment in a header file.
-
-```C
-// my_header.h 
-
-#ifndef MY_PROJECT_MY_HEADER_H
-#define MY_PROJECT_MY_HEADER_H
-
-////////////////////////
-//  Global variables  //
-////////////////////////
-
-int x = 5;    // no 
-extern int x; // yes
-
-/////////////////
-//  Functions  //
-/////////////////
-
-void func() {     // no
-  int x = 1 + 1;  // no
-}                 // no
-
-void func();      // yes
-
-//////////////////
-//  Data types  //
-//////////////////
-
-struct human alex = { // no
-  .age = 20,          // no
-  .height = 184.5,    // no
-  .name = "alex",     // no
-};                    // no
-
-struct human {      // yes
-  int age;          // yes
-  float height;     // yes
-  const char* name; // yes
-};
-
-#endif 
 ```
 
 ## Final thoughts 
