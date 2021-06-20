@@ -6,8 +6,8 @@ A proposal to standardize some programming practices in C on the LORIS project c
 ## Compiling the Core Software
 A guide on how to compile the repo for PC & ARM can be found in [COMPILING.md](/md_src_COMPILING.html).
 
-## Exporting required headers/libraries to your project 
-A guide on how to export the required headers and libraries to your own project can be found in [EXPORTING.md](/md_src_EXPORTING.html).
+## Exporting to your project & portable modules 
+A guide on how to export the required headers and libraries to your own project to make+run modules independently can be found in [PORTABLE_DOCK.md](/md_src_PORTABLE_DOCK.html).
 
 ## Handy macros 
 A set of useful macros were created to make using the core software nicer. You can have a look at them in [MACROS.md](/md_src_MACROS.html)
