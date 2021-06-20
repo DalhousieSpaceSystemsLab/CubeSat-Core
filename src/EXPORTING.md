@@ -1,4 +1,4 @@
-# Exporting to your project 
+# Exporting to your project (OUTDATED)
 There are some headers/libraries in the core software repo you want to test or work with in your own repo. 
 
 This guide will explain how to export/integrate each part into your project.
