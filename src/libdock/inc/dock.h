@@ -39,6 +39,9 @@ int dock_start(SubsystemModule* modules, size_t modules_len);
 // Stop dock and all server instances
 int dock_stop(SubsystemModule* modules, size_t modules_len);
 
+// Start single instance of module in isolation
+int dock_start_solo(SubsystemModule module);
+
 #ifdef __cplusplus
 }
 #endif

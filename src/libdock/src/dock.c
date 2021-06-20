@@ -82,6 +82,20 @@ int dock_stop(SubsystemModule* modules, size_t modules_len) {
   return 0;
 }
 
+// Start single instance of module in isolation
+int dock_start_solo(SubsystemModule module) {
+  dock_start(&module, 1);
+
+  // Wait for user to hit enter
+  char input[1 + 2];
+  printf("Dock is running. Press [ENTER] to quit.\n");
+  fgets(input, 1 + 2, stdin);
+
+  dock_stop(&module, 1);
+
+  return 0;
+}
+
 // Stop execution of server and run stop function associated to it
 static int stop_module(SubsystemModule* module) {
   // Check if module pointer non null

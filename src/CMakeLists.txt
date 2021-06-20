@@ -205,6 +205,7 @@ add_subdirectory(api/libipc)
 add_subdirectory(api/client_api)
 add_subdirectory(SPI_Camera_ARM)
 add_subdirectory(modules)
+add_subdirectory(libdock)
 
 # executable targets after, and link against necessary dependencies
 add_subdirectory(ipcd)

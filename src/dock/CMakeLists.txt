@@ -159,8 +159,7 @@ endif(BUILD_EXAMPLES)
 # LINK AGAINST THE NECESSARY TARGETS
 ################################################################################
 target_link_libraries(${EXE} PUBLIC MODULES)
-target_link_libraries(${EXE} PUBLIC LIB_IPC)
-
+target_link_libraries(${EXE} PUBLIC LIB_DOCK)
 
 ######################################
 # EXAMPLE OF LINKINAG AGAINST PTHREAD

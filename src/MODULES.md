@@ -65,9 +65,9 @@ This is done intentionally, because the source files are where all of the module
 So one way to visualize this could be: 
 ```
                --------
-      ------  |  Dock  |  ------
-     |         --------         |
-     |            ||            |
+      | ------ | Dock | ------ |
+      | ------ |
+      |        |      |        |
  ----------   ----------   ----------
 | module 1 | | module 2 | | module 3 |
 |  header  | |  header  | |  header  |
@@ -201,6 +201,8 @@ And that's it, you've successfully made a module.
 
 ## Adding the module to the Dock
 Your module must be added to the Dock's source code before it will automatically load it on start. 
+
+**NOTE:** Skip this step if you are making a portable module. 
 
 ### Locating the Dock source code 
 I will move your attention elsewhere in the core software, to the Dock source code:

@@ -29,10 +29,8 @@ extern "C" {
 #include "ipc_packet.h"
 #include "ipc_settings.h"
 #include "json.h"
-#include "jtok.h"
 #include "modutil.h"
 #include "msg_req_dib.h"
-#include "util/immut.h"
 
 // Standard C Libraries
 #include <errno.h>
@@ -211,7 +209,7 @@ int ipc_get_n_args(char* msg, size_t msg_len);
  * @return Number of args extracted into args_out. ERROR < 0
  */
 int ipc_get_args(char* msg, size_t msg_len, char args_out[][MAX_ARG_LEN],
-             size_t max_args);
+                 size_t max_args);
 
 /**
  * @brief Close client side IPC interface

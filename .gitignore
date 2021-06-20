@@ -38,3 +38,4 @@ valgrind
 bin/**
 Testing/**
 dot/**
+EXPORT/

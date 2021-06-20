@@ -41,6 +41,13 @@ The same goes for ARM, but the first argument is `arm` instead:
 ./build.sh arm
 ```
 
+### Exporting relevant libraries and headers to your project
+This can be done using the `export` argument in the build script:
+```
+./build.sh export
+```
+The core software will automatically be compiled and a folder called 'EXPORT' will automatically be populated with the libraries and headers you'll need to develop/test modules independently.
+
 ### Cleaning up
 If you'd like to clean up all of the build objects/cache quickly, use:
 ```
