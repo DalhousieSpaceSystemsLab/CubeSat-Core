@@ -65,9 +65,9 @@ This is done intentionally, because the source files are where all of the module
 So one way to visualize this could be: 
 ```
                --------
-      | ------ | Dock | ------ |
-      | ------ |
-      |        |      |        |
+      ------  |  Dock  |  ------
+     |         --------         |
+     |            ||            |
  ----------   ----------   ----------
 | module 1 | | module 2 | | module 3 |
 |  header  | |  header  | |  header  |
