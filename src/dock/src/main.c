@@ -26,7 +26,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-//This is a comment
+//This is a comment 2
 
 // Global pointer to server container array
 static SubsystemModule* modules_ptr = NULL;
