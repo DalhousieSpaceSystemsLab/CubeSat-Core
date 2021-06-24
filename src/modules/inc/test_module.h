@@ -1,11 +1,15 @@
 /**
- * @test module 
- * @ Iftkekhar Hossain
- * @date 2021-05-31
- *
+ * @file test_module.h
+ * @author Iftekhar Hossain (mdiftekharhr@gmail.com)
+ * @brief 
+ * @version 0.1
+ * @date 2021-06-24
+ * 
  * @copyright Dalhousie Space Systems Lab (c) 2021
- *
+ * 
  */
+
+
 
 #ifndef CUBESAT_CORE_MODULES_TEST_MODULE_H
 #define CUBESAT_CORE_MODULES_TEST_MODULE_H
