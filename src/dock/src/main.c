@@ -34,7 +34,7 @@ static int modules_len = 0;
 int main() {
   // Create list of server containers
   SubsystemModule modules[] = {
-      payload, gps, command, mission, rf, test
+      payload, gps, command, mission, rf, test_module,
   };
   modules_len = sizeof(modules) / sizeof(SubsystemModule);
 
