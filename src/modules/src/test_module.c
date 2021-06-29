@@ -1,13 +1,5 @@
-/**/**
+/**
  * @file test_module.c
- * @author Iftekhar Hossain (mdiftekharhr@gmail.com)
- * @brief 
- * @version 0.1
- * @date 2021-06-29
- * 
- * @copyright Dalhousie Space Systems Lab (c) 2021
- * 
- */
  * @author Iftekhar Hossain (mdiftekharhr@gmail.com)
  * @brief Test module
  * @version 0.1
