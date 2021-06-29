@@ -10,16 +10,18 @@
  */
 
 
-#include "test_module.h"
+#include "test_module_2.h"
 
 START_MODULE(test_module_2) {
-   OK(ipc_connect("tst2"));
+   OK(ipc_connect("tvt"));
    //send a message
    char msg[] = "Testing for IPC connection";
    OK(ipc_send("tst", msg, strlen(msg)));
-   sleep(1000);
+   sleep(30);
 }
  
+
+
 STOP_MODULE(test_module_2) {
  OK(ipc_disconnect());
 

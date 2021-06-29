@@ -10,11 +10,11 @@
  */
 
 
-#ifndef CUBESAT_CORE_MODULES_TEST_MODULE_H
-#define CUBESAT_CORE_MODULES_TEST_MODULE_H
+#ifndef CUBESAT_CORE_MODULES_TEST_MODULE_2_H
+#define CUBESAT_CORE_MODULES_TEST_MODULE_2_H
 
 #include "subsysmod.h"
 
-NEW_DOCK_MODULE(test_module);
+NEW_DOCK_MODULE(test_module_2);
 
 #endif

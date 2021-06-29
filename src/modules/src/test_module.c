@@ -10,20 +10,20 @@
  */
 
 #include "test_module.h"
+;
 
 START_MODULE(test_module) {
-   OK(ipc_connect("tst"));
-   //send a message
-   char msg[] = "Testing for IPC connection";
-   OK(ipc_send("gps", msg, strlen(msg)));
-   sleep(1000);
 
- 
-  for (;;) {
-    OK(ipc_refresh())
+  OK(ipc_connect("tst"));
+
+  char TEST[MAX_MSG_LEN];
+  OK(ipc_recv("tvt", TEST, MAX_MSG_LEN, NO_TIMEOUT ));
+
+  modprintf("Message has been recieved.");
+  sleep(30);
   }
-}
- 
+
+
 STOP_MODULE(test_module) {
  OK(ipc_disconnect());
 

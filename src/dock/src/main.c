@@ -21,6 +21,7 @@
 #include "payload_module.h"
 #include "rf_module.h"
 #include "test_module.h"
+#include "test_module_2.h"
 
 // Standard C libraries
 #include <signal.h>
@@ -34,7 +35,7 @@ static int modules_len = 0;
 int main() {
   // Create list of server containers
   SubsystemModule modules[] = {
-      payload, gps, command, mission, rf, test_module,
+       test_module, test_module_2
   };
   modules_len = sizeof(modules) / sizeof(SubsystemModule);
 
