@@ -1,0 +1,8 @@
+#ifndef CUBESAT_CORE_MODULES_TEST_MODULE_H
+#define CUBESAT_CORE_MODULES_TEST_MODULE_H
+
+#include "subsysmod.h"
+
+NEW_DOCK_MODULE(test_module);
+
+#endif
