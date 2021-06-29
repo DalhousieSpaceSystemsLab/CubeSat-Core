@@ -1,33 +1,29 @@
 /**
- * @file test_module.c
+ * @file test_module_2.c
  * @author Iftekhar Hossain (mdiftekharhr@gmail.com)
- * @brief Test module
+ * @brief 
  * @version 0.1
- * @date 2021-06-24
+ * @date 2021-06-29
  * 
  * @copyright Dalhousie Space Systems Lab (c) 2021
  * 
  */
 
+
 #include "test_module.h"
 
-START_MODULE(test_module) {
-   OK(ipc_connect("tst"));
+START_MODULE(test_module_2) {
+   OK(ipc_connect("tst2"));
    //send a message
    char msg[] = "Testing for IPC connection";
-   OK(ipc_send("gps", msg, strlen(msg)));
+   OK(ipc_send("tst", msg, strlen(msg)));
    sleep(1000);
-
- 
-  for (;;) {
-    OK(ipc_refresh())
-  }
 }
  
-STOP_MODULE(test_module) {
+STOP_MODULE(test_module_2) {
  OK(ipc_disconnect());
 
 
 }
 
-EXPORT_MODULE(test_module);
+EXPORT_MODULE(test_module_2);
