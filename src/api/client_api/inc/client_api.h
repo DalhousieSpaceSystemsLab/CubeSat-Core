@@ -171,6 +171,14 @@ int ipc_create_listener(char src[NAME_LEN],
 int ipc_remove_listener(char src[NAME_LEN]);
 
 /**
+ * @brief Get list of active dibs in the client
+ *
+ * @param dibs_out MsgReqDib array of at least MAX_NUM_DIBS in size.
+ * @return 0+ = number of dibs returned, -1 = FAIL
+ */
+int ipc_get_active_listeners(MsgReqDib* dibs_out);
+
+/**
  * @brief Refreshes all background message listeners and triggers callback if
  * applicable. See ipc_qrecv(). Equivalent to ipc_refresh_src("*").
  *
