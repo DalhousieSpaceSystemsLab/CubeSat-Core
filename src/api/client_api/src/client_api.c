@@ -519,6 +519,20 @@ int ipc_remove_listener(char src[NAME_LEN]) {
   return MsgReqDib_remove(src, dibs, MAX_NUM_DIBS);
 }
 
+// Get list of active dibs in the client
+int ipc_get_active_listeners(MsgReqDib *dibs_out) {
+  int n_copied = 0;
+  for (int x = 0; x < MAX_NUM_DIBS; x++) {
+    MsgReqDib blank = MsgReqDib_new();
+    if (strncmp(dibs[x].name, blank.name, NAME_LEN) != 0) {
+      dibs_out[n_copied] = dibs[x];
+      n_copied++;
+    }
+  }
+
+  return n_copied;
+}
+
 // Simultaneously reads/writes all queued data
 int ipc_refresh() {
   return ipc_refresh_src("*", IPC_REFRESH_MSG | IPC_REFRESH_FLUSH);

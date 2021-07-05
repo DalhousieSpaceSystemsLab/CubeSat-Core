@@ -1,374 +1,273 @@
-/*
- * client.c
+/**
+ * @file client.c
+ * @author Alex Amellal (loris@alexamellal.com)
+ * @brief Client binary for the IPC for testing purposes
+ * @version 0.1
+ * @date 2021-07-02
  *
- *   purpose: Uses the client API to connect to the IPC.
- *   author: alex amellal
+ * @copyright Dalhousie Space Systems Lab (c) 2021
  *
  */
 
-// Project headers
-#include "client_api.h"
+#include "subsysmod.h"
 
 // Standard C libraries
-#include <pthread.h>
-#include <signal.h>
+#include <argp.h>
+#include <stdbool.h>
 #include <stdlib.h>
-#include <sys/select.h>
-#include <sys/time.h>
+#include <time.h>
 
-// Interrupt signal routine handler
-void isr(int sig);
+const char *argp_program_version = "IPC test client 0.1";
+const char *argp_program_bug_address = "<loris@alexamellal.com>";
+static char doc[] =
+    "Examples:\n\
+1. Connect to the IPC as <name>: \n\
+$ ./IPC_CLIENT.out <name>\n";
 
-// Callbacks for async communication
-static int cb_read(char* msg, size_t msg_len, void* data);
+/* The options we understand. */
+static struct argp_option options[] = {{0}};
 
-int main(int argc, char* argv[]) {
-  // Check argc
-  if (argc != 3) {
-    fprintf(stderr,
-            "Invalid number of arguments\n Try: ./client <name> "
-            "<read/write/async> (async is experimental)\n");
-    return -1;
+/* A description of the arguments we accept. */
+static char args_doc[] = "ARG1 \nARG2";
+
+/* Used by main to communicate with parse_opt. */
+struct arguments {
+  char *args[1]; /* arg1 */
+};
+
+/* Parse a single option. */
+static error_t parse_opt(int key, char *arg, struct argp_state *state) {
+  /* Get the input argument from argp_parse, which we
+     know is a pointer to our arguments structure. */
+  struct arguments *arguments = state->input;
+
+  switch (key) {
+    case ARGP_KEY_ARG:
+      if (state->arg_num >= 1) /* Too many arguments. */
+        argp_usage(state);
+
+      arguments->args[state->arg_num] = arg;
+
+      break;
+
+    // NOTE: only needed if minimum number of args after options
+    case ARGP_KEY_END:
+      if (state->arg_num < 1) /* Not enough arguments. */
+        argp_usage(state);
+      break;
+
+    default:
+      return ARGP_ERR_UNKNOWN;
   }
-
-  // Create placeholder for client name
-  char* name = argv[1];
-  char* rdwr = argv[2];
-
-  // Copy read/write setting into formatted array
-  char rdwr_fmt[5];
-  strcpy(rdwr_fmt, rdwr);
-
-  // Format rdwr real quick
-  if (strcmp(rdwr, "read") == 0) {
-    rdwr_fmt[4] = ' ';
-  }
-
-  // Check name length
-  if (strlen(name) != 3) {  // name is not correct length
-    fprintf(stderr, "name must be 3 characters long\n");
-    return -1;
-  }
-
-  // Connect to IPC system
-  if (ipc_connect(name) == -1) {  // ipc_connect() failed
-    fprintf(stderr, "Failed to connect to the ipc\n");
-    return -1;
-  }
-
-  // Welcome prompt
-  printf(
-      "\
-  ################################################\n\
-  #           IPC client example program         #\n\
-  ################################################\n\
-  #                  Settings                    #\n\
-  #  Name: %.3s                                   #\n\
-  #  Mode: %.5s                                 #\n\
-  ################################################\n\
-  #                                              #\n\
-  #     Press [CTRL + C] at any time to quit     #\n\
-  #                                              #\n\
-  ################################################\n\n",
-      name, rdwr_fmt);
-
-  // Check if client reading or writing
-  if (strcmp(rdwr, "read") == 0) {  // reading
-    printf("[waiting for incoming messages...]\n\n");
-
-    for (;;) {
-      // Create placeholder for incoming message
-      char src[NAME_LEN + 2];
-      char msg[MAX_MSG_LEN];
-
-      // Ask user for source filter
-      // printf("Please enter the desired source filter (* for wildcard): ");
-      // fgets(src, NAME_LEN+2, stdin);
-
-      // Read data
-      int bytes_read = -1;
-      if ((bytes_read = ipc_recv("*", msg, MAX_MSG_LEN, NO_TIMEOUT)) ==
-          -1) {  // ipc_recv() failed
-        fprintf(stderr, "ipc_recv() failed\n");
-        return -1;
-      }
-
-      // Print data
-      printf("message received: %s\n", msg);
-    }
-  }
-
-  else if (strcmp(rdwr, "write") == 0) {  // writing
-    for (;;) {
-      // Create placeholders for message to send
-      char dest[NAME_LEN + 2];
-      char msg[MAX_MSG_LEN + 2];
-
-      // Ask user for message and destination
-      printf("Enter destination's name: ");
-      fgets(dest, NAME_LEN + 2, stdin);
-
-      // Ask user for message
-      printf("Enter message: ");
-      fgets(msg, MAX_MSG_LEN + 2, stdin);
-
-      // Check if both entries are the [ENTER] key
-      if (strncmp(dest, "\n", 1) == 0 && strncmp(msg, "\n", 1) == 0) {
-        // quit
-        break;
-      }
-
-      // Check if message 'quit'
-      if (strcmp(msg, "quit") == 0) {  // user is asking to quit
-        break;
-      }
-
-      // Send message to other client
-      if (ipc_send(dest, msg, strlen(msg)) == -1) {  // ipc_send() failed
-        fprintf(stderr, "ipc_send() failed\n");
-        return -1;
-      }
-    }
-  }
-
-  else if (strcmp(rdwr, "async") == 0) {  // async communication
-    // Create placeholder for dibs
-    char dibs[MAX_NUM_DIBS][NAME_LEN + 2];
-    size_t dibs_len = 0;
-
-    // Get message dibs names from client
-    for (int x = 0; x < MAX_NUM_DIBS; x++) {
-      // Ask user to enter dib
-      printf("Enter a message source you'd like dibs on ([ENTER] when done): ");
-      fgets(dibs[x], NAME_LEN + 2, stdin);
-
-      // Check if user pressed enter
-      if (dibs[x][0] == '\n') break;
-
-      // Increment dibs counter
-      dibs_len++;
-    }
-
-    // Create message dibs in IPC
-    for (int x = 0; x < dibs_len; x++) {
-      // Check if ipc_qrecv failed
-      if (ipc_qrecv(dibs[x], cb_read, NULL, IPC_QRECV_MSG) != 0) {
-        fprintf(stderr, "ipc_qrecv() failed\n");
-        return -1;
-      }
-    }
-
-    // Loop on demand. Give user choice between refresh and send msg. //
-
-    // Prompt instructions
-    printf("### Message Loop ###\n");
-    printf("Enter [r] to refresh incoming messages.\n");
-    printf("Enter [s] to send a message\n");
-    printf("Enter [d] to add a dib\n");
-    printf("Enter [j] to send key-value pairs\n");
-    printf("Press [ENTER] to quit\n\n");
-
-    for (;;) {
-      // Create placeholder for input
-      char ans[1 + 2];
-
-      // Prompt user for input
-      printf("> ");
-      fflush(stdout);
-
-      // Get input
-      fgets(ans, 1 + 2, stdin);
-
-      // Check if enter, refresh or send
-      if (ans[0] == '\n') {
-        // Quit
-        break;
-      } else if (ans[0] == 'r') {
-        // Refresh
-        if (ipc_refresh() != 0) {
-          fprintf(stderr, "ipc_refresh() failed\n");
-          return -1;
-        }
-      } else if (ans[0] == 's') {
-        // Create placeholder for message
-        char msg[MAX_MSG_LEN + 2];
-
-        // Get message from user
-        printf(">> ");
-        fgets(msg, MAX_MSG_LEN + 2, stdin);
-
-        // Remove newline character
-        for (int x = 0; x < MAX_MSG_LEN; x++) {
-          if (msg[x] == '\n') {
-            for (int y = x; y < MAX_MSG_LEN + 1; y++) {
-              msg[y] = msg[y + 1];
-            }
-          }
-        }
-
-        // Separate name from msg
-        char name[NAME_LEN];
-        char msg_nameless[MAX_MSG_LEN];
-        strncpy(name, msg, NAME_LEN);
-        strncpy(msg_nameless, &msg[NAME_LEN + 1], MAX_MSG_LEN - (NAME_LEN + 1));
-
-        // Send message
-        if (ipc_send(name, msg_nameless, strlen(msg_nameless)) != 0) {
-          fprintf(stderr, "ipc_send() failed\n");
-          return -1;
-        }
-      } else if (ans[0] == 'd') {
-        // Create placeholder for dibs dest
-        char src[NAME_LEN + 2];
-
-        // Get src name from user
-        printf("[dib src] >> ");
-        fgets(src, NAME_LEN + 2, stdin);
-
-        // Add dib
-        if (ipc_qrecv(src, cb_read, NULL, IPC_QRECV_MSG) != 0) {
-          fprintf(stdout, "ipc_qrecv() failed\n");
-          return -1;
-        }
-
-        // Confirm
-        printf("[i] Dib successfully added\n\n");
-
-      } else if (ans[0] == 'j') {
-        char dest[NAME_LEN + 2];
-        int max_kv = 5, total_kv = 0;
-        json_t kv_pairs[max_kv];
-
-        printf("[dest]> ");
-        fgets(dest, NAME_LEN + 2, stdin);
-
-        printf("Press [ENTER] to stop entering key-value pairs\n");
-        for (int x = 0; x < max_kv; x++, total_kv++) {
-          printf("[key]> ");
-          fgets(kv_pairs[x].key, JSON_KEY_LEN, stdin);
-          printf("[value]> ");
-          fgets(kv_pairs[x].val, JSON_VAL_LEN, stdin);
-
-          if (kv_pairs[x].key[0] == '\n' || kv_pairs[x].val[0] == '\n') break;
-
-          for (int y = 0; y < JSON_KEY_LEN; y++) {
-            if (kv_pairs[x].key[y] == '\n') kv_pairs[x].key[y] = '\0';
-          }
-          for (int y = 0; y < JSON_VAL_LEN; y++) {
-            if (kv_pairs[x].val[y] == '\n') kv_pairs[x].val[y] = '\0';
-          }
-        }
-
-        if (ipc_send_json(dest, kv_pairs, total_kv) < 0) {
-          fprintf(stderr, "ipc_send_json() failed\n");
-          return -1;
-        }
-
-      } else {
-        // Not a recognized option, skip
-        continue;
-      }
-    }
-  } else if (strcmp(rdwr, "json") == 0) {
-    // Create JSON data
-    json_t data[] = {{.key = "name", .val = "alex"},
-                     {.key = "gender", .val = "alpha male"},
-                     {.key = "age", .val = "19"}};
-    size_t data_len = sizeof(data) / sizeof(json_t);
-
-    // Send over IPC
-    if (ipc_send_json("alx", data, data_len) < 0) {
-      fprintf(stderr, "ipc_send_json() failed\n");
-      return -1;
-    }
-
-    // Stringify JSON
-    char json_str[128];
-    int json_str_len = 0;
-    if ((json_str_len = json_stringify(data, data_len, json_str, 128)) < 0) {
-      fprintf(stderr, "json_stringify() failed\n");
-      return -1;
-    }
-
-    // Test json
-    bool json_pass = json_test(json_str, json_str_len);
-    printf("[i] json_test results: %s\n", json_pass ? "true" : "false");
-
-    // Wait a sec
-    sleep(1);
-
-  } else if (strcmp(rdwr, "packet") == 0) {
-    char data[MAX_PACKET_LEN] =
-        "alx < waddup man this is cool > alx < here is another message >";
-    size_t data_len = strlen(data);
-    char overflow[MAX_PACKET_LEN];
-    int overflow_len = -1;
-    ipc_packet_t packet;
-
-    while (overflow_len) {
-      if ((overflow_len = ipc_packet_parse(data, data_len, &packet, overflow)) <
-          0) {
-        fprintf(stderr, "ipc_packet_parse() failed\n");
-        return -1;
-      }
-      printf("[i] packet successfully parsed:\n");
-      printf("[addr] = %.*s , [msg] = %.*s\n", NAME_LEN, packet.addr,
-             packet.msg_len, packet.msg);
-      printf("[overflow] = %.*s\n\n", overflow_len ? overflow_len : 4,
-             overflow_len ? overflow : "none");
-
-      strncpy(data, overflow, overflow_len);
-      data_len = overflow_len;
-    }
-
-  } else {  // bad keyword
-    fprintf(stderr, "invalid setting. try ./client <name> <read/write>\n");
-    return -1;
-  }
-
-  // printf("presss [ENTER] to quit\n");
-  // fgetc(stdin);
-
-  // Close IPC
-  ipc_disconnect();
-
-  // done
   return 0;
 }
 
-// Interrupt signal routine
-void isr(int sig) {
-  switch (sig) {
-    case SIGINT:
-      ipc_disconnect();
-      exit(0);
-      break;
+/* Our argp parser. */
+static struct argp argp = {options, parse_opt, args_doc, doc};
+
+// Default IPC callback
+CALLBACK(standard) {
+  if (((char *)data)[0] == '*') {
+    printf("[i] Listener for %.*s has received an incoming message: %.*s\n", 1,
+           (char *)data, msg_len, msg);
+  } else {
+    printf("[i] Listener for %.*s has received an incoming message: %.*s\n",
+           NAME_LEN, (char *)data, msg_len, msg);
   }
 }
 
-// Callback for async communication
-static int cb_read(char* msg, size_t msg_len, void* data) {
-  // Check if incoming message is a key-value pair
-  if (json_test(msg, msg_len)) {
-    int max_kv = 5;
-    json_t json[max_kv];
-    int kv_parsed = 0;
-    if ((kv_parsed = json_parse(msg, msg_len, json, max_kv)) < 0) {
-      fprintf(stderr, "json_parse() failed\n");
-      return -1;
+int main(int argc, char *argv[]) {
+  // Setup default values
+  struct arguments arguments = {.args[0] = "xxx"};
+
+  // Parse arguments
+  argp_parse(&argp, argc, argv, 0, 0, &arguments);
+
+  // Connect to the IPC
+  OK(ipc_connect(arguments.args[0]));
+  char *name = arguments.args[0];
+
+  // Main prompt
+  printf(
+      "####################################\n"
+      "#             IPC Client           #\n"
+      "####################################\n"
+      "# Options:                         #\n"
+      "# - Create a listener  (N)         #\n"
+      "# - Start refresh loop (L)         #\n"
+      "# - Receive a message  (R)         #\n"
+      "# - Send a message     (S)         #\n"
+      "# - Remove a listener  (D)         #\n"
+      "# - Show listeners     (+)         #\n"
+      "# - Quit               (Q)         #\n"
+      "####################################\n");
+
+  // Main loop
+  for (;;) {
+    bool quit = false;
+
+    // Prompt input
+    int ilen = 1;
+    char input[ilen + 2];
+    printf("%.*s >> ", NAME_LEN, name);
+    fgets(input, ilen + 2, stdin);
+
+    // Extract selection from input
+    char selection = input[0];
+
+    // Parse options
+    switch (selection) {
+      case 'N':
+      case 'n':
+        printf("[i] Creating a new listener...\n");
+
+        // Get listener source name
+        char src[NAME_LEN + 2];
+        printf("[?] Enter the source to listen to: ");
+        fgets(src, NAME_LEN + 2, stdin);
+
+        // MALLOC WARNING
+        // Don't forget to free() all of the sources when removing listeners
+        char *src_storage = malloc(NAME_LEN);
+        if (src_storage != NULL) {
+          strcpy(src_storage, src);
+        } else {
+          strcpy(src_storage, "xxx");
+        }
+
+        // Create listener
+        ON_FAIL(ipc_create_listener(src, standard, src_storage), quit = true;
+                break);
+
+        printf("[i] Listener for %.*s created.\n", NAME_LEN, src);
+
+        printf("[i] Done.\n");
+        break;
+      case 'L':
+      case 'l':
+        // Get loop duration
+        printf(
+            "[?] How long would you like to run the loop? (in seconds) (0 = "
+            "forever): ");
+        char duration_in[7];
+        fgets(duration_in, 7, stdin);
+        int duration = atoi(duration_in);
+
+        if (duration) {
+          printf("[i] Starting refresh loop & running for %d seconds...\n",
+                 duration);
+        } else {
+          printf(
+              "[i] Start refresh loop & running indefinitely... ([CTRL+C] to "
+              "quit)\n");
+          duration = -1;
+        }
+
+        time_t start = time(NULL);
+        while (time(NULL) - start < duration || duration == -1) {
+          ON_FAIL(ipc_refresh(), quit = true; break);
+        }
+
+        printf("[i] Time alloted to refresh loop elapsed.\n");
+        printf("[i] Done.\n");
+        break;
+      case 'R':
+      case 'r':
+        // Get receive source
+        printf("[?] Set the receive source filter: ");
+        char src_in[NAME_LEN + 2];
+        fgets(src_in, NAME_LEN + 2, stdin);
+
+        // Get receive timeout
+        printf(
+            "[?] Set the timeout for the message receipt (in seconds) (0 = no "
+            "timeout): ");
+        char timeout_in[7];
+        fgets(timeout_in, 7, stdin);
+        int timeout = atoi(timeout_in);
+
+        if (timeout) {
+          printf("[i] Listening for a message from %.*s for %d seconds...\n",
+                 NAME_LEN, src_in, timeout);
+        } else {
+          printf("[i] Listening for a message from %.*s...\n", NAME_LEN,
+                 src_in);
+        }
+
+        char msg[MAX_MSG_LEN];
+        int msg_len;
+        IF_TIMEOUT((msg_len = ipc_recv(src_in, msg, MAX_MSG_LEN, timeout)),
+                   printf("[i] Read timed out.\n"));
+
+        printf("[i] Message received: %.*s\n", msg_len, msg);
+        printf("[i] Done.\n");
+        break;
+      case 'S':
+      case 's':
+        // Get destination
+        printf("[?] Enter the destination name: ");
+        char dest[NAME_LEN + 2];
+        fgets(dest, NAME_LEN + 2, stdin);
+
+        // Get message
+        printf("[?] Enter the message to send: ");
+        char msg_in[MAX_MSG_LEN + 2];
+        fgets(msg_in, MAX_MSG_LEN + 2, stdin);
+
+        // Null terminate instead of newline terminate
+        for (int x = 0; x < MAX_MSG_LEN; x++) {
+          if (msg_in[x] == '\n') msg_in[x] = '\0';
+        }
+
+        printf("[i] Message (%s) will be sent to %.*s\n", msg_in, NAME_LEN,
+               dest);
+
+        ON_FAIL(ipc_send(dest, msg_in, strlen(msg_in)), quit = true; break);
+
+        printf("[i] Message sent.\n");
+        printf("[i] Done.\n");
+        break;
+
+      case 'D':
+      case 'd':
+        printf("[?] Enter the source of the filter you'd like to remove: ");
+        fgets(src_in, NAME_LEN + 2, stdin);
+
+        printf("[i] Listener for (%.*s) will be removed...\n", NAME_LEN,
+               src_in);
+
+        ON_FAIL(ipc_remove_listener(src_in), quit = true; break);
+
+        printf("[i] Listener has been removed.\n");
+        printf("[i] Done.\n");
+        break;
+
+      case '+':
+        printf("[i] List of active listeners:\n");
+
+        MsgReqDib active_dibs[MAX_NUM_DIBS];
+        int n_dibs = ipc_get_active_listeners(active_dibs);
+        for (int x = 0; x < n_dibs; x++) {
+          printf("    -> %d. %.*s\n", x + 1, NAME_LEN, active_dibs[x].name);
+        }
+
+        printf("[i] Done.\n");
+        break;
+
+      case 'Q':
+      case 'q':
+        printf("[i] Quitting client...\n");
+        quit = true;
+        break;
     }
-    for (int x = 0; x < kv_parsed; x++) {
-      printf("[pair %d] %s : %s\n", x, json[x].key, json[x].val);
-    }
-    return -1;
+
+    if (quit) break;
   }
 
-  char args[10][MAX_ARG_LEN];
-  int argc = ipc_get_args(msg, msg_len, args, 10);
+  // Disconnect from the IPC
+  OK(ipc_disconnect());
 
-  // Print message
-  printf("Number of args = %d\n", argc);
-  for (int x = 0; x < argc; x++) printf("arg[%d] = %s, ", x, args[x]);
-  printf("\n");
-  printf("Incoming message: %.*s\n", msg_len, msg);
+  printf("[i] Done.\n");
+
+  return 0;
 }
