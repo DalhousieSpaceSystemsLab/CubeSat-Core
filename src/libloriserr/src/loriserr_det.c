@@ -29,7 +29,8 @@ void LORISERR_DET_REPORT(struct LORISERR_TICKET ticket) {
     // Get current time
     struct timeval tv;
     gettimeofday(&tv, NULL);
-    struct tm* tm_info = localtime(tv.tv_sec);
+    time_t current_time = time(NULL);
+    struct tm* tm_info = localtime(&current_time);
 
     // Format date and time
     char datentime[24];
@@ -44,15 +45,15 @@ void LORISERR_DET_REPORT(struct LORISERR_TICKET ticket) {
 
     // Report according to level
     if (ticket.loris_errno & LORISERR_LVL_API) {
-      fprintf(stderr, "[API ->");
+      fprintf(stderr, "[API -> ");
     } else if (ticket.loris_errno & LORISERR_LVL_MOD) {
-      fprintf(stderr, "[MOD ->");
+      fprintf(stderr, "[MOD -> ");
     } else if (ticket.loris_errno & LORISERR_LVL_DCK) {
-      fprintf(stderr, "[DCK ->");
+      fprintf(stderr, "[DCK -> ");
     } else if (ticket.loris_errno & LORISERR_LVL_SYS) {
-      fprintf(stderr, "[SYS ->");
+      fprintf(stderr, "[SYS -> ");
     } else if (ticket.loris_errno & LORISERR_LVL_HRD) {
-      fprintf(stderr, "[HRD ->");
+      fprintf(stderr, "[HRD -> ");
     }
 
     // Report subsystem

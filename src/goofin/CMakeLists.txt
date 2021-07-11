@@ -161,6 +161,7 @@ endif(BUILD_EXAMPLES)
 target_link_libraries(${EXE} PUBLIC JTOK)
 target_link_libraries(${EXE} PUBLIC LIB_IPC)
 target_link_libraries(${EXE} PUBLIC CLIENT_API)
+target_link_libraries(${EXE} PUBLIC loriserr)
 
 # DEBUG 
 target_compile_options(${EXE} PUBLIC "-g")
