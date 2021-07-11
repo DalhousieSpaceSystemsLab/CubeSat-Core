@@ -57,21 +57,28 @@ void LORISERR_DET_REPORT(struct LORISERR_TICKET ticket) {
 
     // Report subsystem
     if (ticket.loris_errno & LORISERR_SUB_RF) {
-      fprintf(stderr, "RF ->");
+      fprintf(stderr, "RF -> ");
     } else if (ticket.loris_errno & LORISERR_SUB_ACS) {
-      fprintf(stderr, "ACS ->");
+      fprintf(stderr, "ACS -> ");
     } else if (ticket.loris_errno & LORISERR_SUB_PAY) {
-      fprintf(stderr, "PAY ->");
+      fprintf(stderr, "PAY -> ");
     } else if (ticket.loris_errno & LORISERR_SUB_POW) {
-      fprintf(stderr, "POW ->");
+      fprintf(stderr, "POW -> ");
     } else if (ticket.loris_errno & LORISERR_SUB_GPS) {
-      fprintf(stderr, "GPS ->");
+      fprintf(stderr, "GPS -> ");
     } else if (ticket.loris_errno & LORISERR_SUB_GEN) {
-      fprintf(stderr, "GEN ->");
+      fprintf(stderr, "GEN -> ");
     } else if (ticket.loris_errno & LORISERR_SUB_CORE) {
-      fprintf(stderr, "CORE ->");
+      fprintf(stderr, "CORE -> ");
     }
 
     // Report type
+    if (ticket.loris_errno & LORISERR_T_NULL_PTR) {
+      fprintf(stderr, "NULL_PTR] ");
+    } else if (ticket.loris_errno & LORISERR_T_FOPEN_FAIL) {
+      fprintf(stderr, "FOPEN_FAIL] ");
+    } else if (ticket.loris_errno & LORISERR_T_MALLOC_FAIL) {
+      fprintf(stderr, "MALLOC_FAIL] ");
+    }
   }
 }
