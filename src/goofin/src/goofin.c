@@ -11,12 +11,15 @@
 
 #include <errno.h>
 #include <stdio.h>
-#include "loriserr_det.h"
+
+#define PART_THREE(x) \
+  if (x > 0) printf("my_num = %d\n", my_num)
+#define PART_TWO(x) PART_THREE(x)
+#define PART_ONE(x) PART_TWO(x)
 
 int main() {
-  struct LORISERR_TICKET tkt = LORISERR_DET_CTX(
-      LORISERR_LVL_API | LORISERR_SUB_GEN | LORISERR_T_MALLOC_FAIL, time(NULL),
-      __FUNCTION__, errno);
-  LORISERR_DET_REPORT(tkt);
+  int my_num = 10;
+  PART_ONE(1);
+
   return 0;
 }

@@ -12,9 +12,17 @@
 #ifndef CUBESAT_CORE_LIBLORISERR_LORISERR_H
 #define CUBESAT_CORE_LIBLORISERR_LORISERR_H
 
+#include "loriserr_det.h"
+
 //  Macros  //
 
-#define LORISERR_DET(val) 0
+#define LORISERR_DET(val)                                       \
+  ({                                                            \
+    struct LORISERR_TICKET _loriserr_tkt_ =                     \
+        LORISERR_DET_CTX(val, time(NULL), __FUNCTION__, errno); \
+    LORISERR_DET_REPORT(_loriserr_tkt_);                        \
+    _loriserr_tkt_;                                             \
+  })
 #define LORISERR_FIX(ctx) 0
 #define LORISERR_RESET(state) 0
 
