@@ -1,29 +1,22 @@
 /**
- * filesystem_module.h
- *
- * purpose: Stores, retrieves and organizes files on the
- *          satellite's filesystem.
- * author:  alex amellal
- *
+ * @file filesystem_module.h
+ * @author Iftekhar Hossain (mdiftekharhr@gmail.com)
+ * @brief 
+ * @version 0.1
+ * @date 2021-07-14
+ * 
+ * @copyright Dalhousie Space Systems Lab (c) 2021
+ * 
  */
 
-#ifndef CUBESAT_CORE_INCLUDE_SUBSYSTEM_SERVERS_FILESYSTEM_H
-#define CUBESAT_CORE_INCLUDE_SUBSYSTEM_SERVERS_FILESYSTEM_H
+#ifndef CUBESAT_CORE_MODULES_FILESYSTEM_MODULE_H
+#define CUBESAT_CORE_MODULES_FILESYSTEM_MODULE_H
 
-// Macros
-#ifndef _XOPEN_SOURCE
-#define _XOPEN_SOURCE
-#endif
 
 // Project headers
-#include "ipc_std.h"
 #include "subsysmod.h"
 
-// Standard C libraries
-#include <signal.h>
-#include <string.h>
-
-// Subsystem module
-extern SubsystemModule filesystem_module;
+// Module name assignment
+NEW_DOCK_MODULE(filesystem_module);
 
 #endif

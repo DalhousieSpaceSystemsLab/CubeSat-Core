@@ -22,6 +22,7 @@
 #include "rf_module.h"
 #include "test_module.h"
 #include "test_module_2.h"
+#include "filesystem_module.h"
 
 // Standard C libraries
 #include <signal.h>
@@ -35,7 +36,7 @@ static int modules_len = 0;
 int main() {
   // Create list of server containers
   SubsystemModule modules[] = {
-       test_module, test_module_2
+       test_module, test_module_2, filesystem_module
   };
   modules_len = sizeof(modules) / sizeof(SubsystemModule);
 

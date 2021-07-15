@@ -1,56 +1,24 @@
 /**
- * filesystem.c
- *
- * purpose: Stores, retrieves and organizes files on the
- *          satellite's filesystem.
- * author:  alex amellal
- *
+ * @file filesystem_module.c
+ * @author Iftekhar Hossain (mdiftekharhr@gmail.com)
+ * @brief 
+ * @version 0.1
+ * @date 2021-07-14
+ * 
+ * @copyright Dalhousie Space Systems Lab (c) 2021
+ * 
  */
 
 #include "filesystem_module.h"
-#include "client_api.h"
+;
 
-// Public server control methods
-int filesystem_server_start(void*);
-int filesystem_server_stop(void*);
-
-// Callback methods
-static int cb_general(char* msg, size_t msg_len, void* data);
+// Callback general
+CALLBACK (general) {
+  
+}
 
 // Module functions
-
-// Server container
-SubsystemModule filesystem_module = {
-    .start = filesystem_server_start,
-    .stop = filesystem_server_stop,
-};
-
-// Start filesystem server
-int filesystem_server_start(void* data) {
-  // Connect to the IPC
-  if (ipc_connect(ipc.core.fls.name) != 0) {
-    fprintf(stderr,
-            "[fls] ipc_connect() failed : filesystem_server_start() failed\n");
-    return 0;
-  }
-
-  // Create listener for general requests
-  if (ipc_qrecv("*", cb_general, NULL, IPC_QRECV_MSG) < 0) {
-    fprintf(stderr, "[fls] ipc_qrecv(\"*\") failed\n");
-    return 0;
-  }
-
-  for (;;) {
-    if (ipc_refresh() < 0) {
-      fprintf(stderr, "[fls] ipc_refresh() failed");
-      return 0;
-    }
-  }
+START_MODULE(filesystem_module) {
+  OK(ipc_connect("fsm"));
+  
 }
-
-int filesystem_server_stop(void* data) {
-  // Disconnect from the IPC
-  ipc_disconnect();
-}
-
-static int cb_general(char* msg, size_t msg_len, void* data) {}
