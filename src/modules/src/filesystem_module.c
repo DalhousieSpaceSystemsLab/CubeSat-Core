@@ -20,5 +20,16 @@ CALLBACK (general) {
 // Module functions
 START_MODULE(filesystem_module) {
   OK(ipc_connect("fsm"));
-  
+  char TEST[MAX_MSG_LEN];
+
+  OK(ipc_create_listener("*", general, MAX_MSG_LEN));
+
+  //Refreshing message status
+  for(;;){
+    OK(ipc_refresh());
+  }
+}
+
+STOP_MODULE(filesystem_module){
+  OK(ipc_disconnect());
 }
