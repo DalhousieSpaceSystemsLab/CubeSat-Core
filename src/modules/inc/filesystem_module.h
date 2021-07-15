@@ -9,6 +9,7 @@
  * 
  */
 
+// filesystem module declaration
 #ifndef CUBESAT_CORE_MODULES_FILESYSTEM_MODULE_H
 #define CUBESAT_CORE_MODULES_FILESYSTEM_MODULE_H
 

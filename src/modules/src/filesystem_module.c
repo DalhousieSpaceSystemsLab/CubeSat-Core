@@ -33,3 +33,5 @@ START_MODULE(filesystem_module) {
 STOP_MODULE(filesystem_module){
   OK(ipc_disconnect());
 }
+
+EXPORT_MODULE(filesystem_module);
