@@ -12,14 +12,28 @@
 #include "test_module.h"
 ;
 
+CALLBACK (tvt) {
+  modprintf("Your message has been recieved: %c", msg);
+
+
+}
 START_MODULE(test_module) {
 
   OK(ipc_connect("tst"));
 
   char TEST[MAX_MSG_LEN];
+
+   OK(ipc_create_listener("*", tvt, MAX_MSG_LEN));
+  /*
   OK(ipc_recv("tvt", TEST, MAX_MSG_LEN, NO_TIMEOUT ));
 
   modprintf("Message has been recieved.");
+  */
+ //Refreshing message status
+ for (;;) {
+    OK(ipc_refresh())
+  }
+
   sleep(30);
   }
 

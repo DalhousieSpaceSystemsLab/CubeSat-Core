@@ -11,6 +11,7 @@
 
 
 #include "test_module_2.h"
+;
 
 START_MODULE(test_module_2) {
    OK(ipc_connect("tvt"));
