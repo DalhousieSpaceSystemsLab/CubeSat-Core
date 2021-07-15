@@ -4,3 +4,6 @@
 [submodule "src/JTOK"]
 	path = src/JTOK
 	url = https://github.com/cmattatall/JTOK.git
+[submodule "src/adcs"]
+	path = src/adcs
+	url = https://github.com/DalhousieSpaceSystemsLab/CubeSat-ADCS-Software.git
