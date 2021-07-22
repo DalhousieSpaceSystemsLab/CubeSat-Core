@@ -16,7 +16,8 @@ MsgReqDib MsgReqDib_new() {
 
 // Returns initialized dib
 MsgReqDib MsgReqDib_set(char name[NAME_LEN],
-                        int (*callback)(char *, size_t, void *), void *data) {
+                        int (*callback)(char *, char *, size_t, void *),
+                        void *data) {
   MsgReqDib dib = {.callback = callback, .data = data, .pid = -1};
   strncpy(dib.name, name, NAME_LEN);
 
@@ -96,7 +97,7 @@ bool MsgReqDib_exists(char name[NAME_LEN], MsgReqDib *array, size_t array_len) {
 
 // Checks in array for exact match of preexisting dib
 bool MsgReqDib_exists_exact(char name[NAME_LEN],
-                            int (*callback)(char *, size_t, void *),
+                            int (*callback)(char *, char *, size_t, void *),
                             MsgReqDib *array, size_t array_len) {
   // Search for existing dibs
   bool msg_has_dibs = false;

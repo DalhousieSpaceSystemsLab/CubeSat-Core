@@ -469,7 +469,8 @@ int ipc_qsend(char dest[NAME_LEN], char *msg, size_t msg_len) {
 }
 
 // Adds incoming message request to recv queue
-int ipc_qrecv(char src[NAME_LEN], int (*callback)(char *, size_t, void *),
+int ipc_qrecv(char src[NAME_LEN],
+              int (*callback)(char[NAME_LEN], char *, size_t, void *),
               void *data, int flags) {
   // Set which dibs array to refer to
   MsgReqDib *dibs_array;
@@ -509,7 +510,8 @@ int ipc_qrecv(char src[NAME_LEN], int (*callback)(char *, size_t, void *),
 
 // Creates background listener for incoming messages
 int ipc_create_listener(char src[NAME_LEN],
-                        int (*callback)(char *, size_t, void *), void *data) {
+                        int (*callback)(char[NAME_LEN], char *, size_t, void *),
+                        void *data) {
   return ipc_qrecv(src, callback, data, IPC_QRECV_MSG);
 }
 
@@ -624,7 +626,7 @@ int ipc_refresh_src(char src[NAME_LEN], int flags) {
             }
 
             // Run callback
-            dibs_array[x].callback(msg, msg_len, dibs_array[x].data);
+            dibs_array[x].callback(name, msg, msg_len, dibs_array[x].data);
 
             // done
             break;
@@ -735,7 +737,7 @@ int ipc_disconnect() {
 }
 
 // Callback for ipc_recv
-static int cb_recv(char *msg, size_t msg_len, void *data) {
+static int cb_recv(char *src, char *msg, size_t msg_len, void *data) {
   // Copy incoming message into data
   strncpy((char *)data, msg, msg_len);
   ((char *)data)[msg_len] = '\0';
