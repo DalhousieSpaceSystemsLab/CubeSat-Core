@@ -184,6 +184,7 @@ CALLBACK(general) {
 ```
 
 Although invisible when using the macro, there are 3 function parameters that are automatically passed to the callback function. They are:
+- `char* src` ==> pointer to name of the message source,
 - `char* msg` ==> pointer to the incoming message, 
 - `size_t msg_len` ==> length of the message stored at `msg`, 
 - `void* data` ==> custom pointer that you can setup (more on this later). 
@@ -194,9 +195,10 @@ An example use case of these parameters:
 ...
 
 CALLBACK(general) {
-  modprintf("Incoming message: %s\n", msg);   // <-- char* msg
-  modprintf("Message length: %d\n", msg_len); // <-- size_t msg_len
-  modprintf("Data pointer: %p\n", data);      // <-- void* data (may be NULL)
+  modprintf("Incoming message from %s: \n", src);   // <-- char src[3]
+  modprintf("Message content: %s\n", msg);          // <-- char* msg
+  modprintf("Message length: %d\n", msg_len);       // <-- size_t msg_len
+  modprintf("Data pointer: %p\n", data);            // <-- void* data (may be NULL)
 }
 
 ...
