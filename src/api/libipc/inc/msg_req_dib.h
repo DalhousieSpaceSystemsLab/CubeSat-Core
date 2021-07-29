@@ -26,7 +26,7 @@ extern "C" {
 // Message Request 'Dib' type
 typedef struct msg_req_dib {
   char name[NAME_LEN];
-  int (*callback)(char*, size_t, void*);
+  int (*callback)(char*, char*, size_t, void*);
   void* data;
   pid_t pid;
   char stack[MAX_DIB_STACK];
@@ -47,7 +47,8 @@ MsgReqDib MsgReqDib_new();
 
 // Returns initialized dib
 MsgReqDib MsgReqDib_set(char name[NAME_LEN],
-                        int (*callback)(char*, size_t, void*), void* data);
+                        int (*callback)(char*, char*, size_t, void*),
+                        void* data);
 
 // Appends or overwrites dib into dib array
 int MsgReqDib_add(MsgReqDib element, MsgReqDib* array, size_t array_len);
@@ -57,7 +58,7 @@ bool MsgReqDib_exists(char name[NAME_LEN], MsgReqDib* array, size_t array_len);
 
 // Checks in array for exact match of preexisting dib
 bool MsgReqDib_exists_exact(char name[NAME_LEN],
-                            int (*callback)(char*, size_t, void*),
+                            int (*callback)(char*, char*, size_t, void*),
                             MsgReqDib* array, size_t array_len);
 
 // Checks if callback for dib is running

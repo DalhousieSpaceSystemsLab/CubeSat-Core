@@ -28,7 +28,7 @@ static ipc_packet_t packets[MAX_NUM_PACKETS];  // Incoming packet queue
 //////////////////////
 
 // Callback which is used by ipc_recv
-static int cb_recv(char *, size_t, void *);
+static int cb_recv(char *, char *, size_t, void *);
 
 // Thread wrapper for callback methods
 static int cb_thread(void *data);
