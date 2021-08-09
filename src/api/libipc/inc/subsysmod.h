@@ -45,7 +45,8 @@ typedef struct subsystem_module {
 
 #define START_MODULE(name) int start_module_##name(void* data)
 #define STOP_MODULE(name) int stop_module_##name(void* data)
-#define CALLBACK(name) static int name(char* msg, size_t msg_len, void* data)
+#define CALLBACK(name) \
+  static int name(char src[NAME_LEN], char* msg, size_t msg_len, void* data)
 #define STOP_CALLBACK return 0
 
 #ifdef __cplusplus
