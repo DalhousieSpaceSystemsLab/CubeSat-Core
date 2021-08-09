@@ -13,7 +13,7 @@
 #define CUBESAT_CORE_LIBLORISERR_LORISERR_TICKET_H
 
 #include <errno.h>
-#include "time.h"
+#include <time.h>
 
 struct LORISERR_TICKET {
   int loris_errno;     // LORISERR error number

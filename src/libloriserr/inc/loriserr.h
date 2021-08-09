@@ -13,6 +13,7 @@
 #define CUBESAT_CORE_LIBLORISERR_LORISERR_H
 
 #include "loriserr_det.h"
+#include "loriserr_fix.h"
 
 //  Macros  //
 

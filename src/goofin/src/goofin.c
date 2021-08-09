@@ -9,17 +9,17 @@
  *
  */
 
-#include <errno.h>
 #include <stdio.h>
+#include "loriserr.h"
 
-#define PART_THREE(x) \
-  if (x > 0) printf("my_num = %d\n", my_num)
-#define PART_TWO(x) PART_THREE(x)
-#define PART_ONE(x) PART_TWO(x)
+#define STR(x) SUBSTR(x)
+#define SUBSTR(x) #x
 
 int main() {
-  int my_num = 10;
-  PART_ONE(1);
+  printf("str = %s\n",
+         STR(LORISERR_FIX_CAT(
+             LORISERR_ACTION_,
+             LORISERR_FIX_RESOLVE(LORISERR_LVL_MOD | LORISERR_SUB_CORE))));
 
   return 0;
 }
