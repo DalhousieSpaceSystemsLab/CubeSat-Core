@@ -18,7 +18,7 @@ extern "C" {
 
 // IPC
 #define MAX_NUM_CLI 16
-#define MAX_MSG_LEN 128
+#define MAX_MSG_LEN 256
 #define NAME_LEN 3
 #define MAX_ARG_LEN 32
 #define READ_BLOCK_DELAY \
