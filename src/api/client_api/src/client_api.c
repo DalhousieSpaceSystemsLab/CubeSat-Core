@@ -292,7 +292,7 @@ bool ipc_check_cmd(const char *cmd, const char *expected_fmt, ...) {
 
   // Lazy compare args
   bool cmd_matches = false;
-  for (int x = 0; x < expected_argc; x++) {
+  for (int x = 0; x < expected_argc && x < cmd_argc; x++) {
     if (strcmp(expected_args[x], cmd_args[x]) == 0) {
       cmd_matches = true;
     } else {
