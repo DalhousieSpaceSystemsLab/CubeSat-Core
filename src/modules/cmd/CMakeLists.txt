@@ -12,9 +12,9 @@ option(BUILD_EXAMPLES "[ON/OFF] Build examples in addition to library" ON)
 #  PROJECT INIT
 ################################################################################
 project(
-    MODULES
+    MODULE_CMD
     VERSION 1.0
-    DESCRIPTION "CLIENT CREATION API LIBRARY FOR IPC"
+    DESCRIPTION "COMMAND MODULE FOR LORIS CORE SOFTWARE"
     LANGUAGES C CXX
 )
 set(LIB "${PROJECT_NAME}") # this is PROJECT_NAME, NOT CMAKE_PROJECT_NAME
@@ -27,12 +27,8 @@ else()
 endif(TARGET ${LIB})
 
 
-################################################################################
-# Include module folders
-################################################################################
 
 
-add_subdirectory(cmd)
 
 
 ################################################################################
@@ -147,8 +143,6 @@ target_compile_options(${LIB} PUBLIC "-g")
 ################################################################################
 target_link_libraries(${LIB} PUBLIC LIB_IPC)
 target_link_libraries(${LIB} PUBLIC CLIENT_API)
-target_link_libraries(${LIB} PUBLIC LIB_PAYLOAD)
-target_link_libraries(${LIB} PUBLIC MODULE_CMD)
 
 #Link against pthread
 find_package(Threads REQUIRED)
