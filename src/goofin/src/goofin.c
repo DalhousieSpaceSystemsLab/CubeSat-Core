@@ -15,11 +15,4 @@
 #define STR(x) SUBSTR(x)
 #define SUBSTR(x) #x
 
-int main() {
-  printf("str = %s\n",
-         STR(LORISERR_FIX_CAT(
-             LORISERR_ACTION_,
-             LORISERR_FIX_RESOLVE(LORISERR_LVL_MOD | LORISERR_SUB_CORE))));
-
-  return 0;
-}
+int main() { return 0; }

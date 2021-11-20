@@ -24,7 +24,7 @@
     LORISERR_DET_REPORT(_loriserr_tkt_);                        \
     _loriserr_tkt_;                                             \
   })
-#define LORISERR_FIX(ctx) 0
+#define LORISERR_FIX(func, ctx) 0
 #define LORISERR_RESET(state) 0
 
 #endif
