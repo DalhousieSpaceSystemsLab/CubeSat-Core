@@ -200,7 +200,7 @@ endfunction(add_library lib)
 endif(NOT COMMAND _add_library)
 
 # dependencies come first
-add_subdirectory(JTOK)
+#add_subdirectory(JTOK)
 add_subdirectory(libloriserr)
 add_subdirectory(api/libipc)
 add_subdirectory(api/client_api)
