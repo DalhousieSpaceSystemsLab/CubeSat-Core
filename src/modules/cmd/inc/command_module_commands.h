@@ -15,10 +15,12 @@
 #define CMD_TAKE_PICTURE_GPS cmd, "%s %s", ipc.core.cmd.cmd.take_picture, "gps"
 #define CMD_TAKE_PICTURE_TIME \
   cmd, "%s %s", ipc.core.cmd.cmd.take_picture, "time"
+#define CMD_TAKE_PICTURE cmd, "%s", ipc.pay.cmd.take_pic
 
 enum {
   CMD_TAKE_PICTURE_GPS_ID = 100,
   CMD_TAKE_PICTURE_TIME_ID,
+  CMD_TAKE_PICTURE_ID,
 };
 
 #endif

@@ -11,7 +11,7 @@
 
 #include "command_module_util.h"
 
-int parse_cmd(char* cmd, size_t cmd_len) {
+int cmd_parse(char* cmd, size_t cmd_len) {
   // Get args
   int argc = ipc_get_n_args(cmd, cmd_len);
   char argv[argc][MAX_ARG_LEN];
@@ -22,6 +22,8 @@ int parse_cmd(char* cmd, size_t cmd_len) {
     return CMD_TAKE_PICTURE_GPS_ID;
   } else if (ipc_check_cmd(CMD_TAKE_PICTURE_TIME)) {
     return CMD_TAKE_PICTURE_TIME_ID;
+  } else if (ipc_check_cmd(CMD_TAKE_PICTURE)) {
+    return CMD_TAKE_PICTURE_ID;
   }
 
   // done, no command identified

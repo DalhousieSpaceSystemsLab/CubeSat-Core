@@ -20,6 +20,15 @@
 // Standard C libraries
 #include <stddef.h>
 
-int parse_cmd(char* cmd, size_t cmd_len);
+/**
+ * @brief Parses a command for the command module and returns a command ID.
+ * See command_module_commands.h for the list of commands and their respective
+ * IDs.
+ *
+ * @param cmd Message containing the command to parse.
+ * @param cmd_len Length of the message to interpret in bytes.
+ * @return Returns a command ID or 0 if no command identified.
+ */
+int cmd_parse(char* cmd, size_t cmd_len);
 
 #endif

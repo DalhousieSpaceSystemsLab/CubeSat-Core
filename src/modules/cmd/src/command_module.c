@@ -23,7 +23,7 @@ START_MODULE(command) {
                continue);
 
     // Parse command
-    int cmd_id = parse_cmd(cmd, strlen(cmd));
+    int cmd_id = cmd_parse(cmd, strlen(cmd));
 
     // Check if GPS condition provided
     if (cmd_id == CMD_TAKE_PICTURE_GPS_ID) {
@@ -52,9 +52,8 @@ START_MODULE(command) {
 
       // Forward command to the mission module
       OK(ipc_send_cmd(ipc.core.msn.name, "%s %s %s %f %f %f %f",
-                      ipc.core.msn.cmd.qmsn, "gps",
-                      ipc.core.cmd.cmd.take_picture, gps_min[0], gps_min[1],
-                      gps_max[0], gps_max[1]));
+                      ipc.core.msn.cmd.qmsn, "gps", ipc.pay.cmd.take_pic,
+                      gps_min[0], gps_min[1], gps_max[0], gps_max[1]));
 
       // Check if time condition provided
     } else if (cmd_id == CMD_TAKE_PICTURE_TIME_ID) {
@@ -72,9 +71,16 @@ START_MODULE(command) {
       // Get time
       time_t t = atol(args[2]);
 
+      modprintf("About to ask mission to take picture at time %ld\n", t);
+
       // Forward to mission module
       OK(ipc_send_cmd(ipc.core.msn.name, "%s %s %s %ld", ipc.core.msn.cmd.qmsn,
-                      "time", ipc.core.cmd.cmd.take_picture, t));
+                      "time", ipc.pay.cmd.take_pic, t));
+
+      // Check for commands for other subsystems
+    } else if (cmd_id == CMD_TAKE_PICTURE) {
+      // Send message to payload
+      OK(ipc_send_cmd(ipc.pay.name, ipc.pay.cmd.take_pic));
     }
   }
 }
