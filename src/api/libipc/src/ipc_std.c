@@ -9,17 +9,19 @@
 #include "ipc_std.h"
 
 struct ipc ipc = {
-    .pay = {.name = "pay", .cmd = {.take_pic = "0x12345"}},
+    .pay = {.name = "pay", .cmd = {.take_pic = "ipc://pay.take_pic"}},
     .trx = {.name = "trx"},
     .acs = {.name = "acs"},
     .ecs = {.name = "ecs"},
-    .gps = {.name = "gps", .cmd = {.get_cur_pos = "0x67890"}},
+    .gps = {.name = "gps", .cmd = {.get_cur_pos = "ipc://gps.get_cur_pos"}},
 
     .core =
         {
             .fls = {.name = "fls"},
-            .msn = {.name = "msn", .cmd = {.qmsn = "0x43092348"}},
-            .cmd = {.name = "cmd", .cmd = {.take_picture = "0x3256489632"}},
+            .msn = {.name = "msn",
+                    .cmd = {.qmsn = "ipc://core.cmd.queue_mission"}},
+            .cmd = {.name = "cmd",
+                    .cmd = {.take_picture = "ipc://core.cmd.take_picture"}},
             .log = {.name = "log"},
         },
 };
