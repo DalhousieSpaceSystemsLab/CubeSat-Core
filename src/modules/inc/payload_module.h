@@ -17,10 +17,14 @@
 // Project headers
 #include "ArducamDemo.h"
 #include "subsysmod.h"
+// #include "capture.h"
 
 // Standard C libraries
 #include <signal.h>
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 NEW_DOCK_MODULE(payload);
 
