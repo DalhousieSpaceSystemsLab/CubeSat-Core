@@ -64,10 +64,13 @@ elif [ "$1" == "$ARM_BUILD_DIR" ]; then
   # Build (arm32)
   BUILD_ARM
 elif [ "$1" == "$CONFIG_COMMAND" ]; then
-  if [ $# -eq 1 ] || ["$2" == "$PC_BUILD_DIR"]; then 
+  if [ $# -eq 1 ]; then
     # Config (x86)
     CONFIG_PC
-  elif [ "$2" == "$ARM_BUILD_DIR"]; then 
+  elif [ "$2" == "$PC_BUILD_DIR" ]; then 
+    # Config (x86)
+    CONFIG_PC
+  elif [ "$2" == "$ARM_BUILD_DIR" ]; then 
     # Config (arm32)
     CONFIG_ARM
   else
