@@ -22,24 +22,24 @@ You are ready to start compiling.
 ## Using the build script 
 In the root directory of the repo, you should find a `build.sh` file. This guide assumes your terminal is also open in the root directory, so run the script from elsewhere at your own risk.
 
-### Building both for PC & ARM
-**NOTE** You will need arm-none-linux-gnueabihf-gcc for ARM to compile. See below for PC only instructions.
+### Configuring the build files (PC or ARM)
+Before any build commands can be run, the build files must first be configured.
 
-This can be done by running the build script without any arguments:
+This can be achieved for PC or ARM using the following command:
 ```
-./build.sh
+./build.sh config <arch>
 ```
-The outputs will be stored in the `bin/` folder. The PC & ARM version will be compiled to the `bin/x86/` and `bin/arm/` directories respectively.
+
+Where `<arch>` is either `x86` or `arm` depending on what your target platform is.
 
 ### Building for PC or ARM only 
-This can be done by running the build script with the `x86` argument:
+Once configured, you may build the project the same `<arch>` argument:
 ```
-./build.sh x86
+./build.sh <arch>
 ```
-The same goes for ARM, but the first argument is `arm` instead:
-```
-./build.sh arm
-```
+Where `<arch>` is either `x86` or `arm` depending on what your target platform is.
+
+NOTE: Usually you only need to configure your build files once, but when troubleshooting it may be useful to reconfigure them.
 
 ### Exporting relevant libraries and headers to your project
 This can be done using the `export` argument in the build script:
