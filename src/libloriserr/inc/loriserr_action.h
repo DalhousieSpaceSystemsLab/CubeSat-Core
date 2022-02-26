@@ -9,12 +9,13 @@
  *
  */
 
-#include <unistd.h>
-
 #ifndef CUBESAT_CORE_LIBLORISERR_LORISERR_ACTION_H
 #define CUBESAT_CORE_LIBLORISERR_LORISERR_ACTION_H
 
-#define LORISERR_ACTION_NONE return 0
-#define LORISERR_ACTION_WAIT(t) sleep(t)
+// Portal
+#define DEFAULT_ACTION(f) DEFAULT_ACTION_##f
+
+// Default actions
+#define DEFAULT_ACTION_antenna_read_rs return -1
 
 #endif
