@@ -24,64 +24,6 @@ START_MODULE(command) {
 
     // Parse command
     int cmd_id = cmd_parse(cmd, strlen(cmd));
-
-    // Check if GPS condition provided
-    if (cmd_id == CMD_TAKE_PICTURE_GPS_ID) {
-      // Get args
-      int argc = ipc_get_n_args(cmd, strlen(cmd));
-      char args[argc][MAX_ARG_LEN];
-      OK(ipc_get_args(cmd, strlen(cmd), args, argc));
-
-      // Check argc
-      if (argc != 6) {
-        moderr("Invalid number of arguments. SKIPPING\n");
-        continue;
-      }
-
-      // Get coordinate floats
-      float gps_min[2], gps_max[2];
-      gps_min[0] = atof(args[2]);
-      gps_min[1] = atof(args[3]);
-      gps_max[0] = atof(args[4]);
-      gps_max[1] = atof(args[5]);
-
-      modprintf(
-          "About to ask mission to take picture at coordinates (min) %f, %f, "
-          "(max) %f, %f\n",
-          gps_min[0], gps_min[1], gps_max[0], gps_max[1]);
-
-      // Forward command to the mission module
-      OK(ipc_send_cmd(ipc.core.msn.name, "%s %s %s %f %f %f %f",
-                      ipc.core.msn.cmd.qmsn, "gps", ipc.pay.cmd.take_pic,
-                      gps_min[0], gps_min[1], gps_max[0], gps_max[1]));
-
-      // Check if time condition provided
-    } else if (cmd_id == CMD_TAKE_PICTURE_TIME_ID) {
-      // Get args
-      int argc = ipc_get_n_args(cmd, strlen(cmd));
-      char args[argc][MAX_ARG_LEN];
-      OK(ipc_get_args(cmd, strlen(cmd), args, argc));
-
-      // Check argc
-      if (argc != 3) {
-        moderr("Invalid number of arguments. SKIPPING\n");
-        continue;
-      }
-
-      // Get time
-      time_t t = atol(args[2]);
-
-      modprintf("About to ask mission to take picture at time %ld\n", t);
-
-      // Forward to mission module
-      OK(ipc_send_cmd(ipc.core.msn.name, "%s %s %s %ld", ipc.core.msn.cmd.qmsn,
-                      "time", ipc.pay.cmd.take_pic, t));
-
-      // Check for commands for other subsystems
-    } else if (cmd_id == CMD_TAKE_PICTURE) {
-      // Send message to payload
-      OK(ipc_send_cmd(ipc.pay.name, ipc.pay.cmd.take_pic));
-    }
   }
 }
 

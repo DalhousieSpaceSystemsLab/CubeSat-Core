@@ -12,8 +12,11 @@
 #ifndef CUBESAT_CORE_MODULES_COMMAND_MODULE_H
 #define CUBESAT_CORE_MODULES_COMMAND_MODULE_H
 
-#include "command_module_util.h"
+// Subsystem module header
 #include "subsysmod.h"
+
+// Module headers
+#include "command_module_util.h"
 
 NEW_DOCK_MODULE(command);
 

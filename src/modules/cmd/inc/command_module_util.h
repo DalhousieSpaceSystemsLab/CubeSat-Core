@@ -13,12 +13,14 @@
 #define CUBESAT_CORE_MODULES_COMMAND_MODULE_UTIL_H
 
 // Project headers
-#include "client_api.h"
 #include "command_module_commands.h"
+#include "ipc_settings.h"
 #include "ipc_std.h"
+#include "modutil.h"
 
 // Standard C libraries
-#include <stddef.h>
+#include <inttypes.h>
+#include <time.h>
 
 /**
  * @brief Parses a command for the command module and returns a command ID.
@@ -30,5 +32,14 @@
  * @return Returns a command ID or 0 if no command identified.
  */
 int cmd_parse(char* cmd, size_t cmd_len);
+
+/**
+ * @brief Parses and executes requirements for provided command.
+ *
+ * @param cmd String containing command to parse.
+ * @param cmd_len Length of cmd.
+ * @return 0 = OK, -1 = ERROR
+ */
+int cmd_handle(char* cmd, size_t cmd_len);
 
 #endif
