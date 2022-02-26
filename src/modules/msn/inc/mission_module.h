@@ -20,11 +20,16 @@ enum {
   MISSION_COND_BOTH,
 };
 
+/// GPS struct
+struct gps_coor {
+  float min[2];
+  float max[2];
+};
+
 /// Mission struct
 struct mission {
   int cond_type;          // See mission types
-  float gps_coor_min[2];  // GPS coordinates if mission is gps type (lat, long)
-  float gps_coor_max[2];  // GPS coordinates if mission is gps type (lat, long)
+  struct gps_coor gps;    // GPS coordinate range
   time_t exe_time;        // C time if mission is time type
   char cmd[MAX_MSG_LEN];  // Command to be sent to dest
 };

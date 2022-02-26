@@ -82,10 +82,10 @@ static int check_mission_queue(
       float longitude = atof(args[1]);
 
       // Check if within range
-      if (missions[x].gps_coor_min[0] <= lattitude &&
-          lattitude <= missions[x].gps_coor_max[0] &&
-          missions[x].gps_coor_min[1] <= longitude &&
-          longitude <= missions[x].gps_coor_max[1]) {
+      if (missions[x].gps.min[0] <= lattitude &&
+          lattitude <= missions[x].gps.max[0] &&
+          missions[x].gps.min[1] <= longitude &&
+          longitude <= missions[x].gps.max[1]) {
         // Send command to command module
         OK(ipc_send_cmd(ipc.core.cmd.name, missions[x].cmd));
 
@@ -163,10 +163,10 @@ CALLBACK(command) {
     // Add mission to queue
     struct mission msn = {
         .cond_type = MISSION_COND_GPS,
-        .gps_coor_min[0] = gps_min[0],
-        .gps_coor_min[1] = gps_min[1],
-        .gps_coor_max[0] = gps_max[0],
-        .gps_coor_max[1] = gps_max[1],
+        .gps.min[0] = gps_min[0],
+        .gps.min[1] = gps_min[1],
+        .gps.max[0] = gps_max[0],
+        .gps.max[1] = gps_max[1],
     };
     strcpy(msn.cmd, args[2]);
 
