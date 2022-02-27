@@ -14,9 +14,7 @@
 
 // Project headers
 #include "command_module_commands.h"
-#include "ipc_settings.h"
-#include "ipc_std.h"
-#include "modutil.h"
+#include "command_module_global.h"
 
 // Standard C libraries
 #include <inttypes.h>

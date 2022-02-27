@@ -23,7 +23,8 @@ START_MODULE(command) {
                continue);
 
     // Parse command
-    int cmd_id = cmd_parse(cmd, strlen(cmd));
+    // int cmd_id = cmd_parse(cmd, strlen(cmd));
+    OK(cmd_handle(cmd, strlen(cmd)));
   }
 }
 
