@@ -10,7 +10,7 @@
 
 struct ipc ipc = {
     .pay = {.name = "pay", .cmd = {.take_pic = "pay.take_pic"}},
-    .trx = {.name = "trx"},
+    .rf = {.name = "rf"},
     .acs = {.name = "acs"},
     .ecs = {.name = "ecs"},
     .gps = {.name = "gps", .cmd = {.get_cur_pos = "gps.get_cur_pos"}},
