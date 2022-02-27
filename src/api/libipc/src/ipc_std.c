@@ -9,6 +9,7 @@
 #include "ipc_std.h"
 
 struct ipc ipc = {
+    .global = {.take_picture = "global.take_picture"},
     .pay = {.name = "pay", .cmd = {.take_pic = "pay.take_pic"}},
     .rf = {.name = "rf"},
     .acs = {.name = "acs"},
