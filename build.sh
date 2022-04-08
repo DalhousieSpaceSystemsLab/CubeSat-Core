@@ -48,6 +48,11 @@ BUILD_BOTH() {
   BUILD_ARM
 }
 
+MAKE_GRAPH() {
+	cmake --graphviz=graph/viz.dot src -B bin/x86
+	dot -Tpng viz.dot -o viz.png
+}
+
 # Current only testing x86 version
 RUN_TEST() {
   ctest --test-dir $PARENT_BUILD_DIR/$PC_BUILD_DIR
