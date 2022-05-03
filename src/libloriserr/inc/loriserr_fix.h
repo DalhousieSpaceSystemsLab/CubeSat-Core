@@ -12,4 +12,8 @@
 #ifndef CUBESAT_CORE_LIBLORISERR_LORISERR_FIX_H
 #define CUBESAT_CORE_LIBLORISERR_LORISERR_FIX_H
 
+#include "loriserr_action.h"
+
+#define LORISERR_FIX(f) DEFAULT_ACTION(f)
+
 #endif

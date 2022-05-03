@@ -200,11 +200,11 @@ endfunction(add_library lib)
 endif(NOT COMMAND _add_library)
 
 # dependencies come first
-add_subdirectory(JTOK)
+#add_subdirectory(JTOK)
 add_subdirectory(libloriserr)
 add_subdirectory(api/libipc)
 add_subdirectory(api/client_api)
-add_subdirectory(SPI_Camera_ARM)
+add_subdirectory(payload)
 add_subdirectory(modules)
 add_subdirectory(libdock)
 add_subdirectory(adcs/Source)

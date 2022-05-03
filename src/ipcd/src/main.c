@@ -12,16 +12,26 @@
 // Standard C libraries
 #include <stdio.h>
 
-int main() {
+int main(int argc, char *argv[]) {
   // Initialize IPC daemon
   if (ipcd_init() == -1) {  // ipcd_init() failed
     fprintf(stderr, "ipcd_init() failed\n");
     return -1;
   }
 
-  // Wait for user to press enter
-  printf("Press [ENTER] to quit\n");
-  getc(stdin);
+  if(argc > 1) {
+    if(strcmp(argv[1], "--nostdin") == 0) {
+      printf("Disabling stdin. Running forever...\n");
+
+      for(;;);
+
+    } else {
+      // Wait for user to press enter
+      printf("Press [ENTER] to quit\n");
+      getc(stdin);
+    }
+  }
+
 
   // Close the IPC daemon
   if (ipcd_close() == -1) {  // ipcd_close() failed

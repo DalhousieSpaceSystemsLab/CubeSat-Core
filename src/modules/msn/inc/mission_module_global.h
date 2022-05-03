@@ -1,12 +1,19 @@
-#ifndef CUBESAT_CORE_MODULES_MISSION_MODULE_H
-#define CUBESAT_CORE_MODULES_MISSION_MODULE_H
+/**
+ * @file mission_module_settings.h
+ * @author Alex Amellal (loris@alexamellal.com)
+ * @brief Global settings header for mission module
+ * @version 0.1
+ * @date 2022-02-26
+ *
+ * @copyright Dalhousie Space Systems Lab (c) 2022
+ *
+ */
+
+#ifndef CUBESAT_CORE_MODULES_MISSION_MODULE_GLOBAL_H
+#define CUBESAT_CORE_MODULES_MISSION_MODULE_GLOBAL_H
 
 // Project headers
 #include "subsysmod.h"
-
-// Standard C libraries
-#include <stdio.h>
-#include <unistd.h>
 
 /// Settings
 #define MAX_NUM_MISSIONS 10
@@ -20,15 +27,18 @@ enum {
   MISSION_COND_BOTH,
 };
 
+/// GPS struct
+struct gps_coor {
+  float min[2];
+  float max[2];
+};
+
 /// Mission struct
 struct mission {
   int cond_type;          // See mission types
-  float gps_coor_min[2];  // GPS coordinates if mission is gps type (lat, long)
-  float gps_coor_max[2];  // GPS coordinates if mission is gps type (lat, long)
+  struct gps_coor gps;    // GPS coordinate range
   time_t exe_time;        // C time if mission is time type
   char cmd[MAX_MSG_LEN];  // Command to be sent to dest
 };
-
-NEW_DOCK_MODULE(mission);
 
 #endif

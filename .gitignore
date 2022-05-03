@@ -33,9 +33,12 @@ build/test
 build/client_old
 *.out.*
 build/*
-docs
 valgrind
 bin/**
 Testing/**
 dot/**
 EXPORT/
+graph/**
+docs/**
+*.orig
+*.rej

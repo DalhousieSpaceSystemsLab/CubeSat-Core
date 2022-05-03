@@ -3,18 +3,30 @@
 PARENT_BUILD_DIR="bin"
 PC_BUILD_DIR="x86"
 ARM_BUILD_DIR="arm"
+
 CLEAN_COMMAND="clean"
 TEST_COMMAND="test"
 RUN_TEST_COMMAND="run_test"
-CHECK_SUBMODULE_DIR="src/check/.git"
 EXPORT_COMMAND="export"
+CONFIG_COMMAND="config"
+GRAPH_COMMAND="graph"
+PATCH_COMMAND="patch"
+INSTALL_COMMAND="install"
+
+CHECK_SUBMODULE_DIR="src/check/.git"
 EXPORT_DIR="EXPORT"
 
 CONFIG_PC() {
+  # Check if check submodule missing
+  [ ! -d "$CHECK_SUBMODULE_DIR" ] && git submodule update --init --recursive
+
   [ ! -d "$PC_BUILD_DIR" ] && cmake src -B $PARENT_BUILD_DIR/$PC_BUILD_DIR
 }
 
 CONFIG_ARM() {
+  # Check if check submodule missing
+  [ ! -d "$CHECK_SUBMODULE_DIR" ] && git submodule update --init --recursive
+
   [ ! -d "$ARM_BUILD_DIR" ] && cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake src -B $PARENT_BUILD_DIR/$ARM_BUILD_DIR
 }
 
@@ -23,11 +35,23 @@ CONFIG_TEST() {
 }
 
 BUILD_PC() {
-  cmake --build $PARENT_BUILD_DIR/$PC_BUILD_DIR
+  # Apply patches first
+  APPLY_PATCHES
+
+  # Old cmake build
+  #cmake --build $PARENT_BUILD_DIR/$PC_BUILD_DIR
+
+  # Build using all cores available (faster)
+  make -C $PARENT_BUILD_DIR/$PC_BUILD_DIR -j$(nproc)
 }
 
 BUILD_ARM() {
-  cmake --build $PARENT_BUILD_DIR/$ARM_BUILD_DIR
+  # Apply patches first
+  APPLY_PATCHES
+
+  # cmake --build $PARENT_BUILD_DIR/$ARM_BUILD_DIR
+  # Build using all cores available (faster)
+  make -C $PARENT_BUILD_DIR/$ARM_BUILD_DIR -j$(nproc)
 }
 
 BUILD_BOTH() {
@@ -35,24 +59,51 @@ BUILD_BOTH() {
   BUILD_ARM
 }
 
+MAKE_GRAPH() {
+	cmake --graphviz=graph/viz.dot src -B bin/x86
+	dot -Tpng graph/viz.dot -o viz.png
+}
+
 # Current only testing x86 version
 RUN_TEST() {
   ctest --test-dir $PARENT_BUILD_DIR/$PC_BUILD_DIR
 }
 
-# Check if check submodule missing
-[ ! -d "$CHECK_SUBMODULE_DIR" ] && git submodule update --init --recursive
+APPLY_PATCHES() {
+  patch -u src/adcs/Source/CMakeLists.txt -i CMakeLists.patch
+  patch -u src/adcs/Source/json-master/test/thirdparty/doctest/doctest.h -i doctest.patch
+}
+
+INSTALL_SERVICES() {
+  cp service/*.service /etc/systemd/system
+  systemctl enable ipc.service 
+  systemctl enable dock.service
+}
 
 # Check number of arguments
 if [ $# -eq 0 ]; then
-  # Config and build both
-  CONFIG_PC && BUILD_PC
-  CONFIG_ARM && BUILD_ARM
+  # Build for PC (default)
+  BUILD_PC
 elif [ "$1" == "$PC_BUILD_DIR" ]; then
-  CONFIG_PC && BUILD_PC
+  # Build (x86)
+  BUILD_PC
 elif [ "$1" == "$ARM_BUILD_DIR" ]; then
-  # Setup cmake (arm32)
-  CONFIG_ARM && BUILD_ARM
+  # Build (arm32)
+  BUILD_ARM
+elif [ "$1" == "$CONFIG_COMMAND" ]; then
+  if [ $# -eq 1 ]; then
+    # Config (x86)
+    CONFIG_PC
+  elif [ "$2" == "$PC_BUILD_DIR" ]; then 
+    # Config (x86)
+    CONFIG_PC
+  elif [ "$2" == "$ARM_BUILD_DIR" ]; then 
+    # Config (arm32)
+    CONFIG_ARM
+  else
+    # Invalid option 
+    echo "$2 is not a valid option"
+  fi
 elif [ "$1" == "$CLEAN_COMMAND" ]; then
   # Delete both
   [ -d "$PARENT_BUILD_DIR" ] && rm -r $PARENT_BUILD_DIR
@@ -88,6 +139,12 @@ elif [ "$1" == "$EXPORT_COMMAND" ]; then
   echo "# The relevant headers were put in EXPORT/include/.   #"
   echo "# Enjoy.                                              #"
   echo "#######################################################"
+elif [ "$1" == "$GRAPH_COMMAND" ]; then
+  MAKE_GRAPH
+elif [ "$1" == "$PATCH_COMMAND" ]; then 
+  APPLY_PATCHES
+elif [ "$1" == "$INSTALL_COMMAND" ]; then 
+  INSTALL_SERVICES
 else
   echo "$1 is not a valid option"
 fi

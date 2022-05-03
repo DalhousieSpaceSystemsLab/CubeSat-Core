@@ -18,6 +18,11 @@ extern "C" {
  * subsystems and core software servers.
  */
 struct ipc {
+  // Global commands
+  struct global {
+    const char* take_picture;
+  } global;
+
   // Payload
   struct pay {
     const char* name;
@@ -27,11 +32,11 @@ struct ipc {
   } pay;
 
   // Comms
-  struct trx {
+  struct rf {
     const char* name;
-    struct cmd_trx {
+    struct cmd_rf {
     } cmd;
-  } trx;
+  } rf;
 
   // ACDS
   struct acs {

@@ -7,3 +7,9 @@
 [submodule "src/adcs"]
 	path = src/adcs
 	url = https://github.com/DalhousieSpaceSystemsLab/CubeSat-ADCS-Software.git
+[submodule "src/payload"]
+	path = src/payload
+	url = https://github.com/DalhousieSpaceSystemsLab/CubeSat-Payload
+[submodule "src/antenna"]
+	path = src/antenna
+	url = https://github.com/DalhousieSpaceSystemsLab/CubeSat-Communication-Protocol

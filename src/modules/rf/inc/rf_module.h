@@ -14,6 +14,9 @@
 
 #include "subsysmod.h"
 
+// Standard C libraries
+#include <stdlib.h>
+
 NEW_DOCK_MODULE(rf);
 
 #endif

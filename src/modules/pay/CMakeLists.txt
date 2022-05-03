@@ -12,9 +12,9 @@ option(BUILD_EXAMPLES "[ON/OFF] Build examples in addition to library" ON)
 #  PROJECT INIT
 ################################################################################
 project(
-    MODULES
+    MODULE_PAY
     VERSION 1.0
-    DESCRIPTION "CLIENT CREATION API LIBRARY FOR IPC"
+    DESCRIPTION "PAYLOAD MODULE FOR LORIS"
     LANGUAGES C CXX
 )
 set(LIB "${PROJECT_NAME}") # this is PROJECT_NAME, NOT CMAKE_PROJECT_NAME
@@ -27,16 +27,8 @@ else()
 endif(TARGET ${LIB})
 
 
-################################################################################
-# Include module folders
-################################################################################
 
 
-add_subdirectory(cmd)
-add_subdirectory(gps)
-add_subdirectory(msn)
-add_subdirectory(pay)
-add_subdirectory(rf)
 
 
 ################################################################################
@@ -149,17 +141,8 @@ target_compile_options(${LIB} PUBLIC "-g")
 ################################################################################
 # LINK AGAINST THE NECESSARY LIBRARIES 
 ################################################################################
-# Project libs
 target_link_libraries(${LIB} PUBLIC LIB_IPC)
 target_link_libraries(${LIB} PUBLIC CLIENT_API)
-target_link_libraries(${LIB} PUBLIC LIB_PAYLOAD)
-
-# Modules
-target_link_libraries(${LIB} PUBLIC MODULE_CMD)
-target_link_libraries(${LIB} PUBLIC MODULE_GPS)
-target_link_libraries(${LIB} PUBLIC MODULE_MSN)
-target_link_libraries(${LIB} PUBLIC MODULE_PAY)
-target_link_libraries(${LIB} PUBLIC MODULE_RF)
 
 #Link against pthread
 find_package(Threads REQUIRED)
