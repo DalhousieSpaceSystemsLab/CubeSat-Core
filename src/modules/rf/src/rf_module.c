@@ -12,7 +12,7 @@
 #include "rf_module.h"
 
 START_MODULE(rf) {
-  OK(ipc_connect(ipc.trx.name));
+  OK(ipc_connect(ipc.rf.name));
 
   // Send command to command module every 60 seconds
   for (;;) {

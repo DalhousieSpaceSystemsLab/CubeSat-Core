@@ -18,6 +18,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <stdio.h>
 
 // Settings
 #define FIFO_RX_NAME "antenna_emu_fifo_rx"

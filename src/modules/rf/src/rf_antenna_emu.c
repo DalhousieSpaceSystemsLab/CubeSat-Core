@@ -21,7 +21,7 @@ static int fifo_tx = -1;
  * @param fifo_tx Path to named pipe (TX)
  * @return 0 = OK, -1 = ERR
  */
-int rf_antenna_emu_init() {
+int rf_antenna_emu_init(const char *fifo_rx, const char *fifo_tx) {
   // Create fifo devices
   if (mkfifo(FIFO_RX_NAME, 0666) < 0) {
     printf("[!] Failed to create RX fifo\n");
