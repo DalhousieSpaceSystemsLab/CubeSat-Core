@@ -9,6 +9,7 @@ TEST_COMMAND="test"
 RUN_TEST_COMMAND="run_test"
 EXPORT_COMMAND="export"
 CONFIG_COMMAND="config"
+GRAPH_COMMAND="graph"
 
 CHECK_SUBMODULE_DIR="src/check/.git"
 EXPORT_DIR="EXPORT"
@@ -42,7 +43,7 @@ BUILD_PC() {
 BUILD_ARM() {
   # cmake --build $PARENT_BUILD_DIR/$ARM_BUILD_DIR
   # Build using all cores available (faster)
-  make -C $PARENT_BUILD_DIR/$PC_BUILD_DIR -j$(nproc)
+  make -C $PARENT_BUILD_DIR/$ARM_BUILD_DIR -j$(nproc)
 }
 
 BUILD_BOTH() {
@@ -52,7 +53,7 @@ BUILD_BOTH() {
 
 MAKE_GRAPH() {
 	cmake --graphviz=graph/viz.dot src -B bin/x86
-	dot -Tpng viz.dot -o viz.png
+	dot -Tpng graph/viz.dot -o viz.png
 }
 
 # Current only testing x86 version
@@ -119,6 +120,8 @@ elif [ "$1" == "$EXPORT_COMMAND" ]; then
   echo "# The relevant headers were put in EXPORT/include/.   #"
   echo "# Enjoy.                                              #"
   echo "#######################################################"
+elif [ "$1" == "$GRAPH_COMMAND" ]; then
+  MAKE_GRAPH
 else
   echo "$1 is not a valid option"
 fi
