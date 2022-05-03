@@ -11,6 +11,7 @@ EXPORT_COMMAND="export"
 CONFIG_COMMAND="config"
 GRAPH_COMMAND="graph"
 PATCH_COMMAND="patch"
+INSTALL_COMMAND="install"
 
 CHECK_SUBMODULE_DIR="src/check/.git"
 EXPORT_DIR="EXPORT"
@@ -71,6 +72,12 @@ RUN_TEST() {
 APPLY_PATCHES() {
   patch -u src/adcs/Source/CMakeLists.txt -i CMakeLists.patch
   patch -u src/adcs/Source/json-master/test/thirdparty/doctest/doctest.h -i doctest.patch
+}
+
+INSTALL_SERVICES() {
+  cp service/*.service /etc/systemd/system
+  systemctl enable ipc.service 
+  systemctl enable dock.service
 }
 
 # Check number of arguments
@@ -136,6 +143,8 @@ elif [ "$1" == "$GRAPH_COMMAND" ]; then
   MAKE_GRAPH
 elif [ "$1" == "$PATCH_COMMAND" ]; then 
   APPLY_PATCHES
+elif [ "$1" == "$INSTALL_COMMAND" ]; then 
+  INSTALL_SERVICES
 else
   echo "$1 is not a valid option"
 fi
