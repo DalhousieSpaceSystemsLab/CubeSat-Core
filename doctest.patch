@@ -1,0 +1,11 @@
+--- src/adcs/Source/json-master/test/thirdparty/doctest/doctest.h.old	2022-05-03 11:17:06.572443879 -0300
++++ src/adcs/Source/json-master/test/thirdparty/doctest/doctest.h	2022-05-03 11:01:52.216592614 -0300
+@@ -4018,7 +4018,7 @@
+         static bool             isSet;
+         static struct sigaction oldSigActions[DOCTEST_COUNTOF(signalDefs)];
+         static stack_t          oldSigStack;
+-        static char             altStackMem[4 * SIGSTKSZ];
++        static char             altStackMem[32168];
+ 
+         static void handleSignal(int sig) {
+             const char* name = "<unknown signal>";

@@ -10,6 +10,7 @@ RUN_TEST_COMMAND="run_test"
 EXPORT_COMMAND="export"
 CONFIG_COMMAND="config"
 GRAPH_COMMAND="graph"
+PATCH_COMMAND="patch"
 
 CHECK_SUBMODULE_DIR="src/check/.git"
 EXPORT_DIR="EXPORT"
@@ -33,6 +34,9 @@ CONFIG_TEST() {
 }
 
 BUILD_PC() {
+  # Apply patches first
+  APPLY_PATCHES
+
   # Old cmake build
   #cmake --build $PARENT_BUILD_DIR/$PC_BUILD_DIR
 
@@ -41,6 +45,9 @@ BUILD_PC() {
 }
 
 BUILD_ARM() {
+  # Apply patches first
+  APPLY_PATCHES
+
   # cmake --build $PARENT_BUILD_DIR/$ARM_BUILD_DIR
   # Build using all cores available (faster)
   make -C $PARENT_BUILD_DIR/$ARM_BUILD_DIR -j$(nproc)
@@ -59,6 +66,11 @@ MAKE_GRAPH() {
 # Current only testing x86 version
 RUN_TEST() {
   ctest --test-dir $PARENT_BUILD_DIR/$PC_BUILD_DIR
+}
+
+APPLY_PATCHES() {
+  patch -u src/adcs/Source/CMakeLists.txt -i CMakeLists.patch
+  patch -u src/adcs/Source/json-master/test/thirdparty/doctest/doctest.h -i doctest.patch
 }
 
 # Check number of arguments
@@ -122,6 +134,8 @@ elif [ "$1" == "$EXPORT_COMMAND" ]; then
   echo "#######################################################"
 elif [ "$1" == "$GRAPH_COMMAND" ]; then
   MAKE_GRAPH
+elif [ "$1" == "$PATCH_COMMAND" ]; then 
+  APPLY_PATCHES
 else
   echo "$1 is not a valid option"
 fi

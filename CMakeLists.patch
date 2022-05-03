@@ -1,0 +1,18 @@
+--- src/adcs/Source/CMakeLists.txt.old	2022-05-03 11:20:58.907946230 -0300
++++ src/adcs/Source/CMakeLists.txt	2022-05-03 11:04:38.453301523 -0300
+@@ -84,9 +84,12 @@
+     target_link_libraries(${someExecutable} PUBLIC Sun_Vector_Reference)
+     target_link_libraries(${someExecutable} PUBLIC UART)
+     target_link_libraries(${someExecutable} PUBLIC nlohmann_json)
+-    target_link_libraries(${someExecutable} PUBLIC "${PROJECT_SOURCE_DIR}/IPC/libCLIENT_API.a")
+-    target_link_libraries(${someExecutable} PUBLIC "${PROJECT_SOURCE_DIR}/IPC/libLIB_DOCK.a")
+-    target_link_libraries(${someExecutable} PUBLIC "${PROJECT_SOURCE_DIR}/IPC/libLIB_IPC.a")
++    # target_link_libraries(${someExecutable} PUBLIC "${PROJECT_SOURCE_DIR}/IPC/libCLIENT_API.a")
++    # target_link_libraries(${someExecutable} PUBLIC "${PROJECT_SOURCE_DIR}/IPC/libLIB_DOCK.a")
++    # target_link_libraries(${someExecutable} PUBLIC "${PROJECT_SOURCE_DIR}/IPC/libLIB_IPC.a")
++    target_link_libraries(${someExecutable} PUBLIC CLIENT_API)
++    target_link_libraries(${someExecutable} PUBLIC LIB_DOCK)
++    target_link_libraries(${someExecutable} PUBLIC LIB_IPC)
+ 
+     target_include_directories(${someExecutable}  PUBLIC
+                                 "${PROJECT_SOURCE_DIR}"
