@@ -40,7 +40,9 @@ BUILD_PC() {
 }
 
 BUILD_ARM() {
-  cmake --build $PARENT_BUILD_DIR/$ARM_BUILD_DIR
+  # cmake --build $PARENT_BUILD_DIR/$ARM_BUILD_DIR
+  # Build using all cores available (faster)
+  make -C $PARENT_BUILD_DIR/$PC_BUILD_DIR -j$(nproc)
 }
 
 BUILD_BOTH() {
