@@ -1,0 +1,9 @@
+[Unit]
+Description="LORIS IPC daemon"
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/home/root/launch-dock.sh
