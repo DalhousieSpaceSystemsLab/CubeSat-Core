@@ -30,10 +30,10 @@
 static SubsystemModule* modules_ptr = NULL;
 static int modules_len = 0;
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   // Create list of server containers
   SubsystemModule modules[] = {
-      payload, gps, command, mission, rf,
+      rf,
   };
   modules_len = sizeof(modules) / sizeof(SubsystemModule);
 
@@ -46,17 +46,17 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
-  if(argc > 1) {
-    if(strcmp(argv[1], "--nostdin") == 0) {
+  if (argc > 1) {
+    if (strcmp(argv[1], "--nostdin") == 0) {
       printf("Disabling stdin. Running forever...\n");
 
-      for(;;);
-
-    } else {
-      // Wait for user to press enter
-      printf("Press [ENTER] to quit\n");
-      getc(stdin);
+      for (;;)
+        ;
     }
+  } else {
+    // Wait for user to press enter
+    printf("Press [ENTER] to quit\n");
+    getc(stdin);
   }
 
   dock_stop(modules, modules_len);
