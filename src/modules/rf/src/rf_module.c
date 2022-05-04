@@ -73,7 +73,7 @@ static int return_basic_telemetry() {
 static int listen_file() {
   // Get filename
   char filename[MAX_FILENAME_LEN];
-  OK(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UPTO));
+  OK(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UNTIL));
 
   // Listen for incoming file
   printf("[i] File listen request received!\n");
@@ -90,7 +90,7 @@ static int return_file() {
 
   // Get filename
   char filename[MAX_FILENAME_LEN];
-  OK(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UPTO));
+  OK(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UNTIL));
 
   // Check if file exists
   FILE *fp = fopen(filename, "r");
