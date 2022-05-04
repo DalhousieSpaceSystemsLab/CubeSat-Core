@@ -71,9 +71,13 @@ static int return_basic_telemetry() {
 }
 
 static int listen_file() {
+  // Get filename
+  char filename[MAX_FILENAME_LEN];
+  OK(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UPTO));
+
   // Listen for incoming file
   printf("[i] File listen request received!\n");
-  if (antenna_fread(FILE_INCOMING) == -1) {
+  if (antenna_fread(filename) == -1) {
     printf("[!] Failed to read incoming file over the antenna\n");
     return -1;
   }
