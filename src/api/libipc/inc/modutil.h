@@ -70,6 +70,17 @@ void fstop(pid_t pid, int sec_timeout, struct timespec retry_delay);
   }
 
 /**
+ * @brief Defines what action to take if function return value is less than
+ * zero AND logs error. Similar to ON_FAIL but also includes error logging.
+ *
+ */
+#define ON_FAIL_LOG(func, action) \
+  if (func < 0) {                 \
+    moderr("%s failed\n", #func); \
+    action;                       \
+  }
+
+/**
  * @brief Implements timeout feature in waitpid method
  *
  * @param pid Process ID of process in question
