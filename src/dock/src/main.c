@@ -34,6 +34,7 @@ int main(int argc, char* argv[]) {
   // Create list of server containers
   SubsystemModule modules[] = {
       rf,
+      payload,
   };
   modules_len = sizeof(modules) / sizeof(SubsystemModule);
 

@@ -17,6 +17,7 @@ static int listen_file();
 static int return_file();
 static int create_ls_index();
 static int return_ls();
+static int take_picture();
 
 START_MODULE(rf) {
   OK(ipc_connect(ipc.rf.name));
@@ -50,6 +51,8 @@ static int process_req(char req[2]) {
     OK(return_file());
   } else if (strncmp(req, REQ_GET_LS, 2) == 0) {
     OK(return_ls());
+  } else if (strncmp(req, REQ_TAKE_PICTURE, 2) == 0) {
+    OK(take_picture());
   } else {
     printf("[:/] Could not process request [%c%c]\n", req[0], req[1]);
   }
@@ -150,6 +153,14 @@ static int return_ls() {
 
   // Send file
   OK(antenna_fwrite(FILE_LS_INDEX));
+
+  // done
+  return 0;
+}
+
+static int take_picture() {
+  // Send req to payload
+  OK(ipc_send_cmd(ipc.pay.name, ipc.pay.cmd.take_pic));
 
   // done
   return 0;

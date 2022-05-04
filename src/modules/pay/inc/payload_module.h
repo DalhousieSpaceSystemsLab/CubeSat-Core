@@ -22,6 +22,9 @@
 #include <signal.h>
 #include <string.h>
 
+// Settings
+#define CAMERA_BINARY_PATH "./camera.sh"
+
 NEW_DOCK_MODULE(payload);
 
 #endif

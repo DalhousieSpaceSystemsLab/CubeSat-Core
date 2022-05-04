@@ -52,6 +52,7 @@
 #define REQ_LISTEN_FILE "FF"
 #define REQ_GET_FILE "FR"
 #define REQ_GET_LS "LS"
+#define REQ_TAKE_PICTURE "TP"
 
 // Files
 #define FILE_BASIC_TELEMETRY "telemetry.txt"
