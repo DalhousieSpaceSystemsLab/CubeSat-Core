@@ -20,6 +20,13 @@
  * buffer size, there will likely be an issue reading them.
  */
 
+/**
+ * TODO:
+ *
+ * - Implement timeout for every autonomous function to prevent locking up. Must
+ * be possible at every step.
+ */
+
 #ifndef CUBESAT_CORE_MODULES_RF_MODULE_H
 #define CUBESAT_CORE_MODULES_RF_MODULE_H
 
