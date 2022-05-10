@@ -121,8 +121,12 @@ int antenna_decode_file(const char *path) {
       done = 1;
     }
 
-    // Encode block
+    // Decode block
     decode_data(nextencode, ENCODE_SIZE);
+    int err_corr = 0;
+    if (check_syndrome()) {
+      err_corr = correct_errors_erasures(nextencode, ENCODE_SIZE, 0, NULL);
+    }
     memcpy(nextblock, nextencode, BLOCK_SIZE);
 
     // Write encoded block to new file
