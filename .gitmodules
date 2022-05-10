@@ -16,3 +16,6 @@
 [submodule "src/libcorrect"]
 	path = src/libcorrect
 	url = https://github.com/quiet/libcorrect
+[submodule "src/rscode"]
+	path = src/rscode
+	url = https://github.com/hqm/rscode

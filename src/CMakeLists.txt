@@ -209,6 +209,7 @@ add_subdirectory(libcorrect)
 add_subdirectory(modules)
 add_subdirectory(libdock)
 add_subdirectory(adcs/Source)
+add_subdirectory(rscode)
 
 # executable targets after, and link against necessary dependencies
 add_subdirectory(ipcd)
