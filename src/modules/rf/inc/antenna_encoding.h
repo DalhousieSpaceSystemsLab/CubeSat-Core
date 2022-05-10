@@ -13,6 +13,7 @@
 #define CUBESAT_CORE_MODULES_RF_INCLUDE_ANTENNA_ENCODING_H
 
 // Project headers
+#include "modutil.h"
 #include "rf_module_settings.h"
 
 // External libraries

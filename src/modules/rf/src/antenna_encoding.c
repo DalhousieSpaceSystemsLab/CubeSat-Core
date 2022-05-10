@@ -44,7 +44,7 @@ int antenna_encode_file(const char *path) {
   // Open new file to encode to
   FILE *newfp = fopen(newfilename, "w");
   if (!newfp) {
-    moderrr("Failed to open new file (%s) for encoding\n", newfilename);
+    moderr("Failed to open new file (%s) for encoding\n", newfilename);
     status = -1;
     goto cleanup;
   }
@@ -106,7 +106,7 @@ int antenna_decode_file(const char *path) {
   // Open new file to encode to
   FILE *newfp = fopen(newfilename, "w");
   if (!newfp) {
-    moderrr("Failed to open new file (%s) for encoding\n", newfilename);
+    moderr("Failed to open new file (%s) for encoding\n", newfilename);
     status = -1;
     goto cleanup;
   }
