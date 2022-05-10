@@ -18,12 +18,15 @@ static int return_file();
 static int create_ls_index();
 static int return_ls();
 static int take_picture();
+static int encode_file();
+static int decode_file();
 
 START_MODULE(rf) {
   OK(ipc_connect(ipc.rf.name));
 
   // Init antenna
   OK(antenna_init(PATH_TO_ANTENNA_DEV))
+  OK(antenna_encode_init());
 
   // Enter autonomous mode
   for (;;) {
@@ -53,6 +56,10 @@ static int process_req(char req[2]) {
     OK(return_ls());
   } else if (strncmp(req, REQ_TAKE_PICTURE, 2) == 0) {
     OK(take_picture());
+  } else if (strncmp(req, REQ_ENCODE_FILE, 2) == 0) {
+    OK(encode_file());
+  } else if (strncmp(req, REQ_DECODE_FILE, 2) == 0) {
+    OK(decode_file());
   } else {
     printf("[:/] Could not process request [%c%c]\n", req[0], req[1]);
   }
@@ -161,6 +168,30 @@ static int return_ls() {
 static int take_picture() {
   // Send req to payload
   OK(ipc_send_cmd(ipc.pay.name, ipc.pay.cmd.take_pic));
+
+  // done
+  return 0;
+}
+
+static int encode_file() {
+  // Get filename
+  char filename[MAX_FILENAME_LEN];
+  OK(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UNTIL));
+
+  // Encode file
+  OK(antenna_encode_file(filename));
+
+  // done
+  return 0;
+}
+
+static int decode_file() {
+  // Get filename
+  char filename[MAX_FILENAME_LEN];
+  OK(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UNTIL));
+
+  // Decode file
+  OK(antenna_decode_file(filename));
 
   // done
   return 0;

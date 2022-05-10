@@ -31,6 +31,7 @@
 #define CUBESAT_CORE_MODULES_RF_MODULE_H
 
 #include "antenna.h"
+#include "antenna_encoding.h"
 #include "rf_module_settings.h"
 #include "subsysmod.h"
 
