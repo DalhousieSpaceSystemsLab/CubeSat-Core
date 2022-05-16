@@ -83,7 +83,9 @@ static int return_basic_telemetry() {
 static int listen_file() {
   // Get filename
   char filename[MAX_FILENAME_LEN];
-  OK(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UNTIL));
+  // OK(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UNTIL));
+  IF_TIMEOUT_LOG(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UNTIL),
+                 return -1);
 
   // Listen for incoming file
   printf("[i] File listen request received!\n");
@@ -100,7 +102,9 @@ static int return_file() {
 
   // Get filename
   char filename[MAX_FILENAME_LEN];
-  OK(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UNTIL));
+  // OK(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UNTIL));
+  IF_TIMEOUT_LOG(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UNTIL),
+                 return -1);
 
   // Check if file exists
   FILE *fp = fopen(filename, "r");
@@ -176,7 +180,9 @@ static int take_picture() {
 static int encode_file() {
   // Get filename
   char filename[MAX_FILENAME_LEN];
-  OK(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UNTIL));
+  // OK(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UNTIL));
+  IF_TIMEOUT_LOG(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UNTIL),
+                 return -1);
 
   // Encode file
   OK(antenna_encode_file(filename));
@@ -188,7 +194,9 @@ static int encode_file() {
 static int decode_file() {
   // Get filename
   char filename[MAX_FILENAME_LEN];
-  OK(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UNTIL));
+  // OK(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UNTIL));
+  IF_TIMEOUT_LOG(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UNTIL),
+                 return -1);
 
   // Decode file
   OK(antenna_decode_file(filename));

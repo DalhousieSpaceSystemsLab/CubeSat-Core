@@ -6,6 +6,7 @@
 
 // Project headers
 #include "antenna_packet.h"
+#include "modutil.h"
 
 // Reed-solomon library
 #include "correct.h"
@@ -16,10 +17,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/select.h>
 #include <sys/stat.h>
 #include <termios.h>
 #include <unistd.h>
-#include <sys/select.h>
 
 // Settings //
 // UART
@@ -41,6 +42,7 @@
 #define FILE_NOTICE_LEN 16
 #define WRITE_DELAY 200000L
 #define WRITE_BUFFER_SIZE 64
+#define READ_OP_TIMEOUT 3  // in seconds
 
 // Display
 #define PROGRESS_BAR_WIDTH 40
@@ -107,7 +109,7 @@ int antenna_write_rs_fd(int fd, const char* data, size_t data_len);
  * @param buffer Output buffer array for incoming bytes.
  * @param read_len Read UP TO or block UNTIL this many bytes read.
  * @param read_mode Set to READ_MODE_UPTO or READ_MODE_UNTIL
- * @return number of bytes read or < 0 for error .
+ * @return number of bytes read or < 0 for error or TIMEOUT_OCCURED for timeout.
  */
 int antenna_read(char* buffer, size_t read_len, int read_mode);
 
@@ -120,7 +122,7 @@ int antenna_read(char* buffer, size_t read_len, int read_mode);
  * @param buffer Output buffer array for incoming bytes.
  * @param read_len Read UP TO or block UNTIL this many bytes read.
  * @param read_mode Set to READ_MODE_UPTO or READ_MODE_UNTIL
- * @return number of bytes read or < 0 for error .
+ * @return number of bytes read or < 0 for error or TIMEOUT_OCCURED for timeout.
  */
 int antenna_read_fd(int fd, char* buffer, size_t read_len, int read_mode);
 
@@ -186,7 +188,7 @@ int antenna_fwrite_rs_fd(int fd, const char* file_path);
  * @brief Receive file over the air.
  *
  * @param file_path Path to incoming file destination
- * @return 0 on success, -1 on error
+ * @return 0 on success, -1 on error, TIMEOUT_OCCURED on timeout
  */
 int antenna_fread(const char* file_path);
 
@@ -196,7 +198,7 @@ int antenna_fread(const char* file_path);
  *
  * @param fd File descriptor to use
  * @param file_path Path to incoming file destination
- * @return 0 on success, -1 on error
+ * @return 0 on success, -1 on error, TIMEOUT_OCCURED on timeout
  */
 int antenna_fread_fd(int fd, const char* file_path);
 

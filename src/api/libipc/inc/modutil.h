@@ -104,6 +104,11 @@ int twaitpid(pid_t pid, int* status, int timeout);
   if ((func) == TIMEOUT_OCCURED) { \
     action;                        \
   }
+#define IF_TIMEOUT_LOG(func, action)                       \
+  if ((func) == TIMEOUT_OCCURED) {                         \
+    moderr("could not complete " #func " before timeout"); \
+    action;                                                \
+  }
 #define RETURN_IF_TIMEOUT() \
   if (_timed_out) return TIMEOUT_OCCURED;
 
