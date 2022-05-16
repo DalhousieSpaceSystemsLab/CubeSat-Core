@@ -42,3 +42,5 @@ graph/**
 docs/**
 *.orig
 *.rej
+ls_index.txt
+telemetry.txt
