@@ -25,6 +25,8 @@
 // UART
 #define UART_SPEED B9600
 #define UART_PARITY 0
+#define TERMIOS_VMIN 0   // # of characters
+#define TERMIOS_VTIME 1  // in 0.1s increments
 
 // Reed-solomon
 #define RS_BLOCK_LEN 255
