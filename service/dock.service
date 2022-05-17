@@ -1,9 +1,10 @@
 [Unit]
-Description="LORIS Dock"
+Description="LORIS dock"
 
 [Install]
 WantedBy=multi-user.target
 
 [Service]
-Type=simple
-ExecStart=/home/root/launch-dock.sh
+Type=exec
+ExecStart=/home/root/service/launch-dock.sh
+WorkingDirectory=/home/root

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-/home/root/DOCK.out
+/home/root/DOCK.out --nostdin
