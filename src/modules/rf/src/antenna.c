@@ -112,7 +112,8 @@ int antenna_write_fd(int fd, const char *data, size_t data_len) {
       return -1;
     }
     total_bytes_written += bytes_to_write;
-    usleep(WRITE_DELAY);
+    // usleep(WRITE_DELAY);
+    tcdrain(fd);
   }
 
   // Write bytes to antenna
