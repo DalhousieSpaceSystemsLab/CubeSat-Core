@@ -16,10 +16,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/select.h>
 #include <sys/stat.h>
 #include <termios.h>
 #include <unistd.h>
-#include <sys/select.h>
 
 // Settings //
 // UART
@@ -36,11 +36,11 @@
 // Antenna
 #define MAX_TXT_FILE_SIZE 8191
 #define MAX_READ_LEN 256
-#define FILE_BUFFER_SIZE 64
 #define FILE_NOTICE_FMT "F%u"
 #define FILE_NOTICE_LEN 16
-#define WRITE_DELAY 200000L
-#define WRITE_BUFFER_SIZE 64
+#define WRITE_DELAY 420L
+#define WRITE_BUFFER_SIZE 2
+#define FILE_BUFFER_SIZE WRITE_BUFFER_SIZE
 
 // Display
 #define PROGRESS_BAR_WIDTH 40

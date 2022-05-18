@@ -112,8 +112,8 @@ int antenna_write_fd(int fd, const char *data, size_t data_len) {
       return -1;
     }
     total_bytes_written += bytes_to_write;
-    // usleep(WRITE_DELAY);
-    tcdrain(fd);
+    usleep(WRITE_DELAY);
+    // tcdrain(fd);
   }
 
   // Write bytes to antenna
@@ -610,7 +610,7 @@ static int _antenna_fread_fd(int antenna_mode, int fd, const char *file_path) {
       // DEBUG
       // printf("[DEBUG] Reading %d more bytes...\n", bytes_to_read);
       if ((bytes_read = antenna_read_fd(fd, buffer, bytes_to_read,
-                                        READ_MODE_UNTIL)) == -1) {
+                                        READ_MODE_UPTO)) == -1) {
         printf("[!] Failed to read data from the antenna\n");
         status = -1;
         goto cleanup;
