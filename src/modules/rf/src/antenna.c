@@ -426,7 +426,11 @@ static int _antenna_fwrite_fd(int antenna_method, int fd,
   int bytes_read = 0;
   size_t total_bytes_read = 0;
   int eof = 0;
+  clock_t cycle_start, cycle_end, average = 0;
   while (!eof) {
+    // DEBUG: timer
+    cycle_start = clock();
+
     if (antenna_method == ANTENNA_ENCODE_RS) {
       bytes_read = fread(buffer_rs, sizeof(char), RS_DATA_LEN, f);
       if (antenna_write_rs_fd(fd, buffer_rs, bytes_read) == -1) {
@@ -452,7 +456,15 @@ static int _antenna_fwrite_fd(int antenna_method, int fd,
 
     // Display progress
     display_progress(total_bytes_read, file_size, PROGRESS_BAR_WIDTH, "Upload");
+
+    // DEBUG: timer
+    cycle_end = clock();
+    average = average / 2 + (cycle_end - cycle_start) / 2;
   }
+
+  // DEBUG
+  float avgpc = (float)average / (float)CLOCKS_PER_SEC;
+  printf("[i] Average time per cycle (in s): %fs\n", avgpc);
 
   // DEBUG
   // printf("[DEBUG] Done!\n");
