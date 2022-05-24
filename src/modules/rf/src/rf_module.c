@@ -153,20 +153,24 @@ static int create_ls_index() {
                  return -1);
 
   // Open current directory
-  DIR *d;
-  struct dirent *dir;
-  d = opendir(filename);
-  if (!d) {
-    moderr("Failed to open current directory\n");
-    status = -1;
-    goto cleanup;
-  }
+  // DIR *d;
+  // struct dirent *dir;
+  // d = opendir(filename);
+  // if (!d) {
+  //   moderr("Failed to open current directory\n");
+  //   status = -1;
+  //   goto cleanup;
+  // }
 
-  // Directory open, reading names
-  while ((dir = readdir(d)) != NULL) {
-    fprintf(findex, "%s\n", dir->d_name);
-  }
-  closedir(d);
+  // // Directory open, reading names
+  // while ((dir = readdir(d)) != NULL) {
+  //   fprintf(findex, "%s\n", dir->d_name);
+  // }
+  // closedir(d);
+
+  char command[MAX_FILENAME_LEN * 2];
+  sprintf(command, "ls -la %s > %s", filename, FILE_LS_INDEX);
+  system(command);
 
 cleanup:
   fclose(findex);
