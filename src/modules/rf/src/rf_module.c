@@ -61,7 +61,7 @@ static int process_req(char req[2]) {
   } else if (strncmp(req, REQ_DECODE_FILE, 2) == 0) {
     OK(decode_file());
   } else {
-    printf("[:/] Could not process request [%c%c]\n", req[0], req[1]);
+    moderr("[:/] Could not process request [%c%c]\n", req[0], req[1]);
   }
 
   // done
@@ -70,9 +70,9 @@ static int process_req(char req[2]) {
 
 static int return_basic_telemetry() {
   // Send telemetry file
-  printf("[i] Basic telemetry request received!\n");
+  modprintf("[i] Basic telemetry request received!\n");
   if (antenna_fwrite(FILE_BASIC_TELEMETRY) == -1) {
-    printf("[!] Failed to send telemetry file to fulfill request\n");
+    modprintf("[!] Failed to send telemetry file to fulfill request\n");
     return -1;
   }
 
@@ -88,9 +88,9 @@ static int listen_file() {
                  return -1);
 
   // Listen for incoming file
-  printf("[i] File listen request received!\n");
+  modprintf("[i] File listen request received!\n");
   if (antenna_fread(filename) == -1) {
-    printf("[!] Failed to read incoming file over the antenna\n");
+    moderr("[!] Failed to read incoming file over the antenna\n");
     return -1;
   }
 }
@@ -98,7 +98,7 @@ static int listen_file() {
 static int return_file() {
   // Prepare outgoing file
   int status = 0;
-  printf("[i] File request received!\n");
+  modprintf("[i] File request received!\n");
 
   // Get filename
   char filename[MAX_FILENAME_LEN];
