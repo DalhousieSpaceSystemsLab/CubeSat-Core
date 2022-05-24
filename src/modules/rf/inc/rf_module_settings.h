@@ -31,6 +31,7 @@
 #define REQ_DECODE_FILE "DF"
 #define REQ_SHUTDOWN "SD"
 #define REQ_REBOOT "RB"
+#define REQ_REMOVE "RM"
 
 // Files
 #define FILE_BASIC_TELEMETRY "telemetry.txt"
