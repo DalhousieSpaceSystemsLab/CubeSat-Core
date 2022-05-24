@@ -20,6 +20,8 @@ static int return_ls();
 static int take_picture();
 static int encode_file();
 static int decode_file();
+static int shutdown();
+static int reboot();
 
 START_MODULE(rf) {
   OK(ipc_connect(ipc.rf.name));
@@ -202,6 +204,16 @@ static int decode_file() {
   OK(antenna_decode_file(filename));
 
   // done
+  return 0;
+}
+
+static int shutdown() {
+  system("shutdown now");
+  return 0;
+}
+
+static int reboot() {
+  system("reboot");
   return 0;
 }
 

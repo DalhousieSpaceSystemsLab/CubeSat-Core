@@ -29,6 +29,8 @@
 #define REQ_TAKE_PICTURE "TP"
 #define REQ_ENCODE_FILE "EF"
 #define REQ_DECODE_FILE "DF"
+#define REQ_SHUTDOWN "SD"
+#define REQ_REBOOT "RB"
 
 // Files
 #define FILE_BASIC_TELEMETRY "telemetry.txt"
