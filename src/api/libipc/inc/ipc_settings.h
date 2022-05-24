@@ -32,6 +32,7 @@ extern "C" {
 #define MAX_NUM_PACKETS 16
 #define MAX_PACKET_LEN MAX_MSG_LEN + 5
 #define MAX_DIB_STACK 1024
+#define IPC_LOG_FILE_PATH "/home/root/ipc.log"
 
 // Flags
 enum {

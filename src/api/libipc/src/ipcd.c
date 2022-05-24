@@ -35,6 +35,9 @@ static immut(int) sock = &sock_;
 // Placeholder for incoming packets
 static ipc_packet_t packets[MAX_NUM_PACKETS];
 
+// Log file pointer
+FILE *log_fp = NULL;
+
 //////////////////////
 //  Static Methods //
 //////////////////////
@@ -44,7 +47,8 @@ static void *start_routing_client(void *params);
 static void disconnect_client(client_t *client);
 static void log_traffic(char src[NAME_LEN], char dest[NAME_LEN],
                         char msg[MAX_PACKET_LEN], size_t msg_len);
-static void ipcd_printf(const char *msg, ...);
+static void _ipcd_printf(const char *msg, ...);
+static void _log_to_file(const char *msg, ...);
 
 // Thread which processes incoming client connections
 static void *start_accepting(void *debug) {
@@ -374,6 +378,13 @@ int ipcd_init() {
     return -1;
   }
 
+  // Open log file for appending
+  log_fp = fopen(IPC_LOG_FILE_PATH, "a+");
+  if (!log_fp) {
+    ipcd_printf("Failed to open IPC log file at (%s)\n", IPC_LOG_FILE_PATH);
+    // continue anyway
+  }
+
   // done
   return 0;
 }
@@ -411,7 +422,7 @@ static void log_traffic(char src[NAME_LEN], char dest[NAME_LEN],
               msg_len, msg);
 }
 
-static void ipcd_printf(const char *msg, ...) {
+static void _ipcd_printf(const char *msg, ...) {
   // Init variadic arg
   va_list ap;
   va_start(ap, msg);
@@ -426,6 +437,36 @@ static void ipcd_printf(const char *msg, ...) {
   // Print message
   vfprintf(stdout, msg, ap);
   // fprintf(stdout, "\n");
+
+  // Cleanup
+  va_end(ap);
+
+  // done
+}
+
+static void _log_to_file(const char *msg, ...) {
+  if (!log_fp) {
+    // Not going to log anything, need to open file
+    return;
+  }
+
+  // Init variadic arg
+  va_list ap;
+  va_start(ap, msg);
+
+  // Get current time
+  time_t current_time = time(NULL);
+  struct tm *lt = localtime(&current_time);
+
+  // Print time
+  fprintf(log_fp, "(%.02d:%.02d:%.02d) ", lt->tm_hour, lt->tm_min, lt->tm_sec);
+
+  // Print message
+  vfprintf(log_fp, msg, ap);
+  // fprintf(stdout, "\n");
+
+  // Flush file
+  fflush(log_fp);
 
   // Cleanup
   va_end(ap);
