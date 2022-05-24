@@ -454,7 +454,8 @@ static int _antenna_fwrite_fd(int antenna_method, int fd,
     if (bytes_read < FILE_BUFFER_SIZE) eof = 1;
 
     // Display progress
-    display_progress(total_bytes_read, file_size, PROGRESS_BAR_WIDTH, "Upload");
+    // display_progress(total_bytes_read, file_size, PROGRESS_BAR_WIDTH,
+    // "Upload");
   }
 
   // DEBUG
@@ -660,8 +661,8 @@ static int _antenna_fread_fd(int antenna_mode, int fd, const char *file_path) {
     total_bytes_read += bytes_read;
 
     // Display progress
-    display_progress(total_bytes_read, file_size, PROGRESS_BAR_WIDTH,
-                     "Download");
+    // display_progress(total_bytes_read, file_size, PROGRESS_BAR_WIDTH,
+    //  "Download");
 
     // DEBUG
     // modprintf("[DEBUG] Remaining bytes: %d\n", bytes_remaining);
