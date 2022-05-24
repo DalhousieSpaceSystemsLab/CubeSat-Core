@@ -24,6 +24,7 @@ static int shutdown_cmd();
 static int reboot();
 static int rm_file();
 static int mv_file();
+static int forward_command();
 
 START_MODULE(rf) {
   OK(ipc_connect(ipc.rf.name));
@@ -52,6 +53,7 @@ static int process_req(char req[2]) {
   } else if (strncmp(req, REQ_RESET_COMMS, 2) == 0) {
   } else if (strncmp(req, REQ_ENABLE_RAVEN, 2) == 0) {
   } else if (strncmp(req, REQ_FWD_COMMAND, 2) == 0) {
+    OK(forward_command());
   } else if (strncmp(req, REQ_LISTEN_FILE, 2) == 0) {
     OK(listen_file());
   } else if (strncmp(req, REQ_GET_FILE, 2) == 0) {
@@ -263,6 +265,19 @@ static int mv_file() {
   // Move file
   char command[2 * MAX_FILENAME_LEN + 3];
   sprintf(command, "mv %s %s", filename, filename_dest);
+  system(command);
+
+  // done
+  return 0;
+}
+
+static int forward_command() {
+  // Get command
+  char command[MAX_FILENAME_LEN];
+  IF_TIMEOUT_LOG(antenna_read(command, MAX_FILENAME_LEN, READ_MODE_UNTIL),
+                 return -1);
+
+  // Pass command to system
   system(command);
 
   // done
