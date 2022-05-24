@@ -32,6 +32,7 @@
 #define REQ_SHUTDOWN "SD"
 #define REQ_REBOOT "RB"
 #define REQ_REMOVE "RM"
+#define REQ_MOVE "MV"
 
 // Files
 #define FILE_BASIC_TELEMETRY "telemetry.txt"

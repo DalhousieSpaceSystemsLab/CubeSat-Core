@@ -23,6 +23,7 @@ static int decode_file();
 static int shutdown();
 static int reboot();
 static int rm_file();
+static int mv_file();
 
 START_MODULE(rf) {
   OK(ipc_connect(ipc.rf.name));
@@ -69,6 +70,8 @@ static int process_req(char req[2]) {
     OK(reboot());
   } else if (strncmp(req, REQ_REMOVE, 2) == 0) {
     OK(rm_file());
+  } else if (strncmp(req, REQ_MOVE, 2) == 0) {
+    OK(mv_file());
   } else {
     moderr("[:/] Could not process request [%c%c]\n", req[0], req[1]);
   }
@@ -233,6 +236,24 @@ static int rm_file() {
   // Delete file
   char command[MAX_FILENAME_LEN + 7];
   sprintf(command, "rm -rf %s", filename);
+  system(command);
+
+  // done
+  return 0;
+}
+
+static int mv_file() {
+  // Get filenames
+  char filename[MAX_FILENAME_LEN];
+  char filename_dest[MAX_FILENAME_LEN];
+  IF_TIMEOUT_LOG(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UNTIL),
+                 return -1);
+  IF_TIMEOUT_LOG(antenna_read(filename_dest, MAX_FILENAME_LEN, READ_MODE_UNTIL),
+                 return -1);
+
+  // Move file
+  char command[2 * MAX_FILENAME_LEN + 3];
+  sprintf(command, "mv %s %s", filename, filename_dest);
   system(command);
 
   // done
