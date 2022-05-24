@@ -529,7 +529,6 @@ int antenna_fwrite_rs(const char *file_path) {
 
 static int _antenna_fread_fd(int antenna_mode, int fd, const char *file_path) {
   int status = 0;
-  TIMEOUT_START();
 
   // DEBUG
   // printf("[DEBUG] Waiting for file notice...\n");
@@ -588,9 +587,6 @@ static int _antenna_fread_fd(int antenna_mode, int fd, const char *file_path) {
   int bytes_to_read = 0;
   int bytes_remaining = 0;
   while (total_bytes_read < file_size) {
-    TIMEOUT_UPDATE();
-    TIMEOUT_IF(READ_OP_TIMEOUT, goto cleanup);
-
     if (antenna_mode == ANTENNA_ENCODE_RS) {
       bytes_remaining = file_size - total_bytes_read;
       bytes_to_read =
@@ -676,7 +672,6 @@ static int _antenna_fread_fd(int antenna_mode, int fd, const char *file_path) {
 cleanup:
   fclose(fp);
 
-  RETURN_IF_TIMEOUT();
   return status;
 }
 
