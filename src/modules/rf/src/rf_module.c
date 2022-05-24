@@ -147,10 +147,15 @@ static int create_ls_index() {
     return -1;
   }
 
+  // Get directory name
+  char filename[MAX_FILENAME_LEN];
+  IF_TIMEOUT_LOG(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UNTIL),
+                 return -1);
+
   // Open current directory
   DIR *d;
   struct dirent *dir;
-  d = opendir(".");
+  d = opendir(filename);
   if (!d) {
     moderr("Failed to open current directory\n");
     status = -1;
