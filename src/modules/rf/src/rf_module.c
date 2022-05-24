@@ -20,7 +20,7 @@ static int return_ls();
 static int take_picture();
 static int encode_file();
 static int decode_file();
-static int shutdown();
+static int shutdown_cmd();
 static int reboot();
 static int rm_file();
 static int mv_file();
@@ -65,7 +65,7 @@ static int process_req(char req[2]) {
   } else if (strncmp(req, REQ_DECODE_FILE, 2) == 0) {
     OK(decode_file());
   } else if (strncmp(req, REQ_SHUTDOWN, 2) == 0) {
-    OK(shutdown());
+    OK(shutdown_cmd());
   } else if (strncmp(req, REQ_REBOOT, 2) == 0) {
     OK(reboot());
   } else if (strncmp(req, REQ_REMOVE, 2) == 0) {
@@ -217,7 +217,7 @@ static int decode_file() {
   return 0;
 }
 
-static int shutdown() {
+static int shutdown_cmd() {
   system("shutdown now");
   return 0;
 }
