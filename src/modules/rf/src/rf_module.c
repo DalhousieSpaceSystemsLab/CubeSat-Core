@@ -62,6 +62,10 @@ static int process_req(char req[2]) {
     OK(encode_file());
   } else if (strncmp(req, REQ_DECODE_FILE, 2) == 0) {
     OK(decode_file());
+  } else if (strncmp(req, REQ_SHUTDOWN, 2) == 0) {
+    OK(shutdown());
+  } else if (strncmp(req, REQ_REBOOT, 2) == 0) {
+    OK(reboot());
   } else {
     moderr("[:/] Could not process request [%c%c]\n", req[0], req[1]);
   }
