@@ -207,8 +207,12 @@ static int encode_file() {
   IF_TIMEOUT_LOG(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UNTIL),
                  return -1);
 
+  // Design encoded filename
+  char filename_enc[MAX_FILENAME_LEN];
+  sprintf(filename_enc, "enc-%s", filename);
+
   // Encode file
-  OK(antenna_encode_file(filename));
+  OK(antenna_encode_file(filename, filename_enc));
 
   // done
   return 0;
@@ -221,8 +225,12 @@ static int decode_file() {
   IF_TIMEOUT_LOG(antenna_read(filename, MAX_FILENAME_LEN, READ_MODE_UNTIL),
                  return -1);
 
+  // Design decoded filename
+  char filename_dec[MAX_FILENAME_LEN];
+  sprintf(filename_dec, "dec-%s", filename);
+
   // Decode file
-  OK(antenna_decode_file(filename));
+  OK(antenna_decode_file(filename, filename_dec));
 
   // done
   return 0;

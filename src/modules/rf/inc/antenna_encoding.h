@@ -1,9 +1,9 @@
 /**
  * @file antenna_encoding.h
  * @author Alex Amellal (loris@alexamellal.com)
- * @brief Provide reed-solomon encoding support for the antenna
+ * @brief File error correction support for LORIS
  * @version 0.1
- * @date 2022-05-10
+ * @date 2022-05-27
  *
  * @copyright Dalhousie Space Systems Lab (c) 2022
  *
@@ -16,39 +16,26 @@
 #include "modutil.h"
 #include "rf_module_settings.h"
 
-// External libraries
-#include "ecc.h"
-
-// Standard C libraries
+// Standard C libs
 #include <stdio.h>
-#include <string.h>
-
-// Settings
-#define BLOCK_SIZE 15
-#define ENCODE_SIZE BLOCK_SIZE + NPAR
+#include <stdlib.h>
 
 /**
- * @brief Initialize the encoding lib
+ * @brief Encode file and save encoded result.
  *
- * @return int
+ * @param file_in Path to file to encode
+ * @param file_out Output path for encoded file
+ * @return 0 = OK, -1 = ERR
  */
-int antenna_encode_init();
+int antenna_encode_file(const char* file_in, const char* file_out);
 
 /**
- * @brief Encode file and save as encoded-<name of file>
+ * @brief Decode file and save data.
  *
- * @param path Path to file in question
- * @return int 0 = OK, -1 = ERR
+ * @param file_in Path to file to decode
+ * @param file_out Output path for decoded result
+ * @return 0 = OK, -1 = ERR
  */
-int antenna_encode_file(const char *path);
-
-/**
- * @brief Decode file and save as decoded-<name of file>. Attempts to replace
- * encoded prefix as well
- *
- * @param path Path to file in question
- * @return int 0 = OK, -1 = ERR
- */
-int antenna_decode_file(const char *path);
+int antenna_decode_file(const char* file_in, const char* file_out);
 
 #endif
