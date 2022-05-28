@@ -16,7 +16,7 @@
  *
  * @return int
  */
-int antenna_encode_init() {
+int old_antenna_encode_init() {
   initialize_ecc();
   return 0;
 }
@@ -27,7 +27,7 @@ int antenna_encode_init() {
  * @param path Path to file in question
  * @return int 0 = OK, -1 = ERR
  */
-int antenna_encode_file(const char *path) {
+int old_antenna_encode_file(const char *path) {
   int status = 0;
 
   // Try to open file
@@ -89,7 +89,7 @@ cleanup:
  * @param path Path to file in question
  * @return int 0 = OK, -1 = ERR
  */
-int antenna_decode_file(const char *path) {
+int old_antenna_decode_file(const char *path) {
   int status = 0;
 
   // Try to open file

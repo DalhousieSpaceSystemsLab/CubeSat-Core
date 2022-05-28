@@ -31,7 +31,6 @@ START_MODULE(rf) {
 
   // Init antenna
   OK(antenna_init(PATH_TO_ANTENNA_DEV))
-  OK(antenna_encode_init());
 
   // Enter autonomous mode
   for (;;) {

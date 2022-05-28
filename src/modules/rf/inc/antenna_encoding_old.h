@@ -32,7 +32,7 @@
  *
  * @return int
  */
-int antenna_encode_init();
+int old_antenna_encode_init();
 
 /**
  * @brief Encode file and save as encoded-<name of file>
@@ -40,7 +40,7 @@ int antenna_encode_init();
  * @param path Path to file in question
  * @return int 0 = OK, -1 = ERR
  */
-int antenna_encode_file(const char *path);
+int old_antenna_encode_file(const char *path);
 
 /**
  * @brief Decode file and save as decoded-<name of file>. Attempts to replace
@@ -49,6 +49,6 @@ int antenna_encode_file(const char *path);
  * @param path Path to file in question
  * @return int 0 = OK, -1 = ERR
  */
-int antenna_decode_file(const char *path);
+int old_antenna_decode_file(const char *path);
 
 #endif
