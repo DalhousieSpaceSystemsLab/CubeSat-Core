@@ -20,6 +20,7 @@
 #include "mission_module.h"
 #include "payload_module.h"
 #include "rf_module.h"
+#include "telemetry_module.h"
 
 // Standard C libraries
 #include <signal.h>
@@ -35,6 +36,7 @@ int main(int argc, char* argv[]) {
   SubsystemModule modules[] = {
       rf,
       payload,
+      tel,
   };
   modules_len = sizeof(modules) / sizeof(SubsystemModule);
 
