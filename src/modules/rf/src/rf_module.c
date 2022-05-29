@@ -13,6 +13,7 @@
 
 static int process_req(char req[2]);
 static int return_basic_telemetry();
+static int return_large_telemetry();
 static int listen_file();
 static int return_file();
 static int create_ls_index();
@@ -47,6 +48,7 @@ static int process_req(char req[2]) {
   if (strncmp(req, REQ_BASIC_TELEMETRY, 2) == 0) {
     OK(return_basic_telemetry());
   } else if (strncmp(req, REQ_LARGE_TELEMETRY, 2) == 0) {
+    OK(return_large_telemetry());
   } else if (strncmp(req, REQ_DELET_TELEMETRY, 2) == 0) {
   } else if (strncmp(req, REQ_REBOOT_OBC, 2) == 0) {
   } else if (strncmp(req, REQ_RESET_COMMS, 2) == 0) {
@@ -85,6 +87,18 @@ static int return_basic_telemetry() {
   // Send telemetry file
   modprintf("[i] Basic telemetry request received!\n");
   if (antenna_fwrite(FILE_BASIC_TELEMETRY) == -1) {
+    modprintf("[!] Failed to send telemetry file to fulfill request\n");
+    return -1;
+  }
+
+  // done
+  return 0;
+}
+
+static int return_large_telemetry() {
+  // Send telemetry file
+  modprintf("[i] Large telemetry request received!\n");
+  if (antenna_fwrite(FILE_LARGE_TELEMETRY) == -1) {
     modprintf("[!] Failed to send telemetry file to fulfill request\n");
     return -1;
   }

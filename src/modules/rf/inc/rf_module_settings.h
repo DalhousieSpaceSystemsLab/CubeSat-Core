@@ -35,7 +35,8 @@
 #define REQ_MOVE "MV"
 
 // Files
-#define FILE_BASIC_TELEMETRY "telemetry.txt"
+#define FILE_BASIC_TELEMETRY "telemetry-small.txt"
+#define FILE_LARGE_TELEMETRY "telemetry-large.txt"
 #define FILE_INCOMING "incoming.txt"
 #define FILE_LS_INDEX "ls_index.txt"
 #define MAX_FILENAME_LEN 64
