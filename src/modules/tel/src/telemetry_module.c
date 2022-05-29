@@ -9,9 +9,6 @@ static int telemetry_gen_small();
 static int telemetry_gen_large();
 
 START_MODULE(tel) {
-  // Conect to IPC
-  OK(ipc_connect("tel"));
-
   // Main loop
   for (char x = 0;; x++) {
     ON_FAIL_LOG(telemetry_gen_small(), 1;);
