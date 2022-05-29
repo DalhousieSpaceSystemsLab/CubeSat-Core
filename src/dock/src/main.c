@@ -17,6 +17,7 @@
 // Subsystem modules
 #include "command_module.h"
 #include "gps_module.h"
+#include "imu_module.h"
 #include "mission_module.h"
 #include "payload_module.h"
 #include "rf_module.h"
@@ -37,6 +38,7 @@ int main(int argc, char* argv[]) {
       rf,
       payload,
       tel,
+      imu,
   };
   modules_len = sizeof(modules) / sizeof(SubsystemModule);
 
