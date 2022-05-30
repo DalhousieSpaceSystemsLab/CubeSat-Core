@@ -36,6 +36,8 @@
 #define LOG_DIRECTORY "imu_logs"
 #define FILE_INTERVAL 90 * 60  // in seconds
 #define LOG_INTERVAL 1000000   // in microseconds
+#define ADCS_DEV_PATH "/sys/class/gpio/gpio114/value"
+#define GPIO_ENABLE "1"
 
 NEW_DOCK_MODULE(imu);
 
