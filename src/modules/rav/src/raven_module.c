@@ -29,6 +29,10 @@ START_MODULE(rav) {
     FILE* fp = fopen(filename, "w");
     if (!fp) {
       moderr("Failed to create logfile for raven status\n");
+
+      // Try to make a directory for it
+      mkdir(LOG_DIRECTORY, 0644);
+
       continue;
     }
 
