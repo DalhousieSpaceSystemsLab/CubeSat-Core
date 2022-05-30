@@ -15,6 +15,7 @@ struct ipc ipc = {
     .acs = {.name = "acs"},
     .ecs = {.name = "ecs"},
     .gps = {.name = "gps", .cmd = {.get_cur_pos = "gps.get_cur_pos"}},
+    .brn = {.name = "brn", .cmd = {.trigger_burn = "brn.trigger_burn"}},
 
     .core =
         {

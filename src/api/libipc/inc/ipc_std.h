@@ -60,6 +60,14 @@ struct ipc {
     } cmd;
   } gps;
 
+  // Burnwire
+  struct brn {
+    const char* name;
+    struct cmd_brn {
+      const char* trigger_burn;
+    } cmd;
+  } brn;
+
   // Core software
   struct core {
     // Missions
