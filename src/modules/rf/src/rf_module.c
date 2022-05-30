@@ -26,6 +26,7 @@ static int reboot();
 static int rm_file();
 static int mv_file();
 static int forward_command();
+static int trigger_burnwire();
 
 START_MODULE(rf) {
   OK(ipc_connect(ipc.rf.name));
@@ -75,6 +76,8 @@ static int process_req(char req[2]) {
     OK(rm_file());
   } else if (strncmp(req, REQ_MOVE, 2) == 0) {
     OK(mv_file());
+  } else if (strncmp(req, REQ_BURNWIRE, 2) == 0) {
+    OK(trigger_burnwire());
   } else {
     moderr("[:/] Could not process request [%c%c]\n", req[0], req[1]);
   }
@@ -300,6 +303,13 @@ static int forward_command() {
 
   // Pass command to system
   system(command);
+
+  // done
+  return 0;
+}
+
+static int trigger_burnwire() {
+  OK(ipc_send_cmd(ipc.brn.name, ipc.brn.cmd.trigger_burn));
 
   // done
   return 0;
