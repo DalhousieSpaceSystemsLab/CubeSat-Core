@@ -35,6 +35,7 @@ START_MODULE(rav) {
     // Write datestamp at top of file
     fwrite(datestamp, sizeof(char), strlen(datestamp), fp);
     fputs("\n", fp);
+    fflush(fp);
 
     time_t current = start;
     while (current < start + FILE_INTERVAL) {
@@ -57,6 +58,7 @@ START_MODULE(rav) {
     t = localtime(&current);
     strftime(datestamp, MAX_DATESTAMP_SIZE, "%F_%T", t);
     fwrite(datestamp, sizeof(char), strlen(datestamp), fp);
+    fflush(fp);
 
     // Close log file
     fclose(fp);
