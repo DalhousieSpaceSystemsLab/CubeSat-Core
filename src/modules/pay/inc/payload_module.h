@@ -23,8 +23,14 @@
 #include <string.h>
 
 // Settings
-#define CAMERA_BINARY_PATH "./camera.sh"
+#define CAMERA_BINARY_PATH "./payload/color2_capture"
 
 NEW_DOCK_MODULE(payload);
 
 #endif
+
+/**
+ * root@colibri-imx6:~# ls payload/
+color2_capture  color3_capture  color_capture  images  mono_capture
+ *
+ */
