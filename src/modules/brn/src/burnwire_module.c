@@ -4,6 +4,7 @@
 
 static int trigger_burn();
 static int check_lockfile();
+static int create_lockfile();
 
 CALLBACK(listen_trigger) {
   // Check command
@@ -34,6 +35,7 @@ STOP_MODULE(brn) {}
 
 static int trigger_burn() {
   system(BURNWIRE_COMMAND);
+  create_lockfile();
   // done
   return 0;
 }
@@ -44,6 +46,12 @@ static int check_lockfile() {
     trigger_burn();
   }
 
+  // done
+  return 0;
+}
+
+static int create_lockfile() {
+  close(open(BURNWIRE_LOCK, O_CREAT | O_WRONLY, 0644));
   // done
   return 0;
 }
