@@ -51,11 +51,6 @@ START_MODULE(imu) {
     return -1;
   }
 
-  // Enable ADCS
-  // int adcs_pin = open(ADCS_DEV_PATH, O_WRONLY);
-  // write(adcs_pin, GPIO_ENABLE, strlen(GPIO_ENABLE));
-  // close(adcs_pin);
-
   // Main loop
   for (;;) {
     // Get current time

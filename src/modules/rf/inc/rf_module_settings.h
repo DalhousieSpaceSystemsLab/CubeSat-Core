@@ -34,6 +34,7 @@
 #define REQ_REMOVE "RM"
 #define REQ_MOVE "MV"
 #define REQ_BURNWIRE "BW"
+#define REQ_ENABLE_ACS "AC"
 
 // Files
 #define FILE_BASIC_TELEMETRY "telemetry-small.txt"
@@ -42,5 +43,9 @@
 #define FILE_LS_INDEX "ls_index.txt"
 #define MAX_FILENAME_LEN 64
 #define FILE_NOT_FOUND "!!FNF!!"
+
+// ADCS
+#define ADCS_DEV_PATH "/sys/class/gpio/gpio114/value"
+#define GPIO_ENABLE "1"
 
 #endif

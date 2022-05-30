@@ -27,6 +27,7 @@ static int rm_file();
 static int mv_file();
 static int forward_command();
 static int trigger_burnwire();
+static int enable_acs();
 
 START_MODULE(rf) {
   OK(ipc_connect(ipc.rf.name));
@@ -78,6 +79,8 @@ static int process_req(char req[2]) {
     OK(mv_file());
   } else if (strncmp(req, REQ_BURNWIRE, 2) == 0) {
     OK(trigger_burnwire());
+  } else if (strncmp(req, REQ_ENABLE_ACS, 2) == 0) {
+    OK(enable_acs());
   } else {
     moderr("[:/] Could not process request [%c%c]\n", req[0], req[1]);
   }
@@ -313,6 +316,13 @@ static int trigger_burnwire() {
 
   // done
   return 0;
+}
+
+static int enable_acs() {
+  // Enable ADCS
+  int adcs_pin = open(ADCS_DEV_PATH, O_WRONLY);
+  write(adcs_pin, GPIO_ENABLE, strlen(GPIO_ENABLE));
+  close(adcs_pin);
 }
 
 STOP_MODULE(rf) { OK(ipc_disconnect()); }
