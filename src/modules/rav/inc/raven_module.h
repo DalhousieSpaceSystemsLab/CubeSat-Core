@@ -19,7 +19,7 @@
 #include <time.h>
 
 // Settings
-#define GPIO_PATH "/sys/class/gpio/gpio122"
+#define GPIO_PATH "/sys/class/gpio/gpio123/value"
 #define FILE_INTERVAL 90 * 60  // in seconds
 #define LOG_DIRECTORY "raven_logs"
 #define MAX_DATESTAMP_SIZE 32
