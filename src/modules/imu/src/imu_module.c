@@ -53,23 +53,56 @@ START_MODULE(imu) {
 
   // Main loop
   for (;;) {
-    FILE* fp = fopen(IMU_DATA_FILE, "w");
+    // Get current time
+    time_t start = time(NULL);
+
+    // Open current logfile
+    char datestamp[MAX_DATESTAMP_SIZE];
+    struct tm* t = localtime(&start);
+    strftime(datestamp, MAX_DATESTAMP_SIZE, "%F_%T", t);
+    char filename[MAX_FILENAME_SIZE];
+    sprintf(filename, "%s/%s.log", LOG_DIRECTORY, datestamp);
+    FILE* fp = fopen(filename, "w");
     if (!fp) {
-      moderr("Failed to open IMU data file at %s\n", IMU_DATA_FILE);
-      sleep(1);
+      moderr("Failed to create logfile for IMU status\n");
+
+      // Try to make a directory for it
+      mkdir(LOG_DIRECTORY, 0644);
+
       continue;
     }
 
-    // Read entry from IMU
-    char entry[MAX_ENTRY_LEN];
-    int bytes_read = 0;
-    if ((bytes_read = read(uartfd, entry, MAX_ENTRY_LEN)) < 0) {
-      moderr("Failed to read IMU data from colibri-uartc\n");
-      return -1;
+    // Write datestamp at top of file
+    fwrite(datestamp, sizeof(char), strlen(datestamp), fp);
+    fputs("\n", fp);
+    fflush(fp);
+
+    time_t current = start;
+    while (current < start + FILE_INTERVAL) {
+      // Read entry from IMU
+      char entry[MAX_ENTRY_LEN];
+      int bytes_read = 0;
+      if ((bytes_read = read(uartfd, entry, MAX_ENTRY_LEN)) < 0) {
+        moderr("Failed to read IMU data from colibri-uartc\n");
+        return -1;
+      }
+
+      // Write entry to file
+      fwrite(entry, sizeof(char), bytes_read, fp);
+      fputs("\n", fp);
+
+      // Delay
+      usleep(LOG_INTERVAL);
+
+      // Update current time
+      current = time(NULL);
     }
 
-    // Write entry to file
-    fwrite(entry, sizeof(char), bytes_read, fp);
+    // Write final datestamp at end of file
+    t = localtime(&current);
+    strftime(datestamp, MAX_DATESTAMP_SIZE, "%F_%T", t);
+    fwrite(datestamp, sizeof(char), strlen(datestamp), fp);
+    fflush(fp);
 
     // done
     fclose(fp);

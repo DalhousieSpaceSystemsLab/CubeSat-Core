@@ -31,6 +31,11 @@
 #define IMU_DATA_FILE "imu.txt"
 #define RAVEN_UART_SPEED B115200
 #define MAX_ENTRY_LEN 128
+#define MAX_DATESTAMP_SIZE 32
+#define MAX_FILENAME_SIZE MAX_DATESTAMP_SIZE + 32
+#define LOG_DIRECTORY "imu_logs"
+#define FILE_INTERVAL 90 * 60  // in seconds
+#define LOG_INTERVAL 1000000   // in microseconds
 
 NEW_DOCK_MODULE(imu);
 
