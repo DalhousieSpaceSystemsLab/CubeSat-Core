@@ -10,7 +10,7 @@
 #include <unistd.h>
 
 // Settings
-#define BURNWIRE_COMMAND "./burnwire-test.sh"
+#define BURNWIRE_COMMAND "sh burnwire-test.sh"
 #define BURNWIRE_LOCK "burnwire.lock"
 
 NEW_DOCK_MODULE(brn);
