@@ -1,4 +1,3 @@
-
 #include "telemetry_module.h"
 
 // Glocal variables
