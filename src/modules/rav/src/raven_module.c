@@ -47,6 +47,9 @@ START_MODULE(rav) {
       char val;
       read(gpio, &val, sizeof(char));
 
+      // Convert number value to ASCII number character
+      val += '0';
+
       // Log value
       fwrite(&val, sizeof(char), 1, fp);
       fputs("\n", fp);
