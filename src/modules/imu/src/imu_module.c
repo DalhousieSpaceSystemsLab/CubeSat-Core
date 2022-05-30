@@ -26,8 +26,8 @@ START_MODULE(imu) {
     return -1;
   }
 
-  cfsetospeed(&tty, (speed_t)UART_SPEED);
-  cfsetispeed(&tty, (speed_t)UART_SPEED);
+  cfsetospeed(&tty, (speed_t)RAVEN_UART_SPEED);
+  cfsetispeed(&tty, (speed_t)RAVEN_UART_SPEED);
 
   tty.c_cflag |= (CLOCAL | CREAD); /* ignore modem controls */
   tty.c_cflag &= ~CSIZE;

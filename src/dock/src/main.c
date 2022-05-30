@@ -15,11 +15,13 @@
 #include "subsysmod.h"
 
 // Subsystem modules
+#include "burnwire_module.h"
 #include "command_module.h"
 #include "gps_module.h"
 #include "imu_module.h"
 #include "mission_module.h"
 #include "payload_module.h"
+#include "raven_module.h"
 #include "rf_module.h"
 #include "telemetry_module.h"
 
@@ -35,10 +37,7 @@ static int modules_len = 0;
 int main(int argc, char* argv[]) {
   // Create list of server containers
   SubsystemModule modules[] = {
-      rf,
-      payload,
-      tel,
-      imu,
+      rf, payload, tel, imu, brn, rav,
   };
   modules_len = sizeof(modules) / sizeof(SubsystemModule);
 

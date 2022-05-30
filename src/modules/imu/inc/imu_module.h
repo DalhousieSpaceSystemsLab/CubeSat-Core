@@ -29,7 +29,7 @@
 // Settings
 #define IMU_DEV_PATH "/dev/colibri-uartc"
 #define IMU_DATA_FILE "imu.txt"
-#define UART_SPEED B115200
+#define RAVEN_UART_SPEED B115200
 #define MAX_ENTRY_LEN 128
 
 NEW_DOCK_MODULE(imu);
