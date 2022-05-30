@@ -44,15 +44,15 @@ START_MODULE(rav) {
     time_t current = start;
     while (current < start + FILE_INTERVAL) {
       // Read from GPIO
-      char val;
-      read(gpio, &val, sizeof(char));
+      char val[3];
+      read(gpio, val, 3);
 
       // Convert number value to ASCII number character
-      val += '0';
+      //   val += '0';
 
       // Log value
-      fwrite(&val, sizeof(char), 1, fp);
-      fputs("\n", fp);
+      fwrite(val, sizeof(char), 3, fp);
+      fflush(fp);
 
       // Delay
       usleep(LOG_INTERVAL);

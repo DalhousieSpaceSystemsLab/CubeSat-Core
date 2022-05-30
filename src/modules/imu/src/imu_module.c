@@ -90,6 +90,7 @@ START_MODULE(imu) {
       // Write entry to file
       fwrite(entry, sizeof(char), bytes_read, fp);
       fputs("\n", fp);
+      fflush(fp);
 
       // Delay
       usleep(LOG_INTERVAL);
