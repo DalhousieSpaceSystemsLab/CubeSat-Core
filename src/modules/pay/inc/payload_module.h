@@ -23,7 +23,7 @@
 #include <string.h>
 
 // Settings
-#define CAMERA_BINARY_PATH "./payload/color2_capture"
+#define CAMERA_BINARY_PATH "./payload/color_capture"
 
 NEW_DOCK_MODULE(payload);
 
