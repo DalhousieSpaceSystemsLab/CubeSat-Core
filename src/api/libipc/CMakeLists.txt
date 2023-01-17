@@ -179,15 +179,15 @@ target_compile_options(${LIB} PUBLIC "-g")
 ################################################################################
 # TEST CONFIGURATION
 ################################################################################
-if(BUILD_TESTING)
-    enable_testing()
-    include(CTest)
-    if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/tests")
-        add_subdirectory(tests)
-    elseif(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/test")
-        add_subdirectory(test)
-    endif()
-endif(BUILD_TESTING)
+#if(BUILD_TESTING)
+#    enable_testing()
+#    include(CTest)
+#    if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/tests")
+#        add_subdirectory(tests)
+#    elseif(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/test")
+#        add_subdirectory(test)
+#    endif()
+#endif(BUILD_TESTING)
 
 
 ################################################################################

@@ -154,51 +154,51 @@ int antenna_write(const char *data, size_t data_len) {
  * @param data_len Number of bytes from data to send.
  * @return 0 on success, -1 on error
  */
-int antenna_write_rs_fd(int fd, const char *data, size_t data_len) {
-  // Return status
-  int status = 0;
-
-  // Encode data
-  int bytes_encoded = 0;
-  correct_reed_solomon *encoder = correct_reed_solomon_create(
-      correct_rs_primitive_polynomial_8_4_3_2_0, 1, 1, RS_NUM_ROOTS);
-  if (encoder == NULL) {
-    modprintf("[!] Failed to create RS encoder\n");
-    status = -1;
-    goto cleanup;
-  }
-  while (bytes_encoded < data_len) {
-    // Encode block of data
-    int bytes_remaining = (data_len - bytes_encoded);
-    int bytes_to_encode =
-        (bytes_remaining > RS_DATA_LEN) ? RS_DATA_LEN : bytes_remaining;
-    char data_encoded[255];
-    int data_encoded_len = correct_reed_solomon_encode(
-        encoder, &data[bytes_encoded], bytes_to_encode, data_encoded);
-    if (data_encoded_len < 0) {
-      moderr("[!] Failed to encode data\n");
-      status = -1;
-      goto cleanup;
-    }
-
-    // Send block
-    if (antenna_write_fd(fd, data_encoded, data_encoded_len) < 0) {
-      moderr("[!] Failed to send block of encoded data\n");
-      status = -1;
-      goto cleanup;
-    }
-
-    // Update counters
-    bytes_encoded += bytes_to_encode;
-  }
-
-cleanup:
-  // Free encoder
-  correct_reed_solomon_destroy(encoder);
-
-  // done
-  return status;
-}
+//int antenna_write_rs_fd(int fd, const char *data, size_t data_len) {
+//  // Return status
+//  int status = 0;
+//
+//  // Encode data
+//  int bytes_encoded = 0;
+//  correct_reed_solomon *encoder = correct_reed_solomon_create(
+//      correct_rs_primitive_polynomial_8_4_3_2_0, 1, 1, RS_NUM_ROOTS);
+//  if (encoder == NULL) {
+//    modprintf("[!] Failed to create RS encoder\n");
+//    status = -1;
+//    goto cleanup;
+//  }
+//  while (bytes_encoded < data_len) {
+//    // Encode block of data
+//    int bytes_remaining = (data_len - bytes_encoded);
+//    int bytes_to_encode =
+//        (bytes_remaining > RS_DATA_LEN) ? RS_DATA_LEN : bytes_remaining;
+//    char data_encoded[255];
+//    int data_encoded_len = correct_reed_solomon_encode(
+//        encoder, &data[bytes_encoded], bytes_to_encode, data_encoded);
+//    if (data_encoded_len < 0) {
+//      moderr("[!] Failed to encode data\n");
+//      status = -1;
+//      goto cleanup;
+//    }
+//
+//    // Send block
+//    if (antenna_write_fd(fd, data_encoded, data_encoded_len) < 0) {
+//      moderr("[!] Failed to send block of encoded data\n");
+//      status = -1;
+//      goto cleanup;
+//    }
+//
+//    // Update counters
+//    bytes_encoded += bytes_to_encode;
+//  }
+//
+//cleanup:
+//  // Free encoder
+//  correct_reed_solomon_destroy(encoder);
+//
+//  // done
+//  return status;
+//}
 
 /**
  * @brief Writes bytes to the antenna with Reed-solomon FEC
@@ -207,9 +207,9 @@ cleanup:
  * @param data_len Number of bytes from data to send.
  * @return 0 on success, -1 on error
  */
-int antenna_write_rs(const char *data, size_t data_len) {
-  return antenna_write_rs_fd(uartfd, data, data_len);
-}
+//int antenna_write_rs(const char *data, size_t data_len) {
+//  return antenna_write_rs_fd(uartfd, data, data_len);
+//}
 
 /**
  * @brief Reads bytes from the antenna but allows a custom file descriptor to be
@@ -296,70 +296,70 @@ int antenna_read(char *buffer, size_t read_len, int read_mode) {
  * @param read_mode Set to READ_MODE_UPTO or READ_MODE_UNTIL
  * @return number of bytes read or < 0 for error.
  */
-int antenna_read_rs_fd(int fd, char *buffer, size_t read_len, int read_mode) {
-  // Return status
-  int status = 0;
-
-  // Create encoder
-  correct_reed_solomon *encoder = correct_reed_solomon_create(
-      correct_rs_primitive_polynomial_8_4_3_2_0, 1, 1, RS_NUM_ROOTS);
-  if (encoder == NULL) {
-    moderr("[!] Failed to create RS encoder\n");
-    status = -1;
-    goto cleanup;
-  }
-
-  // Create placeholders
-  int bytes_decoded = 0;
-  char data_in[RS_BLOCK_LEN];
-
-  // Parse incoming blocks until length satisfied
-  do {
-    // Clear incoming buffer
-    memset(data_in, 0, RS_BLOCK_LEN);
-
-    // Read block
-    int bytes_read = -1;
-    if ((bytes_read = antenna_read_fd(fd, data_in, RS_BLOCK_LEN, read_mode)) <
-        0) {
-      moderr("[!] Failed to read encoded block from antenna\n");
-      status = -1;
-      goto cleanup;
-    }
-
-    // Placeholder for decoded bytes
-    char decoded[RS_DATA_LEN];
-
-    // Decode it
-    int new_bytes_decoded = -1;
-    if ((new_bytes_decoded = correct_reed_solomon_decode(
-             encoder, data_in, bytes_read, decoded)) < 0) {
-      moderr("[!] Failed to decode incoming block. SKIPPING.\n");
-      // status = -1;
-      // goto cleanup;
-      continue;
-    }
-
-    // Copy decoded bytes into buffer
-    int bytes_to_copy = (read_len - bytes_decoded) > new_bytes_decoded
-                            ? new_bytes_decoded
-                            : (read_len - bytes_decoded);
-    memcpy(&buffer[bytes_decoded], decoded, bytes_to_copy);
-
-    // Update counters
-    bytes_decoded += bytes_to_copy;
-  } while (bytes_decoded < read_len && read_mode == READ_MODE_UNTIL);
-
-cleanup:
-  // Free encoder
-  correct_reed_solomon_destroy(encoder);
-
-  // done
-  if (status)
-    return status;
-  else
-    return bytes_decoded;
-}
+//int antenna_read_rs_fd(int fd, char *buffer, size_t read_len, int read_mode) {
+//  // Return status
+//  int status = 0;
+//
+//  // Create encoder
+//  correct_reed_solomon *encoder = correct_reed_solomon_create(
+//      correct_rs_primitive_polynomial_8_4_3_2_0, 1, 1, RS_NUM_ROOTS);
+//  if (encoder == NULL) {
+//    moderr("[!] Failed to create RS encoder\n");
+//    status = -1;
+//    goto cleanup;
+//  }
+//
+//  // Create placeholders
+//  int bytes_decoded = 0;
+//  char data_in[RS_BLOCK_LEN];
+//
+//  // Parse incoming blocks until length satisfied
+//  do {
+//    // Clear incoming buffer
+//    memset(data_in, 0, RS_BLOCK_LEN);
+//
+//    // Read block
+//    int bytes_read = -1;
+//    if ((bytes_read = antenna_read_fd(fd, data_in, RS_BLOCK_LEN, read_mode)) <
+//        0) {
+//      moderr("[!] Failed to read encoded block from antenna\n");
+//      status = -1;
+//      goto cleanup;
+//    }
+//
+//    // Placeholder for decoded bytes
+//    char decoded[RS_DATA_LEN];
+//
+//    // Decode it
+//    int new_bytes_decoded = -1;
+//    if ((new_bytes_decoded = correct_reed_solomon_decode(
+//             encoder, data_in, bytes_read, decoded)) < 0) {
+//      moderr("[!] Failed to decode incoming block. SKIPPING.\n");
+//      // status = -1;
+//      // goto cleanup;
+//      continue;
+//    }
+//
+//    // Copy decoded bytes into buffer
+//    int bytes_to_copy = (read_len - bytes_decoded) > new_bytes_decoded
+//                            ? new_bytes_decoded
+//                            : (read_len - bytes_decoded);
+//    memcpy(&buffer[bytes_decoded], decoded, bytes_to_copy);
+//
+//    // Update counters
+//    bytes_decoded += bytes_to_copy;
+//  } while (bytes_decoded < read_len && read_mode == READ_MODE_UNTIL);
+//
+//cleanup:
+//  // Free encoder
+//  correct_reed_solomon_destroy(encoder);
+//
+//  // done
+//  if (status)
+//    return status;
+//  else
+//    return bytes_decoded;
+//}
 
 /**
  * @brief Reads Reed-solomon encoded bytes from the antenna.
@@ -369,17 +369,17 @@ cleanup:
  * @param read_mode Set to READ_MODE_UPTO or READ_MODE_UNTIL
  * @return number of bytes read or < 0 for error.
  */
-int antenna_read_rs(char *buffer, size_t read_len, int read_mode) {
-  // Make sure file desc initialized
-  if (uartfd == -1) {
-    moderr(
-        "[!] Cannot read to unitialized fd. Make sure to run antenna_init() "
-        "first\n");
-    return -1;
-  }
-
-  return antenna_read_rs_fd(uartfd, buffer, read_len, read_mode);
-}
+//int antenna_read_rs(char *buffer, size_t read_len, int read_mode) {
+//  // Make sure file desc initialized
+//  if (uartfd == -1) {
+//    moderr(
+//        "[!] Cannot read to unitialized fd. Make sure to run antenna_init() "
+//        "first\n");
+//    return -1;
+//  }
+//
+//  return antenna_read_rs_fd(uartfd, buffer, read_len, read_mode);
+//}
 
 static inline void display_progress(size_t n, size_t total, int width,
                                     char *what) {
@@ -506,9 +506,9 @@ int antenna_fwrite(const char *file_path) {
  * @param file_path Path to file to send.
  * @return 0 on success, -1 on error
  */
-int antenna_fwrite_rs_fd(int fd, const char *file_path) {
-  return _antenna_fwrite_fd(ANTENNA_ENCODE_RS, fd, file_path);
-}
+//int antenna_fwrite_rs_fd(int fd, const char *file_path) {
+//  return _antenna_fwrite_fd(ANTENNA_ENCODE_RS, fd, file_path);
+//}
 
 /**
  * @brief Send file over the air using FEC.
@@ -516,17 +516,17 @@ int antenna_fwrite_rs_fd(int fd, const char *file_path) {
  * @param file_path Path to file to send.
  * @return 0 on success, -1 on error
  */
-int antenna_fwrite_rs(const char *file_path) {
-  // Make sure file desc initialized
-  if (uartfd == -1) {
-    moderr(
-        "[!] Cannot read to unitialized fd. Make sure to run antenna_init() "
-        "first\n");
-    return -1;
-  }
-
-  return antenna_fwrite_rs_fd(uartfd, file_path);
-}
+//int antenna_fwrite_rs(const char *file_path) {
+//  // Make sure file desc initialized
+//  if (uartfd == -1) {
+//    moderr(
+//        "[!] Cannot read to unitialized fd. Make sure to run antenna_init() "
+//        "first\n");
+//    return -1;
+//  }
+//
+//  return antenna_fwrite_rs_fd(uartfd, file_path);
+//}
 
 static int _antenna_fread_fd(int antenna_mode, int fd, const char *file_path) {
   int status = 0;
@@ -711,17 +711,17 @@ int antenna_fread(const char *file_path) {
  * @param file_path Path to incoming file destination
  * @return 0 on success, -1 on error
  */
-int antenna_fread_rs(const char *file_path) {
-  // Make sure file desc initialized
-  if (uartfd == -1) {
-    moderr(
-        "[!] Cannot read to unitialized fd. Make sure to run antenna_init() "
-        "first\n");
-    return -1;
-  }
-
-  return antenna_fread_rs_fd(uartfd, file_path);
-}
+//int antenna_fread_rs(const char *file_path) {
+//  // Make sure file desc initialized
+//  if (uartfd == -1) {
+//    moderr(
+//        "[!] Cannot read to unitialized fd. Make sure to run antenna_init() "
+//        "first\n");
+//    return -1;
+//  }
+//
+//  return antenna_fread_rs_fd(uartfd, file_path);
+//}
 
 /**
  * @brief Receive file over the air using FEC but allows a custom
@@ -731,6 +731,6 @@ int antenna_fread_rs(const char *file_path) {
  * @param file_path Path to incoming file destination
  * @return 0 on success, -1 on error
  */
-int antenna_fread_rs_fd(int fd, const char *file_path) {
-  return _antenna_fread_fd(ANTENNA_ENCODE_RS, fd, file_path);
-}
+//int antenna_fread_rs_fd(int fd, const char *file_path) {
+//  return _antenna_fread_fd(ANTENNA_ENCODE_RS, fd, file_path);
+//}

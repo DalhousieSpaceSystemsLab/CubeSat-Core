@@ -9,7 +9,7 @@
 #include "modutil.h"
 
 // Reed-solomon library
-#include "correct.h"
+//#include "correct.h"
 
 // Standard C libraries
 #include <errno.h>
