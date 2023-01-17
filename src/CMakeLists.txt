@@ -11,7 +11,7 @@ project(
 )
 
 # Add check
-add_subdirectory(check)
+#add_subdirectory(check)
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -207,7 +207,7 @@ add_subdirectory(api/client_api)
 add_subdirectory(payload)
 add_subdirectory(modules)
 add_subdirectory(libdock)
-add_subdirectory(adcs/Source)
+#add_subdirectory(adcs/Source)
 
 # executable targets after, and link against necessary dependencies
 add_subdirectory(ipcd)

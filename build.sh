@@ -18,14 +18,14 @@ EXPORT_DIR="EXPORT"
 
 CONFIG_PC() {
   # Check if check submodule missing
-  [ ! -d "$CHECK_SUBMODULE_DIR" ] && git submodule update --init --recursive
+  #[ ! -d "$CHECK_SUBMODULE_DIR" ] && git submodule update --init --recursive
 
   [ ! -d "$PC_BUILD_DIR" ] && cmake src -B $PARENT_BUILD_DIR/$PC_BUILD_DIR
 }
 
 CONFIG_ARM() {
   # Check if check submodule missing
-  [ ! -d "$CHECK_SUBMODULE_DIR" ] && git submodule update --init --recursive
+  #[ ! -d "$CHECK_SUBMODULE_DIR" ] && git submodule update --init --recursive
 
   [ ! -d "$ARM_BUILD_DIR" ] && cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake src -B $PARENT_BUILD_DIR/$ARM_BUILD_DIR
 }

@@ -158,7 +158,7 @@ endif(BUILD_EXAMPLES)
 ################################################################################
 # LINK AGAINST THE NECESSARY TARGETS
 ################################################################################
-target_link_libraries(${EXE} PUBLIC JTOK)
+#target_link_libraries(${EXE} PUBLIC JTOK)
 target_link_libraries(${EXE} PUBLIC LIB_IPC)
 target_link_libraries(${EXE} PUBLIC CLIENT_API)
 target_link_libraries(${EXE} PUBLIC loriserr)
